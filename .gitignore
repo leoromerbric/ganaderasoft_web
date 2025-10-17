@@ -40,7 +40,7 @@ yarn-error.log
 *.sqlite-journal
 
 # Backups y dumps
-*.sql
+
 *.backup
 
 # OS
