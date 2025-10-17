@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es-VE">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Estilo Inspirado en la Naturaleza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+        }
+        .leaf-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 15c-8 0-15 7-15 15s7 15 15 15 15-7 15-15-7-15-15-15z' fill='%2322c55e' opacity='0.05'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 min-h-screen py-12 px-4 leaf-pattern">
+    <!-- Decorative Elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
+        <div class="absolute top-20 left-10 text-green-600 text-6xl">🌿</div>
+        <div class="absolute top-60 right-10 text-emerald-500 text-5xl">🍃</div>
+        <div class="absolute bottom-40 left-40 text-green-500 text-7xl">🌱</div>
+    </div>
+
+    <div class="max-w-3xl mx-auto relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-white rounded-full shadow-2xl mb-4 border-4 border-green-200">
+                <img src="../../../public/images/logo.png" alt="GanaderaSoft" class="w-20 h-20 object-contain">
+            </div>
+            <h1 class="text-4xl font-serif font-bold text-green-900 mb-2">Únete al Campo</h1>
+            <p class="text-lg text-green-700">Comienza tu viaje con nosotros</p>
+            <div class="flex items-center justify-center space-x-2 mt-2">
+                <span class="text-green-600">🌾</span>
+                <span class="text-sm text-green-600 italic">Cultivemos juntos el futuro</span>
+                <span class="text-green-600">🌾</span>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border-2 border-green-100">
+            <form class="space-y-6">
+                <!-- Personal Information -->
+                <div>
+                    <h3 class="text-lg font-serif font-bold text-green-900 mb-4 flex items-center space-x-2">
+                        <span>👤</span>
+                        <span>Información Personal</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-green-800 mb-2">
+                                Nombre
+                            </label>
+                            <input 
+                                type="text" 
+                                id="firstName" 
+                                class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                                placeholder="Juan"
+                            >
+                        </div>
+                        <div>
+                            <label for="lastName" class="block text-sm font-medium text-green-800 mb-2">
+                                Apellido
+                            </label>
+                            <input 
+                                type="text" 
+                                id="lastName" 
+                                class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                                placeholder="Pérez"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div>
+                    <h3 class="text-lg font-serif font-bold text-green-900 mb-4 flex items-center space-x-2">
+                        <span>📞</span>
+                        <span>Contacto</span>
+                    </h3>
+                    <div class="space-y-5">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-green-800 mb-2">
+                                Correo Electrónico
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                                placeholder="tu@correo.com"
+                            >
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-green-800 mb-2">
+                                Teléfono
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                                placeholder="+58 424 1234567"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Farm Information -->
+                <div>
+                    <h3 class="text-lg font-serif font-bold text-green-900 mb-4 flex items-center space-x-2">
+                        <span>🏡</span>
+                        <span>Tu Hacienda</span>
+                    </h3>
+                    <div class="space-y-5">
+                        <div>
+                            <label for="farmName" class="block text-sm font-medium text-green-800 mb-2">
+                                Nombre de la Hacienda
+                            </label>
+                            <input 
+                                type="text" 
+                                id="farmName" 
+                                class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                                placeholder="Hacienda Los Robles"
+                            >
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label for="location" class="block text-sm font-medium text-green-800 mb-2">
+                                    Ubicación
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="location" 
+                                    class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                                    placeholder="Estado, Municipio"
+                                >
+                            </div>
+                            <div>
+                                <label for="farmSize" class="block text-sm font-medium text-green-800 mb-2">
+                                    Tamaño (hectáreas)
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="farmSize" 
+                                    class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                                    placeholder="100"
+                                >
+                            </div>
+                        </div>
+                        <div>
+                            <label for="animals" class="block text-sm font-medium text-green-800 mb-2">
+                                Cantidad de Animales
+                            </label>
+                            <input 
+                                type="number" 
+                                id="animals" 
+                                class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                                placeholder="50"
+                            >
+                        </div>
+                        <div>
+                            <label for="farmType" class="block text-sm font-medium text-green-800 mb-2">
+                                Tipo de Producción
+                            </label>
+                            <select 
+                                id="farmType" 
+                                class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                            >
+                                <option value="">Selecciona...</option>
+                                <option>🥛 Lechera</option>
+                                <option>🥩 Cárnica</option>
+                                <option>🐄 Mixta</option>
+                                <option>🌾 Cría y Levante</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div>
+                    <h3 class="text-lg font-serif font-bold text-green-900 mb-4 flex items-center space-x-2">
+                        <span>🔐</span>
+                        <span>Seguridad</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-green-800 mb-2">
+                                Contraseña
+                            </label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                                placeholder="••••••••"
+                            >
+                        </div>
+                        <div>
+                            <label for="confirmPassword" class="block text-sm font-medium text-green-800 mb-2">
+                                Confirmar Contraseña
+                            </label>
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                                placeholder="••••••••"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terms -->
+                <div class="bg-green-50 border-2 border-green-200 rounded-2xl p-5">
+                    <div class="space-y-3">
+                        <label class="flex items-start space-x-3">
+                            <input type="checkbox" class="mt-1 w-5 h-5 text-green-600 border-green-300 rounded focus:ring-green-500">
+                            <span class="text-sm text-green-800">
+                                Acepto los términos y condiciones del servicio
+                            </span>
+                        </label>
+                        <label class="flex items-start space-x-3">
+                            <input type="checkbox" class="mt-1 w-5 h-5 text-green-600 border-green-300 rounded focus:ring-green-500">
+                            <span class="text-sm text-green-800">
+                                Deseo recibir noticias y consejos sobre gestión ganadera sostenible
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit"
+                    class="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-2xl font-medium text-lg hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                    🌱 Comenzar mi Jornada
+                </button>
+            </form>
+
+            <!-- Footer Link -->
+            <div class="mt-6 text-center">
+                <p class="text-sm text-green-700">
+                    ¿Ya tienes cuenta? 
+                    <a href="login.html" class="text-green-600 font-semibold hover:text-green-800">Inicia sesión aquí</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="text-center mt-6">
+            <p class="text-sm text-green-700 flex items-center justify-center space-x-2">
+                <span>🌿</span>
+                <span>Tu información está protegida y se usa de manera responsable</span>
+                <span>🌿</span>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

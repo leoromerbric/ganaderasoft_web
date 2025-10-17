@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es-VE">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Estilo Inspirado en la Naturaleza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+        }
+        .leaf-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 15c-8 0-15 7-15 15s7 15 15 15 15-7 15-15-7-15-15-15z' fill='%2322c55e' opacity='0.03'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-emerald-50 min-h-screen leaf-pattern">
+    <!-- Top Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-lg border-b-2 border-green-200">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo and Branding -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+                        <img src="../../../public/images/logo.png" alt="Logo" class="w-10 h-10 object-contain">
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-serif font-bold text-green-900">GanaderaSoft</h1>
+                        <p class="text-xs text-green-600 flex items-center space-x-1">
+                            <span>🌿</span>
+                            <span>Panel Natural</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#" class="text-green-700 font-medium hover:text-green-900 transition-colors flex items-center space-x-1">
+                        <span>🏡</span>
+                        <span>Inicio</span>
+                    </a>
+                    <a href="#" class="text-green-600 hover:text-green-800 transition-colors">Animales</a>
+                    <a href="#" class="text-green-600 hover:text-green-800 transition-colors">Producción</a>
+                    <a href="#" class="text-green-600 hover:text-green-800 transition-colors">Reportes</a>
+                </div>
+
+                <!-- User Section -->
+                <div class="flex items-center space-x-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-semibold text-green-900">Administrador</p>
+                        <p class="text-xs text-green-600">admin@demo.cl</p>
+                    </div>
+                    <button class="px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors shadow-md text-sm font-medium">
+                        Salir 🚪
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Welcome Banner -->
+        <div class="bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl p-8 mb-8 text-white shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-serif font-bold mb-2">¡Buenos días en el campo! 🌅</h2>
+                    <p class="text-green-100 text-lg">Vista general de tu hacienda</p>
+                </div>
+                <div class="text-6xl hidden md:block">🐄</div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Card 1 -->
+            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-green-100 hover:shadow-xl transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center text-3xl">
+                        🐄
+                    </div>
+                    <span class="text-xs font-semibold text-green-700 bg-green-50 px-3 py-1 rounded-full">Activo</span>
+                </div>
+                <p class="text-sm text-green-700 font-medium mb-1">Ganado Total</p>
+                <p class="text-4xl font-serif font-bold text-green-900 mb-2">1,245</p>
+                <p class="text-xs text-green-600">🌿 Salud óptima</p>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-emerald-100 hover:shadow-xl transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-full flex items-center justify-center text-3xl">
+                        🥛
+                    </div>
+                    <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">Hoy</span>
+                </div>
+                <p class="text-sm text-emerald-700 font-medium mb-1">Producción</p>
+                <p class="text-4xl font-serif font-bold text-emerald-900 mb-2">8,540 L</p>
+                <p class="text-xs text-emerald-600">🌾 +12% vs ayer</p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-teal-100 hover:shadow-xl transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center text-3xl">
+                        📊
+                    </div>
+                    <span class="text-xs font-semibold text-teal-700 bg-teal-50 px-3 py-1 rounded-full">Media</span>
+                </div>
+                <p class="text-sm text-teal-700 font-medium mb-1">Promedio</p>
+                <p class="text-4xl font-serif font-bold text-teal-900 mb-2">6.85 L</p>
+                <p class="text-xs text-teal-600">🍃 Por animal</p>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-amber-100 hover:shadow-xl transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-amber-100 to-amber-200 rounded-full flex items-center justify-center text-3xl">
+                        ☀️
+                    </div>
+                    <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded-full">Clima</span>
+                </div>
+                <p class="text-sm text-amber-700 font-medium mb-1">Temperatura</p>
+                <p class="text-4xl font-serif font-bold text-amber-900 mb-2">24°C</p>
+                <p class="text-xs text-amber-600">🌤️ Soleado</p>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Production Chart -->
+            <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-lg border-2 border-green-100">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-serif font-bold text-green-900">🌾 Producción Semanal</h3>
+                    <span class="text-sm text-green-600">Última semana</span>
+                </div>
+                <div class="h-64 flex items-end justify-between space-x-3">
+                    <div class="flex-1 bg-gradient-to-t from-green-500 to-green-400 rounded-t-2xl relative group cursor-pointer hover:from-green-600 hover:to-green-500 transition-colors" style="height: 65%;">
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-900 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">7,200L</div>
+                    </div>
+                    <div class="flex-1 bg-gradient-to-t from-green-500 to-green-400 rounded-t-2xl relative group cursor-pointer hover:from-green-600 hover:to-green-500 transition-colors" style="height: 70%;">
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-900 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">7,800L</div>
+                    </div>
+                    <div class="flex-1 bg-gradient-to-t from-emerald-600 to-emerald-500 rounded-t-2xl relative group cursor-pointer hover:from-emerald-700 hover:to-emerald-600 transition-colors shadow-lg" style="height: 90%;">
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-emerald-900 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">9,100L</div>
+                    </div>
+                    <div class="flex-1 bg-gradient-to-t from-green-500 to-green-400 rounded-t-2xl relative group cursor-pointer hover:from-green-600 hover:to-green-500 transition-colors" style="height: 75%;">
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-900 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">8,200L</div>
+                    </div>
+                    <div class="flex-1 bg-gradient-to-t from-green-500 to-green-400 rounded-t-2xl relative group cursor-pointer hover:from-green-600 hover:to-green-500 transition-colors" style="height: 80%;">
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-900 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">8,600L</div>
+                    </div>
+                    <div class="flex-1 bg-gradient-to-t from-green-500 to-green-400 rounded-t-2xl relative group cursor-pointer hover:from-green-600 hover:to-green-500 transition-colors" style="height: 68%;">
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-900 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">7,500L</div>
+                    </div>
+                    <div class="flex-1 bg-gradient-to-t from-green-500 to-green-400 rounded-t-2xl relative group cursor-pointer hover:from-green-600 hover:to-green-500 transition-colors" style="height: 72%;">
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-900 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity">7,900L</div>
+                    </div>
+                </div>
+                <div class="flex justify-between text-sm text-green-700 mt-6 font-medium">
+                    <span>Lun</span>
+                    <span>Mar</span>
+                    <span>Mié</span>
+                    <span>Jue</span>
+                    <span>Vie</span>
+                    <span>Sáb</span>
+                    <span>Dom</span>
+                </div>
+            </div>
+
+            <!-- Activity Feed -->
+            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-green-100">
+                <h3 class="text-xl font-serif font-bold text-green-900 mb-6 flex items-center space-x-2">
+                    <span>🌱</span>
+                    <span>Actividad del Campo</span>
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-2xl border border-green-100">
+                        <span class="text-2xl">✅</span>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-green-900">Ordeño completado</p>
+                            <p class="text-xs text-green-600 mt-1">Hace 10 minutos</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3 p-3 bg-blue-50 rounded-2xl border border-blue-100">
+                        <span class="text-2xl">💉</span>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-blue-900">Vacunación programada</p>
+                            <p class="text-xs text-blue-600 mt-1">En 2 horas</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3 p-3 bg-amber-50 rounded-2xl border border-amber-100">
+                        <span class="text-2xl">🌾</span>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-amber-900">Alimentación especial</p>
+                            <p class="text-xs text-amber-600 mt-1">Grupo A - Completado</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3 p-3 bg-emerald-50 rounded-2xl border border-emerald-100">
+                        <span class="text-2xl">🏥</span>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-emerald-900">Chequeo veterinario</p>
+                            <p class="text-xs text-emerald-600 mt-1">Hace 1 hora</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-6 py-6 mt-12">
+        <div class="text-center text-green-700">
+            <p class="text-sm flex items-center justify-center space-x-2">
+                <span>🌿</span>
+                <span>© 2025 GanaderaSoft - Comprometidos con la naturaleza</span>
+                <span>🌿</span>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es-VE">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Estilo Corporativo Profesional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-blue-600 rounded-xl mb-4 shadow-xl">
+                <img src="../../../public/images/logo.png" alt="GanaderaSoft" class="w-20 h-20 object-contain" style="filter: brightness(0) invert(1);">
+            </div>
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Solicitud de Registro</h1>
+            <p class="text-gray-600">Complete el formulario para obtener acceso al sistema</p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Form Header -->
+            <div class="bg-blue-600 text-white px-8 py-6">
+                <h2 class="text-2xl font-bold uppercase tracking-wide">Información del Solicitante</h2>
+            </div>
+
+            <form class="p-8 space-y-6">
+                <!-- Personal Information Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b-2 border-blue-600 uppercase tracking-wide">
+                        Datos Personales
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label for="firstName" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Nombre *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="firstName" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="Juan"
+                            >
+                        </div>
+                        <div>
+                            <label for="lastName" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Apellido *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="lastName" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="Pérez"
+                            >
+                        </div>
+                        <div>
+                            <label for="idNumber" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Cédula / ID *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="idNumber" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="V-12345678"
+                            >
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Teléfono *
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="+58 424 1234567"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b-2 border-blue-600 uppercase tracking-wide">
+                        Información de Contacto
+                    </h3>
+                    <div class="space-y-5">
+                        <div>
+                            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Correo Electrónico Corporativo *
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="usuario@empresa.com"
+                            >
+                        </div>
+                        <div>
+                            <label for="address" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Dirección Completa
+                            </label>
+                            <textarea 
+                                id="address" 
+                                rows="3"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="Calle, Número, Ciudad, Estado"
+                            ></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Company Information Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b-2 border-blue-600 uppercase tracking-wide">
+                        Información de la Empresa
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label for="companyName" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Nombre de la Empresa *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="companyName" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="Hacienda Los Robles C.A."
+                            >
+                        </div>
+                        <div>
+                            <label for="rif" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                RIF / Registro Fiscal *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="rif" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="J-12345678-9"
+                            >
+                        </div>
+                        <div>
+                            <label for="businessType" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Tipo de Actividad *
+                            </label>
+                            <select 
+                                id="businessType" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                            >
+                                <option value="">Seleccione...</option>
+                                <option>Producción Lechera</option>
+                                <option>Producción de Carne</option>
+                                <option>Cría y Levante</option>
+                                <option>Mixta</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="herdSize" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Tamaño del Hato *
+                            </label>
+                            <input 
+                                type="number" 
+                                id="herdSize" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="Número de animales"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Access Information Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b-2 border-blue-600 uppercase tracking-wide">
+                        Configuración de Acceso
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label for="username" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Usuario *
+                            </label>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="nombre.usuario"
+                            >
+                        </div>
+                        <div>
+                            <label for="role" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Rol Solicitado *
+                            </label>
+                            <select 
+                                id="role" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                            >
+                                <option value="">Seleccione...</option>
+                                <option>Administrador</option>
+                                <option>Supervisor</option>
+                                <option>Operador</option>
+                                <option>Consulta</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Contraseña *
+                            </label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="Mínimo 8 caracteres"
+                            >
+                        </div>
+                        <div>
+                            <label for="confirmPassword" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                Confirmar Contraseña *
+                            </label>
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                required
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none transition-colors"
+                                placeholder="Repita la contraseña"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="bg-gray-50 rounded-lg p-6 border-2 border-gray-200">
+                    <div class="space-y-3">
+                        <label class="flex items-start space-x-3">
+                            <input type="checkbox" required class="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="text-sm text-gray-700">
+                                Acepto los <a href="#" class="text-blue-600 font-semibold hover:underline">términos y condiciones</a> del servicio
+                            </span>
+                        </label>
+                        <label class="flex items-start space-x-3">
+                            <input type="checkbox" required class="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="text-sm text-gray-700">
+                                Autorizo el tratamiento de mis datos según la <a href="#" class="text-blue-600 font-semibold hover:underline">política de privacidad</a>
+                            </span>
+                        </label>
+                        <label class="flex items-start space-x-3">
+                            <input type="checkbox" class="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <span class="text-sm text-gray-700">
+                                Deseo recibir información sobre actualizaciones y novedades del sistema
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex items-center justify-between pt-6 border-t-2 border-gray-200">
+                    <a href="login.html" class="text-blue-600 hover:text-blue-800 font-semibold">
+                        ← Volver al Login
+                    </a>
+                    <button 
+                        type="submit"
+                        class="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors uppercase tracking-wide shadow-lg"
+                    >
+                        Enviar Solicitud
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="mt-6 text-center text-sm text-gray-600">
+            <p>Su solicitud será revisada por nuestro equipo en un plazo de 24-48 horas</p>
+            <p class="mt-2">Para más información: <a href="mailto:soporte@ganaderasoft.com" class="text-blue-600 font-semibold">soporte@ganaderasoft.com</a></p>
+        </div>
+    </div>
+</body>
+</html>

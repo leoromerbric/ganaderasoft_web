@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es-VE">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Estilo Inspirado en la Naturaleza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+        }
+        .leaf-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 15c-8 0-15 7-15 15s7 15 15 15 15-7 15-15-7-15-15-15z' fill='%2322c55e' opacity='0.05'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 min-h-screen flex items-center justify-center p-4 leaf-pattern">
+    <!-- Decorative Elements -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
+        <div class="absolute top-10 left-10 text-green-600 text-8xl">🌿</div>
+        <div class="absolute top-40 right-20 text-green-500 text-6xl">🍃</div>
+        <div class="absolute bottom-20 left-20 text-emerald-600 text-7xl">🌱</div>
+        <div class="absolute bottom-40 right-40 text-green-400 text-5xl">🌾</div>
+    </div>
+
+    <div class="w-full max-w-md relative z-10">
+        <!-- Logo Container -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-white rounded-full shadow-2xl mb-4 border-4 border-green-200">
+                <img src="../../../public/images/logo.png" alt="GanaderaSoft" class="w-20 h-20 object-contain">
+            </div>
+            <h1 class="text-4xl font-serif font-bold text-green-900 mb-2">GanaderaSoft</h1>
+            <p class="text-lg text-green-700">Gestión Natural y Sostenible</p>
+            <div class="flex items-center justify-center space-x-2 mt-2">
+                <span class="text-green-600">🌿</span>
+                <span class="text-sm text-green-600 italic">Conectados con la tierra</span>
+                <span class="text-green-600">🌿</span>
+            </div>
+        </div>
+
+        <!-- Login Card -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border-2 border-green-100">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-serif font-semibold text-green-900 mb-1">Bienvenido</h2>
+                <p class="text-sm text-green-600">Inicia tu jornada</p>
+            </div>
+            
+            <form class="space-y-5">
+                <!-- Email Input -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-green-800 mb-2 flex items-center space-x-2">
+                        <span>📧</span>
+                        <span>Correo electrónico</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                        placeholder="tu@correo.com"
+                    >
+                </div>
+
+                <!-- Password Input -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-green-800 mb-2 flex items-center space-x-2">
+                        <span>🔐</span>
+                        <span>Contraseña</span>
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="w-full px-4 py-3 bg-green-50 border-2 border-green-200 rounded-2xl focus:border-green-500 focus:outline-none focus:bg-white transition-all"
+                        placeholder="••••••••"
+                    >
+                </div>
+
+                <!-- Remember Me -->
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center space-x-2 text-green-700">
+                        <input type="checkbox" class="w-4 h-4 text-green-600 border-green-300 rounded focus:ring-green-500">
+                        <span>Recordarme</span>
+                    </label>
+                    <a href="#" class="text-green-600 hover:text-green-800 font-medium">
+                        ¿Olvidaste tu contraseña?
+                    </a>
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit"
+                    class="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-2xl font-medium hover:from-green-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                    🌾 Ingresar al Campo
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="my-6 flex items-center">
+                <div class="flex-1 border-t border-green-200"></div>
+                <span class="px-4 text-sm text-green-600">🌿</span>
+                <div class="flex-1 border-t border-green-200"></div>
+            </div>
+
+            <!-- Sign Up Link -->
+            <div class="text-center">
+                <p class="text-sm text-green-700">
+                    ¿Primera vez en el campo? 
+                    <a href="registro.html" class="text-green-600 font-semibold hover:text-green-800">Únete a nosotros</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-6">
+            <p class="text-sm text-green-700 flex items-center justify-center space-x-2">
+                <span>🌱</span>
+                <span>Cultivando el futuro desde 2025</span>
+                <span>🌱</span>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
