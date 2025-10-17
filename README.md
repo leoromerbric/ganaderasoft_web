@@ -1,88 +1,179 @@
-# GanaderaSoft API Gateway
+# GanaderaSoft - Sistema de Gestión de Ganadería
 
-Laravel API Gateway for the GanaderaSoft livestock management system, built with PHP 8.1 and following Laravel best practices.
+Prototipo web desarrollado con Laravel 10 y PHP 8.1 para la gestión de ganadería.
 
-## Features
+## 🚀 Características del Prototipo
 
-### Core API Structure
-- **RESTful API endpoints** using Laravel 10 framework
-- **Authentication system** with Laravel Sanctum for token-based auth
-- **Modular architecture** designed for easy extension with new features
-- **Permission-based access control** with admin and propietario (owner) roles
+Este es un **prototipo funcional** con las siguientes pantallas:
+- **Login**: Autenticación de usuarios con credenciales simuladas
+- **Dashboard**: Panel principal con KPIs, gráficos y alertas
 
-### Database Integration
-- Uses the existing MySQL database schema from `ganaderasoft-28-5-25 - corregido.sql`
-- **Eloquent models** for Users, Propietarios, and Fincas with proper relationships
-- **Database migrations** compatible with existing structure
+### ⚠️ Importante - Prototipo
+- **No utiliza base de datos** - Todos los datos son simulados (mocks)
+- **No conecta con APIs reales** - Servicios mock con datos de prueba
+- **Arquitectura preparada** para reemplazar fácilmente los mocks por servicios reales
 
-### API Endpoints
+## 🎨 Stack Tecnológico
 
-**Authentication:**
-- `POST /api/auth/register` - Register new users
-- `POST /api/auth/login` - User authentication
-- `GET /api/auth/profile` - Get user profile (authenticated)
-- `POST /api/auth/logout` - Logout and revoke token
+- **Backend**: Laravel 10, PHP 8.1
+- **Frontend**: Blade Templates, Tailwind CSS 3, Vite
+- **Gráficos**: Chart.js
+- **Idioma**: Español (es-VE)
+- **Timezone**: America/Caracas
 
-**Finca Management (authenticated):**
-- `GET /api/fincas` - List farms (filtered by user permissions)
-- `POST /api/fincas` - Create new farm
-- `GET /api/fincas/{id}` - Get farm details
-- `PUT /api/fincas/{id}` - Update farm
-- `DELETE /api/fincas/{id}` - Soft delete farm
+## 🎨 Identidad Visual GanaderaSoft
 
-**System:**
-- `GET /api/health` - API health check
+El sistema utiliza la paleta de colores corporativa:
+- **Celeste principal**: `#6EC1E4`
+- **Verde lima**: `#B3D335`
+- **Azul profundo**: `#007B92`
+- **Negro suave**: `#333333`
+- **Blanco puro**: `#FFFFFF`
 
-## Docker Deployment
+Tipografía: Nunito (sans-serif limpia y moderna)
 
-### Multi-container setup with Docker Compose
-- **PHP 8.1 with FPM** in production-ready container
-- **nginx** as web server for optimal performance
-- **MySQL 8.0** database with automatic schema import
-- **PHPMyAdmin** for database management
-- All services properly networked and configured
+## 📦 Instalación
 
-### Usage
+### Requisitos Previos
+- PHP 8.1+
+- Composer
+- Node.js y npm
 
-Deploy the complete system with:
+### Pasos de Instalación
+
+1. **Clonar el repositorio**
 ```bash
-docker compose up -d
+git clone https://github.com/leoromerbric/ganaderasoft_web.git
+cd ganaderasoft_web
 ```
 
-Access points:
-- API: http://localhost:8000
-- PHPMyAdmin: http://localhost:8080
-- MySQL: localhost:3306
-
-## Architecture
-
-The system uses a modern nginx + PHP-FPM architecture:
-- **nginx** handles static files and proxies PHP requests
-- **PHP-FPM** processes PHP requests efficiently
-- **MySQL** provides reliable data storage
-- **Laravel Sanctum** manages API authentication
-
-## Security & Validation
-- **Input validation** for all endpoints
-- **CSRF protection** for web routes
-- **Rate limiting** on API endpoints
-- **Proper error handling** with consistent JSON responses
-
-## Project Structure
-
-```
-├── app/
-│   ├── Http/Controllers/Api/
-│   │   ├── AuthController.php      # Authentication logic
-│   │   └── FincaController.php     # Farm CRUD operations
-│   └── Models/
-│       ├── User.php                # User model with relationships
-│       ├── Propietario.php         # Farm owner model
-│       └── Finca.php              # Farm model
-├── Dockerfile                      # PHP 8.1 + FPM container
-├── nginx.conf                      # nginx configuration
-├── docker-compose.yml              # Multi-service orchestration
-└── README.md                       # This documentation
+2. **Instalar dependencias de PHP**
+```bash
+composer install
 ```
 
-The system is production-ready and follows Laravel conventions for easy maintenance and extension.
+3. **Configurar el entorno**
+```bash
+cp .env.example .env  # Si no existe .env
+php artisan key:generate
+```
+
+4. **Instalar dependencias de Node.js**
+```bash
+npm install
+```
+
+5. **Compilar assets**
+```bash
+npm run build
+```
+
+Para desarrollo con hot-reload:
+```bash
+npm run dev
+```
+
+6. **Iniciar el servidor**
+```bash
+php artisan serve
+```
+
+Acceder a: http://localhost:8000
+
+## 🔐 Credenciales de Acceso (Demo)
+
+- **Email**: `admin@demo.cl`
+- **Contraseña**: `Password123!`
+
+## 📱 Pantallas
+
+### 1. Login (`/login`)
+- Formulario de autenticación
+- Validaciones server-side
+- Credenciales de demostración visibles
+- Diseño responsive con branding GanaderaSoft
+
+### 2. Dashboard (`/dashboard`)
+Pantalla principal protegida que incluye:
+
+#### KPIs (Tarjetas de métricas)
+- Total de animales: 1,247
+- Total de fincas: 18
+- Producción diaria: 4,582 L
+- Alertas activas: 7
+
+#### Gráfico de Producción
+- Chart.js mostrando producción de leche de la última semana
+- Datos simulados con tendencias realistas
+
+#### Alertas Recientes
+- Panel lateral con últimas alertas
+- Niveles: Alta (rojo), Media (amarillo), Baja (azul)
+
+#### Tabla de Alertas
+- Listado completo de alertas con fecha, nivel y mensaje
+- Diseño responsive
+
+## 🏗️ Arquitectura
+
+### Estructura de Servicios
+
+El sistema está diseñado con **interfaces y servicios mock** para facilitar la migración futura a APIs reales:
+
+```
+app/
+├── Services/
+│   ├── Contracts/
+│   │   ├── AuthServiceInterface.php
+│   │   └── DashboardServiceInterface.php
+│   └── Mock/
+│       ├── MockAuthService.php
+│       └── MockDashboardService.php
+```
+
+### Reemplazo de Mocks por APIs Reales
+
+Para conectar con APIs reales, simplemente:
+
+1. Crear nuevas implementaciones de las interfaces en `app/Services/Api/`
+2. Actualizar el binding en `app/Providers/AppServiceProvider.php`
+
+```php
+// En AppServiceProvider::register()
+$this->app->bind(
+    \App\Services\Contracts\AuthServiceInterface::class,
+    \App\Services\Api\RealAuthService::class  // Reemplazar MockAuthService
+);
+```
+
+### Middleware de Autenticación
+
+- `CheckMockAuth`: Middleware personalizado para proteger rutas
+- Utiliza sesiones de Laravel
+- Fácilmente reemplazable por Laravel Sanctum o Passport
+
+## 🛠️ Desarrollo
+
+### Linting
+```bash
+./vendor/bin/pint  # Formato PSR-12
+```
+
+### Testing
+```bash
+php artisan test
+```
+
+### Compilar assets para producción
+```bash
+npm run build
+```
+
+## 📄 Licencia
+
+MIT
+
+## 👤 Autor
+
+Sistema desarrollado para GanaderaSoft
+
