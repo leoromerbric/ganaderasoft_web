@@ -9,7 +9,7 @@ class MockDashboardService implements DashboardServiceInterface
     /**
      * Get KPI metrics for the dashboard
      */
-    public function getKPIs(): array
+    public function getKPIs(?int $fincaId = null): array
     {
         return [
             [
@@ -42,7 +42,7 @@ class MockDashboardService implements DashboardServiceInterface
     /**
      * Get production chart data (last 7 days)
      */
-    public function getProductionChartData(): array
+    public function getProductionChartData(?int $fincaId = null): array
     {
         return [
             'labels' => ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
@@ -56,6 +56,29 @@ class MockDashboardService implements DashboardServiceInterface
                     'tension' => 0.4,
                 ],
             ],
+        ];
+    }
+
+    /**
+     * Get farm statistics (mock)
+     */
+    public function getFarmStatistics(?int $fincaId = null): array
+    {
+        return [
+            'success' => true,
+            'message' => 'Mock data',
+            'data' => []
+        ];
+    }
+
+    /**
+     * Get list of farms
+     */
+    public function getFarms(): array
+    {
+        return [
+            ['id_Finca' => 1, 'Nombre' => 'Finca Demo 1'],
+            ['id_Finca' => 2, 'Nombre' => 'Finca Demo 2'],
         ];
     }
 

@@ -85,10 +85,9 @@
                     <span class="menu-icon text-xl mr-3">🐄</span>
                     <span class="menu-text font-medium">Rebaños</span>
                 </a>
-                <a href="#" class="menu-item flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
+                <a href="{{ route('animales.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('animales.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
                     <span class="menu-icon text-xl mr-3">📋</span>
                     <span class="menu-text font-medium">Lista de Animales</span>
-                    <span class="menu-text ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
                 </a>
 
                 <!-- Personal -->
