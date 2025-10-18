@@ -1,0 +1,51 @@
+🗺️ MAPA DE FUNCIONALIDADES
+1. 🔐 MÓDULO DE AUTENTICACIÓN Y USUARIOS
+Login/Logout ✅ (Ya implementado)
+Gestión de Perfiles de Usuario
+Control de Roles y Permisos
+Afiliación de Transcriptores a Propietarios
+2. 🏡 MÓDULO DE GESTIÓN DE FINCAS
+CRUD de Fincas
+Gestión de Rebaños por Finca
+Registro de Características del Terreno
+Gestión de Hierros/Marcas
+Gestión de Personal de Finca
+3. 🐄 MÓDULO DE GESTIÓN DE ANIMALES
+Registro Individual de Animales
+Gestión de Razas y Composiciones Raciales
+Control de Etapas de Desarrollo
+Árbol Genealógico
+Códigos QR y Identificación
+4. 📊 MÓDULO DE SEGUIMIENTO PRODUCTIVO
+Control de Peso Corporal
+Medidas e Índices Corporales
+Registro de Cambios Físicos
+Estadísticas de Crecimiento
+5. 💝 MÓDULO REPRODUCTIVO
+Registro de Celos
+Servicios (Monta Natural/IA)
+Control de Gestación (Palpaciones)
+Gestión de Semen
+Calendario Reproductivo
+6. 🥛 MÓDULO DE PRODUCCIÓN LECHERA
+Control de Lactancias
+Registro Diario de Producción
+Estadísticas de Producción
+Proyecciones de Producción
+7. 🏥 MÓDULO SANITARIO
+Plan de Vacunación
+Registro de Diagnósticos
+Control de Tratamientos
+Estado de Salud de Animales
+Alertas Sanitarias
+8. 📈 MÓDULO DE REPORTES Y DASHBOARD
+Dashboard Principal ✅ (Ya implementado básico)
+KPIs Ganaderos
+Inventarios por Categorías
+Reportes de Producción
+Alertas y Notificaciones
+9. 📦 MÓDULO DE INVENTARIOS
+Inventarios Generales
+Inventarios por Especie
+Movimientos entre Rebaños
+Reportes de Stock

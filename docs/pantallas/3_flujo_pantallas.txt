@@ -1,0 +1,54 @@
+ FLUJO DE PANTALLAS PROPUESTO
+📱 Estructura de Navegación Principal
+
+🏠 DASHBOARD PRINCIPAL
+├── 📊 Resumen de KPIs
+├── 🚨 Alertas Urgentes
+├── 📈 Gráficos de Producción
+└── 🔗 Accesos Rápidos
+
+🏡 GESTIÓN DE FINCAS
+├── 📝 Lista de Fincas
+├── ➕ Nueva Finca
+├── 🏡 Detalle de Finca
+│   ├── 🐄 Rebaños
+│   ├── 🌱 Terreno
+│   ├── 👥 Personal
+│   └── 🏷️ Hierros
+
+🐄 GESTIÓN DE ANIMALES
+├── 📋 Lista de Animales
+├── ➕ Nuevo Animal
+├── 🐄 Perfil de Animal
+│   ├── 📊 Datos Básicos
+│   ├── 🌳 Genealogía
+│   ├── 📈 Historial de Peso
+│   ├── 💉 Historial Sanitario
+│   ├── 💝 Historial Reproductivo
+│   └── 🥛 Producción Lechera
+
+💝 MÓDULO REPRODUCTIVO
+├── 📅 Calendario Reproductivo
+├── 🔄 Registro de Celos
+├── 💕 Servicios/Montas
+├── 🤰 Control de Gestación
+└── 📊 Reportes Reproductivos
+
+🥛 PRODUCCIÓN LECHERA
+├── 📅 Registro Diario
+├── 📊 Estadísticas
+├── 🐄 Por Animal
+└── 📈 Proyecciones
+
+🏥 MÓDULO SANITARIO
+├── 💉 Plan de Vacunación
+├── 🩺 Diagnósticos
+├── 💊 Tratamientos
+└── 🚨 Alertas Sanitarias
+
+📊 REPORTES
+├── 📈 Productivos
+├── 💰 Económicos
+├── 🐄 Por Animal
+├── 🏡 Por Finca
+└── 📅 Históricos

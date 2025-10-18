@@ -1,0 +1,21 @@
+
+🎨 RECOMENDACIONES DE UX/UI
+📱 Diseño Responsivo
+    Móvil-first: Muchas actividades se realizan en campo
+    Accesos rápidos a funciones más usadas
+    Códigos QR para identificación rápida de animales
+🎯 Experiencia de Usuario
+    Wizard/Asistentes para registros complejos
+    Autocompletado en formularios
+    Validaciones en tiempo real
+    Notificaciones push para alertas
+📊 Visualización de Datos
+    Gráficos interactivos (Chart.js ya implementado)
+    Mapas de calor para calendario reproductivo
+    Líneas de tiempo para historial de animales
+    Dashboards personalizables por rol
+🔄 Flujos Intuitivos
+    Navegación por breadcrumbs
+    Filtros avanzados en listados
+    Búsqueda global por código de animal
+    Exportación de datos a Excel/PDF

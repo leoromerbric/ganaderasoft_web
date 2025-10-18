@@ -1,0 +1,16 @@
+🎯 Flujo de Usuarios por Rol
+🔹 PROPIETARIO
+Dashboard → Vista general de todas sus fincas
+Gestión de Fincas → CRUD completo
+Reportes Ejecutivos → KPIs y resúmenes
+Gestión de Personal → Asignación de roles
+🔹 TÉCNICO/VETERINARIO
+Dashboard → Finca asignada
+Animales → Gestión completa del ganado
+Sanitario → Diagnósticos y tratamientos
+Reproductivo → Servicios y palpaciones
+🔹 OPERARIO
+Dashboard → Vista simplificada
+Registro de Producción → Leche, peso
+Registro de Celos → Observaciones básicas
+Alertas → Notificaciones importantes

@@ -1,0 +1,33 @@
+📊 ANÁLISIS DEL MODELO DE DATOS
+Entidades Principales Identificadas:
+👤 Gestión de Usuarios y Permisos
+
+users, propietario, transcriptor, personal_finca
+Sistema de roles: Propietario, Transcriptor, Técnico, Veterinario, Operario
+🏡 Gestión de Infraestructura
+
+finca, rebano, terreno, hierro
+Manejo de múltiples fincas por propietario
+🐄 Gestión de Animales
+animal, tipo_animal, composicion_raza, etapa, etapa_animal
+Soporte para Vacunos y Búfalos con etapas de crecimiento
+📈 Seguimiento Productivo
+
+peso_corporal, medidas_corporales, indices_corporales, cambios_animal
+Control de crecimiento y desarrollo
+🔄 Gestión Reproductiva
+
+registro_celo, servicio_animal, palpacion, reproduccion_animal
+arbol_gen (genealogía), semen_toro
+🥛 Producción Lechera
+
+lactancia, leche
+Control de producción diaria
+💉 Manejo Sanitario
+
+vacuna, casa_comercial, dosis, diagnostico, tratamiento
+estado_salud, estado_animal
+📦 Control de Inventarios
+
+inventario_general, inventario_vacuno, inventario_bufalo
+movimiento_rebano, movimiento_rebano_animal
