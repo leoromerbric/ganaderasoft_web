@@ -25,10 +25,14 @@ class DashboardController extends Controller
     public function index()
     {
         $user = $this->authService->user();
-        $kpis = $this->dashboardService->getKPIs();
-        $chartData = $this->dashboardService->getProductionChartData();
+        $fincaId = request()->query('id_finca');
+        
+        $farms = $this->dashboardService->getFarms();
+        $kpis = $this->dashboardService->getKPIs($fincaId);
+        $chartData = $this->dashboardService->getProductionChartData($fincaId);
         $alerts = $this->dashboardService->getRecentAlerts();
+        $statistics = $this->dashboardService->getFarmStatistics($fincaId);
 
-        return view('dashboard.index', compact('user', 'kpis', 'chartData', 'alerts'));
+        return view('dashboard.index', compact('user', 'kpis', 'chartData', 'alerts', 'farms', 'fincaId', 'statistics'));
     }
 }

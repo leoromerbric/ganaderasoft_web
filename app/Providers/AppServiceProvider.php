@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             \App\Services\Contracts\DashboardServiceInterface::class,
-            \App\Services\Mock\MockDashboardService::class
+            \App\Services\Api\ApiDashboardService::class
         );
 
         $this->app->bind(
@@ -45,6 +45,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             \App\Services\Contracts\ConfiguracionServiceInterface::class,
             \App\Services\Api\ApiConfiguracionService::class
+        );
+
+        $this->app->bind(
+            \App\Services\Contracts\AnimalesServiceInterface::class,
+            \App\Services\Api\ApiAnimalesService::class
         );
     }
 

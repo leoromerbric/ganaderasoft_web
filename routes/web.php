@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FincasController;
 use App\Http\Controllers\RebanosController;
 use App\Http\Controllers\PersonalController;
+use App\Http\Controllers\AnimalesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,4 +54,12 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::post('/personal', [PersonalController::class, 'store'])->name('personal.store');
     Route::get('/personal/{id}/edit', [PersonalController::class, 'edit'])->name('personal.edit');
     Route::put('/personal/{id}', [PersonalController::class, 'update'])->name('personal.update');
+    
+    // Animales routes
+    Route::get('/animales', [AnimalesController::class, 'index'])->name('animales.index');
+    Route::get('/animales/create', [AnimalesController::class, 'create'])->name('animales.create');
+    Route::post('/animales', [AnimalesController::class, 'store'])->name('animales.store');
+    Route::get('/animales/{id}', [AnimalesController::class, 'show'])->name('animales.show');
+    Route::get('/animales/{id}/edit', [AnimalesController::class, 'edit'])->name('animales.edit');
+    Route::put('/animales/{id}', [AnimalesController::class, 'update'])->name('animales.update');
 });
