@@ -115,4 +115,36 @@ class MockRebanosService implements RebanosServiceInterface
             ],
         ];
     }
+
+    /**
+     * Create a new rebaño
+     */
+    public function createRebano(array $data): array
+    {
+        return [
+            'success' => true,
+            'message' => 'Rebaño creado exitosamente',
+            'data' => array_merge($data, [
+                'id_Rebano' => rand(100, 999),
+                'archivado' => false,
+                'created_at' => now()->toISOString(),
+                'updated_at' => now()->toISOString(),
+            ]),
+        ];
+    }
+
+    /**
+     * Update an existing rebaño
+     */
+    public function updateRebano(int $id, array $data): array
+    {
+        return [
+            'success' => true,
+            'message' => 'Rebaño actualizado exitosamente',
+            'data' => array_merge($data, [
+                'id_Rebano' => $id,
+                'updated_at' => now()->toISOString(),
+            ]),
+        ];
+    }
 }

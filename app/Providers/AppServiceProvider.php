@@ -19,12 +19,12 @@ class AppServiceProvider extends ServiceProvider
         // For demonstration, using Mock services (backend API may not be accessible)
         $this->app->bind(
             \App\Services\Contracts\AuthServiceInterface::class,
-            \App\Services\Api\ApiAuthService::class  // Change to Api\ApiAuthService when backend is ready
+            \App\Services\Mock\MockAuthService::class  // Change to Api\ApiAuthService when backend is ready
         );
 
         $this->app->bind(
             \App\Services\Contracts\DashboardServiceInterface::class,
-            \App\Services\Api\ApiDashboardService::class
+            \App\Services\Mock\MockDashboardService::class
         );
 
         $this->app->bind(
@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             \App\Services\Contracts\RebanosServiceInterface::class,
-            \App\Services\Api\ApiRebanosService::class  // Change to Api\ApiRebanosService when backend is ready
+            \App\Services\Mock\MockRebanosService::class  // Change to Api\ApiRebanosService when backend is ready
         );
 
         $this->app->bind(
@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             \App\Services\Contracts\AnimalesServiceInterface::class,
-            \App\Services\Api\ApiAnimalesService::class
+            \App\Services\Mock\MockAnimalesService::class  // Change to Api\ApiAnimalesService when backend is ready
         );
     }
 
