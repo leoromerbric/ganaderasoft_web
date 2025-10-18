@@ -115,7 +115,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
             ];
         }
 
-        $response = $this->get('/configuracion/razas', [
+        $response = $this->get('/composicion-raza', [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user['token'],
         ]);
@@ -137,7 +137,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
             ];
         }
 
-        $response = $this->get('/configuracion/estados-salud', [
+        $response = $this->get('/estados-salud', [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user['token'],
         ]);
@@ -159,7 +159,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
             ];
         }
 
-        $response = $this->get('/configuracion/etapas', [
+        $response = $this->get('/etapas', [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user['token'],
         ]);
