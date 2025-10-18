@@ -19,13 +19,15 @@ class PersonalController extends Controller
      */
     public function index(Request $request)
     {
-        $idFinca = $request->query('id_finca');
+        // Check if there's a selected finca in session
+        $selectedFinca = session('selected_finca');
+        $idFinca = $request->query('id_finca') ?? ($selectedFinca['id_Finca'] ?? null);
 
         if (!$idFinca) {
             return view('personal.index', [
                 'personal' => [],
                 'pagination' => [],
-                'error' => 'Debe seleccionar una finca'
+                'error' => 'Debe seleccionar una finca primero'
             ]);
         }
 
@@ -48,5 +50,31 @@ class PersonalController extends Controller
             'idFinca' => $idFinca,
             'error' => $response['message'] ?? 'Error al obtener el personal'
         ]);
+    }
+
+    /**
+     * API endpoint to get personal list
+     */
+    public function apiPersonal(Request $request)
+    {
+        $idFinca = $request->query('id_finca');
+
+        if (!$idFinca) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debe proporcionar el id_finca'
+            ], 400);
+        }
+
+        $response = $this->personalService->getPersonal($idFinca);
+
+        if (isset($response['success']) && $response['success']) {
+            return response()->json($response);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => $response['message'] ?? 'Error al obtener el personal'
+        ], 500);
     }
 }

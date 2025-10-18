@@ -14,8 +14,9 @@ class AppServiceProvider extends ServiceProvider
         // Bind services - switch between Mock and Api implementations
         // Use Api\* classes when backend is accessible, Mock\* for demonstration
         
-        // For now, using Mock services for demonstration as backend is not accessible
-        // To use real API: change Mock to Api namespace
+        // API services are ready for Auth, Fincas, Rebanos, and Personal
+        // To enable APIs, change Mock to Api namespace below
+        // For demonstration, using Mock services (backend API may not be accessible)
         $this->app->bind(
             \App\Services\Contracts\AuthServiceInterface::class,
             \App\Services\Mock\MockAuthService::class  // Change to Api\ApiAuthService when backend is ready
