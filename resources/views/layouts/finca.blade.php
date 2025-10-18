@@ -14,7 +14,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo and Title -->
-                <div class="flex items-center space-x-3">
+                <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
                     <div class="bg-white p-2 rounded-lg shadow-sm">
                         <img src="{{ asset('images/logo.png') }}" alt="GanaderaSoft Logo" class="w-8 h-8 object-contain">
                     </div>
@@ -22,7 +22,7 @@
                         <h1 class="text-xl font-bold text-ganaderasoft-negro">GanaderaSoft</h1>
                         <p class="text-xs text-gray-500">Sistema de Gestión</p>
                     </div>
-                </div>
+                </a>
 
                 <!-- Breadcrumb / Current Finca -->
                 @if(session('selected_finca'))

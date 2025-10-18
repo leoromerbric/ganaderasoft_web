@@ -16,6 +16,18 @@
             </div>
         @endif
 
+        @if(session('success'))
+            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                <p class="text-sm">{{ session('success') }}</p>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                <p class="text-sm">{{ session('error') }}</p>
+            </div>
+        @endif
+
         <!-- Filter by Finca -->
         <div class="bg-white rounded-xl shadow-md p-6 mb-6">
             <form method="GET" action="{{ route('personal.index') }}" class="flex items-end space-x-4">
@@ -45,10 +57,12 @@
             <div class="p-6 border-b border-gray-200">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xl font-semibold text-ganaderasoft-negro">Personal de Finca</h3>
-                    <button class="bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
+                    <a 
+                        href="{{ route('personal.create') }}"
+                        class="bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
                         <span class="text-lg">➕</span>
                         <span>Nuevo Personal</span>
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -100,7 +114,11 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <button class="text-ganaderasoft-celeste hover:text-blue-700 mr-3">Ver</button>
-                                            <button class="text-ganaderasoft-verde hover:text-green-700">Editar</button>
+                                            <a 
+                                                href="{{ route('personal.edit', $persona['id_Tecnico']) }}"
+                                                class="text-ganaderasoft-verde hover:text-green-700">
+                                                Editar
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

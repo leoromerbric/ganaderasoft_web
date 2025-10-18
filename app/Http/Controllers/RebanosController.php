@@ -59,6 +59,97 @@ class RebanosController extends Controller
     }
 
     /**
+     * Show form to create a new rebaño
+     */
+    public function create()
+    {
+        $selectedFinca = session('selected_finca');
+        
+        if (!$selectedFinca) {
+            return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
+        }
+
+        return view('rebanos.create', compact('selectedFinca'));
+    }
+
+    /**
+     * Store a new rebaño
+     */
+    public function store(Request $request)
+    {
+        $selectedFinca = session('selected_finca');
+        
+        if (!$selectedFinca) {
+            return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
+        }
+
+        $data = [
+            'id_Finca' => $selectedFinca['id_Finca'],
+            'Nombre' => $request->input('Nombre'),
+        ];
+
+        $response = $this->rebanosService->createRebano($data);
+
+        if (isset($response['success']) && $response['success']) {
+            return redirect()->route('rebanos.index')->with('success', 'Rebaño creado exitosamente');
+        }
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', $response['message'] ?? 'Error al crear el rebaño');
+    }
+
+    /**
+     * Show form to edit an existing rebaño
+     */
+    public function edit($id)
+    {
+        $selectedFinca = session('selected_finca');
+        
+        if (!$selectedFinca) {
+            return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
+        }
+
+        // Get all rebanos and find the one we need
+        $response = $this->rebanosService->getRebanos();
+
+        if (isset($response['success']) && $response['success']) {
+            $allRebanos = $response['data']['data'] ?? [];
+            
+            // Find the rebano by ID
+            $rebano = collect($allRebanos)->firstWhere('id_Rebano', (int)$id);
+
+            if ($rebano) {
+                return view('rebanos.edit', compact('rebano', 'selectedFinca'));
+            }
+
+            return redirect()->route('rebanos.index')->with('error', 'Rebaño no encontrado');
+        }
+
+        return redirect()->route('rebanos.index')->with('error', $response['message'] ?? 'Error al obtener el rebaño');
+    }
+
+    /**
+     * Update an existing rebaño
+     */
+    public function update(Request $request, $id)
+    {
+        $data = [
+            'Nombre' => $request->input('Nombre'),
+        ];
+
+        $response = $this->rebanosService->updateRebano($id, $data);
+
+        if (isset($response['success']) && $response['success']) {
+            return redirect()->route('rebanos.index')->with('success', 'Rebaño actualizado exitosamente');
+        }
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', $response['message'] ?? 'Error al actualizar el rebaño');
+    }
+
+    /**
      * API endpoint to get rebaños list
      */
     public function apiRebanos()
