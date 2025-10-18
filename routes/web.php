@@ -34,6 +34,7 @@ Route::middleware(['mock.auth'])->group(function () {
     
     // Fincas routes
     Route::get('/fincas', [FincasController::class, 'index'])->name('fincas.index');
+    Route::get('/fincas/{id}/dashboard', [FincasController::class, 'dashboard'])->name('fincas.dashboard');
     
     // Rebaños routes
     Route::get('/rebanos', [RebanosController::class, 'index'])->name('rebanos.index');

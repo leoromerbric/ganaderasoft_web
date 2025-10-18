@@ -62,4 +62,47 @@ class AuthController extends Controller
 
         return redirect()->route('login')->with('success', 'Sesión cerrada exitosamente.');
     }
+
+    /**
+     * API Login endpoint
+     */
+    public function apiLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
+
+        $user = $this->authService->attempt($request->email, $request->password);
+
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Login exitoso',
+                'data' => [
+                    'user' => $user,
+                    'token' => $user['token'] ?? null,
+                    'token_type' => $user['token_type'] ?? 'Bearer',
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Las credenciales proporcionadas no son correctas.'
+        ], 401);
+    }
+
+    /**
+     * API Logout endpoint
+     */
+    public function apiLogout()
+    {
+        $this->authService->logout();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sesión cerrada exitosamente.'
+        ]);
+    }
 }

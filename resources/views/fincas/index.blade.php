@@ -61,9 +61,9 @@
                                 </div>
 
                                 <div class="flex space-x-2">
-                                    <button class="flex-1 bg-ganaderasoft-celeste hover:bg-blue-500 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200">
-                                        Ver Detalles
-                                    </button>
+                                    <a href="{{ route('fincas.dashboard', $finca['id_Finca']) }}" class="flex-1 bg-ganaderasoft-verde hover:bg-green-500 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200 text-center">
+                                        Ir a Finca
+                                    </a>
                                     <button class="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                                         ✏️
                                     </button>
