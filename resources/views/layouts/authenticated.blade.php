@@ -47,94 +47,103 @@
     <!-- Sidebar and Main Content -->
     <div class="flex">
         <!-- Sidebar Navigation -->
-        <aside class="w-64 bg-white shadow-md min-h-screen">
+        <aside id="sidebar" class="w-64 bg-white shadow-md min-h-screen">
+            <!-- Toggle Button -->
+            <div class="p-4 border-b border-gray-200">
+                <button id="sidebar-toggle" class="w-full flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+            
             <nav class="mt-6">
                 <div class="px-4 mb-6">
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Menú Principal</h3>
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Menú Principal</h3>
                 </div>
                 
                 <!-- Dashboard -->
-                <a href="{{ route('dashboard') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('dashboard') ? 'bg-ganaderasoft-celeste text-white' : '' }}">
-                    <span class="text-xl mr-3">🏠</span>
-                    <span class="font-medium">Dashboard Principal</span>
+                <a href="{{ route('dashboard') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('dashboard') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🏠</span>
+                    <span class="menu-text font-medium">Dashboard Principal</span>
                 </a>
 
                 <!-- Gestión de Fincas -->
                 <div class="mt-6 px-4 mb-2">
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Gestión de Fincas</h3>
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Gestión de Fincas</h3>
                 </div>
-                <a href="{{ route('fincas.index') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('fincas.*') ? 'bg-ganaderasoft-celeste text-white' : '' }}">
-                    <span class="text-xl mr-3">🏡</span>
-                    <span class="font-medium">Lista de Fincas</span>
+                <a href="{{ route('fincas.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('fincas.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🏡</span>
+                    <span class="menu-text font-medium">Lista de Fincas</span>
                 </a>
 
                 <!-- Gestión de Animales -->
                 <div class="mt-6 px-4 mb-2">
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Gestión de Animales</h3>
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Gestión de Animales</h3>
                 </div>
-                <a href="{{ route('rebanos.index') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('rebanos.*') ? 'bg-ganaderasoft-celeste text-white' : '' }}">
-                    <span class="text-xl mr-3">🐄</span>
-                    <span class="font-medium">Rebaños</span>
+                <a href="{{ route('rebanos.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('rebanos.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🐄</span>
+                    <span class="menu-text font-medium">Rebaños</span>
                 </a>
-                <a href="#" class="flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
-                    <span class="text-xl mr-3">📋</span>
-                    <span class="font-medium">Lista de Animales</span>
-                    <span class="ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
+                <a href="#" class="menu-item flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
+                    <span class="menu-icon text-xl mr-3">📋</span>
+                    <span class="menu-text font-medium">Lista de Animales</span>
+                    <span class="menu-text ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
                 </a>
 
                 <!-- Personal -->
                 <div class="mt-6 px-4 mb-2">
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Personal</h3>
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Personal</h3>
                 </div>
-                <a href="{{ route('personal.index') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('personal.*') ? 'bg-ganaderasoft-celeste text-white' : '' }}">
-                    <span class="text-xl mr-3">👥</span>
-                    <span class="font-medium">Personal de Finca</span>
+                <a href="{{ route('personal.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('personal.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">👥</span>
+                    <span class="menu-text font-medium">Personal de Finca</span>
                 </a>
 
                 <!-- Módulo Reproductivo -->
                 <div class="mt-6 px-4 mb-2">
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Módulo Reproductivo</h3>
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Módulo Reproductivo</h3>
                 </div>
-                <a href="#" class="flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
-                    <span class="text-xl mr-3">💝</span>
-                    <span class="font-medium">Calendario</span>
-                    <span class="ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
+                <a href="#" class="menu-item flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
+                    <span class="menu-icon text-xl mr-3">💝</span>
+                    <span class="menu-text font-medium">Calendario</span>
+                    <span class="menu-text ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
                 </a>
 
                 <!-- Producción Lechera -->
                 <div class="mt-6 px-4 mb-2">
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Producción Lechera</h3>
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Producción Lechera</h3>
                 </div>
-                <a href="#" class="flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
-                    <span class="text-xl mr-3">🥛</span>
-                    <span class="font-medium">Registro Diario</span>
-                    <span class="ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
+                <a href="#" class="menu-item flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
+                    <span class="menu-icon text-xl mr-3">🥛</span>
+                    <span class="menu-text font-medium">Registro Diario</span>
+                    <span class="menu-text ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
                 </a>
 
                 <!-- Módulo Sanitario -->
                 <div class="mt-6 px-4 mb-2">
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Módulo Sanitario</h3>
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Módulo Sanitario</h3>
                 </div>
-                <a href="#" class="flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
-                    <span class="text-xl mr-3">🏥</span>
-                    <span class="font-medium">Plan de Vacunación</span>
-                    <span class="ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
+                <a href="#" class="menu-item flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
+                    <span class="menu-icon text-xl mr-3">🏥</span>
+                    <span class="menu-text font-medium">Plan de Vacunación</span>
+                    <span class="menu-text ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
                 </a>
 
                 <!-- Reportes -->
                 <div class="mt-6 px-4 mb-2">
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Reportes</h3>
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Reportes</h3>
                 </div>
-                <a href="#" class="flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
-                    <span class="text-xl mr-3">📊</span>
-                    <span class="font-medium">Reportes Productivos</span>
-                    <span class="ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
+                <a href="#" class="menu-item flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
+                    <span class="menu-icon text-xl mr-3">📊</span>
+                    <span class="menu-text font-medium">Reportes Productivos</span>
+                    <span class="menu-text ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
                 </a>
             </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 p-8">
+        <main id="main-content" class="flex-1 p-8">
             @yield('content')
         </main>
     </div>

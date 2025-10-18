@@ -21,7 +21,7 @@
             <div class="p-6 border-b border-gray-200">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xl font-semibold text-ganaderasoft-negro">Lista de Rebaños</h3>
-                    <button class="bg-ganaderasoft-verde hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2">
+                    <button class="bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
                         <span class="text-lg">➕</span>
                         <span>Nuevo Rebaño</span>
                     </button>

@@ -21,7 +21,7 @@
             <div class="p-6 border-b border-gray-200">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xl font-semibold text-ganaderasoft-negro">Lista de Fincas</h3>
-                    <button class="bg-ganaderasoft-verde hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2">
+                    <button class="bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
                         <span class="text-lg">➕</span>
                         <span>Nueva Finca</span>
                     </button>
@@ -61,7 +61,7 @@
                                 </div>
 
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('fincas.dashboard', $finca['id_Finca']) }}" class="flex-1 bg-ganaderasoft-verde hover:bg-green-500 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200 text-center">
+                                    <a href="{{ route('fincas.dashboard', $finca['id_Finca']) }}" class="flex-1 bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200 text-center shadow-sm">
                                         Ir a Finca
                                     </a>
                                     <button class="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
