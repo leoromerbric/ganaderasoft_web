@@ -114,12 +114,12 @@ class ApiDashboardService extends BaseApiService implements DashboardServiceInte
                             $sexos['F'] ?? 0
                         ],
                         'backgroundColor' => [
-                            'rgba(110, 193, 228, 0.6)',
-                            'rgba(179, 211, 53, 0.6)'
+                            'rgba(59, 130, 246, 0.85)',   // Vivid blue
+                            'rgba(236, 72, 153, 0.85)'    // Vivid pink
                         ],
                         'borderColor' => [
-                            '#6EC1E4',
-                            '#B3D335'
+                            'rgb(37, 99, 235)',           // Darker blue border
+                            'rgb(219, 39, 119)'           // Darker pink border
                         ],
                         'borderWidth' => 2,
                     ],
@@ -188,8 +188,8 @@ class ApiDashboardService extends BaseApiService implements DashboardServiceInte
                 [
                     'label' => 'Datos no disponibles',
                     'data' => [0],
-                    'backgroundColor' => 'rgba(110, 193, 228, 0.2)',
-                    'borderColor' => '#6EC1E4',
+                    'backgroundColor' => 'rgba(156, 163, 175, 0.5)',
+                    'borderColor' => 'rgb(107, 114, 128)',
                     'borderWidth' => 2,
                 ],
             ],

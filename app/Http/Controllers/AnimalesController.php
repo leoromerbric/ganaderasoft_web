@@ -31,9 +31,10 @@ class AnimalesController extends Controller
             return redirect()->route('dashboard')->with('error', $response['message']);
         }
 
-        $animales = $response['data'] ?? [];
+        // Extract animals from paginated data structure
+        $animales = $response['data']['data'] ?? [];
         $rebanosResponse = $this->rebanosService->getRebanos();
-        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data'] ?? []) : [];
+        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data']['data'] ?? []) : [];
 
         return view('animales.index', compact('animales', 'rebanos', 'rebanoId'));
     }

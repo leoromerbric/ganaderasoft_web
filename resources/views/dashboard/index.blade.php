@@ -203,16 +203,16 @@
                             label: 'Personal',
                             data: Object.values(staffData),
                             backgroundColor: [
-                                'rgba(110, 193, 228, 0.6)',
-                                'rgba(179, 211, 53, 0.6)',
-                                'rgba(0, 123, 146, 0.6)',
-                                'rgba(51, 51, 51, 0.6)'
+                                'rgba(34, 197, 94, 0.85)',   // Vivid green
+                                'rgba(59, 130, 246, 0.85)',  // Vivid blue
+                                'rgba(168, 85, 247, 0.85)',  // Vivid purple
+                                'rgba(249, 115, 22, 0.85)'   // Vivid orange
                             ],
                             borderColor: [
-                                '#6EC1E4',
-                                '#B3D335',
-                                '#007B92',
-                                '#333333'
+                                'rgb(22, 163, 74)',          // Darker green border
+                                'rgb(37, 99, 235)',          // Darker blue border
+                                'rgb(147, 51, 234)',         // Darker purple border
+                                'rgb(234, 88, 12)'           // Darker orange border
                             ],
                             borderWidth: 2,
                         }]

@@ -90,9 +90,11 @@
                                 @endif
 
                                 <div class="flex space-x-2">
-                                    <button class="flex-1 bg-ganaderasoft-celeste hover:bg-blue-500 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200">
-                                        Ver Detalles
-                                    </button>
+                                    <a 
+                                        href="{{ route('animales.index', ['id_rebano' => $rebano['id_Rebano']]) }}"
+                                        class="flex-1 bg-ganaderasoft-celeste hover:bg-blue-500 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200 text-center">
+                                        Ver Animales
+                                    </a>
                                     <a 
                                         href="{{ route('rebanos.edit', $rebano['id_Rebano']) }}"
                                         class="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center">
