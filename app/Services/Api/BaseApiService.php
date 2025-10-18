@@ -11,7 +11,7 @@ class BaseApiService
 
     public function __construct()
     {
-        $this->baseUrl = env('API_BASE_URL', 'http://ec2-52-53-127-245.us-west-1.compute.amazonaws.com:8000/api');
+        $this->baseUrl = env('API_BASE_URL', 'http://ec2-52-53-127-245.us-west-1.compute.amazonaws.com:9000/api');
     }
 
     /**
