@@ -1,0 +1,57 @@
+Request:
+curl --location 'http://ec2-54-219-108-54.us-west-1.compute.amazonaws.com:9000/api/reportes/fincas' \
+--header 'Authorization: Bearer 31|qAemaUC2Lm7dSD9syx0ytY8OEPFZxN0M2vddj0a9bb32f904' \
+--header 'Accept: application/json'
+
+Response:
+{
+    "success": true,
+    "message": "Estadísticas de fincas",
+    "data": {
+        "resumen": {
+            "total_fincas": 2,
+            "total_rebanos": 2,
+            "total_animales": 5,
+            "total_personal": 4
+        },
+        "animales_por_sexo": {
+            "M": 1,
+            "F": 4
+        },
+        "personal_por_tipo": {
+            "Tecnico": 1,
+            "Veterinario": 1,
+            "Operario": 2
+        },
+        "fincas": [
+            {
+                "id_Finca": 16,
+                "Nombre": "Finca La Romeria",
+                "cantidad_rebanos": 2,
+                "cantidad_animales": 5,
+                "cantidad_personal": 4
+            },
+            {
+                "id_Finca": 19,
+                "Nombre": "Finca Mi Terruño",
+                "cantidad_rebanos": 0,
+                "cantidad_animales": 0,
+                "cantidad_personal": 0
+            }
+        ],
+        "rebanos": [
+            {
+                "id_Rebano": 6,
+                "id_Finca": 16,
+                "Nombre": "Mi Rebaño",
+                "cantidad_animales": 3
+            },
+            {
+                "id_Rebano": 7,
+                "id_Finca": 16,
+                "Nombre": "Rebaño Norte",
+                "cantidad_animales": 2
+            }
+        ]
+    }
+}
