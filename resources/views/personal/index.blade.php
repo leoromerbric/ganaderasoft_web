@@ -1,0 +1,141 @@
+@extends('layouts.authenticated')
+
+@section('title', 'Personal')
+
+@section('content')
+    <div>
+        <!-- Page Title -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Personal</h2>
+            <p class="text-gray-600 mt-1">Personal registrado en las fincas</p>
+        </div>
+
+        @if(isset($error))
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                <p class="text-sm">{{ $error }}</p>
+            </div>
+        @endif
+
+        <!-- Filter by Finca -->
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+            <form method="GET" action="{{ route('personal.index') }}" class="flex items-end space-x-4">
+                <div class="flex-1">
+                    <label for="id_finca" class="block text-sm font-medium text-gray-700 mb-2">
+                        Filtrar por Finca
+                    </label>
+                    <input 
+                        type="number" 
+                        name="id_finca" 
+                        id="id_finca" 
+                        value="{{ $idFinca ?? '' }}"
+                        placeholder="Ingrese ID de la finca"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste"
+                    >
+                </div>
+                <button 
+                    type="submit"
+                    class="bg-ganaderasoft-celeste hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
+                    Buscar
+                </button>
+            </form>
+        </div>
+
+        <!-- Personal List -->
+        <div class="bg-white rounded-xl shadow-md">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-semibold text-ganaderasoft-negro">Personal de Finca</h3>
+                    <button class="bg-ganaderasoft-verde hover:bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2">
+                        <span class="text-lg">➕</span>
+                        <span>Nuevo Personal</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                @if(count($personal) > 0)
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cédula</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Finca</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contacto</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach($personal as $persona)
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            {{ $persona['Cedula'] }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <span class="text-2xl mr-3">👤</span>
+                                                <div>
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        {{ $persona['Nombre'] }} {{ $persona['Apellido'] }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                @if($persona['Tipo_Trabajador'] === 'Veterinario') bg-blue-100 text-blue-800
+                                                @elseif($persona['Tipo_Trabajador'] === 'Tecnico') bg-green-100 text-green-800
+                                                @else bg-gray-100 text-gray-800
+                                                @endif">
+                                                {{ $persona['Tipo_Trabajador'] }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $persona['finca']['Nombre'] ?? 'N/A' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <div>{{ $persona['Telefono'] }}</div>
+                                            <div class="text-xs">{{ $persona['Correo'] }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-ganaderasoft-celeste hover:text-blue-700 mr-3">Ver</button>
+                                            <button class="text-ganaderasoft-verde hover:text-green-700">Editar</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @if(isset($pagination) && $pagination['total'] > 0)
+                        <div class="mt-6 flex justify-between items-center text-sm text-gray-600">
+                            <p>Mostrando {{ count($personal) }} de {{ $pagination['total'] }} registros</p>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 transition-colors duration-200" 
+                                    {{ $pagination['current_page'] <= 1 ? 'disabled' : '' }}>
+                                    Anterior
+                                </button>
+                                <span class="px-3 py-1">Página {{ $pagination['current_page'] }} de {{ $pagination['last_page'] }}</span>
+                                <button class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 transition-colors duration-200"
+                                    {{ $pagination['current_page'] >= $pagination['last_page'] ? 'disabled' : '' }}>
+                                    Siguiente
+                                </button>
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <div class="text-center py-12">
+                        <span class="text-6xl mb-4 block">👥</span>
+                        <p class="text-gray-500 text-lg">No hay personal registrado</p>
+                        @if(!isset($idFinca))
+                            <p class="text-gray-400 text-sm mt-2">Seleccione una finca para ver su personal</p>
+                        @else
+                            <p class="text-gray-400 text-sm mt-2">No hay personal registrado para esta finca</p>
+                        @endif
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+@endsection
