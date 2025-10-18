@@ -41,6 +41,11 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Contracts\PersonalServiceInterface::class,
             \App\Services\Api\ApiPersonalService::class  // Change to Api\ApiPersonalService when backend is ready
         );
+
+        $this->app->bind(
+            \App\Services\Contracts\ConfiguracionServiceInterface::class,
+            \App\Services\Api\ApiConfiguracionService::class
+        );
     }
 
     /**
