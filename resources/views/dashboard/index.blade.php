@@ -1,46 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.authenticated')
 
 @section('title', 'Dashboard')
 
 @section('content')
-<div class="min-h-screen bg-gray-50">
-    <!-- Header/Navbar -->
-    <nav class="bg-white shadow-md border-b-4 border-ganaderasoft-celeste">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo and Title -->
-                <div class="flex items-center space-x-3">
-                    <div class="bg-white p-2 rounded-lg shadow-sm">
-                        <img src="{{ asset('images/logo.png') }}" alt="GanaderaSoft Logo" class="w-8 h-8 object-contain">
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold text-ganaderasoft-negro">GanaderaSoft</h1>
-                        <p class="text-xs text-gray-500">Sistema de Gestión</p>
-                    </div>
-                </div>
-
-                <!-- User Info and Logout -->
-                <div class="flex items-center space-x-4">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-sm font-semibold text-ganaderasoft-negro">{{ $user['name'] }}</p>
-                        <p class="text-xs text-gray-500">{{ $user['email'] }}</p>
-                    </div>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                            </svg>
-                            <span>Cerrar Sesión</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div>
         <!-- Page Title -->
         <div class="mb-8">
             <h2 class="text-3xl font-bold text-ganaderasoft-negro">Dashboard</h2>
@@ -136,38 +99,37 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Chart.js Script (using bundled version from app.js) -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('productionChart');
-        const chartData = @json($chartData);
-        
-        new Chart(ctx, {
-            type: 'line',
-        data: chartData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: false,
-                    ticks: {
-                        callback: function(value) {
-                            return value.toLocaleString() + ' L';
+    <!-- Chart.js Script (using bundled version from app.js) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('productionChart');
+            const chartData = @json($chartData);
+            
+            new Chart(ctx, {
+                type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString() + ' L';
+                            }
                         }
                     }
                 }
             }
-        }
-    });
-    });
-</script>
+        });
+        });
+    </script>
 @endsection
