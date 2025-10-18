@@ -10,6 +10,12 @@
             <p class="text-gray-600 mt-1">Lista de fincas registradas en el sistema</p>
         </div>
 
+        @if(session('success'))
+            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                <p class="text-sm">{{ session('success') }}</p>
+            </div>
+        @endif
+
         @if(isset($error))
             <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
                 <p class="text-sm">{{ $error }}</p>
@@ -21,10 +27,10 @@
             <div class="p-6 border-b border-gray-200">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xl font-semibold text-ganaderasoft-negro">Lista de Fincas</h3>
-                    <button class="bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
+                    <a href="{{ route('fincas.create') }}" class="bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
                         <span class="text-lg">➕</span>
                         <span>Nueva Finca</span>
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -64,9 +70,9 @@
                                     <a href="{{ route('fincas.dashboard', $finca['id_Finca']) }}" class="flex-1 bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200 text-center shadow-sm">
                                         Ir a Finca
                                     </a>
-                                    <button class="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                                    <a href="{{ route('fincas.edit', $finca['id_Finca']) }}" class="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                                         ✏️
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         @endforeach

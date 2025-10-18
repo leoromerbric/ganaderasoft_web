@@ -14,7 +14,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo and Title -->
-                <div class="flex items-center space-x-3">
+                <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
                     <div class="bg-white p-2 rounded-lg shadow-sm">
                         <img src="{{ asset('images/logo.png') }}" alt="GanaderaSoft Logo" class="w-8 h-8 object-contain">
                     </div>
@@ -22,7 +22,7 @@
                         <h1 class="text-xl font-bold text-ganaderasoft-negro">GanaderaSoft</h1>
                         <p class="text-xs text-gray-500">Sistema de Gestión</p>
                     </div>
-                </div>
+                </a>
 
                 <!-- User Info and Logout -->
                 <div class="flex items-center space-x-4">
@@ -139,6 +139,18 @@
                     <span class="menu-text font-medium">Reportes Productivos</span>
                     <span class="menu-text ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
                 </a>
+
+                <!-- Cerrar Sesión -->
+                <div class="mt-6 px-4 mb-2">
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Cuenta</h3>
+                </div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="menu-item w-full flex items-center px-6 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-200">
+                        <span class="menu-icon text-xl mr-3">🚪</span>
+                        <span class="menu-text font-medium">Cerrar Sesión</span>
+                    </button>
+                </form>
             </nav>
         </aside>
 

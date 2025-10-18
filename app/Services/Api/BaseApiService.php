@@ -87,4 +87,41 @@ class BaseApiService
             ];
         }
     }
+
+    /**
+     * Make a PUT request to the API
+     */
+    protected function put(string $endpoint, array $data = [], array $headers = []): array
+    {
+        try {
+            $response = Http::withHeaders($headers)
+                ->timeout(10)
+                ->put($this->baseUrl . $endpoint, $data);
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            Log::error('API PUT request failed', [
+                'endpoint' => $endpoint,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error al conectar con el servidor'
+            ];
+        } catch (\Exception $e) {
+            Log::error('API PUT request exception', [
+                'endpoint' => $endpoint,
+                'error' => $e->getMessage()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error de conexión: ' . $e->getMessage()
+            ];
+        }
+    }
 }
