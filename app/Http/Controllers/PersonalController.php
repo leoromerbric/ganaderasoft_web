@@ -53,6 +53,127 @@ class PersonalController extends Controller
     }
 
     /**
+     * Show form to create new personal
+     */
+    public function create()
+    {
+        $selectedFinca = session('selected_finca');
+        
+        if (!$selectedFinca) {
+            return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
+        }
+
+        // Define employee types
+        $tiposTrabajador = [
+            'Administrador',
+            'Tecnico',
+            'Guardia',
+            'Veterinario',
+            'Operario',
+            'Otro'
+        ];
+
+        return view('personal.create', compact('selectedFinca', 'tiposTrabajador'));
+    }
+
+    /**
+     * Store new personal
+     */
+    public function store(Request $request)
+    {
+        $selectedFinca = session('selected_finca');
+        
+        if (!$selectedFinca) {
+            return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
+        }
+
+        $data = [
+            'id_Finca' => $selectedFinca['id_Finca'],
+            'Cedula' => (int)$request->input('Cedula'),
+            'Nombre' => $request->input('Nombre'),
+            'Apellido' => $request->input('Apellido'),
+            'Telefono' => $request->input('Telefono'),
+            'Correo' => $request->input('Correo'),
+            'Tipo_Trabajador' => $request->input('Tipo_Trabajador'),
+        ];
+
+        $response = $this->personalService->createPersonal($data);
+
+        if (isset($response['success']) && $response['success']) {
+            return redirect()->route('personal.index')->with('success', 'Personal creado exitosamente');
+        }
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', $response['message'] ?? 'Error al crear el personal');
+    }
+
+    /**
+     * Show form to edit existing personal
+     */
+    public function edit($id)
+    {
+        $selectedFinca = session('selected_finca');
+        
+        if (!$selectedFinca) {
+            return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
+        }
+
+        // Get all personal and find the one we need
+        $response = $this->personalService->getPersonal($selectedFinca['id_Finca']);
+
+        if (isset($response['success']) && $response['success']) {
+            $allPersonal = $response['data'] ?? [];
+            
+            // Find the personal by ID
+            $persona = collect($allPersonal)->firstWhere('id_Tecnico', (int)$id);
+
+            if ($persona) {
+                // Define employee types
+                $tiposTrabajador = [
+                    'Administrador',
+                    'Tecnico',
+                    'Guardia',
+                    'Veterinario',
+                    'Operario',
+                    'Otro'
+                ];
+
+                return view('personal.edit', compact('persona', 'selectedFinca', 'tiposTrabajador'));
+            }
+
+            return redirect()->route('personal.index')->with('error', 'Personal no encontrado');
+        }
+
+        return redirect()->route('personal.index')->with('error', $response['message'] ?? 'Error al obtener el personal');
+    }
+
+    /**
+     * Update existing personal
+     */
+    public function update(Request $request, $id)
+    {
+        $data = [
+            'Cedula' => (int)$request->input('Cedula'),
+            'Nombre' => $request->input('Nombre'),
+            'Apellido' => $request->input('Apellido'),
+            'Telefono' => $request->input('Telefono'),
+            'Correo' => $request->input('Correo'),
+            'Tipo_Trabajador' => $request->input('Tipo_Trabajador'),
+        ];
+
+        $response = $this->personalService->updatePersonal($id, $data);
+
+        if (isset($response['success']) && $response['success']) {
+            return redirect()->route('personal.index')->with('success', 'Personal actualizado exitosamente');
+        }
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', $response['message'] ?? 'Error al actualizar el personal');
+    }
+
+    /**
      * API endpoint to get personal list
      */
     public function apiPersonal(Request $request)

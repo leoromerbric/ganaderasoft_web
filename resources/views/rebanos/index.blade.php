@@ -16,15 +16,29 @@
             </div>
         @endif
 
+        @if(session('success'))
+            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                <p class="text-sm">{{ session('success') }}</p>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                <p class="text-sm">{{ session('error') }}</p>
+            </div>
+        @endif
+
         <!-- Rebaños List -->
         <div class="bg-white rounded-xl shadow-md">
             <div class="p-6 border-b border-gray-200">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xl font-semibold text-ganaderasoft-negro">Lista de Rebaños</h3>
-                    <button class="bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
+                    <a 
+                        href="{{ route('rebanos.create') }}"
+                        class="bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
                         <span class="text-lg">➕</span>
                         <span>Nuevo Rebaño</span>
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -79,9 +93,11 @@
                                     <button class="flex-1 bg-ganaderasoft-celeste hover:bg-blue-500 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200">
                                         Ver Detalles
                                     </button>
-                                    <button class="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                                    <a 
+                                        href="{{ route('rebanos.edit', $rebano['id_Rebano']) }}"
+                                        class="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center">
                                         ✏️
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         @endforeach

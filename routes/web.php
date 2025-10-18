@@ -42,7 +42,15 @@ Route::middleware(['mock.auth'])->group(function () {
     
     // Rebaños routes
     Route::get('/rebanos', [RebanosController::class, 'index'])->name('rebanos.index');
+    Route::get('/rebanos/create', [RebanosController::class, 'create'])->name('rebanos.create');
+    Route::post('/rebanos', [RebanosController::class, 'store'])->name('rebanos.store');
+    Route::get('/rebanos/{id}/edit', [RebanosController::class, 'edit'])->name('rebanos.edit');
+    Route::put('/rebanos/{id}', [RebanosController::class, 'update'])->name('rebanos.update');
     
     // Personal routes
     Route::get('/personal', [PersonalController::class, 'index'])->name('personal.index');
+    Route::get('/personal/create', [PersonalController::class, 'create'])->name('personal.create');
+    Route::post('/personal', [PersonalController::class, 'store'])->name('personal.store');
+    Route::get('/personal/{id}/edit', [PersonalController::class, 'edit'])->name('personal.edit');
+    Route::put('/personal/{id}', [PersonalController::class, 'update'])->name('personal.update');
 });
