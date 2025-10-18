@@ -11,6 +11,7 @@ export default {
         'ganaderasoft': {
           'celeste': '#6EC1E4',
           'verde': '#B3D335',
+          'verde-oscuro': '#7A9622', // Darker green for better contrast
           'azul': '#007B92',
           'negro': '#333333',
         }

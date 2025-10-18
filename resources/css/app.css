@@ -9,3 +9,35 @@
 body {
     font-family: 'Nunito', system-ui, sans-serif;
 }
+
+/* Sidebar collapse styles */
+#sidebar {
+    transition: width 0.3s ease, min-width 0.3s ease;
+    width: 16rem; /* w-64 */
+    min-width: 16rem;
+}
+
+#sidebar.collapsed {
+    width: 4rem;
+    min-width: 4rem;
+}
+
+#sidebar.collapsed .menu-text,
+#sidebar.collapsed .menu-title {
+    display: none;
+}
+
+#sidebar.collapsed a,
+#sidebar.collapsed .menu-item {
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+#sidebar.collapsed .menu-icon {
+    margin-right: 0;
+}
+
+#main-content {
+    transition: margin-left 0.3s ease;
+}
