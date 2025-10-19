@@ -281,9 +281,9 @@ class MockAnimalesService implements AnimalesServiceInterface
             'success' => true,
             'message' => 'Lista de estados de salud',
             'data' => [
-                ['id' => 1, 'nombre' => 'Sano'],
-                ['id' => 2, 'nombre' => 'Enfermo'],
-                ['id' => 3, 'nombre' => 'En Tratamiento'],
+                ['estado_id' => 1, 'estado_nombre' => 'Sano'],
+                ['estado_id' => 2, 'estado_nombre' => 'Enfermo'],
+                ['estado_id' => 3, 'estado_nombre' => 'En Tratamiento'],
             ],
         ];
     }
@@ -297,10 +297,10 @@ class MockAnimalesService implements AnimalesServiceInterface
             'success' => true,
             'message' => 'Lista de etapas',
             'data' => [
-                ['id' => 1, 'nombre' => 'Cría'],
-                ['id' => 2, 'nombre' => 'Desarrollo'],
-                ['id' => 3, 'nombre' => 'Adulto'],
-                ['id' => 4, 'nombre' => 'Reproducción'],
+                ['etapa_id' => 1, 'etapa_nombre' => 'Cría'],
+                ['etapa_id' => 2, 'etapa_nombre' => 'Desarrollo'],
+                ['etapa_id' => 3, 'etapa_nombre' => 'Adulto'],
+                ['etapa_id' => 4, 'etapa_nombre' => 'Reproducción'],
             ],
         ];
     }

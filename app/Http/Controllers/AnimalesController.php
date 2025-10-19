@@ -45,7 +45,7 @@ class AnimalesController extends Controller
     public function create()
     {
         $rebanosResponse = $this->rebanosService->getRebanos();
-        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data'] ?? []) : [];
+        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data']['data'] ?? []) : [];
 
         $razasResponse = $this->animalesService->getRazas();
         $razas = $razasResponse['success'] ? ($razasResponse['data'] ?? []) : [];
@@ -130,7 +130,7 @@ class AnimalesController extends Controller
         $animal = $response['data'] ?? null;
 
         $rebanosResponse = $this->rebanosService->getRebanos();
-        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data'] ?? []) : [];
+        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data']['data'] ?? []) : [];
 
         $razasResponse = $this->animalesService->getRazas();
         $razas = $razasResponse['success'] ? ($razasResponse['data'] ?? []) : [];
