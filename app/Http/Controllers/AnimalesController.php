@@ -51,10 +51,14 @@ class AnimalesController extends Controller
         $razas = $razasResponse['success'] ? ($razasResponse['data'] ?? []) : [];
 
         $estadosResponse = $this->animalesService->getEstadosSalud();
-        $estados = $estadosResponse['success'] ? ($estadosResponse['data'] ?? []) : [];
+        $estadosData = $estadosResponse['success'] ? ($estadosResponse['data'] ?? []) : [];
+        // Ensure $estados is always an array of arrays, filtering out non-array elements
+        $estados = is_array($estadosData) ? array_filter($estadosData, 'is_array') : [];
 
         $etapasResponse = $this->animalesService->getEtapas();
-        $etapas = $etapasResponse['success'] ? ($etapasResponse['data'] ?? []) : [];
+        $etapasData = $etapasResponse['success'] ? ($etapasResponse['data'] ?? []) : [];
+        // Ensure $etapas is always an array of arrays, filtering out non-array elements
+        $etapas = is_array($etapasData) ? array_filter($etapasData, 'is_array') : [];
 
         return view('animales.create', compact('rebanos', 'razas', 'estados', 'etapas'));
     }
@@ -136,10 +140,14 @@ class AnimalesController extends Controller
         $razas = $razasResponse['success'] ? ($razasResponse['data'] ?? []) : [];
 
         $estadosResponse = $this->animalesService->getEstadosSalud();
-        $estados = $estadosResponse['success'] ? ($estadosResponse['data'] ?? []) : [];
+        $estadosData = $estadosResponse['success'] ? ($estadosResponse['data'] ?? []) : [];
+        // Ensure $estados is always an array of arrays, filtering out non-array elements
+        $estados = is_array($estadosData) ? array_filter($estadosData, 'is_array') : [];
 
         $etapasResponse = $this->animalesService->getEtapas();
-        $etapas = $etapasResponse['success'] ? ($etapasResponse['data'] ?? []) : [];
+        $etapasData = $etapasResponse['success'] ? ($etapasResponse['data'] ?? []) : [];
+        // Ensure $etapas is always an array of arrays, filtering out non-array elements
+        $etapas = is_array($etapasData) ? array_filter($etapasData, 'is_array') : [];
 
         return view('animales.edit', compact('animal', 'rebanos', 'razas', 'estados', 'etapas'));
     }
