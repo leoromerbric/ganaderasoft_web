@@ -30,18 +30,21 @@
             </a>
 
             <!-- Gestión de Animales - Animales -->
-            <div class="bg-white rounded-xl shadow-md p-6 opacity-50 cursor-not-allowed border-t-4 border-gray-400">
+            <a href="{{ route('animales.index') }}" class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all duration-200 border-t-4 border-ganaderasoft-celeste hover:border-ganaderasoft-azul">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="bg-gray-200 p-3 rounded-lg">
+                    <div class="bg-ganaderasoft-celeste bg-opacity-10 p-3 rounded-lg">
                         <span class="text-4xl">📋</span>
                     </div>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-500 mb-2">Animales</h3>
-                <p class="text-sm text-gray-500 mb-4">Registro individual de animales</p>
-                <div class="mt-4">
-                    <span class="inline-block bg-gray-300 text-gray-600 text-xs font-medium px-3 py-1 rounded-full">Próximamente</span>
+                <h3 class="text-xl font-semibold text-ganaderasoft-negro mb-2">Animales</h3>
+                <p class="text-sm text-gray-600 mb-4">Registro individual de animales</p>
+                <div class="mt-4 flex items-center text-ganaderasoft-celeste font-semibold text-sm hover:text-ganaderasoft-azul">
+                    <span>Ver animales</span>
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
                 </div>
-            </div>
+            </a>
 
             <!-- Gestión de Personal -->
             <a href="{{ route('personal.index') }}" class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all duration-200 border-t-4 border-ganaderasoft-verde-oscuro hover:border-ganaderasoft-verde">
