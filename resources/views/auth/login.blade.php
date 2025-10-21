@@ -90,11 +90,24 @@
                 </div>
             </form>
 
-            <!-- Demo credentials info -->
-            <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                <p class="text-xs text-blue-800 font-semibold mb-2">🔐 Credenciales de Demostración:</p>
-                <p class="text-xs text-blue-700"><strong>Email:</strong> admin@demo.cl</p>
-                <p class="text-xs text-blue-700"><strong>Contraseña:</strong> Password123!</p>
+            <!-- Android App Download Link -->
+            <div class="mt-6 p-4 bg-ganaderasoft-celeste/10 rounded-lg border border-ganaderasoft-celeste/30">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-8 h-8 text-ganaderasoft-azul" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17.523 7.39c-.002-.119-.026-.236-.065-.349-.04-.113-.1-.218-.177-.31l-1.48-1.48c-.092-.077-.197-.137-.31-.177-.113-.039-.23-.063-.349-.065H8.25c-.414 0-.75.336-.75.75v10.5c0 .414.336.75.75.75h7.5c.414 0 .75-.336.75-.75V7.39zM12 15.75c-1.654 0-3-1.346-3-3s1.346-3 3-3 3 1.346 3 3-1.346 3-3 3zm3.75-6.75h-7.5v-1.5h7.5v1.5z"/>
+                        </svg>
+                        <div>
+                            <p class="text-sm font-semibold text-ganaderasoft-negro">Aplicación Android</p>
+                            <p class="text-xs text-gray-600">Descarga la app móvil</p>
+                        </div>
+                    </div>
+                    <a href="https://drive.google.com/file/d/1iPavcba9L-VDhQbt8Du3yN9B39EkBYj1/view?usp=drive_link" 
+                       target="_blank"
+                       class="px-4 py-2 bg-gradient-to-r from-ganaderasoft-celeste to-ganaderasoft-azul text-white text-sm font-medium rounded-lg hover:from-ganaderasoft-azul hover:to-ganaderasoft-celeste transition-all duration-200 transform hover:scale-105">
+                        Descargar APK
+                    </a>
+                </div>
             </div>
         </div>
 
