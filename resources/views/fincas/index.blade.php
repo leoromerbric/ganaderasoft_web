@@ -28,7 +28,6 @@
                 <div class="flex justify-between items-center">
                     <h3 class="text-xl font-semibold text-ganaderasoft-negro">Lista de Fincas</h3>
                     <a href="{{ route('fincas.create') }}" class="bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
-                        <span class="text-lg">➕</span>
                         <span>Nueva</span>
                     </a>
                 </div>
@@ -67,7 +66,7 @@
                                 </div>
 
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('fincas.dashboard', $finca['id_Finca']) }}" class="flex-1 bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200 text-center shadow-sm">
+                                    <a href="{{ route('fincas.dashboard', $finca['id_Finca']) }}" class="flex-1 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200 text-center shadow-sm">
                                         Ir a Finca
                                     </a>
                                     <a href="{{ route('fincas.edit', $finca['id_Finca']) }}" class="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
