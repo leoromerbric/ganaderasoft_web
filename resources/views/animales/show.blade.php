@@ -12,7 +12,7 @@
             </div>
             <div class="flex space-x-3">
                 <a href="{{ route('animales.edit', $animal['id_Animal']) }}" 
-                   class="px-6 py-3 bg-ganaderasoft-verde text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
+                   class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
                     Editar
                 </a>
                 <a href="{{ route('animales.index') }}" 

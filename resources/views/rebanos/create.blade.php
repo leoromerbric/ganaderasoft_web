@@ -72,9 +72,8 @@
                     </a>
                     <button 
                         type="submit"
-                        class="bg-ganaderasoft-verde hover:bg-opacity-90 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2">
-                        <span>💾</span>
-                        <span>Nuevo</span>
+                        class="bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2">
+                        <span>Guardar</span>
                     </button>
                 </div>
             </form>

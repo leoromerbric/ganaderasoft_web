@@ -11,8 +11,8 @@
                 <p class="text-gray-600 mt-1">Administra los animales del sistema</p>
             </div>
             <a href="{{ route('animales.create') }}" 
-               class="px-6 py-3 bg-ganaderasoft-verde text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                + Nuevo
+               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
+                Nuevo
             </a>
         </div>
 
@@ -116,8 +116,8 @@
                     <h3 class="text-xl font-semibold text-gray-700 mb-2">No hay animales registrados</h3>
                     <p class="text-gray-500 mb-6">Comienza agregando tu primer animal al sistema</p>
                     <a href="{{ route('animales.create') }}" 
-                       class="inline-block px-6 py-3 bg-ganaderasoft-verde text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
-                        + Nuevo
+                       class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
+                        Nuevo
                     </a>
                 </div>
             @endif
