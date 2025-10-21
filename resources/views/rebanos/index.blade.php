@@ -35,9 +35,9 @@
                     <h3 class="text-xl font-semibold text-ganaderasoft-negro">Lista de Rebaños</h3>
                     <a 
                         href="{{ route('rebanos.create') }}"
-                        class="bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
+                        class="bg-ganaderasoft-verde hover:bg-opacity-90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2 shadow-sm">
                         <span class="text-lg">➕</span>
-                        <span>Nuevo Rebaño</span>
+                        <span>Nuevo</span>
                     </a>
                 </div>
             </div>

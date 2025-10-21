@@ -111,6 +111,11 @@
             </div>
         </div>
 
+        <!-- Participating Organizations Logos -->
+        <div class="flex justify-center my-6">
+            <img src="{{ asset('images/logos_participantes.png') }}" alt="Logos Participantes" class="max-w-full h-auto rounded-lg shadow-md">
+        </div>
+
         <!-- Footer -->
         <p class="text-center text-sm text-gray-500">
             &copy; 2025 GanaderaSoft. Todos los derechos reservados.
