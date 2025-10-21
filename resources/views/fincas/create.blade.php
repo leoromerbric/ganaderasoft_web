@@ -238,8 +238,8 @@
                     Cancelar
                 </a>
                 <button type="submit" 
-                    class="px-6 py-2 bg-ganaderasoft-verde-oscuro hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200 shadow-sm">
-                    Guardar Finca
+                    class="px-6 py-2 bg-ganaderasoft-verde hover:bg-opacity-90 text-white rounded-lg font-medium transition-colors duration-200 shadow-sm">
+                    Nueva
                 </button>
             </div>
         </form>

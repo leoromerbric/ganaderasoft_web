@@ -102,9 +102,9 @@
                     </a>
                     <button 
                         type="submit"
-                        class="bg-ganaderasoft-verde hover:bg-green-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2">
+                        class="bg-ganaderasoft-verde hover:bg-opacity-90 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2">
                         <span>💾</span>
-                        <span>Actualizar Rebaño</span>
+                        <span>Actualizar</span>
                     </button>
                 </div>
             </form>
