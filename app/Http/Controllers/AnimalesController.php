@@ -53,7 +53,7 @@ class AnimalesController extends Controller
         $estadosResponse = $this->animalesService->getEstadosSalud();
         $estadosData = $estadosResponse['success'] ? ($estadosResponse['data'] ?? []) : [];
         // Ensure $estados is always an array of arrays, filtering out non-array elements
-        $estados = is_array($estadosData) ? array_filter($estadosData, 'is_array') : [];
+        $estados = is_array($estadosData) ? array_filter($estadosData['data'], 'is_array') : [];
 
         $etapasResponse = $this->animalesService->getEtapas();
         $etapasData = $etapasResponse['success'] ? ($etapasResponse['data'] ?? []) : [];
@@ -142,7 +142,7 @@ class AnimalesController extends Controller
         $estadosResponse = $this->animalesService->getEstadosSalud();
         $estadosData = $estadosResponse['success'] ? ($estadosResponse['data'] ?? []) : [];
         // Ensure $estados is always an array of arrays, filtering out non-array elements
-        $estados = is_array($estadosData) ? array_filter($estadosData, 'is_array') : [];
+        $estados = is_array($estadosData) ? array_filter($estadosData['data'], 'is_array') : [];
 
         $etapasResponse = $this->animalesService->getEtapas();
         $etapasData = $etapasResponse['success'] ? ($etapasResponse['data'] ?? []) : [];
