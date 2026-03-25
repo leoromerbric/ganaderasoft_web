@@ -11,6 +11,7 @@ class MockAnimalesService implements AnimalesServiceInterface
      */
     public function getAnimales(?int $rebanoId = null): array
     {
+        
         $allAnimales = [
             // Animals for Rebaño 6: "Mi Rebaño" 
             [
@@ -188,6 +189,65 @@ class MockAnimalesService implements AnimalesServiceInterface
             ],
         ];
     }
+                    'finca' => [
+                        'id_Finca' => 16,
+                        'id_Propietario' => 6,
+                        'Nombre' => 'Finca La Romería',
+                        'Explotacion_Tipo' => 'Bovinos',
+                        'archivado' => false,
+                        'created_at' => '2025-08-18T00:59:56.000000Z',
+                        'updated_at' => '2025-08-18T00:59:56.000000Z',
+                        'propietario' => [
+                            'id' => 6,
+                            'id_Personal' => 17873216,
+                            'Nombre' => 'Leonel',
+                            'Apellido' => 'Romero',
+                            'Telefono' => '04140659739',
+                            'archivado' => false,
+                        ],
+                    ],
+                ],
+                'composicion_raza' => [
+                    'id_Composicion' => 70,
+                    'Nombre' => 'Shorthorn',
+                    'Siglas' => 'SHO',
+                    'Pelaje' => 'Rojo-Blanco',
+                    'Proposito' => 'Doble',
+                    'Tipo_Raza' => 'Bos Taurus',
+                    'Origen' => 'Noroeste Inglaterra',
+                    'Caracteristica_Especial' => 'Adaptabilidad',
+                    'Proporcion_Raza' => 'Grande',
+                ],
+            ],
+        ];
+
+        // Filter by rebano if specified
+        if ($rebanoId !== null) {
+            $allAnimales = array_filter($allAnimales, function($animal) use ($rebanoId) {
+                return (int) $animal['id_Rebano'] === (int) $rebanoId;
+            });
+            $allAnimales = array_values($allAnimales); // Re-index
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Lista de animales',
+            'data' => [
+                'current_page' => 1,
+                'data' => $allAnimales,
+                'first_page_url' => 'http://localhost:8000/api/animales?page=1',
+                'from' => 1,
+                'last_page' => 1,
+                'last_page_url' => 'http://localhost:8000/api/animales?page=1',
+                'next_page_url' => null,
+                'path' => 'http://localhost:8000/api/animales',
+                'per_page' => 15,
+                'prev_page_url' => null,
+                'to' => count($allAnimales),
+                'total' => count($allAnimales),
+            ],
+        ];
+    }
 
     /**
      * Get a single animal by ID
@@ -245,27 +305,28 @@ class MockAnimalesService implements AnimalesServiceInterface
     }
 
     /**
-     * Get list of available animal breeds
+     * Get list of available breeds (composicion_raza)
      */
     public function getRazas(): array
     {
         return [
             'success' => true,
-            'message' => 'Lista de razas', 
+            'message' => 'Lista de razas',
             'data' => [
                 [
                     'id_Composicion' => 70,
                     'Nombre' => 'Shorthorn',
                     'Siglas' => 'SHO',
-                    'Pelaje' => 'Rojo-Blanco',
-                    'Proposito' => 'Doble',
                 ],
                 [
                     'id_Composicion' => 71,
                     'Nombre' => 'Hereford',
                     'Siglas' => 'HER',
-                    'Pelaje' => 'Colorado Bayo con manchas blancas',
-                    'Proposito' => 'Carne',
+                ],
+                [
+                    'id_Composicion' => 72,
+                    'Nombre' => 'Brahman',
+                    'Siglas' => 'BRA',
                 ],
             ],
         ];
@@ -280,12 +341,9 @@ class MockAnimalesService implements AnimalesServiceInterface
             'success' => true,
             'message' => 'Lista de estados de salud',
             'data' => [
-                'data' => [
-                    ['estado_id' => 1, 'estado_nombre' => 'Saludable'],
-                    ['estado_id' => 2, 'estado_nombre' => 'Enfermo'],
-                    ['estado_id' => 3, 'estado_nombre' => 'En tratamiento'],
-                    ['estado_id' => 4, 'estado_nombre' => 'En observación'],
-                ],
+                ['estado_id' => 1, 'estado_nombre' => 'Sano'],
+                ['estado_id' => 2, 'estado_nombre' => 'Enfermo'],
+                ['estado_id' => 3, 'estado_nombre' => 'En Tratamiento'],
             ],
         ];
     }
