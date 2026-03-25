@@ -162,7 +162,6 @@ class MockAnimalesService implements AnimalesServiceInterface
             ],
         ];
 
-
         // Filter by rebano if specified
         if ($rebanoId !== null) {
             $allAnimales = array_filter($allAnimales, function($animal) use ($rebanoId) {
@@ -170,104 +169,26 @@ class MockAnimalesService implements AnimalesServiceInterface
             });
             $allAnimales = array_values($allAnimales); // Re-index
         }
-                    'finca' => [
-                        'id_Finca' => 15,
-                        'id_Propietario' => 6,
-                        'Nombre' => 'Finca La Nueva Esperanza',
-                        'Explotacion_Tipo' => 'Bovinos',
-                        'archivado' => false,
-                        'created_at' => '2025-08-18T00:59:56.000000Z',
-                        'updated_at' => '2025-08-18T00:59:56.000000Z',
-                        'propietario' => [
-                            'id' => 6,
-                            'id_Personal' => 17873216,
-                            'Nombre' => 'Leonel',
-                            'Apellido' => 'Romero',
-                            'Telefono' => '04140659739',
-                            'archivado' => false,
-                        ],
-                    ],
-                ],
-                'composicion_raza' => [
-                    'id_Composicion' => 70,
-                    'Nombre' => 'Shorthorn',
-                    'Siglas' => 'SHO',
-                    'Pelaje' => 'Rojo-Blanco',
-                    'Proposito' => 'Doble',
-                    'Tipo_Raza' => 'Bos Taurus',
-                    'Origen' => 'Noroeste Inglaterra',
-                    'Caracteristica_Especial' => 'Adaptabilidad',
-                    'Proporcion_Raza' => 'Grande',
-                ],
+
+        return [
+            'success' => true,
+            'message' => 'Lista de animales',
+            'data' => [
+                'current_page' => 1,
+                'data' => $allAnimales,
+                'first_page_url' => 'http://localhost:8000/api/animales?page=1',
+                'from' => 1,
+                'last_page' => 1,
+                'last_page_url' => 'http://localhost:8000/api/animales?page=1',
+                'next_page_url' => null,
+                'path' => 'http://localhost:8000/api/animales',
+                'per_page' => 15,
+                'prev_page_url' => null,
+                'to' => count($allAnimales),
+                'total' => count($allAnimales),
             ],
-            [
-                'id_Animal' => 14,
-                'id_Rebano' => 6,
-                'Nombre' => 'Toro Max',
-                'codigo_animal' => 'ANIMAL-002',
-                'Sexo' => 'M',
-                'fecha_nacimiento' => '2024-01-10T00:00:00.000000Z',
-                'Procedencia' => 'Local',
-                'archivado' => false,
-                'created_at' => '2025-08-18T21:36:06.000000Z',
-                'updated_at' => '2025-08-18T21:36:06.000000Z',
-                'fk_composicion_raza' => 71,
-                'rebano' => [
-                    'id_Rebano' => 6,
-                    'id_Finca' => 15,
-                    'Nombre' => 'Rebaño Principal',
-                    'archivado' => false,
-                    'created_at' => '2025-08-18T21:30:56.000000Z',
-                    'updated_at' => '2025-08-18T21:30:56.000000Z',
-                    'finca' => [
-                        'id_Finca' => 15,
-                        'id_Propietario' => 6,
-                        'Nombre' => 'Finca La Nueva Esperanza',
-                        'Explotacion_Tipo' => 'Bovinos',
-                        'archivado' => false,
-                        'created_at' => '2025-08-18T00:59:56.000000Z',
-                        'updated_at' => '2025-08-18T00:59:56.000000Z',
-                        'propietario' => [
-                            'id' => 6,
-                            'id_Personal' => 17873216,
-                            'Nombre' => 'Leonel',
-                            'Apellido' => 'Romero',
-                            'Telefono' => '04140659739',
-                            'archivado' => false,
-                        ],
-                    ],
-                ],
-                'composicion_raza' => [
-                    'id_Composicion' => 71,
-                    'Nombre' => 'Hereford',
-                    'Siglas' => 'HER',
-                    'Pelaje' => 'Colorado Bayo y manchas blancas en la cabeza',
-                    'Proposito' => 'Carne',
-                    'Tipo_Raza' => 'Bos Taurus',
-                    'Origen' => 'Suroeste Inglaterra',
-                    'Caracteristica_Especial' => 'madurez precoz',
-                    'Proporcion_Raza' => 'Grande',
-                ],
-            ],
-            [
-                'id_Animal' => 15,
-                'id_Rebano' => 7,
-                'Nombre' => 'Vaca Luna',
-                'codigo_animal' => 'ANIMAL-003',
-                'Sexo' => 'F',
-                'fecha_nacimiento' => '2025-01-15T00:00:00.000000Z',
-                'Procedencia' => 'Local',
-                'archivado' => false,
-                'created_at' => '2025-08-18T21:37:00.000000Z',
-                'updated_at' => '2025-08-18T21:37:00.000000Z',
-                'fk_composicion_raza' => 70,
-                'rebano' => [
-                    'id_Rebano' => 7,
-                    'id_Finca' => 16,
-                    'Nombre' => 'Rebaño Norteño',
-                    'archivado' => false,
-                    'created_at' => '2025-08-18T21:31:10.000000Z',
-                    'updated_at' => '2025-08-18T21:31:10.000000Z',
+        ];
+    }
                     'finca' => [
                         'id_Finca' => 16,
                         'id_Propietario' => 6,
