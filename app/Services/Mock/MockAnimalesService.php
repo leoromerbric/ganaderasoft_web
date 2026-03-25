@@ -11,7 +11,9 @@ class MockAnimalesService implements AnimalesServiceInterface
      */
     public function getAnimales(?int $rebanoId = null): array
     {
+        
         $allAnimales = [
+            // Animals for Rebaño 6: "Mi Rebaño" 
             [
                 'id_Animal' => 13,
                 'id_Rebano' => 6,
@@ -27,10 +29,147 @@ class MockAnimalesService implements AnimalesServiceInterface
                 'rebano' => [
                     'id_Rebano' => 6,
                     'id_Finca' => 15,
-                    'Nombre' => 'Rebaño Principal',
+                    'Nombre' => 'Mi Rebaño',
                     'archivado' => false,
-                    'created_at' => '2025-08-18T21:30:56.000000Z',
-                    'updated_at' => '2025-08-18T21:30:56.000000Z',
+                ],
+                'composicion_raza' => [
+                    'id_Composicion' => 70,
+                    'Nombre' => 'Shorthorn',
+                    'Siglas' => 'SHO',
+                ],
+            ],
+            [
+                'id_Animal' => 14,
+                'id_Rebano' => 6,
+                'Nombre' => 'Toro Max',
+                'codigo_animal' => 'ANIMAL-002',
+                'Sexo' => 'M',
+                'fecha_nacimiento' => '2024-01-10T00:00:00.000000Z',
+                'Procedencia' => 'Local',
+                'archivado' => false,
+                'created_at' => '2025-08-18T21:36:06.000000Z',
+                'updated_at' => '2025-08-18T21:36:06.000000Z',
+                'fk_composicion_raza' => 71,
+                'rebano' => [
+                    'id_Rebano' => 6,
+                    'id_Finca' => 15,
+                    'Nombre' => 'Mi Rebaño',
+                    'archivado' => false,
+                ],
+                'composicion_raza' => [
+                    'id_Composicion' => 71,
+                    'Nombre' => 'Hereford',
+                    'Siglas' => 'HER',
+                ],
+            ],
+            // Animals for Rebaño 7: "Rebaño Norteño"
+            [
+                'id_Animal' => 15,
+                'id_Rebano' => 7,
+                'Nombre' => 'Vaca Luna',
+                'codigo_animal' => 'ANIMAL-003',
+                'Sexo' => 'F',
+                'fecha_nacimiento' => '2025-01-15T00:00:00.000000Z',
+                'Procedencia' => 'Local',
+                'archivado' => false,
+                'created_at' => '2025-08-18T21:37:00.000000Z',
+                'updated_at' => '2025-08-18T21:37:00.000000Z',
+                'fk_composicion_raza' => 70,
+                'rebano' => [
+                    'id_Rebano' => 7,
+                    'id_Finca' => 16,
+                    'Nombre' => 'Rebaño Norteño',
+                    'archivado' => false,
+                ],
+                'composicion_raza' => [
+                    'id_Composicion' => 70,
+                    'Nombre' => 'Shorthorn',
+                    'Siglas' => 'SHO',
+                ],
+            ],
+            [
+                'id_Animal' => 16,
+                'id_Rebano' => 7,
+                'Nombre' => 'Toro Norte',
+                'codigo_animal' => 'ANIMAL-004',
+                'Sexo' => 'M',
+                'fecha_nacimiento' => '2024-06-20T00:00:00.000000Z',
+                'Procedencia' => 'Local',
+                'archivado' => false,
+                'created_at' => '2025-08-18T21:38:00.000000Z',
+                'updated_at' => '2025-08-18T21:38:00.000000Z',
+                'fk_composicion_raza' => 71,
+                'rebano' => [
+                    'id_Rebano' => 7,
+                    'id_Finca' => 16,
+                    'Nombre' => 'Rebaño Norteño',
+                    'archivado' => false,
+                ],
+                'composicion_raza' => [
+                    'id_Composicion' => 71,
+                    'Nombre' => 'Hereford',
+                    'Siglas' => 'HER',
+                ],
+            ],
+            // Animals for Rebaño 8: "Rebaño Planicie"
+            [
+                'id_Animal' => 17,
+                'id_Rebano' => 8,
+                'Nombre' => 'Vaca Planicie',
+                'codigo_animal' => 'ANIMAL-005',
+                'Sexo' => 'F',
+                'fecha_nacimiento' => '2024-08-10T00:00:00.000000Z',
+                'Procedencia' => 'Compra',
+                'archivado' => false,
+                'created_at' => '2025-08-18T21:39:00.000000Z',
+                'updated_at' => '2025-08-18T21:39:00.000000Z',
+                'fk_composicion_raza' => 70,
+                'rebano' => [
+                    'id_Rebano' => 8,
+                    'id_Finca' => 17,
+                    'Nombre' => 'Rebaño Planicie',
+                    'archivado' => false,
+                ],
+                'composicion_raza' => [
+                    'id_Composicion' => 70,
+                    'Nombre' => 'Shorthorn',
+                    'Siglas' => 'SHO',
+                ],
+            ],
+            [
+                'id_Animal' => 18,
+                'id_Rebano' => 8,
+                'Nombre' => 'Toro Planicie',
+                'codigo_animal' => 'ANIMAL-006',
+                'Sexo' => 'M',
+                'fecha_nacimiento' => '2023-12-05T00:00:00.000000Z',
+                'Procedencia' => 'Compra',
+                'archivado' => false,
+                'created_at' => '2025-08-18T21:40:00.000000Z',
+                'updated_at' => '2025-08-18T21:40:00.000000Z',
+                'fk_composicion_raza' => 71,
+                'rebano' => [
+                    'id_Rebano' => 8,
+                    'id_Finca' => 17,
+                    'Nombre' => 'Rebaño Planicie',
+                    'archivado' => false,
+                ],
+                'composicion_raza' => [
+                    'id_Composicion' => 71,
+                    'Nombre' => 'Hereford',
+                    'Siglas' => 'HER',
+                ],
+            ],
+        ];
+
+
+        // Filter by rebano if specified
+        if ($rebanoId !== null) {
+            $allAnimales = array_filter($allAnimales, function($animal) use ($rebanoId) {
+                return (int) $animal['id_Rebano'] === (int) $rebanoId;
+            });
+            $allAnimales = array_values($allAnimales); // Re-index
+        }
                     'finca' => [
                         'id_Finca' => 15,
                         'id_Propietario' => 6,
@@ -125,7 +264,7 @@ class MockAnimalesService implements AnimalesServiceInterface
                 'rebano' => [
                     'id_Rebano' => 7,
                     'id_Finca' => 16,
-                    'Nombre' => 'Rebaño Secundario',
+                    'Nombre' => 'Rebaño Norteño',
                     'archivado' => false,
                     'created_at' => '2025-08-18T21:31:10.000000Z',
                     'updated_at' => '2025-08-18T21:31:10.000000Z',

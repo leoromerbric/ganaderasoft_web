@@ -26,17 +26,12 @@ class AnimalesController extends Controller
     {
         $rebanoId = $request->query('id_rebano');
         
-        // Debug logs
-        \Log::info('Raw rebanoId from request: ' . json_encode($rebanoId));
-        
         // Convert to integer if not null and not empty
         if ($rebanoId && is_numeric($rebanoId)) {
             $rebanoId = (int) $rebanoId;
         } else {
             $rebanoId = null;
         }
-        
-        \Log::info('Processed rebanoId: ' . json_encode($rebanoId));
         
         $response = $this->animalesService->getAnimales($rebanoId);
 
@@ -48,9 +43,6 @@ class AnimalesController extends Controller
         $animales = $response['data']['data'] ?? [];
         $rebanosResponse = $this->rebanosService->getRebanos();
         $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data']['data'] ?? []) : [];
-
-        \Log::info('Total animals returned: ' . count($animales));
-        \Log::info('Rebanos available: ' . json_encode(array_map(function($r) { return ['id' => $r['id_Rebano'], 'name' => $r['Nombre']]; }, $rebanos)));
 
         return view('animales.index', compact('animales', 'rebanos', 'rebanoId'));
     }
