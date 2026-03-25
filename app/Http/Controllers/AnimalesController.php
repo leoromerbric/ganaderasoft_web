@@ -38,7 +38,9 @@ class AnimalesController extends Controller
             \Log::debug("AnimalesController::index - Set rebanoId to null");
         }
         
+        \Log::debug("AnimalesController::index - About to call animalesService->getAnimales with rebanoId: " . var_export($rebanoId, true));
         $response = $this->animalesService->getAnimales($rebanoId);
+        \Log::debug("AnimalesController::index - Service call completed. Response success: " . ($response['success'] ?? 'unknown'));
 
         if (!$response['success']) {
             return redirect()->route('dashboard')->with('error', $response['message']);
