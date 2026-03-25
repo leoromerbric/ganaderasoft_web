@@ -26,11 +26,16 @@ class AnimalesController extends Controller
     {
         $rebanoId = $request->query('id_rebano');
         
+        // DEBUG: Log what we received
+        \Log::debug("AnimalesController::index - Received rebanoId: " . var_export($rebanoId, true));
+        
         // Convert to integer if not null and not empty
         if ($rebanoId && is_numeric($rebanoId)) {
             $rebanoId = (int) $rebanoId;
+            \Log::debug("AnimalesController::index - Converted rebanoId to int: " . $rebanoId);
         } else {
             $rebanoId = null;
+            \Log::debug("AnimalesController::index - Set rebanoId to null");
         }
         
         $response = $this->animalesService->getAnimales($rebanoId);

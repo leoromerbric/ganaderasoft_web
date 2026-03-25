@@ -11,6 +11,9 @@ class MockAnimalesService implements AnimalesServiceInterface
      */
     public function getAnimales(?int $rebanoId = null): array
     {
+        // DEBUG: Log what we received
+        \Log::debug("MockAnimalesService::getAnimales - Received rebanoId: " . var_export($rebanoId, true));
+        
         $allAnimales = [
             // Animals for Rebaño 6: "Mi Rebaño" 
             [
@@ -163,10 +166,21 @@ class MockAnimalesService implements AnimalesServiceInterface
 
         // Filter by rebano if specified
         if ($rebanoId !== null) {
+            \Log::debug("MockAnimalesService::getAnimales - Filtering by rebanoId: " . $rebanoId);
+            \Log::debug("MockAnimalesService::getAnimales - Before filter, total animals: " . count($allAnimales));
+            
             $allAnimales = array_filter($allAnimales, function($animal) use ($rebanoId) {
-                return (int) $animal['id_Rebano'] === (int) $rebanoId;
+                $animalRebanoId = (int) $animal['id_Rebano'];
+                $filterRebanoId = (int) $rebanoId;
+                $matches = $animalRebanoId === $filterRebanoId;
+                \Log::debug("MockAnimalesService::getAnimales - Comparing animal rebano {$animalRebanoId} with filter {$filterRebanoId}: " . ($matches ? 'MATCH' : 'NO MATCH'));
+                return $matches;
             });
             $allAnimales = array_values($allAnimales); // Re-index
+            
+            \Log::debug("MockAnimalesService::getAnimales - After filter, total animals: " . count($allAnimales));
+        } else {
+            \Log::debug("MockAnimalesService::getAnimales - No filter applied, returning all animals: " . count($allAnimales));
         }
 
         return [
