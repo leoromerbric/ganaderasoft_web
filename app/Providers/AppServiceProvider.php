@@ -48,6 +48,16 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Contracts\AnimalesServiceInterface::class,
             \App\Services\Api\ApiAnimalesService::class
         );
+
+        $this->app->bind(
+            \App\Services\Contracts\LactanciaServiceInterface::class,
+            \App\Services\Api\ApiLactanciaService::class
+        );
+
+        $this->app->bind(
+            \App\Services\Contracts\LecheServiceInterface::class,
+            \App\Services\Api\ApiLecheService::class
+        );
     }
 
     /**

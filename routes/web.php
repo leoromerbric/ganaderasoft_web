@@ -6,6 +6,8 @@ use App\Http\Controllers\FincasController;
 use App\Http\Controllers\RebanosController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\AnimalesController;
+use App\Http\Controllers\LactanciaController;
+use App\Http\Controllers\LecheController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,4 +64,22 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/animales/{id}', [AnimalesController::class, 'show'])->name('animales.show');
     Route::get('/animales/{id}/edit', [AnimalesController::class, 'edit'])->name('animales.edit');
     Route::put('/animales/{id}', [AnimalesController::class, 'update'])->name('animales.update');
+    
+    // Lactancia routes - Gestión de períodos de lactancia
+    Route::get('/lactancia', [LactanciaController::class, 'index'])->name('lactancia.index');
+    Route::get('/lactancia/create', [LactanciaController::class, 'create'])->name('lactancia.create');
+    Route::post('/lactancia', [LactanciaController::class, 'store'])->name('lactancia.store');
+    Route::get('/lactancia/{id}', [LactanciaController::class, 'show'])->name('lactancia.show');
+    Route::get('/lactancia/{id}/edit', [LactanciaController::class, 'edit'])->name('lactancia.edit');
+    Route::put('/lactancia/{id}', [LactanciaController::class, 'update'])->name('lactancia.update');
+    Route::delete('/lactancia/{id}', [LactanciaController::class, 'destroy'])->name('lactancia.destroy');
+    
+    // Leche routes - Registros de producción lechera
+    Route::get('/leche', [LecheController::class, 'index'])->name('leche.index');
+    Route::get('/leche/create', [LecheController::class, 'create'])->name('leche.create');
+    Route::post('/leche', [LecheController::class, 'store'])->name('leche.store');
+    Route::get('/leche/{id}', [LecheController::class, 'show'])->name('leche.show');
+    Route::get('/leche/{id}/edit', [LecheController::class, 'edit'])->name('leche.edit');
+    Route::put('/leche/{id}', [LecheController::class, 'update'])->name('leche.update');
+    Route::delete('/leche/{id}', [LecheController::class, 'destroy'])->name('leche.destroy');
 });

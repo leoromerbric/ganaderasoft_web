@@ -2,8 +2,8 @@
  PRIORIZACIÓN DE DESARROLLO
 🚀 FASE 1 - MVP (Funcionalidades Básicas)
     ✅ Dashboard básico (Ya implementado)
-    🏡 Gestión de Fincas y Rebaños
-    🐄 CRUD de Animales
+    ✅ Gestión de Fincas y Rebaños (Ya implementado)
+    ✅ CRUD de Animales (Ya implementado)
     📊 Registro de Peso y Medidas
     🥛 Producción Lechera Básica
 📈 FASE 2 - Funcionalidades Avanzadas

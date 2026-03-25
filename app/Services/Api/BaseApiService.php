@@ -124,4 +124,41 @@ class BaseApiService
             ];
         }
     }
+
+    /**
+     * Make DELETE request to API
+     */
+    protected function delete(string $endpoint, array $headers = []): array
+    {
+        try {
+            $url = rtrim(env('API_BASE_URL', 'http://localhost:8000/api'), '/') . $endpoint;
+            
+            $response = Http::withHeaders($headers)->delete($url);
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            Log::error('API DELETE request failed', [
+                'endpoint' => $endpoint,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error al conectar con el servidor'
+            ];
+        } catch (\Exception $e) {
+            Log::error('API DELETE request exception', [
+                'endpoint' => $endpoint,
+                'error' => $e->getMessage()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error de conexión: ' . $e->getMessage()
+            ];
+        }
+    }
 }
