@@ -11,10 +11,6 @@ class MockAnimalesService implements AnimalesServiceInterface
      */
     public function getAnimales(?int $rebanoId = null): array
     {
-        // DEBUG: Log what we received - using error level to ensure it shows
-        error_log("MockAnimalesService::getAnimales - MÉTODO EJECUTADO con rebanoId: " . var_export($rebanoId, true));
-        \Log::error("MockAnimalesService::getAnimales - MÉTODO EJECUTADO con rebanoId: " . var_export($rebanoId, true));
-        
         $allAnimales = [
             // Animals for Rebaño 6: "Mi Rebaño" 
             [
@@ -167,24 +163,10 @@ class MockAnimalesService implements AnimalesServiceInterface
 
         // Filter by rebano if specified
         if ($rebanoId !== null) {
-            error_log("MockAnimalesService::getAnimales - FILTRANDO por rebanoId: " . $rebanoId);
-            \Log::error("MockAnimalesService::getAnimales - FILTRANDO por rebanoId: " . $rebanoId);
-            \Log::error("MockAnimalesService::getAnimales - Before filter, total animals: " . count($allAnimales));
-            
             $allAnimales = array_filter($allAnimales, function($animal) use ($rebanoId) {
-                $animalRebanoId = (int) $animal['id_Rebano'];
-                $filterRebanoId = (int) $rebanoId;
-                $matches = $animalRebanoId === $filterRebanoId;
-                \Log::error("MockAnimalesService::getAnimales - Comparing animal rebano {$animalRebanoId} with filter {$filterRebanoId}: " . ($matches ? 'MATCH' : 'NO MATCH'));
-                return $matches;
+                return (int) $animal['id_Rebano'] === (int) $rebanoId;
             });
             $allAnimales = array_values($allAnimales); // Re-index
-            
-            error_log("MockAnimalesService::getAnimales - DESPUÉS DEL FILTRO: " . count($allAnimales) . " animales");
-            \Log::error("MockAnimalesService::getAnimales - After filter, total animals: " . count($allAnimales));
-        } else {
-            error_log("MockAnimalesService::getAnimales - SIN FILTRO, devolviendo todos: " . count($allAnimales));
-            \Log::error("MockAnimalesService::getAnimales - No filter applied, returning all animals: " . count($allAnimales));
         }
 
         return [
