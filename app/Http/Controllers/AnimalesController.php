@@ -25,6 +25,14 @@ class AnimalesController extends Controller
     public function index(Request $request)
     {
         $rebanoId = $request->query('id_rebano');
+        
+        // Convert to integer if not null and not empty
+        if ($rebanoId && is_numeric($rebanoId)) {
+            $rebanoId = (int) $rebanoId;
+        } else {
+            $rebanoId = null;
+        }
+        
         $response = $this->animalesService->getAnimales($rebanoId);
 
         if (!$response['success']) {

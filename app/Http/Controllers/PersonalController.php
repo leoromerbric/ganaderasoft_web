@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\PersonalServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
 use Illuminate\Http\Request;
 
 class PersonalController extends Controller
 {
     protected PersonalServiceInterface $personalService;
+    protected FincasServiceInterface $fincasService;
 
-    public function __construct(PersonalServiceInterface $personalService)
+    public function __construct(PersonalServiceInterface $personalService, FincasServiceInterface $fincasService)
     {
         $this->personalService = $personalService;
+        $this->fincasService = $fincasService;
     }
 
     /**
@@ -19,6 +22,10 @@ class PersonalController extends Controller
      */
     public function index(Request $request)
     {
+        // Get list of fincas for dropdown
+        $fincasResponse = $this->fincasService->getFincas();
+        $fincas = $fincasResponse['success'] ? ($fincasResponse['data']['data'] ?? []) : [];
+
         // Check if there's a selected finca in session
         $selectedFinca = session('selected_finca');
         $idFinca = $request->query('id_finca') ?? ($selectedFinca['id_Finca'] ?? null);
@@ -27,7 +34,9 @@ class PersonalController extends Controller
             return view('personal.index', [
                 'personal' => [],
                 'pagination' => [],
-                'error' => 'Debe seleccionar una finca primero'
+                'fincas' => $fincas,
+                'idFinca' => null,
+                'error' => 'Debe seleccionar una finca para ver el personal'
             ]);
         }
 
@@ -41,12 +50,13 @@ class PersonalController extends Controller
                 'total' => count($personal),
             ];
 
-            return view('personal.index', compact('personal', 'pagination', 'idFinca'));
+            return view('personal.index', compact('personal', 'pagination', 'fincas', 'idFinca'));
         }
 
         return view('personal.index', [
             'personal' => [],
             'pagination' => [],
+            'fincas' => $fincas,
             'idFinca' => $idFinca,
             'error' => $response['message'] ?? 'Error al obtener el personal'
         ]);

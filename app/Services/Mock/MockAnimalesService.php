@@ -162,9 +162,9 @@ class MockAnimalesService implements AnimalesServiceInterface
         ];
 
         // Filter by rebano if specified
-        if ($rebanoId) {
+        if ($rebanoId !== null) {
             $allAnimales = array_filter($allAnimales, function($animal) use ($rebanoId) {
-                return $animal['id_Rebano'] == $rebanoId;
+                return (int) $animal['id_Rebano'] === (int) $rebanoId;
             });
             $allAnimales = array_values($allAnimales); // Re-index
         }

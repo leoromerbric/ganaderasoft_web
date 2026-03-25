@@ -30,26 +30,24 @@
 
         <!-- Filter by Finca -->
         <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-            <form method="GET" action="{{ route('personal.index') }}" class="flex items-end space-x-4">
+            <div class="flex items-end space-x-4">
                 <div class="flex-1">
-                    <label for="id_finca" class="block text-sm font-medium text-gray-700 mb-2">
-                        Filtrar por Finca
+                    <label for="finca_select" class="block text-sm font-medium text-gray-700 mb-2">
+                        Seleccionar Finca
                     </label>
-                    <input 
-                        type="number" 
-                        name="id_finca" 
-                        id="id_finca" 
-                        value="{{ $idFinca ?? '' }}"
-                        placeholder="Ingrese ID de la finca"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste"
-                    >
+                    <select 
+                        id="finca_select" 
+                        onchange="filterByFinca(this.value)"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Seleccione una finca...</option>
+                        @foreach($fincas as $finca)
+                            <option value="{{ $finca['id_Finca'] }}" {{ $idFinca == $finca['id_Finca'] ? 'selected' : '' }}>
+                                {{ $finca['Nombre'] }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-                <button 
-                    type="submit"
-                    class="bg-ganaderasoft-celeste hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
-                    Buscar
-                </button>
-            </form>
+            </div>
         </div>
 
         <!-- Personal List -->
@@ -148,11 +146,23 @@
                         @if(!isset($idFinca))
                             <p class="text-gray-400 text-sm mt-2">Seleccione una finca para ver su personal</p>
                         @else
-                            <p class="text-gray-400 text-sm mt-2">No hay personal registrado para esta finca</p>
+                            <p class="text-gray-400 text-sm mt-2">No hay personal registrado en esta finca</p>
                         @endif
                     </div>
                 @endif
             </div>
         </div>
     </div>
+
+    <script>
+        function filterByFinca(fincaId) {
+            const url = new URL(window.location.href);
+            if (fincaId) {
+                url.searchParams.set('id_finca', fincaId);
+            } else {
+                url.searchParams.delete('id_finca');
+            }
+            window.location.href = url.toString();
+        }
+    </script>
 @endsection
