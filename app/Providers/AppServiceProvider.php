@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(
             \App\Services\Contracts\AnimalesServiceInterface::class,
-            \App\Services\Mock\MockAnimalesService::class  // Using Mock service for demonstration
+            \App\Services\Api\ApiAnimalesService::class  // Using API service for real data
         );
     }
 
