@@ -163,10 +163,21 @@ class MockAnimalesService implements AnimalesServiceInterface
 
         // Filter by rebano if specified
         if ($rebanoId !== null) {
+            \Log::info('FILTERING: rebanoId provided: ' . $rebanoId);
+            \Log::info('Available animals before filtering: ' . json_encode(array_map(function($a) { return ['id' => $a['id_Animal'], 'rebano' => $a['id_Rebano'], 'name' => $a['Nombre']]; }, $allAnimales)));
+            
             $allAnimales = array_filter($allAnimales, function($animal) use ($rebanoId) {
-                return (int) $animal['id_Rebano'] === (int) $rebanoId;
+                $animalRebano = (int) $animal['id_Rebano'];
+                $filterRebano = (int) $rebanoId;
+                $match = $animalRebano === $filterRebano;
+                \Log::info("Animal {$animal['Nombre']} (rebano {$animalRebano}) vs filter ({$filterRebano}): " . ($match ? 'MATCH' : 'NO MATCH'));
+                return $match;
             });
             $allAnimales = array_values($allAnimales); // Re-index
+            
+            \Log::info('Animals after filtering: ' . count($allAnimales));
+        } else {
+            \Log::info('NO FILTERING: rebanoId is null, showing all animals');
         }
 
         return [

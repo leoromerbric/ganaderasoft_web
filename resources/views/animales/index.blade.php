@@ -43,7 +43,7 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Todos los Rebaños</option>
                         @foreach($rebanos as $rebano)
-                            <option value="{{ $rebano['id_Rebano'] }}" {{ $rebanoId == $rebano['id_Rebano'] ? 'selected' : '' }}>
+                            <option value="{{ $rebano['id_Rebano'] }}" {{ (string)$rebanoId === (string)$rebano['id_Rebano'] ? 'selected' : '' }}>
                                 {{ $rebano['Nombre'] }}
                             </option>
                         @endforeach
