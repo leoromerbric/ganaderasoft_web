@@ -22,7 +22,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
 
         $endpoint = '/animales';
         if ($rebanoId) {
-            $endpoint .= '?id_rebano=' . $rebanoId;
+            $endpoint .= '?rebano_id=' . $rebanoId;
         }
 
         $response = $this->get($endpoint, [
