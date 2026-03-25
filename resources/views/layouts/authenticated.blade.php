@@ -122,6 +122,19 @@
                     <span class="menu-text font-medium">Registro de Leche</span>
                 </a>
 
+                <!-- Peso y Medidas -->
+                <div class="mt-6 px-4 mb-2">
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Peso y Medidas</h3>
+                </div>
+                <a href="{{ route('peso-corporal.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('peso-corporal.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">📊</span>
+                    <span class="menu-text font-medium">Peso Corporal</span>
+                </a>
+                <a href="{{ route('medidas-corporales.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('medidas-corporales.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">📏</span>
+                    <span class="menu-text font-medium">Medidas Corporales</span>
+                </a>
+
                 <!-- Módulo Sanitario -->
                 <div class="mt-6 px-4 mb-2">
                     <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Módulo Sanitario</h3>

@@ -8,6 +8,8 @@ use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\AnimalesController;
 use App\Http\Controllers\LactanciaController;
 use App\Http\Controllers\LecheController;
+use App\Http\Controllers\PesoCorporalController;
+use App\Http\Controllers\MedidasCorporalesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -82,4 +84,22 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/leche/{id}/edit', [LecheController::class, 'edit'])->name('leche.edit');
     Route::put('/leche/{id}', [LecheController::class, 'update'])->name('leche.update');
     Route::delete('/leche/{id}', [LecheController::class, 'destroy'])->name('leche.destroy');
+    
+    // Peso Corporal routes - Registros de peso de animales
+    Route::get('/peso-corporal', [PesoCorporalController::class, 'index'])->name('peso-corporal.index');
+    Route::get('/peso-corporal/create', [PesoCorporalController::class, 'create'])->name('peso-corporal.create');
+    Route::post('/peso-corporal', [PesoCorporalController::class, 'store'])->name('peso-corporal.store');
+    Route::get('/peso-corporal/{id}', [PesoCorporalController::class, 'show'])->name('peso-corporal.show');
+    Route::get('/peso-corporal/{id}/edit', [PesoCorporalController::class, 'edit'])->name('peso-corporal.edit');
+    Route::put('/peso-corporal/{id}', [PesoCorporalController::class, 'update'])->name('peso-corporal.update');
+    Route::delete('/peso-corporal/{id}', [PesoCorporalController::class, 'destroy'])->name('peso-corporal.destroy');
+    
+    // Medidas Corporales routes - Registros de medidas corporales de animales
+    Route::get('/medidas-corporales', [MedidasCorporalesController::class, 'index'])->name('medidas-corporales.index');
+    Route::get('/medidas-corporales/create', [MedidasCorporalesController::class, 'create'])->name('medidas-corporales.create');
+    Route::post('/medidas-corporales', [MedidasCorporalesController::class, 'store'])->name('medidas-corporales.store');
+    Route::get('/medidas-corporales/{id}', [MedidasCorporalesController::class, 'show'])->name('medidas-corporales.show');
+    Route::get('/medidas-corporales/{id}/edit', [MedidasCorporalesController::class, 'edit'])->name('medidas-corporales.edit');
+    Route::put('/medidas-corporales/{id}', [MedidasCorporalesController::class, 'update'])->name('medidas-corporales.update');
+    Route::delete('/medidas-corporales/{id}', [MedidasCorporalesController::class, 'destroy'])->name('medidas-corporales.destroy');
 });

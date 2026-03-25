@@ -58,6 +58,16 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Contracts\LecheServiceInterface::class,
             \App\Services\Api\ApiLecheService::class
         );
+
+        $this->app->bind(
+            \App\Services\Contracts\PesoCorporalServiceInterface::class,
+            \App\Services\Api\ApiPesoCorporalService::class
+        );
+
+        $this->app->bind(
+            \App\Services\Contracts\MedidasCorporalesServiceInterface::class,
+            \App\Services\Api\ApiMedidasCorporalesService::class
+        );
     }
 
     /**
