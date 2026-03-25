@@ -31,17 +31,25 @@
 
         <!-- Filter by Herd -->
         @if(count($rebanos) > 0)
-        <div class="mb-6 flex items-center space-x-3">
-            <label for="rebano-filter" class="text-sm font-medium text-gray-700">Filtrar por Rebaño:</label>
-            <select id="rebano-filter" onchange="filterByRebano(this.value)" 
-                    class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
-                <option value="">Todos los Rebaños</option>
-                @foreach($rebanos as $rebano)
-                    <option value="{{ $rebano['id_Rebano'] }}" {{ $rebanoId == $rebano['id_Rebano'] ? 'selected' : '' }}>
-                        {{ $rebano['Nombre'] }}
-                    </option>
-                @endforeach
-            </select>
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+            <div class="flex items-end space-x-4">
+                <div class="flex-1">
+                    <label for="rebano_select" class="block text-sm font-medium text-gray-700 mb-2">
+                        Seleccionar Rebaño
+                    </label>
+                    <select 
+                        id="rebano_select" 
+                        onchange="filterByRebano(this.value)"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todos los Rebaños</option>
+                        @foreach($rebanos as $rebano)
+                            <option value="{{ $rebano['id_Rebano'] }}" {{ $rebanoId == $rebano['id_Rebano'] ? 'selected' : '' }}>
+                                {{ $rebano['Nombre'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
         </div>
         @endif
 
