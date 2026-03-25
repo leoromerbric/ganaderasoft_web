@@ -102,7 +102,7 @@
                             <p class="text-xs text-gray-600">Descarga la app móvil</p>
                         </div>
                     </div>
-                    <a href="https://drive.google.com/file/d/1iPavcba9L-VDhQbt8Du3yN9B39EkBYj1/view?usp=drive_link" 
+                    <a href="https://drive.google.com/file/d/19g-CpAm9VyXjgKSWMgS8L8zHcl66gvdg/view?usp=drive_link" 
                        target="_blank"
                        class="px-4 py-2 bg-gradient-to-r from-ganaderasoft-celeste to-ganaderasoft-azul text-white text-sm font-medium rounded-lg hover:from-ganaderasoft-azul hover:to-ganaderasoft-celeste transition-all duration-200 transform hover:scale-105">
                         Descargar APK
