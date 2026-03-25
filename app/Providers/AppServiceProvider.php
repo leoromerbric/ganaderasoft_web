@@ -68,6 +68,16 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Contracts\MedidasCorporalesServiceInterface::class,
             \App\Services\Api\ApiMedidasCorporalesService::class
         );
+
+        $this->app->bind(
+            \App\Services\Contracts\PersonalFincaServiceInterface::class,
+            \App\Services\Api\ApiPersonalFincaService::class
+        );
+
+        $this->app->bind(
+            \App\Services\Contracts\CambiosAnimalServiceInterface::class,
+            \App\Services\Api\ApiCambiosAnimalService::class
+        );
     }
 
     /**

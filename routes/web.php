@@ -5,6 +5,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FincasController;
 use App\Http\Controllers\RebanosController;
 use App\Http\Controllers\PersonalController;
+use App\Http\Controllers\PersonalFincaController;
+use App\Http\Controllers\CambiosAnimalController;
 use App\Http\Controllers\AnimalesController;
 use App\Http\Controllers\LactanciaController;
 use App\Http\Controllers\LecheController;
@@ -102,4 +104,20 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/medidas-corporales/{id}/edit', [MedidasCorporalesController::class, 'edit'])->name('medidas-corporales.edit');
     Route::put('/medidas-corporales/{id}', [MedidasCorporalesController::class, 'update'])->name('medidas-corporales.update');
     Route::delete('/medidas-corporales/{id}', [MedidasCorporalesController::class, 'destroy'])->name('medidas-corporales.destroy');
+    
+    // Personal de Finca routes - Gestión de personal de las fincas
+    Route::get('/personal-finca', [PersonalFincaController::class, 'index'])->name('personal-finca.index');
+    Route::get('/personal-finca/create', [PersonalFincaController::class, 'create'])->name('personal-finca.create');
+    Route::post('/personal-finca', [PersonalFincaController::class, 'store'])->name('personal-finca.store');
+    Route::get('/personal-finca/{id}', [PersonalFincaController::class, 'show'])->name('personal-finca.show');
+    Route::get('/personal-finca/{id}/edit', [PersonalFincaController::class, 'edit'])->name('personal-finca.edit');
+    Route::put('/personal-finca/{id}', [PersonalFincaController::class, 'update'])->name('personal-finca.update');
+    Route::delete('/personal-finca/{id}', [PersonalFincaController::class, 'destroy'])->name('personal-finca.destroy');
+    
+    // Cambios de Animal routes - Historial de cambios y desarrollo
+    Route::get('/cambios-animal', [CambiosAnimalController::class, 'index'])->name('cambios-animal.index');
+    Route::get('/cambios-animal/create', [CambiosAnimalController::class, 'create'])->name('cambios-animal.create');
+    Route::post('/cambios-animal', [CambiosAnimalController::class, 'store'])->name('cambios-animal.store');
+    Route::get('/cambios-animal/{id}', [CambiosAnimalController::class, 'show'])->name('cambios-animal.show');
+    Route::delete('/cambios-animal/{id}', [CambiosAnimalController::class, 'destroy'])->name('cambios-animal.destroy');
 });

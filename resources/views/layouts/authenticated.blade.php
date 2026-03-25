@@ -89,12 +89,16 @@
                     <span class="menu-icon text-xl mr-3">📋</span>
                     <span class="menu-text font-medium">Lista de Animales</span>
                 </a>
+                <a href="{{ route('cambios-animal.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('cambios-animal.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">📝</span>
+                    <span class="menu-text font-medium">Cambios de Animal</span>
+                </a>
 
                 <!-- Personal -->
                 <div class="mt-6 px-4 mb-2">
                     <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Personal</h3>
                 </div>
-                <a href="{{ route('personal.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('personal.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                <a href="{{ route('personal-finca.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('personal-finca.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
                     <span class="menu-icon text-xl mr-3">👥</span>
                     <span class="menu-text font-medium">Personal de Finca</span>
                 </a>
