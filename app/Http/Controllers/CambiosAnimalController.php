@@ -234,7 +234,8 @@ class CambiosAnimalController extends Controller
             
             Log::info('CambiosAnimalController@getAnimalEtapa - Animal obtenido', [
                 'animal_id' => $id,
-                'has_etapa_actual' => isset($animal['etapa_actual'])
+                'has_etapa_actual' => isset($animal['etapa_actual']),
+                'etapa_actual_structure' => $animal['etapa_actual'] ?? 'null'
             ]);
             
             return response()->json([
