@@ -44,7 +44,10 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
             ]);
             
             if (isset($response['success']) && $response['success']) {
-                return $response['data'] ?? [];
+                // Los datos vienen en formato paginado: response.data.data[]
+                $paginatedData = $response['data'] ?? [];
+                $actualData = $paginatedData['data'] ?? [];
+                return $actualData;
             }
             
             return [];
@@ -146,9 +149,12 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
             \Log::info('ApiCambiosAnimalService@getAnimales - Respuesta recibida', ['response' => $response]);
             
             if (isset($response['success']) && $response['success']) {
-                $data = $response['data'] ?? [];
-                \Log::info('ApiCambiosAnimalService@getAnimales - Animales encontrados: ' . count($data));
-                return $data;
+                // Los datos vienen en formato paginado: response.data.data[]
+                $paginatedData = $response['data'] ?? [];
+                $actualData = $paginatedData['data'] ?? [];
+                \Log::info('ApiCambiosAnimalService@getAnimales - Animales encontrados: ' . count($actualData));
+                \Log::info('ApiCambiosAnimalService@getAnimales - Estructura datos', ['paginated' => $paginatedData, 'actual_data_count' => count($actualData)]);
+                return $actualData;
             }
             
             \Log::warning('ApiCambiosAnimalService@getAnimales - Respuesta no exitosa', ['response' => $response]);
@@ -187,9 +193,12 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
             \Log::info('ApiCambiosAnimalService@getFincas - Respuesta recibida', ['response' => $response]);
             
             if (isset($response['success']) && $response['success']) {
-                $data = $response['data'] ?? [];
-                \Log::info('ApiCambiosAnimalService@getFincas - Fincas encontradas: ' . count($data));
-                return $data;
+                // Los datos vienen en formato paginado: response.data.data[]
+                $paginatedData = $response['data'] ?? [];
+                $actualData = $paginatedData['data'] ?? [];
+                \Log::info('ApiCambiosAnimalService@getFincas - Fincas encontradas: ' . count($actualData));
+                \Log::info('ApiCambiosAnimalService@getFincas - Estructura datos', ['paginated' => $paginatedData, 'actual_data_count' => count($actualData)]);
+                return $actualData;
             }
             
             \Log::warning('ApiCambiosAnimalService@getFincas - Respuesta no exitosa', ['response' => $response]);
