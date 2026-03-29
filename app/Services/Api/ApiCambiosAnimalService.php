@@ -17,42 +17,52 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
     public function getList(?int $idAnimal = null, ?int $idFinca = null): array
     {
         try {
+            \Log::info('ApiCambiosAnimalService@getList - Iniciando obtención de cambios', ['animal_id' => $idAnimal, 'finca_id' => $idFinca]);
+            
             $user = session('user');
             
             if (!$user || !isset($user['token'])) {
+                \Log::warning('ApiCambiosAnimalService@getList - Usuario no autenticado');
                 return [];
             }
 
             $endpoint = '/cambios-animal';
             $params = [];
             
+            // Solo filtrar por animal_id según la lógica de la API
             if ($idAnimal) {
                 $params['animal_id'] = $idAnimal;
-            }
-            
-            if ($idFinca) {
-                $params['finca_id'] = $idFinca;
             }
             
             if (!empty($params)) {
                 $endpoint .= '?' . http_build_query($params);
             }
+            
+            \Log::info('ApiCambiosAnimalService@getList - Endpoint construido', ['endpoint' => $endpoint]);
 
             $response = $this->get($endpoint, [
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $user['token'],
             ]);
             
+            \Log::info('ApiCambiosAnimalService@getList - Respuesta recibida', ['response_structure' => [
+                'success' => $response['success'] ?? null,
+                'data_type' => gettype($response['data'] ?? null),
+                'data_count' => is_array($response['data'] ?? null) ? count($response['data']) : 0
+            ]]);
+            
             if (isset($response['success']) && $response['success']) {
-                // Los datos vienen en formato paginado: response.data.data[]
-                $paginatedData = $response['data'] ?? [];
-                $actualData = $paginatedData['data'] ?? [];
-                return $actualData;
+                // Para cambios-animal, los datos vienen directamente en 'data', no en 'data.data'
+                $cambios = $response['data'] ?? [];
+                \Log::info('ApiCambiosAnimalService@getList - Cambios encontrados: ' . count($cambios));
+                return $cambios;
             }
             
+            \Log::warning('ApiCambiosAnimalService@getList - Respuesta no exitosa', ['response' => $response]);
             return [];
         } catch (Exception $e) {
             \Log::error('Error obteniendo cambios de animales: ' . $e->getMessage());
+            \Log::error('Stack trace cambios: ' . $e->getTraceAsString());
             return [];
         }
     }
