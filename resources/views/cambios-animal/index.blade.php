@@ -165,7 +165,6 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peso</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Altura</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comentario</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -238,16 +237,8 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900">
-                                                    {{ $cambio['Observacion'] ?? 'Sin observaciones' }}
+                                                    {{ $cambio['Comentario'] ?? 'Sin observaciones' }}
                                                 </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                @if(isset($cambio['cambios_etapa_anid']))
-                                                    <a href="{{ route('cambios-animal.show', $cambio['cambios_etapa_anid']) }}" 
-                                                       class="text-ganaderasoft-verde hover:text-ganaderasoft-azul transition-colors duration-200">
-                                                        👁️ Ver detalles
-                                                    </a>
-                                                @endif
                                             </td>
                                         </tr>
                                     @endif
