@@ -263,83 +263,31 @@
             console.log('DEBUG:', message);
         }
         
-        // Filtrar etapas basándose en el animal seleccionado
+        // Filtrar etapas basándose en el animal seleccionado - SOLO ETAPA ACTUAL
         document.getElementById('cambios_etapa_anid').addEventListener('change', function(e) {
             const animalSelect = e.target;
             const etapaSelect = document.getElementById('cambios_etapa_etid');
             const selectedOption = animalSelect.options[animalSelect.selectedIndex];
             
-            showDebug('Animal seleccionado, procesando...');
+            showDebug('Animal seleccionado, obteniendo solo su etapa actual...');
             
             // Reiniciar etapa
             etapaSelect.value = '';
             document.getElementById('Etapa_Cambio').value = '';
             
             if (!animalSelect.value) {
-                // Si no hay animal seleccionado, mostrar todas las etapas
                 showDebug('No hay animal seleccionado');
-                Array.from(etapaSelect.options).forEach((option, index) => {
-                    if (index > 0) {
-                        option.style.display = 'block';
-                    }
-                });
+                // Limpiar select y mostrar solo la opción por defecto
+                etapaSelect.innerHTML = '<option value="">Seleccione una etapa</option>';
                 document.getElementById('debug-info').style.display = 'none';
                 return;
             }
             
-            // Obtener datos del animal seleccionado
-            const animalSexo = selectedOption.getAttribute('data-sexo');
-            const animalTipoAnimal = selectedOption.getAttribute('data-tipo-animal');
-            
-            showDebug(`Animal ID: ${animalSelect.value}, Sexo: "${animalSexo}", Tipo: "${animalTipoAnimal}"`);
-            console.log('Datos completos del animal seleccionado:', {
-                id: animalSelect.value,
-                sexo: animalSexo,
-                tipoAnimal: animalTipoAnimal,
-                optionText: selectedOption.textContent,
-                allAttributes: {
-                    'data-sexo': selectedOption.getAttribute('data-sexo'),
-                    'data-tipo-animal': selectedOption.getAttribute('data-tipo-animal')
-                }
-            });
-            
-            // Función para filtrar etapas
-            function filtrarEtapas() {
-                let visibleOptions = 0;
-                Array.from(etapaSelect.options).forEach((option, index) => {
-                    if (index === 0) return; // Skip the first "Seleccione una etapa" option
-                    
-                    const etapaSexo = option.getAttribute('data-sexo');
-                    const etapaTipoAnimal = option.getAttribute('data-tipo-animal');
-                    
-                    // La etapa actual siempre debe ser visible (identificada por el texto "ETAPA ACTUAL")
-                    const isEtapaActual = option.textContent.includes('(ETAPA ACTUAL)');
-                    
-                    if (isEtapaActual) {
-                        option.style.display = 'block';
-                        visibleOptions++;
-                        showDebug(`✅ Etapa actual siempre visible: "${option.textContent}"`);
-                    } else {
-                        // Verificar compatibilidad para otras etapas
-                        const sexoCompatible = !etapaSexo || etapaSexo === animalSexo;
-                        const tipoAnimalCompatible = !etapaTipoAnimal || etapaTipoAnimal === animalTipoAnimal;
-                        
-                        if (sexoCompatible && tipoAnimalCompatible) {
-                            option.style.display = 'block';
-                            visibleOptions++;
-                        } else {
-                            option.style.display = 'none';
-                            console.log(`Etapa filtrada: "${option.textContent}" - Animal Sexo:${animalSexo} vs Etapa Sexo:${etapaSexo}, Animal Tipo:${animalTipoAnimal} vs Etapa Tipo:${etapaTipoAnimal}`);
-                        }
-                    }
-                });
-                showDebug(`Filtrado completado: ${visibleOptions} etapas visibles (incluyendo etapa actual)`);
-            }
-            
-            showDebug('Iniciando llamada AJAX para obtener etapa actual...');
+            const animalId = animalSelect.value;
+            showDebug(`Obteniendo etapa actual para animal ID: ${animalId}`);
             
             // Obtener etapa actual del animal vía AJAX
-            fetch(`/cambios-animal/animal/${animalSelect.value}/etapa`, {
+            fetch(`/cambios-animal/animal/${animalId}/etapa`, {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -355,91 +303,50 @@
                 return response.json();
             })
             .then(data => {
-                showDebug(`AJAX Success: ${JSON.stringify(data.success)}`);
                 console.log('Respuesta completa del servidor:', data);
                 
                 if (data.success && data.data && data.data.etapa_actual) {
                     const etapaActualData = data.data.etapa_actual;
-                    showDebug('Procesando etapa actual...');
-                    console.log('Estructura etapa_actual:', etapaActualData);
+                    showDebug('✅ Etapa actual encontrada, procesando...');
                     
                     // La estructura puede ser directa o anidada
                     let etapaActual;
                     if (etapaActualData.etapa) {
-                        // Estructura: etapa_actual.etapa (anidada)
                         etapaActual = etapaActualData.etapa;
-                        showDebug('Usando estructura anidada (etapa_actual.etapa)');
                     } else if (etapaActualData.etapa_id) {
-                        // Estructura: etapa_actual directa
                         etapaActual = etapaActualData;
-                        showDebug('Usando estructura directa (etapa_actual)');
                     } else {
                         showDebug('ERROR: Estructura de etapa_actual no reconocida', true);
-                        console.error('Estructura de etapa_actual no reconocida:', etapaActualData);
-                        filtrarEtapas(); // Filtrar etapas normalmente
                         return;
                     }
                     
-                    showDebug(`Etapa actual: ID=${etapaActual.etapa_id}, Nombre=${etapaActual.etapa_nombre}`);
-                    console.log('Etapa actual procesada:', etapaActual);
+                    showDebug(`✅ Etapa: ${etapaActual.etapa_nombre} (ID: ${etapaActual.etapa_id})`);
                     
-                    // Verificar si la etapa actual ya existe en la lista
-                    let etapaActualExists = false;
-                    let existingOptionText = '';
-                    Array.from(etapaSelect.options).forEach((option, index) => {
-                        if (option.value == etapaActual.etapa_id) {
-                            etapaActualExists = true;
-                            existingOptionText = option.textContent;
-                        }
-                    });
+                    // LIMPIAR el select y agregar SOLO la etapa actual
+                    etapaSelect.innerHTML = '<option value="">Seleccione una etapa</option>';
                     
-                    if (etapaActualExists) {
-                        showDebug(`Etapa actual ya existe: "${existingOptionText}"`);
-                    } else {
-                        showDebug('Agregando etapa actual a la lista...');
-                        
-                        const newOption = document.createElement('option');
-                        newOption.value = etapaActual.etapa_id;
-                        newOption.textContent = `${etapaActual.etapa_nombre} (ETAPA ACTUAL)`;
-                        newOption.setAttribute('data-sexo', etapaActual.etapa_sexo || '');
-                        newOption.setAttribute('data-tipo-animal', etapaActual.etapa_fk_tipo_animal_id || '3');
-                        newOption.setAttribute('data-edad-ini', etapaActual.etapa_edad_ini || '');
-                        newOption.setAttribute('data-edad-fin', etapaActual.etapa_edad_fin || '');
-                        
-                        // Agregar después de la primera opción "Seleccione una etapa"
-                        if (etapaSelect.options.length > 1) {
-                            etapaSelect.insertBefore(newOption, etapaSelect.options[1]);
-                        } else {
-                            etapaSelect.appendChild(newOption);
-                        }
-                        
-                        showDebug(`✅ Etapa actual agregada: "${newOption.textContent}"`);
-                        
-                        console.log('Etapa actual agregada a la lista:', {
-                            id: etapaActual.etapa_id,
-                            nombre: etapaActual.etapa_nombre,
-                            sexo: etapaActual.etapa_sexo,
-                            tipo_animal: etapaActual.etapa_fk_tipo_animal_id
-                        });
-                    }
+                    const etapaOption = document.createElement('option');
+                    etapaOption.value = etapaActual.etapa_id;
+                    etapaOption.textContent = `${etapaActual.etapa_nombre} (ETAPA ACTUAL)`;
+                    etapaSelect.appendChild(etapaOption);
+                    
+                    showDebug(`✅ ¡LISTO! Solo se muestra: "${etapaOption.textContent}"`);
+                    
+                    // Auto-seleccionar la etapa actual y llenar el nombre
+                    etapaSelect.value = etapaActual.etapa_id;
+                    document.getElementById('Etapa_Cambio').value = etapaActual.etapa_nombre;
+                    
+                    showDebug(`✅ Etapa preseleccionada y nombre autocompletado`);
+                    
                 } else {
-                    showDebug('No se encontró etapa_actual válida', true);
-                    console.log('No se encontró etapa_actual o response no exitoso:', {
-                        success: data.success,
-                        has_data: !!(data.data),
-                        has_etapa_actual: !!(data.data && data.data.etapa_actual)
-                    });
+                    showDebug('ERROR: No se encontró etapa_actual válida', true);
+                    etapaSelect.innerHTML = '<option value="">Sin etapa disponible</option>';
                 }
-                
-                // Filtrar etapas después de procesar la etapa actual
-                filtrarEtapas();
             })
             .catch(error => {
                 showDebug(`ERROR AJAX: ${error.message}`, true);
                 console.error('Error obteniendo etapa del animal:', error);
-                
-                // Filtrar etapas aunque haya error en AJAX
-                filtrarEtapas();
+                etapaSelect.innerHTML = '<option value="">Error al cargar etapa</option>';
             });
         });
 
