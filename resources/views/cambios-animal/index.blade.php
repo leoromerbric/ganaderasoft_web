@@ -344,8 +344,7 @@
                 selectAnimales.appendChild(option);
             });
             
-            // Aplicar filtros inmediatamente cuando cambie la finca
-            aplicarFiltros();
+            // NO llamar aplicarFiltros() automáticamente para evitar loops
         }
         
         function limpiarFiltros() {
@@ -375,24 +374,53 @@
             window.location.href = url.toString();
         }
         
-        // Agregar event listeners
-        document.getElementById('filtroFinca').addEventListener('change', filtrarAnimalesPorFinca);
-        document.getElementById('filtroAnimal').addEventListener('change', aplicarFiltros);
+        // Variables para prevenir loops infinitos
+        let isInitializing = false;
+        let debounceTimer = null;
+        
+        // Agregar event listeners con protección anti-loop
+        document.getElementById('filtroFinca').addEventListener('change', function(e) {
+            if (isInitializing) return; // Evitar loops durante inicialización
+            
+            // Limpiar timer anterior y crear nuevo debounce
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() {
+                filtrarAnimalesPorFinca();
+                aplicarFiltros(); // Solo aplicar cuando el usuario cambie manualmente
+            }, 300); // 300ms debounce
+        });
+        
+        document.getElementById('filtroAnimal').addEventListener('change', function(e) {
+            if (isInitializing) return; // Evitar loops durante inicialización
+            
+            // Limpiar timer anterior y crear nuevo debounce  
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() {
+                aplicarFiltros();
+            }, 300); // 300ms debounce
+        });
         
         // Inicializar filtros al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
-            // Si hay una finca seleccionada, filtrar animales
+            isInitializing = true; // Activar flag de inicialización
+            
+            // Si hay una finca seleccionada, filtrar animales SIN recargar página
             const fincaActual = '{{ $idFinca ?? "" }}';
             const animalActual = '{{ $idAnimal ?? "" }}';
             
             if (fincaActual) {
                 document.getElementById('filtroFinca').value = fincaActual;
-                filtrarAnimalesPorFinca();
+                filtrarAnimalesPorFinca(); // Solo filtrar localmente, no recargar
             }
             
             if (animalActual) {
                 document.getElementById('filtroAnimal').value = animalActual;
             }
+            
+            // Desactivar flag después de 500ms para permitir interacciones del usuario
+            setTimeout(function() {
+                isInitializing = false;
+            }, 500);
         });
     </script>
 @endsection

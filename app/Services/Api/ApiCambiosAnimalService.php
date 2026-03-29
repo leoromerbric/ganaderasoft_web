@@ -133,27 +133,22 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
             \Log::info('ApiCambiosAnimalService@getAnimales - Iniciando obtención de animales');
             
             $user = session('user');
-            
+
             if (!$user || !isset($user['token'])) {
                 \Log::warning('ApiCambiosAnimalService@getAnimales - Usuario no autenticado o token no encontrado');
                 return [];
             }
-            
-            \Log::info('ApiCambiosAnimalService@getAnimales - Haciendo petición a /animales');
 
             $response = $this->get('/animales', [
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $user['token'],
             ]);
             
-            \Log::info('ApiCambiosAnimalService@getAnimales - Respuesta recibida', ['response' => $response]);
-            
             if (isset($response['success']) && $response['success']) {
                 // Los datos vienen en formato paginado: response.data.data[]
                 $paginatedData = $response['data'] ?? [];
                 $actualData = $paginatedData['data'] ?? [];
                 \Log::info('ApiCambiosAnimalService@getAnimales - Animales encontrados: ' . count($actualData));
-                \Log::info('ApiCambiosAnimalService@getAnimales - Estructura datos', ['paginated' => $paginatedData, 'actual_data_count' => count($actualData)]);
                 return $actualData;
             }
             
@@ -177,27 +172,22 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
             \Log::info('ApiCambiosAnimalService@getFincas - Iniciando obtención de fincas');
             
             $user = session('user');
-            
+
             if (!$user || !isset($user['token'])) {
                 \Log::warning('ApiCambiosAnimalService@getFincas - Usuario no autenticado o token no encontrado');
                 return [];
             }
-            
-            \Log::info('ApiCambiosAnimalService@getFincas - Haciendo petición a /fincas');
 
             $response = $this->get('/fincas', [
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $user['token'],
             ]);
             
-            \Log::info('ApiCambiosAnimalService@getFincas - Respuesta recibida', ['response' => $response]);
-            
             if (isset($response['success']) && $response['success']) {
                 // Los datos vienen en formato paginado: response.data.data[]
                 $paginatedData = $response['data'] ?? [];
                 $actualData = $paginatedData['data'] ?? [];
                 \Log::info('ApiCambiosAnimalService@getFincas - Fincas encontradas: ' . count($actualData));
-                \Log::info('ApiCambiosAnimalService@getFincas - Estructura datos', ['paginated' => $paginatedData, 'actual_data_count' => count($actualData)]);
                 return $actualData;
             }
             
