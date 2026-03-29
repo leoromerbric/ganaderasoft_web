@@ -291,7 +291,17 @@
             const animalSexo = selectedOption.getAttribute('data-sexo');
             const animalTipoAnimal = selectedOption.getAttribute('data-tipo-animal');
             
-            showDebug(`Animal ID: ${animalSelect.value}, Sexo: ${animalSexo}, Tipo: ${animalTipoAnimal}`);
+            showDebug(`Animal ID: ${animalSelect.value}, Sexo: "${animalSexo}", Tipo: "${animalTipoAnimal}"`);
+            console.log('Datos completos del animal seleccionado:', {
+                id: animalSelect.value,
+                sexo: animalSexo,
+                tipoAnimal: animalTipoAnimal,
+                optionText: selectedOption.textContent,
+                allAttributes: {
+                    'data-sexo': selectedOption.getAttribute('data-sexo'),
+                    'data-tipo-animal': selectedOption.getAttribute('data-tipo-animal')
+                }
+            });
             
             // Función para filtrar etapas
             function filtrarEtapas() {
@@ -302,18 +312,28 @@
                     const etapaSexo = option.getAttribute('data-sexo');
                     const etapaTipoAnimal = option.getAttribute('data-tipo-animal');
                     
-                    // Verificar compatibilidad
-                    const sexoCompatible = !etapaSexo || etapaSexo === animalSexo;
-                    const tipoAnimalCompatible = !etapaTipoAnimal || etapaTipoAnimal === animalTipoAnimal;
+                    // La etapa actual siempre debe ser visible (identificada por el texto "ETAPA ACTUAL")
+                    const isEtapaActual = option.textContent.includes('(ETAPA ACTUAL)');
                     
-                    if (sexoCompatible && tipoAnimalCompatible) {
+                    if (isEtapaActual) {
                         option.style.display = 'block';
                         visibleOptions++;
+                        showDebug(`✅ Etapa actual siempre visible: "${option.textContent}"`);
                     } else {
-                        option.style.display = 'none';
+                        // Verificar compatibilidad para otras etapas
+                        const sexoCompatible = !etapaSexo || etapaSexo === animalSexo;
+                        const tipoAnimalCompatible = !etapaTipoAnimal || etapaTipoAnimal === animalTipoAnimal;
+                        
+                        if (sexoCompatible && tipoAnimalCompatible) {
+                            option.style.display = 'block';
+                            visibleOptions++;
+                        } else {
+                            option.style.display = 'none';
+                            console.log(`Etapa filtrada: "${option.textContent}" - Animal Sexo:${animalSexo} vs Etapa Sexo:${etapaSexo}, Animal Tipo:${animalTipoAnimal} vs Etapa Tipo:${etapaTipoAnimal}`);
+                        }
                     }
                 });
-                showDebug(`Filtrado completado: ${visibleOptions} etapas visibles`);
+                showDebug(`Filtrado completado: ${visibleOptions} etapas visibles (incluyendo etapa actual)`);
             }
             
             showDebug('Iniciando llamada AJAX para obtener etapa actual...');
