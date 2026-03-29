@@ -61,18 +61,22 @@
                                     class="form-select w-full border-gray-300 rounded-md focus:border-ganaderasoft-celeste focus:ring-ganaderasoft-celeste @error('cambios_etapa_anid') border-red-500 @enderror"
                                     required>
                                 <option value="">Seleccione un animal</option>
-                                @foreach($animales as $animal)
-                                    <option value="{{ $animal['id_Animal'] }}" 
-                                            {{ old('cambios_etapa_anid') == $animal['id_Animal'] ? 'selected' : '' }}>
-                                        {{ $animal['Nombre'] ?? 'Animal #' . $animal['id_Animal'] }}
-                                        @if(isset($animal['finca']['Nombre']))
-                                            - {{ $animal['finca']['Nombre'] }}
+                                @if(is_array($animales))
+                                    @foreach($animales as $animal)
+                                        @if(is_array($animal) && isset($animal['id_Animal']))
+                                            <option value="{{ $animal['id_Animal'] }}" 
+                                                    {{ old('cambios_etapa_anid') == $animal['id_Animal'] ? 'selected' : '' }}>
+                                                {{ $animal['Nombre'] ?? 'Animal #' . $animal['id_Animal'] }}
+                                                @if(isset($animal['finca']['Nombre']))
+                                                    - {{ $animal['finca']['Nombre'] }}
+                                                @endif
+                                                @if(isset($animal['Sexo']))
+                                                    ({{ $animal['Sexo'] === 'M' ? 'Macho' : 'Hembra' }})
+                                                @endif
+                                            </option>
                                         @endif
-                                        @if(isset($animal['Sexo']))
-                                            ({{ $animal['Sexo'] === 'M' ? 'Macho' : 'Hembra' }})
-                                        @endif
-                                    </option>
-                                @endforeach
+                                    @endforeach
+                                @endif
                             </select>
                             @error('cambios_etapa_anid')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

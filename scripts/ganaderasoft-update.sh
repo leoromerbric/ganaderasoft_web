@@ -80,8 +80,12 @@ check_git_status() {
     
     cd "$PROJECT_DIR"
     
-    # Solucionar problema de "dubious ownership"
+    # Solucionar problema de "dubious ownership" - múltiples métodos
     git config --global --add safe.directory "$PROJECT_DIR"
+    git config --system --add safe.directory "$PROJECT_DIR" 2>/dev/null || true
+    
+    # También configurar para el usuario www-data específicamente
+    sudo -u "$WEB_USER" git config --global --add safe.directory "$PROJECT_DIR" 2>/dev/null || true
     
     # Verificar si hay cambios no commiteados
     if [ -n "$(git status --porcelain)" ]; then
@@ -98,8 +102,10 @@ update_code() {
     
     cd "$PROJECT_DIR"
     
-    # Asegurar que el directorio es seguro para Git
+    # Asegurar que el directorio es seguro para Git - múltiples métodos
     git config --global --add safe.directory "$PROJECT_DIR"
+    git config --system --add safe.directory "$PROJECT_DIR" 2>/dev/null || true
+    sudo -u "$WEB_USER" git config --global --add safe.directory "$PROJECT_DIR" 2>/dev/null || true
     
     # Fetch latest changes
     git fetch origin
@@ -196,7 +202,21 @@ update_composer() {
     
     if [ -f "composer.json" ]; then
         log "Instalando/actualizando dependencias de Composer..."
-        sudo -u "$WEB_USER" composer install --no-dev --optimize-autoloader --no-interaction
+        
+        # Limpiar caché de composer si hay problemas
+        sudo -u "$WEB_USER" composer clear-cache 2>/dev/null || true
+        
+        # Intentar instalación normal primero
+        if ! sudo -u "$WEB_USER" composer install --no-dev --optimize-autoloader --no-interaction; then
+            warning "Instalación normal falló, limpiando vendor y reintentando..."
+            
+            # Limpiar vendor completamente
+            rm -rf vendor/ composer.lock
+            
+            # Reinstalar desde cero
+            sudo -u "$WEB_USER" composer install --no-dev --optimize-autoloader --no-interaction
+        fi
+        
         success "Dependencias de Composer actualizadas"
     else
         warning "composer.json no encontrado"
@@ -230,6 +250,13 @@ fix_permissions() {
     
     # Permisos generales del proyecto
     chown -R "$WEB_USER:$WEB_USER" .
+    
+    # Eliminar vendor si tiene problemas de permisos
+    if [ -d "vendor" ]; then
+        log "Limpiando directorio vendor con problemas de permisos..."
+        rm -rf vendor/
+        success "Directorio vendor limpiado"
+    fi
     
     # Permisos específicos para storage
     mkdir -p storage/framework/cache/data
@@ -340,9 +367,9 @@ main() {
     check_git_status
     update_code
     setup_env
+    fix_permissions
     update_composer
     update_npm
-    fix_permissions
     optimize_laravel
     check_services
     health_check

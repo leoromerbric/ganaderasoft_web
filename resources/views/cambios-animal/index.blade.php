@@ -43,14 +43,18 @@
                     <label for="filtroAnimal" class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
                     <select id="filtroAnimal" class="form-select w-full border-gray-300 rounded-md">
                         <option value="">Todos los animales</option>
-                        @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}" {{ $idAnimal == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Animal #' . $animal['id_Animal'] }}
-                                @if(isset($animal['finca']['Nombre']))
-                                    - {{ $animal['finca']['Nombre'] }}
+                        @if(is_array($animales))
+                            @foreach($animales as $animal)
+                                @if(is_array($animal) && isset($animal['id_Animal']))
+                                    <option value="{{ $animal['id_Animal'] }}" {{ $idAnimal == $animal['id_Animal'] ? 'selected' : '' }}>
+                                        {{ $animal['Nombre'] ?? 'Animal #' . $animal['id_Animal'] }}
+                                        @if(isset($animal['finca']['Nombre']))
+                                            - {{ $animal['finca']['Nombre'] }}
+                                        @endif
+                                    </option>
                                 @endif
-                            </option>
-                        @endforeach
+                            @endforeach
+                        @endif
                     </select>
                 </div>
 
@@ -59,11 +63,15 @@
                     <label for="filtroFinca" class="block text-sm font-medium text-gray-700 mb-1">Finca</label>
                     <select id="filtroFinca" class="form-select w-full border-gray-300 rounded-md">
                         <option value="">Todas las fincas</option>
-                        @foreach($fincas as $finca)
-                            <option value="{{ $finca['id_Finca'] }}" {{ $idFinca == $finca['id_Finca'] ? 'selected' : '' }}>
-                                {{ $finca['Nombre'] }}
-                            </option>
-                        @endforeach
+                        @if(is_array($fincas))
+                            @foreach($fincas as $finca)
+                                @if(is_array($finca) && isset($finca['id_Finca']))
+                                    <option value="{{ $finca['id_Finca'] }}" {{ $idFinca == $finca['id_Finca'] ? 'selected' : '' }}>
+                                        {{ $finca['Nombre'] ?? 'Finca #' . $finca['id_Finca'] }}
+                                    </option>
+                                @endif
+                            @endforeach
+                        @endif
                     </select>
                 </div>
 
@@ -188,80 +196,96 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($cambios as $cambio)
-                                <tr class="hover:bg-gray-50 registro-cambio"
-                                    data-animal="{{ $cambio['cambios_etapa_anid'] }}"
-                                    data-etapa="{{ strtolower($cambio['Etapa_Cambio']) }}"
-                                    data-fecha="{{ $cambio['Fecha_Cambio'] }}">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">
-                                            {{ date('d/m/Y', strtotime($cambio['Fecha_Cambio'])) }}
-                                        </div>
-                                        <div class="text-xs text-gray-500">
-                                            {{ date('H:i', strtotime($cambio['created_at'] ?? $cambio['Fecha_Cambio'])) }}
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 w-8 h-8">
-                                                <div class="w-8 h-8 bg-ganaderasoft-celeste rounded-full flex items-center justify-center">
-                                                    <span class="text-white font-semibold text-xs">🐄</span>
-                                                </div>
-                                            </div>
-                                            <div class="ml-4">
+                            @if(is_array($cambios) && count($cambios) > 0)
+                                @foreach($cambios as $cambio)
+                                    @if(is_array($cambio))
+                                        <tr class="hover:bg-gray-50 registro-cambio"
+                                            data-animal="{{ $cambio['cambios_etapa_anid'] ?? '' }}"
+                                            data-etapa="{{ strtolower($cambio['Etapa_Cambio'] ?? '') }}"
+                                            data-fecha="{{ $cambio['Fecha_Cambio'] ?? '' }}">
+                                            <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm font-medium text-gray-900">
-                                                    Animal #{{ $cambio['cambios_etapa_anid'] }}
+                                                    @if(isset($cambio['Fecha_Cambio']))
+                                                        {{ date('d/m/Y', strtotime($cambio['Fecha_Cambio'])) }}
+                                                    @else
+                                                        --/--/----
+                                                    @endif
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
-                                            @if(strtolower($cambio['Etapa_Cambio']) === 'becerro' || strtolower($cambio['Etapa_Cambio']) === 'becerra') bg-yellow-100 text-yellow-800
-                                            @elseif(strtolower($cambio['Etapa_Cambio']) === 'juvenil') bg-blue-100 text-blue-800
-                                            @elseif(strtolower($cambio['Etapa_Cambio']) === 'adulto' || strtolower($cambio['Etapa_Cambio']) === 'adulta') bg-green-100 text-green-800
-                                            @else bg-gray-100 text-gray-800
-                                            @endif">
-                                            {{ $cambio['Etapa_Cambio'] }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">
-                                            @if($cambio['Peso'])
-                                                {{ number_format($cambio['Peso'], 1) }} kg
-                                            @else
-                                                <span class="text-gray-400">No registrado</span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">
-                                            @if($cambio['Altura'])
-                                                {{ number_format($cambio['Altura'], 1) }} cm
-                                            @else
-                                                <span class="text-gray-400">No registrado</span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-900 max-w-xs truncate" title="{{ $cambio['Comentario'] }}">
-                                            @if($cambio['Comentario'])
-                                                {{ $cambio['Comentario'] }}
-                                            @else
-                                                <span class="text-gray-400">Sin comentarios</span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-2">
-                                            <a href="{{ route('cambios-animal.show', $cambio['id_Cambio']) }}" 
-                                               class="text-ganaderasoft-celeste hover:text-ganaderasoft-celeste/80">
-                                                Ver
-                                            </a>
-                                        </div>
+                                                <div class="text-xs text-gray-500">
+                                                    @if(isset($cambio['created_at']))
+                                                        {{ date('H:i', strtotime($cambio['created_at'])) }}
+                                                    @elseif(isset($cambio['Fecha_Cambio']))
+                                                        {{ date('H:i', strtotime($cambio['Fecha_Cambio'])) }}
+                                                    @else
+                                                        --:--
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="flex items-center">
+                                                    <div class="flex-shrink-0 w-8 h-8">
+                                                        <div class="w-8 h-8 bg-ganaderasoft-celeste rounded-full flex items-center justify-center">
+                                                            <span class="text-white font-semibold text-xs">🐄</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ml-4">
+                                                        <div class="text-sm font-medium text-gray-900">
+                                                            Animal #{{ $cambio['cambios_etapa_anid'] ?? 'N/A' }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                                                    @if(isset($cambio['Etapa_Cambio']) && (strtolower($cambio['Etapa_Cambio']) === 'becerro' || strtolower($cambio['Etapa_Cambio']) === 'becerra')) bg-yellow-100 text-yellow-800
+                                                    @elseif(isset($cambio['Etapa_Cambio']) && strtolower($cambio['Etapa_Cambio']) === 'juvenil') bg-blue-100 text-blue-800
+                                                    @elseif(isset($cambio['Etapa_Cambio']) && (strtolower($cambio['Etapa_Cambio']) === 'adulto' || strtolower($cambio['Etapa_Cambio']) === 'adulta')) bg-green-100 text-green-800
+                                                    @else bg-gray-100 text-gray-800
+                                                    @endif">
+                                                    {{ $cambio['Etapa_Cambio'] ?? 'Sin etapa' }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">
+                                                    @if(isset($cambio['Peso']) && $cambio['Peso'])
+                                                        {{ number_format($cambio['Peso'], 1) }} kg
+                                                    @else
+                                                        <span class="text-gray-400">No registrado</span>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">
+                                                    @if(isset($cambio['Altura']) && $cambio['Altura'])
+                                                        {{ number_format($cambio['Altura'], 1) }} cm
+                                                    @else
+                                                        <span class="text-gray-400">No registrado</span>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <div class="text-sm text-gray-900">
+                                                    {{ $cambio['Observacion'] ?? 'Sin observaciones' }}
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                @if(isset($cambio['cambios_etapa_anid']))
+                                                    <a href="{{ route('cambios-animal.show', $cambio['cambios_etapa_anid']) }}" 
+                                                       class="text-ganaderasoft-verde hover:text-ganaderasoft-azul transition-colors duration-200">
+                                                        👁️ Ver detalles
+                                                    </a>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                        No hay cambios de animales registrados
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>

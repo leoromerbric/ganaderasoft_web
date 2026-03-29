@@ -49,6 +49,7 @@ sudo gs update
 | `ganaderasoft-update.sh` | Script principal de actualización |
 | `setup-gs-command.sh` | Configura comando global `gs` |
 | `validate-setup.sh` | Valida que todo esté configurado |
+| `emergency-fix.sh` | Solución rápida para errores de permisos/Git |
 
 ## 🎮 Comandos Disponibles
 
@@ -99,6 +100,14 @@ tail -f /var/www/ganaderasoft_web/storage/logs/laravel.log
 
 ## 🚨 Si algo sale mal
 
+### Solución de Emergencia (EJECUTAR AHORA)
+```bash
+# Si tienes errores de permisos o Git ownership
+sudo chmod +x scripts/emergency-fix.sh
+sudo scripts/emergency-fix.sh
+```
+
+### Otros problemas
 ```bash
 # Ver qué pasó
 gs logs
