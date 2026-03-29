@@ -65,7 +65,9 @@
                                     @foreach($animales as $animal)
                                         @if(is_array($animal) && isset($animal['id_Animal']))
                                             <option value="{{ $animal['id_Animal'] }}" 
-                                                    {{ old('cambios_etapa_anid') == $animal['id_Animal'] ? 'selected' : '' }}>
+                                                    {{ old('cambios_etapa_anid') == $animal['id_Animal'] ? 'selected' : '' }}
+                                                    data-sexo="{{ $animal['Sexo'] ?? '' }}"
+                                                    data-tipo-animal="{{ $animal['fk_composicion_raza'] ?? '3' }}">
                                                 {{ $animal['Nombre'] ?? 'Animal #' . $animal['id_Animal'] }}
                                                 @if(isset($animal['rebano']['finca']['Nombre']))
                                                     - {{ $animal['rebano']['finca']['Nombre'] }}
@@ -97,7 +99,11 @@
                                     @foreach($etapas as $etapa)
                                         @if(is_array($etapa) && isset($etapa['etapa_id']))
                                             <option value="{{ $etapa['etapa_id'] }}" 
-                                                    {{ old('cambios_etapa_etid') == $etapa['etapa_id'] ? 'selected' : '' }}>
+                                                    {{ old('cambios_etapa_etid') == $etapa['etapa_id'] ? 'selected' : '' }}
+                                                    data-sexo="{{ $etapa['etapa_sexo'] ?? '' }}"
+                                                    data-tipo-animal="{{ $etapa['etapa_fk_tipo_animal_id'] ?? '3' }}"
+                                                    data-edad-ini="{{ $etapa['etapa_edad_ini'] ?? '' }}"
+                                                    data-edad-fin="{{ $etapa['etapa_edad_fin'] ?? '' }}">
                                                 {{ $etapa['etapa_nombre'] ?? 'Etapa' }}
                                                 @if(isset($etapa['etapa_sexo']))
                                                     ({{ $etapa['etapa_sexo'] === 'M' ? 'Macho' : 'Hembra' }})
@@ -239,6 +245,55 @@
 
     <!-- Script para validaciones y funcionalidades -->
     <script>
+        // Filtrar etapas basándose en el animal seleccionado
+        document.getElementById('cambios_etapa_anid').addEventListener('change', function(e) {
+            const animalSelect = e.target;
+            const etapaSelect = document.getElementById('cambios_etapa_etid');
+            const selectedOption = animalSelect.options[animalSelect.selectedIndex];
+            
+            // Reiniciar etapa
+            etapaSelect.value = '';
+            document.getElementById('Etapa_Cambio').value = '';
+            
+            if (!animalSelect.value) {
+                // Si no hay animal seleccionado, mostrar todas las etapas
+                Array.from(etapaSelect.options).forEach((option, index) => {
+                    if (index > 0) { // Skip the first "Seleccione una etapa" option
+                        option.style.display = 'block';
+                    }
+                });
+                return;
+            }
+            
+            // Obtener datos del animal seleccionado
+            const animalSexo = selectedOption.getAttribute('data-sexo');
+            const animalTipoAnimal = selectedOption.getAttribute('data-tipo-animal');
+            
+            console.log('Animal seleccionado:', {
+                id: animalSelect.value,
+                sexo: animalSexo,
+                tipoAnimal: animalTipoAnimal
+            });
+            
+            // Filtrar etapas
+            Array.from(etapaSelect.options).forEach((option, index) => {
+                if (index === 0) return; // Skip the first "Seleccione una etapa" option
+                
+                const etapaSexo = option.getAttribute('data-sexo');
+                const etapaTipoAnimal = option.getAttribute('data-tipo-animal');
+                
+                // Verificar compatibilidad
+                const sexoCompatible = !etapaSexo || etapaSexo === animalSexo;
+                const tipoAnimalCompatible = !etapaTipoAnimal || etapaTipoAnimal === animalTipoAnimal;
+                
+                if (sexoCompatible && tipoAnimalCompatible) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        });
+
         // Auto-completar nombre de etapa cuando se selecciona una etapa
         document.getElementById('cambios_etapa_etid').addEventListener('change', function(e) {
             const selectedOption = e.target.options[e.target.selectedIndex];
