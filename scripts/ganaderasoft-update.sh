@@ -80,6 +80,9 @@ check_git_status() {
     
     cd "$PROJECT_DIR"
     
+    # Solucionar problema de "dubious ownership"
+    git config --global --add safe.directory "$PROJECT_DIR"
+    
     # Verificar si hay cambios no commiteados
     if [ -n "$(git status --porcelain)" ]; then
         warning "Hay cambios no commiteados. Guardando stash..."
@@ -94,6 +97,9 @@ update_code() {
     log "Descargando últimos cambios del repositorio..."
     
     cd "$PROJECT_DIR"
+    
+    # Asegurar que el directorio es seguro para Git
+    git config --global --add safe.directory "$PROJECT_DIR"
     
     # Fetch latest changes
     git fetch origin

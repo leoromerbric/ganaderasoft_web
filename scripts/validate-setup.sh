@@ -41,6 +41,9 @@ fi
 echo "📝 Verificando repositorio Git..."
 cd "$PROJECT_DIR" 2>/dev/null
 if [ -d ".git" ]; then
+    # Configurar directorio como seguro para Git
+    git config --global --add safe.directory "$PROJECT_DIR" 2>/dev/null
+    
     add_result "✅" "Repositorio Git inicializado"
     
     # Verificar remote

@@ -70,6 +70,9 @@ case "$1" in
         echo "=========================="
         cd "$PROJECT_DIR"
         
+        # Configurar directorio como seguro para Git
+        git config --global --add safe.directory "$PROJECT_DIR" 2>/dev/null
+        
         # Git status
         echo "📝 Git Status:"
         git status --short
