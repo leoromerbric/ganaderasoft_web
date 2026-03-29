@@ -68,8 +68,10 @@ class CambiosAnimalController extends Controller
         } catch (\Exception $e) {
             Log::error('Error en CambiosAnimalController@create: ' . $e->getMessage());
             
-            return redirect()->route('cambios-animal.index')
-                ->with('error', 'Error al cargar el formulario de registro');
+            return view('cambios-animal.create', [
+                'animales' => [],
+                'etapas' => []
+            ])->with('error', 'Error al cargar los datos del formulario. Por favor, intente de nuevo.');
         }
     }
 

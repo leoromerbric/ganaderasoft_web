@@ -7,6 +7,29 @@ use App\Services\Contracts\ConfiguracionServiceInterface;
 class ApiConfiguracionService extends BaseApiService implements ConfiguracionServiceInterface
 {
     /**
+     * Get list of etapas options
+     */
+    public function getEtapas(): array
+    {
+        $user = session('user');
+        
+        if (!$user || !isset($user['token'])) {
+            return [];
+        }
+
+        $response = $this->get('/etapas', [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['token'],
+        ]);
+
+        if (isset($response['success']) && $response['success']) {
+            return $response['data'] ?? [];
+        }
+
+        return [];
+    }
+
+    /**
      * Get list of fuente agua options
      */
     public function getFuenteAgua(): array

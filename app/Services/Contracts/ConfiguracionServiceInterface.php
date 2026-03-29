@@ -5,6 +5,11 @@ namespace App\Services\Contracts;
 interface ConfiguracionServiceInterface
 {
     /**
+     * Get list of etapas options
+     */
+    public function getEtapas(): array;
+
+    /**
      * Get list of fuente agua options
      */
     public function getFuenteAgua(): array;

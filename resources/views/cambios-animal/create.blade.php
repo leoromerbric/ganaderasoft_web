@@ -93,14 +93,22 @@
                                     class="form-select w-full border-gray-300 rounded-md focus:border-ganaderasoft-celeste focus:ring-ganaderasoft-celeste @error('cambios_etapa_etid') border-red-500 @enderror"
                                     required>
                                 <option value="">Seleccione una etapa</option>
-                                @foreach($etapas as $etapa)
-                                    <option value="{{ $etapa['etapa_id'] }}" 
-                                            {{ old('cambios_etapa_etid') == $etapa['etapa_id'] ? 'selected' : '' }}>
-                                        {{ $etapa['etapa_nombre'] }}
-                                        ({{ $etapa['etapa_sexo'] === 'M' ? 'Macho' : 'Hembra' }})
-                                        - {{ $etapa['etapa_edad_ini'] }} a {{ $etapa['etapa_edad_fin'] }} días
-                                    </option>
-                                @endforeach
+                                @if(is_array($etapas))
+                                    @foreach($etapas as $etapa)
+                                        @if(is_array($etapa) && isset($etapa['etapa_id']))
+                                            <option value="{{ $etapa['etapa_id'] }}" 
+                                                    {{ old('cambios_etapa_etid') == $etapa['etapa_id'] ? 'selected' : '' }}>
+                                                {{ $etapa['etapa_nombre'] ?? 'Etapa' }}
+                                                @if(isset($etapa['etapa_sexo']))
+                                                    ({{ $etapa['etapa_sexo'] === 'M' ? 'Macho' : 'Hembra' }})
+                                                @endif
+                                                @if(isset($etapa['etapa_edad_ini']) && isset($etapa['etapa_edad_fin']))
+                                                    - {{ $etapa['etapa_edad_ini'] }} a {{ $etapa['etapa_edad_fin'] }} días
+                                                @endif
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                @endif
                             </select>
                             @error('cambios_etapa_etid')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

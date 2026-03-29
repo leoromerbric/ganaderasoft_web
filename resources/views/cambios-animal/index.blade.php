@@ -294,72 +294,119 @@
     </div>
 
     <script>
-        function filtrarRegistros() {
+        // Variables para filtros
+        let todosLosAnimales = @json($animales ?? []);
+        let todasLasFincas = @json($fincas ?? []);
+        
+        function aplicarFiltros() {
             const filtroAnimal = document.getElementById('filtroAnimal').value;
             const filtroFinca = document.getElementById('filtroFinca').value;
-            const filtroEtapa = document.getElementById('filtroEtapa').value.toLowerCase();
             
-            const registros = document.querySelectorAll('.registro-cambio');
+            // Construir URL con filtros
+            const url = new URL(window.location);
             
-            registros.forEach(function(registro) {
-                let mostrar = true;
-                
-                // Filtro por animal
-                if (filtroAnimal && registro.dataset.animal !== filtroAnimal) {
-                    mostrar = false;
-                }
-                
-                // Filtro por etapa
-                if (filtroEtapa && !registro.dataset.etapa.includes(filtroEtapa)) {
-                    mostrar = false;
-                }
-                
-                registro.style.display = mostrar ? '' : 'none';
+            // Limpiar parámetros existentes
+            url.searchParams.delete('animal_id');
+            url.searchParams.delete('finca_id');
+            
+            // Agregar nuevos parámetros
+            if (filtroFinca) {
+                url.searchParams.set('finca_id', filtroFinca);
+            }
+            if (filtroAnimal) {
+                url.searchParams.set('animal_id', filtroAnimal);
+            }
+            
+            // Recargar página con nuevos filtros
+            window.location.href = url.toString();
+        }
+        
+        function filtrarAnimalesPorFinca() {
+            const fincaSeleccionada = document.getElementById('filtroFinca').value;
+            const selectAnimales = document.getElementById('filtroAnimal');
+            
+            // Limpiar select de animales
+            selectAnimales.innerHTML = '<option value="">Todos los animales</option>';
+            
+            // Si no hay finca seleccionada, mostrar todos los animales
+            if (!fincaSeleccionada) {
+                todosLosAnimales.forEach(function(animal) {
+                    if (animal && animal.id_Animal) {
+                        const option = document.createElement('option');
+                        option.value = animal.id_Animal;
+                        option.textContent = (animal.Nombre || `Animal #${animal.id_Animal}`);
+                        if (animal.finca && animal.finca.Nombre) {
+                            option.textContent += ` - ${animal.finca.Nombre}`;
+                        }
+                        selectAnimales.appendChild(option);
+                    }
+                });
+                return;
+            }
+            
+            // Filtrar animales por finca
+            const animalesFiltrados = todosLosAnimales.filter(function(animal) {
+                return animal && animal.finca && animal.finca.id_Finca == fincaSeleccionada;
             });
             
-            // Update URL with animal filter
-            if (filtroAnimal) {
-                const url = new URL(window.location);
-                url.searchParams.set('animal_id', filtroAnimal);
-                window.history.pushState({}, '', url);
-            } else {
-                const url = new URL(window.location);
-                url.searchParams.delete('animal_id');
-                window.history.pushState({}, '', url);
-            }
+            // Agregar animales filtrados al select
+            animalesFiltrados.forEach(function(animal) {
+                const option = document.createElement('option');
+                option.value = animal.id_Animal;
+                option.textContent = animal.Nombre || `Animal #${animal.id_Animal}`;
+                selectAnimales.appendChild(option);
+            });
             
-            // Update URL with finca filter
-            if (filtroFinca) {
-                const url = new URL(window.location);
-                url.searchParams.set('finca_id', filtroFinca);
-                window.history.pushState({}, '', url);
-            } else {
-                const url = new URL(window.location);
-                url.searchParams.delete('finca_id');
-                window.history.pushState({}, '', url);
-            }
+            // Aplicar filtros inmediatamente cuando cambie la finca
+            aplicarFiltros();
         }
         
         function limpiarFiltros() {
+            // Limpiar valores de los selects
             document.getElementById('filtroAnimal').value = '';
             document.getElementById('filtroFinca').value = '';
             document.getElementById('filtroEtapa').value = '';
             
-            const registros = document.querySelectorAll('.registro-cambio');
-            registros.forEach(function(registro) {
-                registro.style.display = '';
+            // Restaurar todos los animales en el select
+            const selectAnimales = document.getElementById('filtroAnimal');
+            selectAnimales.innerHTML = '<option value="">Todos los animales</option>';
+            todosLosAnimales.forEach(function(animal) {
+                if (animal && animal.id_Animal) {
+                    const option = document.createElement('option');
+                    option.value = animal.id_Animal;
+                    option.textContent = (animal.Nombre || `Animal #${animal.id_Animal}`);
+                    if (animal.finca && animal.finca.Nombre) {
+                        option.textContent += ` - ${animal.finca.Nombre}`;
+                    }
+                    selectAnimales.appendChild(option);
+                }
             });
             
-            // Clear URL parameters
+            // Redireccionar sin parámetros de filtro
             const url = new URL(window.location);
             url.searchParams.delete('animal_id');
             url.searchParams.delete('finca_id');
-            window.history.pushState({}, '', url);
+            window.location.href = url.toString();
         }
         
         // Agregar event listeners
-        document.getElementById('filtroAnimal').addEventListener('change', filtrarRegistros);
-        document.getElementById('filtroFinca').addEventListener('change', filtrarRegistros);
-        document.getElementById('filtroEtapa').addEventListener('change', filtrarRegistros);
+        document.getElementById('filtroFinca').addEventListener('change', filtrarAnimalesPorFinca);
+        document.getElementById('filtroAnimal').addEventListener('change', aplicarFiltros);
+        
+        // Inicializar filtros al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Si hay una finca seleccionada, filtrar animales
+            const fincaActual = '{{ $idFinca ?? "" }}';
+            const animalActual = '{{ $idAnimal ?? "" }}';
+            
+            if (fincaActual) {
+                document.getElementById('filtroFinca').value = fincaActual;
+                filtrarAnimalesPorFinca();
+            }
+            
+            if (animalActual) {
+                document.getElementById('filtroAnimal').value = animalActual;
+            }
+        });
     </script>
 @endsection
