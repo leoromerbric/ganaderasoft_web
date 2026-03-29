@@ -272,4 +272,41 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
             ];
         }
     }
+
+    /**
+     * Obtiene los detalles de un animal específico incluyendo su etapa actual
+     */
+    public function getAnimalById(int $id): array
+    {
+        try {
+            \Log::info('ApiCambiosAnimalService@getAnimalById - Obteniendo animal: ' . $id);
+            
+            $user = session('user');
+
+            if (!$user || !isset($user['token'])) {
+                \Log::warning('ApiCambiosAnimalService@getAnimalById - Usuario no autenticado');
+                return [];
+            }
+
+            $response = $this->get("/animales/{$id}", [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $user['token'],
+            ]);
+            
+            \Log::info('ApiCambiosAnimalService@getAnimalById - Response obtenido', [
+                'animal_id' => $id,
+                'has_data' => isset($response['data']),
+                'has_etapa_actual' => isset($response['data']['etapa_actual'])
+            ]);
+            
+            if (isset($response['success']) && $response['success'] && isset($response['data'])) {
+                return $response['data'];
+            }
+            
+            return [];
+        } catch (Exception $e) {
+            \Log::error('Error obteniendo animal por ID: ' . $e->getMessage(), ['animal_id' => $id]);
+            return [];
+        }
+    }
 }

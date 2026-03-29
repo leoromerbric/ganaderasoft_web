@@ -48,4 +48,12 @@ interface CambiosAnimalServiceInterface
      * @return array Estadísticas de cambios por tipo
      */
     public function getEstadisticas(): array;
+
+    /**
+     * Obtiene los detalles de un animal específico incluyendo su etapa actual
+     * 
+     * @param int $id ID del animal
+     * @return array Detalles del animal con etapa actual
+     */
+    public function getAnimalById(int $id): array;
 }

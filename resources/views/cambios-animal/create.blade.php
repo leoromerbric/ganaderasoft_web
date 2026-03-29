@@ -275,6 +275,49 @@
                 tipoAnimal: animalTipoAnimal
             });
             
+            // Obtener etapa actual del animal vía AJAX
+            fetch(`/cambios-animal/animal/${animalSelect.value}/etapa`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
+                
+                if (data.success && data.data.etapa_actual) {
+                    const etapaActual = data.data.etapa_actual.etapa;
+                    console.log('Etapa actual del animal:', etapaActual);
+                    
+                    // Agregar etapa actual si no existe en la lista
+                    let etapaActualExists = false;
+                    Array.from(etapaSelect.options).forEach((option, index) => {
+                        if (option.value == etapaActual.etapa_id) {
+                            etapaActualExists = true;
+                        }
+                    });
+                    
+                    if (!etapaActualExists) {
+                        const newOption = document.createElement('option');
+                        newOption.value = etapaActual.etapa_id;
+                        newOption.textContent = `${etapaActual.etapa_nombre} (ETAPA ACTUAL)`;
+                        newOption.setAttribute('data-sexo', etapaActual.etapa_sexo || '');
+                        newOption.setAttribute('data-tipo-animal', etapaActual.etapa_fk_tipo_animal_id || '3');
+                        newOption.setAttribute('data-edad-ini', etapaActual.etapa_edad_ini || '');
+                        newOption.setAttribute('data-edad-fin', etapaActual.etapa_edad_fin || '');
+                        etapaSelect.appendChild(newOption);
+                        
+                        console.log('Etapa actual agregada a la lista');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error obteniendo etapa del animal:', error);
+            });
+            
             // Filtrar etapas
             Array.from(etapaSelect.options).forEach((option, index) => {
                 if (index === 0) return; // Skip the first "Seleccione una etapa" option

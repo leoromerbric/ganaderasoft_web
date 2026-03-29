@@ -214,4 +214,43 @@ class CambiosAnimalController extends Controller
                 ->with('error', 'Error al procesar la solicitud');
         }
     }
+
+    /**
+     * Obtiene la etapa actual de un animal específico (AJAX)
+     */
+    public function getAnimalEtapa(Request $request, $id)
+    {
+        try {
+            Log::info('CambiosAnimalController@getAnimalEtapa - Obteniendo etapa para animal: ' . $id);
+            
+            $animal = $this->cambiosAnimalService->getAnimalById($id);
+            
+            if (empty($animal)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Animal no encontrado'
+                ], 404);
+            }
+            
+            Log::info('CambiosAnimalController@getAnimalEtapa - Animal obtenido', [
+                'animal_id' => $id,
+                'has_etapa_actual' => isset($animal['etapa_actual'])
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'animal' => $animal,
+                    'etapa_actual' => $animal['etapa_actual'] ?? null
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error en getAnimalEtapa: ' . $e->getMessage(), ['animal_id' => $id]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener etapa del animal'
+            ], 500);
+        }
+    }
 }

@@ -120,4 +120,6 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::post('/cambios-animal', [CambiosAnimalController::class, 'store'])->name('cambios-animal.store');
     Route::get('/cambios-animal/{id}', [CambiosAnimalController::class, 'show'])->name('cambios-animal.show');
     Route::delete('/cambios-animal/{id}', [CambiosAnimalController::class, 'destroy'])->name('cambios-animal.destroy');
+    // AJAX route for getting animal stage
+    Route::get('/cambios-animal/animal/{id}/etapa', [CambiosAnimalController::class, 'getAnimalEtapa'])->name('cambios-animal.animal.etapa');
 });
