@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\Contracts\LactanciaServiceInterface;
 use App\Services\Contracts\AnimalesServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LactanciaController extends Controller
 {
@@ -177,5 +178,47 @@ class LactanciaController extends Controller
         }
 
         return redirect()->route('lactancia.index')->with('error', $response['message']);
+    }
+
+    /**
+     * Get animal's current stage for AJAX request
+     */
+    public function getAnimalEtapa(Request $request, $id)
+    {
+        try {
+            Log::info('LactanciaController@getAnimalEtapa - Obteniendo etapa para animal: ' . $id);
+            
+            $animalResponse = $this->animalesService->getAnimal($id);
+            
+            if (!$animalResponse['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Animal no encontrado'
+                ], 404);
+            }
+            
+            $animal = $animalResponse['data'];
+            
+            Log::info('LactanciaController@getAnimalEtapa - Animal obtenido', [
+                'animal_id' => $id,
+                'has_etapa_actual' => isset($animal['etapa_actual']),
+                'etapa_actual_structure' => $animal['etapa_actual'] ?? 'null'
+            ]);
+            
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'animal' => $animal,
+                    'etapa_actual' => $animal['etapa_actual'] ?? null
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error en getAnimalEtapa: ' . $e->getMessage(), ['animal_id' => $id]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener etapa del animal'
+            ], 500);
+        }
     }
 }

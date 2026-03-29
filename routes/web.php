@@ -77,6 +77,7 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/lactancia/{id}/edit', [LactanciaController::class, 'edit'])->name('lactancia.edit');
     Route::put('/lactancia/{id}', [LactanciaController::class, 'update'])->name('lactancia.update');
     Route::delete('/lactancia/{id}', [LactanciaController::class, 'destroy'])->name('lactancia.destroy');
+    Route::get('/lactancia/animal/{id}/etapa', [LactanciaController::class, 'getAnimalEtapa'])->name('lactancia.animal.etapa');
     
     // Leche routes - Registros de producción lechera
     Route::get('/leche', [LecheController::class, 'index'])->name('leche.index');

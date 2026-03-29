@@ -62,6 +62,24 @@
                     @enderror
                 </div>
 
+                <!-- Debug Info -->
+                <div id="debug-info" class="mb-4" style="display: none;"></div>
+
+                <!-- Etapa Animal -->
+                <div>
+                    <label for="lactancia_etapa_etid" class="block text-sm font-medium text-gray-700 mb-2">
+                        Etapa Actual del Animal <span class="text-red-500">*</span>
+                    </label>
+                    <select name="lactancia_etapa_etid" id="lactancia_etapa_etid" required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-ganaderasoft-celeste @error('lactancia_etapa_etid') border-red-500 @enderror">
+                        <option value="">Seleccione una etapa</option>
+                    </select>
+                    @error('lactancia_etapa_etid')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    <p class="mt-1 text-sm text-gray-500">Se muestra automáticamente la etapa actual del animal seleccionado</p>
+                </div>
+
                 <!-- Fecha de Inicio -->
                 <div>
                     <label for="lactancia_fecha_inicio" class="block text-sm font-medium text-gray-700 mb-2">
@@ -77,9 +95,6 @@
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
-
-                <!-- Etapa ID (Hidden for now, we'll use a default value) -->
-                <input type="hidden" name="lactancia_etapa_etid" value="15">
 
                 <!-- Fecha de Fin -->
                 <div>
@@ -128,3 +143,105 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para mostrar información de debug
+    function showDebug(message, isError = false) {
+        const debugInfo = document.getElementById('debug-info');
+        debugInfo.style.display = 'block';
+        debugInfo.textContent = message;
+        debugInfo.className = isError ? 
+            'mb-2 p-2 bg-red-100 text-red-800 text-xs rounded' : 
+            'mb-2 p-2 bg-blue-100 text-blue-800 text-xs rounded';
+        console.log('DEBUG:', message);
+    }
+    
+    // Filtrar etapas basándose en el animal seleccionado - SOLO ETAPA ACTUAL
+    document.getElementById('lactancia_etapa_anid').addEventListener('change', function(e) {
+        const animalSelect = e.target;
+        const etapaSelect = document.getElementById('lactancia_etapa_etid');
+        const selectedOption = animalSelect.options[animalSelect.selectedIndex];
+        
+        showDebug('Animal seleccionado, obteniendo solo su etapa actual...');
+        
+        // Reiniciar etapa
+        etapaSelect.value = '';
+        
+        if (!animalSelect.value) {
+            showDebug('No hay animal seleccionado');
+            // Limpiar select y mostrar solo la opción por defecto
+            etapaSelect.innerHTML = '<option value="">Seleccione una etapa</option>';
+            document.getElementById('debug-info').style.display = 'none';
+            return;
+        }
+        
+        const animalId = animalSelect.value;
+        showDebug(`Obteniendo etapa actual para animal ID: ${animalId}`);
+        
+        // Obtener etapa actual del animal vía AJAX
+        fetch(`/lactancia/animal/${animalId}/etapa`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            }
+        })
+        .then(response => {
+            showDebug(`AJAX Response status: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Respuesta completa del servidor:', data);
+            
+            if (data.success && data.data && data.data.etapa_actual) {
+                const etapaActualData = data.data.etapa_actual;
+                showDebug('✅ Etapa actual encontrada, procesando...');
+                
+                // La estructura puede ser directa o anidada
+                let etapaActual;
+                if (etapaActualData.etapa) {
+                    etapaActual = etapaActualData.etapa;
+                } else if (etapaActualData.etapa_id) {
+                    etapaActual = etapaActualData;
+                } else {
+                    showDebug('ERROR: Estructura de etapa_actual no reconocida', true);
+                    return;
+                }
+                
+                showDebug(`✅ Etapa: ${etapaActual.etapa_nombre} (ID: ${etapaActual.etapa_id})`);
+                
+                // LIMPIAR el select y agregar SOLO la etapa actual
+                etapaSelect.innerHTML = '<option value="">Seleccione una etapa</option>';
+                
+                const etapaOption = document.createElement('option');
+                etapaOption.value = etapaActual.etapa_id;
+                etapaOption.textContent = `${etapaActual.etapa_nombre} (ETAPA ACTUAL)`;
+                etapaSelect.appendChild(etapaOption);
+                
+                showDebug(`✅ ¡LISTO! Solo se muestra: "${etapaOption.textContent}"`);
+                
+                // Auto-seleccionar la etapa actual
+                etapaSelect.value = etapaActual.etapa_id;
+                
+                showDebug(`✅ Etapa preseleccionada automáticamente`);
+                
+            } else {
+                showDebug('ERROR: No se encontró etapa_actual válida', true);
+                etapaSelect.innerHTML = '<option value="">Sin etapa disponible</option>';
+            }
+        })
+        .catch(error => {
+            showDebug(`ERROR AJAX: ${error.message}`, true);
+            console.error('Error obteniendo etapa del animal:', error);
+            etapaSelect.innerHTML = '<option value="">Error al cargar etapa</option>';
+        });
+    });
+});
+</script>
+@endpush

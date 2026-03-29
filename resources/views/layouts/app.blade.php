@@ -10,5 +10,6 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
     @yield('content')
+    @stack('scripts')
 </body>
 </html>
