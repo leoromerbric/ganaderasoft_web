@@ -36,25 +36,18 @@ class CambiosAnimalController extends Controller
             // Obtener fincas primero
             $fincas = $this->cambiosAnimalService->getFincas();
             Log::info('CambiosAnimalController@index - Fincas obtenidas: ' . count($fincas));
-            if (empty($fincas)) {
-                Log::warning('CambiosAnimalController@index - No se obtuvieron fincas');
-            }
             
             // Obtener animales
             $animales = $this->cambiosAnimalService->getAnimales();
             Log::info('CambiosAnimalController@index - Animales obtenidos: ' . count($animales));
-            if (empty($animales)) {
-                Log::warning('CambiosAnimalController@index - No se obtuvieron animales');
-            }
             
             // Obtener cambios
             $cambios = $this->cambiosAnimalService->getList($idAnimal, $idFinca);
             Log::info('CambiosAnimalController@index - Cambios obtenidos: ' . count($cambios));
             
             $estadisticas = $this->cambiosAnimalService->getEstadisticas();
-            Log::info('CambiosAnimalController@index - Estadísticas obtenidas');
             
-            Log::info('CambiosAnimalController@index - Enviando datos a vista', [
+            Log::info('CambiosAnimalController@index - Completado exitosamente', [
                 'cambios_count' => count($cambios),
                 'animales_count' => count($animales),
                 'fincas_count' => count($fincas)
