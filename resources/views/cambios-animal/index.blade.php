@@ -37,27 +37,7 @@
         <!-- Filtros -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
             <h3 class="text-lg font-semibold mb-4 text-ganaderasoft-negro">🔍 Filtros de Búsqueda</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <!-- Filtro por Animal -->
-                <div>
-                    <label for="filtroAnimal" class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
-                    <select id="filtroAnimal" class="form-select w-full border-gray-300 rounded-md">
-                        <option value="">Todos los animales</option>
-                        @if(is_array($animales))
-                            @foreach($animales as $animal)
-                                @if(is_array($animal) && isset($animal['id_Animal']))
-                                    <option value="{{ $animal['id_Animal'] }}" {{ $idAnimal == $animal['id_Animal'] ? 'selected' : '' }}>
-                                        {{ $animal['Nombre'] ?? 'Animal #' . $animal['id_Animal'] }}
-                                        @if(isset($animal['finca']['Nombre']))
-                                            - {{ $animal['finca']['Nombre'] }}
-                                        @endif
-                                    </option>
-                                @endif
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
-
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Filtro por Finca -->
                 <div>
                     <label for="filtroFinca" class="block text-sm font-medium text-gray-700 mb-1">Finca</label>
@@ -75,14 +55,21 @@
                     </select>
                 </div>
 
-                <!-- Filtro por Etapa -->
+                <!-- Filtro por Animal -->
                 <div>
-                    <label for="filtroEtapa" class="block text-sm font-medium text-gray-700 mb-1">Etapa</label>
-                    <select id="filtroEtapa" class="form-select w-full border-gray-300 rounded-md">
-                        <option value="">Todas las etapas</option>
-                        @if(isset($estadisticas['por_etapa']))
-                            @foreach(array_keys($estadisticas['por_etapa']) as $etapa)
-                                <option value="{{ $etapa }}">{{ $etapa }}</option>
+                    <label for="filtroAnimal" class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
+                    <select id="filtroAnimal" class="form-select w-full border-gray-300 rounded-md">
+                        <option value="">Todos los animales</option>
+                        @if(is_array($animales))
+                            @foreach($animales as $animal)
+                                @if(is_array($animal) && isset($animal['id_Animal']))
+                                    <option value="{{ $animal['id_Animal'] }}" {{ $idAnimal == $animal['id_Animal'] ? 'selected' : '' }}>
+                                        {{ $animal['Nombre'] ?? 'Animal #' . $animal['id_Animal'] }}
+                                        @if(isset($animal['finca']['Nombre']))
+                                            - {{ $animal['finca']['Nombre'] }}
+                                        @endif
+                                    </option>
+                                @endif
                             @endforeach
                         @endif
                     </select>
@@ -365,7 +352,6 @@
             // Limpiar valores de los selects
             document.getElementById('filtroAnimal').value = '';
             document.getElementById('filtroFinca').value = '';
-            document.getElementById('filtroEtapa').value = '';
             
             // Restaurar todos los animales en el select
             const selectAnimales = document.getElementById('filtroAnimal');

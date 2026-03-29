@@ -26,17 +26,44 @@ class CambiosAnimalController extends Controller
     public function index(Request $request)
     {
         try {
+            Log::info('CambiosAnimalController@index - Iniciando carga de datos');
+            
             $idAnimal = $request->get('animal_id');
             $idFinca = $request->get('finca_id');
             
-            $cambios = $this->cambiosAnimalService->getList($idAnimal, $idFinca);
-            $estadisticas = $this->cambiosAnimalService->getEstadisticas();
-            $animales = $this->cambiosAnimalService->getAnimales();
+            Log::info('CambiosAnimalController@index - Filtros recibidos', ['animal_id' => $idAnimal, 'finca_id' => $idFinca]);
+            
+            // Obtener fincas primero
             $fincas = $this->cambiosAnimalService->getFincas();
+            Log::info('CambiosAnimalController@index - Fincas obtenidas: ' . count($fincas));
+            if (empty($fincas)) {
+                Log::warning('CambiosAnimalController@index - No se obtuvieron fincas');
+            }
+            
+            // Obtener animales
+            $animales = $this->cambiosAnimalService->getAnimales();
+            Log::info('CambiosAnimalController@index - Animales obtenidos: ' . count($animales));
+            if (empty($animales)) {
+                Log::warning('CambiosAnimalController@index - No se obtuvieron animales');
+            }
+            
+            // Obtener cambios
+            $cambios = $this->cambiosAnimalService->getList($idAnimal, $idFinca);
+            Log::info('CambiosAnimalController@index - Cambios obtenidos: ' . count($cambios));
+            
+            $estadisticas = $this->cambiosAnimalService->getEstadisticas();
+            Log::info('CambiosAnimalController@index - Estadísticas obtenidas');
+            
+            Log::info('CambiosAnimalController@index - Enviando datos a vista', [
+                'cambios_count' => count($cambios),
+                'animales_count' => count($animales),
+                'fincas_count' => count($fincas)
+            ]);
             
             return view('cambios-animal.index', compact('cambios', 'estadisticas', 'animales', 'fincas', 'idAnimal', 'idFinca'));
         } catch (\Exception $e) {
             Log::error('Error en CambiosAnimalController@index: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
             
             return view('cambios-animal.index', [
                 'cambios' => [],

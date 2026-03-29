@@ -127,24 +127,35 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
     public function getAnimales(): array
     {
         try {
+            \Log::info('ApiCambiosAnimalService@getAnimales - Iniciando obtención de animales');
+            
             $user = session('user');
             
             if (!$user || !isset($user['token'])) {
+                \Log::warning('ApiCambiosAnimalService@getAnimales - Usuario no autenticado o token no encontrado');
                 return [];
             }
+            
+            \Log::info('ApiCambiosAnimalService@getAnimales - Haciendo petición a /animales');
 
             $response = $this->get('/animales', [
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $user['token'],
             ]);
             
+            \Log::info('ApiCambiosAnimalService@getAnimales - Respuesta recibida', ['response' => $response]);
+            
             if (isset($response['success']) && $response['success']) {
-                return $response['data'] ?? [];
+                $data = $response['data'] ?? [];
+                \Log::info('ApiCambiosAnimalService@getAnimales - Animales encontrados: ' . count($data));
+                return $data;
             }
             
+            \Log::warning('ApiCambiosAnimalService@getAnimales - Respuesta no exitosa', ['response' => $response]);
             return [];
         } catch (Exception $e) {
             \Log::error('Error obteniendo animales: ' . $e->getMessage());
+            \Log::error('Stack trace animales: ' . $e->getTraceAsString());
             return [];
         }
     }
@@ -157,24 +168,35 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
     public function getFincas(): array
     {
         try {
+            \Log::info('ApiCambiosAnimalService@getFincas - Iniciando obtención de fincas');
+            
             $user = session('user');
             
             if (!$user || !isset($user['token'])) {
+                \Log::warning('ApiCambiosAnimalService@getFincas - Usuario no autenticado o token no encontrado');
                 return [];
             }
+            
+            \Log::info('ApiCambiosAnimalService@getFincas - Haciendo petición a /fincas');
 
             $response = $this->get('/fincas', [
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $user['token'],
             ]);
             
+            \Log::info('ApiCambiosAnimalService@getFincas - Respuesta recibida', ['response' => $response]);
+            
             if (isset($response['success']) && $response['success']) {
-                return $response['data'] ?? [];
+                $data = $response['data'] ?? [];
+                \Log::info('ApiCambiosAnimalService@getFincas - Fincas encontradas: ' . count($data));
+                return $data;
             }
             
+            \Log::warning('ApiCambiosAnimalService@getFincas - Respuesta no exitosa', ['response' => $response]);
             return [];
         } catch (Exception $e) {
             \Log::error('Error obteniendo fincas: ' . $e->getMessage());
+            \Log::error('Stack trace fincas: ' . $e->getTraceAsString());
             return [];
         }
     }
