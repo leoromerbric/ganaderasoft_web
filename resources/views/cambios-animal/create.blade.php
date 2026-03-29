@@ -67,8 +67,8 @@
                                             <option value="{{ $animal['id_Animal'] }}" 
                                                     {{ old('cambios_etapa_anid') == $animal['id_Animal'] ? 'selected' : '' }}>
                                                 {{ $animal['Nombre'] ?? 'Animal #' . $animal['id_Animal'] }}
-                                                @if(isset($animal['finca']['Nombre']))
-                                                    - {{ $animal['finca']['Nombre'] }}
+                                                @if(isset($animal['rebano']['finca']['Nombre']))
+                                                    - {{ $animal['rebano']['finca']['Nombre'] }}
                                                 @endif
                                                 @if(isset($animal['Sexo']))
                                                     ({{ $animal['Sexo'] === 'M' ? 'Macho' : 'Hembra' }})

@@ -29,31 +29,25 @@ class CambiosAnimalController extends Controller
             Log::info('CambiosAnimalController@index - Iniciando carga de datos');
             
             $idAnimal = $request->get('animal_id');
-            $idFinca = $request->get('finca_id');
             
-            Log::info('CambiosAnimalController@index - Filtros recibidos', ['animal_id' => $idAnimal, 'finca_id' => $idFinca]);
+            Log::info('CambiosAnimalController@index - Filtro animal recibido', ['animal_id' => $idAnimal]);
             
-            // Obtener fincas primero
-            $fincas = $this->cambiosAnimalService->getFincas();
-            Log::info('CambiosAnimalController@index - Fincas obtenidas: ' . count($fincas));
-            
-            // Obtener animales
+            // Obtener animales (siempre todos para el dropdown)
             $animales = $this->cambiosAnimalService->getAnimales();
             Log::info('CambiosAnimalController@index - Animales obtenidos: ' . count($animales));
             
-            // Obtener cambios
-            $cambios = $this->cambiosAnimalService->getList($idAnimal, $idFinca);
+            // Obtener cambios filtrados por animal si se especifica
+            $cambios = $this->cambiosAnimalService->getList($idAnimal, null);
             Log::info('CambiosAnimalController@index - Cambios obtenidos: ' . count($cambios));
             
             $estadisticas = $this->cambiosAnimalService->getEstadisticas();
             
             Log::info('CambiosAnimalController@index - Completado exitosamente', [
                 'cambios_count' => count($cambios),
-                'animales_count' => count($animales),
-                'fincas_count' => count($fincas)
+                'animales_count' => count($animales)
             ]);
             
-            return view('cambios-animal.index', compact('cambios', 'estadisticas', 'animales', 'fincas', 'idAnimal', 'idFinca'));
+            return view('cambios-animal.index', compact('cambios', 'estadisticas', 'animales', 'idAnimal'));
         } catch (\Exception $e) {
             Log::error('Error en CambiosAnimalController@index: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
@@ -68,9 +62,7 @@ class CambiosAnimalController extends Controller
                     'promedio_altura' => 0
                 ],
                 'animales' => [],
-                'fincas' => [],
-                'idAnimal' => null,
-                'idFinca' => null
+                'idAnimal' => null
             ])->with('error', 'Error al cargar los cambios de animales');
         }
     }

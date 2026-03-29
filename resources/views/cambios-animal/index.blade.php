@@ -37,24 +37,7 @@
         <!-- Filtros -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
             <h3 class="text-lg font-semibold mb-4 text-ganaderasoft-negro">🔍 Filtros de Búsqueda</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Filtro por Finca -->
-                <div>
-                    <label for="filtroFinca" class="block text-sm font-medium text-gray-700 mb-1">Finca</label>
-                    <select id="filtroFinca" class="form-select w-full border-gray-300 rounded-md">
-                        <option value="">Todas las fincas</option>
-                        @if(is_array($fincas))
-                            @foreach($fincas as $finca)
-                                @if(is_array($finca) && isset($finca['id_Finca']))
-                                    <option value="{{ $finca['id_Finca'] }}" {{ $idFinca == $finca['id_Finca'] ? 'selected' : '' }}>
-                                        {{ $finca['Nombre'] ?? 'Finca #' . $finca['id_Finca'] }}
-                                    </option>
-                                @endif
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
-
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Filtro por Animal -->
                 <div>
                     <label for="filtroAnimal" class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
@@ -65,8 +48,11 @@
                                 @if(is_array($animal) && isset($animal['id_Animal']))
                                     <option value="{{ $animal['id_Animal'] }}" {{ $idAnimal == $animal['id_Animal'] ? 'selected' : '' }}>
                                         {{ $animal['Nombre'] ?? 'Animal #' . $animal['id_Animal'] }}
-                                        @if(isset($animal['finca']['Nombre']))
-                                            - {{ $animal['finca']['Nombre'] }}
+                                        @if(isset($animal['rebano']['finca']['Nombre']))
+                                            - {{ $animal['rebano']['finca']['Nombre'] }}
+                                        @endif
+                                        @if(isset($animal['Sexo']))
+                                            ({{ $animal['Sexo'] === 'M' ? 'Macho' : 'Hembra' }})
                                         @endif
                                     </option>
                                 @endif
@@ -281,92 +267,26 @@
     </div>
 
     <script>
-        // Variables para filtros
-        let todosLosAnimales = @json($animales ?? []);
-        let todasLasFincas = @json($fincas ?? []);
-        
         function aplicarFiltros() {
             const filtroAnimal = document.getElementById('filtroAnimal').value;
-            const filtroFinca = document.getElementById('filtroFinca').value;
             
-            // Construir URL con filtros
+            // Construir URL con filtro de animal únicamente
             const url = new URL(window.location);
             
             // Limpiar parámetros existentes
             url.searchParams.delete('animal_id');
             url.searchParams.delete('finca_id');
             
-            // Agregar nuevos parámetros
-            if (filtroFinca) {
-                url.searchParams.set('finca_id', filtroFinca);
-            }
+            // Agregar filtro de animal si está seleccionado
             if (filtroAnimal) {
                 url.searchParams.set('animal_id', filtroAnimal);
             }
             
-            // Recargar página con nuevos filtros
+            // Recargar página con filtro aplicado
             window.location.href = url.toString();
         }
         
-        function filtrarAnimalesPorFinca() {
-            const fincaSeleccionada = document.getElementById('filtroFinca').value;
-            const selectAnimales = document.getElementById('filtroAnimal');
-            
-            // Limpiar select de animales
-            selectAnimales.innerHTML = '<option value="">Todos los animales</option>';
-            
-            // Si no hay finca seleccionada, mostrar todos los animales
-            if (!fincaSeleccionada) {
-                todosLosAnimales.forEach(function(animal) {
-                    if (animal && animal.id_Animal) {
-                        const option = document.createElement('option');
-                        option.value = animal.id_Animal;
-                        option.textContent = (animal.Nombre || `Animal #${animal.id_Animal}`);
-                        if (animal.finca && animal.finca.Nombre) {
-                            option.textContent += ` - ${animal.finca.Nombre}`;
-                        }
-                        selectAnimales.appendChild(option);
-                    }
-                });
-                return;
-            }
-            
-            // Filtrar animales por finca
-            const animalesFiltrados = todosLosAnimales.filter(function(animal) {
-                return animal && animal.finca && animal.finca.id_Finca == fincaSeleccionada;
-            });
-            
-            // Agregar animales filtrados al select
-            animalesFiltrados.forEach(function(animal) {
-                const option = document.createElement('option');
-                option.value = animal.id_Animal;
-                option.textContent = animal.Nombre || `Animal #${animal.id_Animal}`;
-                selectAnimales.appendChild(option);
-            });
-            
-            // NO llamar aplicarFiltros() automáticamente para evitar loops
-        }
-        
         function limpiarFiltros() {
-            // Limpiar valores de los selects
-            document.getElementById('filtroAnimal').value = '';
-            document.getElementById('filtroFinca').value = '';
-            
-            // Restaurar todos los animales en el select
-            const selectAnimales = document.getElementById('filtroAnimal');
-            selectAnimales.innerHTML = '<option value="">Todos los animales</option>';
-            todosLosAnimales.forEach(function(animal) {
-                if (animal && animal.id_Animal) {
-                    const option = document.createElement('option');
-                    option.value = animal.id_Animal;
-                    option.textContent = (animal.Nombre || `Animal #${animal.id_Animal}`);
-                    if (animal.finca && animal.finca.Nombre) {
-                        option.textContent += ` - ${animal.finca.Nombre}`;
-                    }
-                    selectAnimales.appendChild(option);
-                }
-            });
-            
             // Redireccionar sin parámetros de filtro
             const url = new URL(window.location);
             url.searchParams.delete('animal_id');
@@ -374,53 +294,9 @@
             window.location.href = url.toString();
         }
         
-        // Variables para prevenir loops infinitos
-        let isInitializing = false;
-        let debounceTimer = null;
-        
-        // Agregar event listeners con protección anti-loop
-        document.getElementById('filtroFinca').addEventListener('change', function(e) {
-            if (isInitializing) return; // Evitar loops durante inicialización
-            
-            // Limpiar timer anterior y crear nuevo debounce
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(function() {
-                filtrarAnimalesPorFinca();
-                aplicarFiltros(); // Solo aplicar cuando el usuario cambie manualmente
-            }, 300); // 300ms debounce
-        });
-        
+        // Event listener simple para cambio de animal
         document.getElementById('filtroAnimal').addEventListener('change', function(e) {
-            if (isInitializing) return; // Evitar loops durante inicialización
-            
-            // Limpiar timer anterior y crear nuevo debounce  
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(function() {
-                aplicarFiltros();
-            }, 300); // 300ms debounce
-        });
-        
-        // Inicializar filtros al cargar la página
-        document.addEventListener('DOMContentLoaded', function() {
-            isInitializing = true; // Activar flag de inicialización
-            
-            // Si hay una finca seleccionada, filtrar animales SIN recargar página
-            const fincaActual = '{{ $idFinca ?? "" }}';
-            const animalActual = '{{ $idAnimal ?? "" }}';
-            
-            if (fincaActual) {
-                document.getElementById('filtroFinca').value = fincaActual;
-                filtrarAnimalesPorFinca(); // Solo filtrar localmente, no recargar
-            }
-            
-            if (animalActual) {
-                document.getElementById('filtroAnimal').value = animalActual;
-            }
-            
-            // Desactivar flag después de 500ms para permitir interacciones del usuario
-            setTimeout(function() {
-                isInitializing = false;
-            }, 500);
+            aplicarFiltros();
         });
     </script>
 @endsection
