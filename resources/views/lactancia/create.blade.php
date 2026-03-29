@@ -147,6 +147,24 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM cargado, inicializando funcionalidad de etapa actual');
+    
+    // Verificar que los elementos existan
+    const animalSelect = document.getElementById('lactancia_etapa_anid');
+    const etapaSelect = document.getElementById('lactancia_etapa_etid');
+    const debugDiv = document.getElementById('debug-info');
+    
+    if (!animalSelect || !etapaSelect || !debugDiv) {
+        console.error('Error: No se encontraron los elementos necesarios', {
+            animalSelect: !!animalSelect,
+            etapaSelect: !!etapaSelect,
+            debugDiv: !!debugDiv
+        });
+        return;
+    }
+    
+    console.log('✅ Elementos encontrados, registrando event listener');
+    
     // Función para mostrar información de debug
     function showDebug(message, isError = false) {
         const debugInfo = document.getElementById('debug-info');
@@ -160,6 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Filtrar etapas basándose en el animal seleccionado - SOLO ETAPA ACTUAL
     document.getElementById('lactancia_etapa_anid').addEventListener('change', function(e) {
+        console.log('🎯 Animal cambiado, iniciando proceso...');
         const animalSelect = e.target;
         const etapaSelect = document.getElementById('lactancia_etapa_etid');
         const selectedOption = animalSelect.options[animalSelect.selectedIndex];
@@ -198,19 +217,24 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             console.log('Respuesta completa del servidor:', data);
+            showDebug(`✅ Respuesta recibida: ${JSON.stringify(data).substring(0, 100)}...`);
             
             if (data.success && data.data && data.data.etapa_actual) {
                 const etapaActualData = data.data.etapa_actual;
                 showDebug('✅ Etapa actual encontrada, procesando...');
+                console.log('Estructura etapa_actual:', etapaActualData);
                 
                 // La estructura puede ser directa o anidada
                 let etapaActual;
                 if (etapaActualData.etapa) {
                     etapaActual = etapaActualData.etapa;
+                    showDebug('✅ Usando estructura anidada (etapaActualData.etapa)');
                 } else if (etapaActualData.etapa_id) {
                     etapaActual = etapaActualData;
+                    showDebug('✅ Usando estructura directa (etapaActualData)');
                 } else {
                     showDebug('ERROR: Estructura de etapa_actual no reconocida', true);
+                    console.error('Estructura etapa_actual no reconocida:', etapaActualData);
                     return;
                 }
                 
@@ -233,6 +257,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 
             } else {
                 showDebug('ERROR: No se encontró etapa_actual válida', true);
+                console.error('Respuesta sin etapa_actual:', data);
+                if (data.data) {
+                    console.error('Claves disponibles en data:', Object.keys(data.data));
+                }
                 etapaSelect.innerHTML = '<option value="">Sin etapa disponible</option>';
             }
         })

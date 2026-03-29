@@ -191,6 +191,7 @@ class LactanciaController extends Controller
             $animalResponse = $this->animalesService->getAnimal($id);
             
             if (!$animalResponse['success']) {
+                Log::warning('LactanciaController@getAnimalEtapa - Error en respuesta de API', $animalResponse);
                 return response()->json([
                     'success' => false,
                     'message' => 'Animal no encontrado'
