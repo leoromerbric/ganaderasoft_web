@@ -91,6 +91,12 @@
                             <label for="cambios_etapa_etid" class="block text-sm font-medium text-gray-700 mb-1">
                                 Nueva Etapa <span class="text-red-500">*</span>
                             </label>
+                            
+                            <!-- Debug info -->
+                            <div id="debug-info" class="mb-2 p-2 bg-blue-100 text-blue-800 text-xs rounded" style="display: none;">
+                                <strong>Debug:</strong> <span id="debug-text">Selecciona un animal para ver su etapa actual</span>
+                            </div>
+                            
                             <select name="cambios_etapa_etid" id="cambios_etapa_etid" 
                                     class="form-select w-full border-gray-300 rounded-md focus:border-ganaderasoft-celeste focus:ring-ganaderasoft-celeste @error('cambios_etapa_etid') border-red-500 @enderror"
                                     required>
@@ -245,11 +251,25 @@
 
     <!-- Script para validaciones y funcionalidades -->
     <script>
+        // Función de debug visible
+        function showDebug(message, isError = false) {
+            const debugInfo = document.getElementById('debug-info');
+            const debugText = document.getElementById('debug-text');
+            debugInfo.style.display = 'block';
+            debugText.textContent = message;
+            debugInfo.className = isError ? 
+                'mb-2 p-2 bg-red-100 text-red-800 text-xs rounded' : 
+                'mb-2 p-2 bg-blue-100 text-blue-800 text-xs rounded';
+            console.log('DEBUG:', message);
+        }
+        
         // Filtrar etapas basándose en el animal seleccionado
         document.getElementById('cambios_etapa_anid').addEventListener('change', function(e) {
             const animalSelect = e.target;
             const etapaSelect = document.getElementById('cambios_etapa_etid');
             const selectedOption = animalSelect.options[animalSelect.selectedIndex];
+            
+            showDebug('Animal seleccionado, procesando...');
             
             // Reiniciar etapa
             etapaSelect.value = '';
@@ -257,11 +277,13 @@
             
             if (!animalSelect.value) {
                 // Si no hay animal seleccionado, mostrar todas las etapas
+                showDebug('No hay animal seleccionado');
                 Array.from(etapaSelect.options).forEach((option, index) => {
-                    if (index > 0) { // Skip the first "Seleccione una etapa" option
+                    if (index > 0) {
                         option.style.display = 'block';
                     }
                 });
+                document.getElementById('debug-info').style.display = 'none';
                 return;
             }
             
@@ -269,14 +291,11 @@
             const animalSexo = selectedOption.getAttribute('data-sexo');
             const animalTipoAnimal = selectedOption.getAttribute('data-tipo-animal');
             
-            console.log('Animal seleccionado:', {
-                id: animalSelect.value,
-                sexo: animalSexo,
-                tipoAnimal: animalTipoAnimal
-            });
+            showDebug(`Animal ID: ${animalSelect.value}, Sexo: ${animalSexo}, Tipo: ${animalTipoAnimal}`);
             
             // Función para filtrar etapas
             function filtrarEtapas() {
+                let visibleOptions = 0;
                 Array.from(etapaSelect.options).forEach((option, index) => {
                     if (index === 0) return; // Skip the first "Seleccione una etapa" option
                     
@@ -289,11 +308,15 @@
                     
                     if (sexoCompatible && tipoAnimalCompatible) {
                         option.style.display = 'block';
+                        visibleOptions++;
                     } else {
                         option.style.display = 'none';
                     }
                 });
+                showDebug(`Filtrado completado: ${visibleOptions} etapas visibles`);
             }
+            
+            showDebug('Iniciando llamada AJAX para obtener etapa actual...');
             
             // Obtener etapa actual del animal vía AJAX
             fetch(`/cambios-animal/animal/${animalSelect.value}/etapa`, {
@@ -304,12 +327,20 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                showDebug(`AJAX Response status: ${response.status}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
+                showDebug(`AJAX Success: ${JSON.stringify(data.success)}`);
                 console.log('Respuesta completa del servidor:', data);
                 
-                if (data.success && data.data.etapa_actual) {
+                if (data.success && data.data && data.data.etapa_actual) {
                     const etapaActualData = data.data.etapa_actual;
+                    showDebug('Procesando etapa actual...');
                     console.log('Estructura etapa_actual:', etapaActualData);
                     
                     // La estructura puede ser directa o anidada
@@ -317,27 +348,36 @@
                     if (etapaActualData.etapa) {
                         // Estructura: etapa_actual.etapa (anidada)
                         etapaActual = etapaActualData.etapa;
+                        showDebug('Usando estructura anidada (etapa_actual.etapa)');
                     } else if (etapaActualData.etapa_id) {
                         // Estructura: etapa_actual directa
                         etapaActual = etapaActualData;
+                        showDebug('Usando estructura directa (etapa_actual)');
                     } else {
+                        showDebug('ERROR: Estructura de etapa_actual no reconocida', true);
                         console.error('Estructura de etapa_actual no reconocida:', etapaActualData);
                         filtrarEtapas(); // Filtrar etapas normalmente
                         return;
                     }
                     
+                    showDebug(`Etapa actual: ID=${etapaActual.etapa_id}, Nombre=${etapaActual.etapa_nombre}`);
                     console.log('Etapa actual procesada:', etapaActual);
                     
-                    // Agregar etapa actual si no existe en la lista
+                    // Verificar si la etapa actual ya existe en la lista
                     let etapaActualExists = false;
+                    let existingOptionText = '';
                     Array.from(etapaSelect.options).forEach((option, index) => {
                         if (option.value == etapaActual.etapa_id) {
                             etapaActualExists = true;
-                            console.log('Etapa actual ya existe en la lista');
+                            existingOptionText = option.textContent;
                         }
                     });
                     
-                    if (!etapaActualExists) {
+                    if (etapaActualExists) {
+                        showDebug(`Etapa actual ya existe: "${existingOptionText}"`);
+                    } else {
+                        showDebug('Agregando etapa actual a la lista...');
+                        
                         const newOption = document.createElement('option');
                         newOption.value = etapaActual.etapa_id;
                         newOption.textContent = `${etapaActual.etapa_nombre} (ETAPA ACTUAL)`;
@@ -347,7 +387,13 @@
                         newOption.setAttribute('data-edad-fin', etapaActual.etapa_edad_fin || '');
                         
                         // Agregar después de la primera opción "Seleccione una etapa"
-                        etapaSelect.insertBefore(newOption, etapaSelect.options[1]);
+                        if (etapaSelect.options.length > 1) {
+                            etapaSelect.insertBefore(newOption, etapaSelect.options[1]);
+                        } else {
+                            etapaSelect.appendChild(newOption);
+                        }
+                        
+                        showDebug(`✅ Etapa actual agregada: "${newOption.textContent}"`);
                         
                         console.log('Etapa actual agregada a la lista:', {
                             id: etapaActual.etapa_id,
@@ -357,8 +403,10 @@
                         });
                     }
                 } else {
+                    showDebug('No se encontró etapa_actual válida', true);
                     console.log('No se encontró etapa_actual o response no exitoso:', {
                         success: data.success,
+                        has_data: !!(data.data),
                         has_etapa_actual: !!(data.data && data.data.etapa_actual)
                     });
                 }
@@ -367,8 +415,8 @@
                 filtrarEtapas();
             })
             .catch(error => {
+                showDebug(`ERROR AJAX: ${error.message}`, true);
                 console.error('Error obteniendo etapa del animal:', error);
-                console.log('Continuando con filtrado normal de etapas...');
                 
                 // Filtrar etapas aunque haya error en AJAX
                 filtrarEtapas();
