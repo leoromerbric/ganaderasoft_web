@@ -17,6 +17,13 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
     public function getList(?int $idAnimal = null, ?int $idFinca = null): array
     {
         try {
+            $user = session('user');
+            
+            if (!$user || !isset($user['token'])) {
+                return [];
+            }
+
+            $endpoint = '/cambios-animal';
             $params = [];
             
             if ($idAnimal) {
@@ -27,10 +34,16 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
                 $params['finca_id'] = $idFinca;
             }
             
-            $queryString = !empty($params) ? '?' . http_build_query($params) : '';
-            $response = $this->makeRequest('GET', "cambios-animal{$queryString}");
+            if (!empty($params)) {
+                $endpoint .= '?' . http_build_query($params);
+            }
+
+            $response = $this->get($endpoint, [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $user['token'],
+            ]);
             
-            if ($response['success']) {
+            if (isset($response['success']) && $response['success']) {
                 return $response['data'] ?? [];
             }
             
@@ -50,7 +63,21 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
     public function create(array $data): array
     {
         try {
-            $response = $this->makeRequest('POST', 'cambios-animal', $data);
+            $user = session('user');
+            
+            if (!$user || !isset($user['token'])) {
+                return [
+                    'success' => false,
+                    'message' => 'Usuario no autenticado'
+                ];
+            }
+
+            $response = $this->post('/cambios-animal', $data, [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $user['token'],
+                'Content-Type' => 'application/json'
+            ]);
+            
             return $response;
         } catch (Exception $e) {
             \Log::error('Error creando cambio de animal: ' . $e->getMessage());
@@ -70,9 +97,18 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
     public function getById(int $id): array
     {
         try {
-            $response = $this->makeRequest('GET', "cambios-animal/{$id}");
+            $user = session('user');
             
-            if ($response['success']) {
+            if (!$user || !isset($user['token'])) {
+                return [];
+            }
+
+            $response = $this->get("/cambios-animal/{$id}", [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $user['token'],
+            ]);
+            
+            if (isset($response['success']) && $response['success']) {
                 return $response['data'] ?? [];
             }
             
@@ -91,9 +127,18 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
     public function getAnimales(): array
     {
         try {
-            $response = $this->makeRequest('GET', 'animales');
+            $user = session('user');
             
-            if ($response['success']) {
+            if (!$user || !isset($user['token'])) {
+                return [];
+            }
+
+            $response = $this->get('/animales', [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $user['token'],
+            ]);
+            
+            if (isset($response['success']) && $response['success']) {
                 return $response['data'] ?? [];
             }
             
@@ -112,9 +157,18 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
     public function getFincas(): array
     {
         try {
-            $response = $this->makeRequest('GET', 'fincas');
+            $user = session('user');
             
-            if ($response['success']) {
+            if (!$user || !isset($user['token'])) {
+                return [];
+            }
+
+            $response = $this->get('/fincas', [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $user['token'],
+            ]);
+            
+            if (isset($response['success']) && $response['success']) {
                 return $response['data'] ?? [];
             }
             
