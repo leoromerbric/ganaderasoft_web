@@ -221,42 +221,35 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (data.success && data.data && data.data.etapa_actual) {
                 const etapaActualData = data.data.etapa_actual;
-                showDebug('✅ Etapa actual encontrada, procesando...');
-                console.log('Estructura etapa_actual:', etapaActualData);
+                console.log('Estructura etapa_actual completa:', etapaActualData);
                 
-                // La estructura puede ser directa o anidada
-                let etapaActual;
-                if (etapaActualData.etapa) {
-                    etapaActual = etapaActualData.etapa;
-                    showDebug('✅ Usando estructura anidada (etapaActualData.etapa)');
-                } else if (etapaActualData.etapa_id) {
-                    etapaActual = etapaActualData;
-                    showDebug('✅ Usando estructura directa (etapaActualData)');
+                // Según la API, etapa_actual tiene una propiedad 'etapa' con los detalles
+                if (etapaActualData.etapa && etapaActualData.etapa.etapa_id && etapaActualData.etapa.etapa_nombre) {
+                    const etapaActual = etapaActualData.etapa;
+                    showDebug('✅ Etapa actual encontrada y procesada correctamente');
+                    showDebug(`✅ Etapa: ${etapaActual.etapa_nombre} (ID: ${etapaActual.etapa_id})`);
+                    
+                    // LIMPIAR el select y agregar SOLO la etapa actual
+                    etapaSelect.innerHTML = '<option value="">Seleccione una etapa</option>';
+                    
+                    const etapaOption = document.createElement('option');
+                    etapaOption.value = etapaActual.etapa_id;
+                    etapaOption.textContent = `${etapaActual.etapa_nombre} (ETAPA ACTUAL)`;
+                    etapaSelect.appendChild(etapaOption);
+                    
+                    showDebug(`✅ ¡LISTO! Solo se muestra: "${etapaOption.textContent}"`);
+                    
+                    // Auto-seleccionar la etapa actual
+                    etapaSelect.value = etapaActual.etapa_id;
+                    
+                    showDebug(`✅ Etapa preseleccionada automáticamente`);
                 } else {
-                    showDebug('ERROR: Estructura de etapa_actual no reconocida', true);
-                    console.error('Estructura etapa_actual no reconocida:', etapaActualData);
-                    return;
+                    showDebug('ERROR: Estructura de etapa_actual.etapa no válida', true);
+                    console.error('Estructura etapa_actual.etapa no válida:', etapaActualData);
+                    etapaSelect.innerHTML = '<option value="">Estructura de etapa inválida</option>';
                 }
-                
-                showDebug(`✅ Etapa: ${etapaActual.etapa_nombre} (ID: ${etapaActual.etapa_id})`);
-                
-                // LIMPIAR el select y agregar SOLO la etapa actual
-                etapaSelect.innerHTML = '<option value="">Seleccione una etapa</option>';
-                
-                const etapaOption = document.createElement('option');
-                etapaOption.value = etapaActual.etapa_id;
-                etapaOption.textContent = `${etapaActual.etapa_nombre} (ETAPA ACTUAL)`;
-                etapaSelect.appendChild(etapaOption);
-                
-                showDebug(`✅ ¡LISTO! Solo se muestra: "${etapaOption.textContent}"`);
-                
-                // Auto-seleccionar la etapa actual
-                etapaSelect.value = etapaActual.etapa_id;
-                
-                showDebug(`✅ Etapa preseleccionada automáticamente`);
-                
             } else {
-                showDebug('ERROR: No se encontró etapa_actual válida', true);
+                showDebug('ERROR: No se encontró etapa_actual en la respuesta', true);
                 console.error('Respuesta sin etapa_actual:', data);
                 if (data.data) {
                     console.error('Claves disponibles en data:', Object.keys(data.data));

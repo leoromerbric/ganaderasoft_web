@@ -1,179 +1,135 @@
-# GanaderaSoft - Sistema de Gestión de Ganadería
+# GanaderaSoft - Sistema de Gestión Ganadera
 
-Prototipo web desarrollado con Laravel 10 y PHP 8.1 para la gestión de ganadería.
+## Descripción
 
-## 🚀 Características del Prototipo
+GanaderaSoft es un sistema de gestión ganadera desarrollado en Laravel 10 con PHP 8.1. Funciona como un gateway API que se conecta a servicios externos para el manejo integral de datos ganaderos incluyendo animales, fincas, rebaños, lactancia, producción lechera y más.
 
-Este es un **prototipo funcional** con las siguientes pantallas:
-- **Login**: Autenticación de usuarios con credenciales simuladas
-- **Dashboard**: Panel principal con KPIs, gráficos y alertas
-
-### ⚠️ Importante - Prototipo
-- **No utiliza base de datos** - Todos los datos son simulados (mocks)
-- **No conecta con APIs reales** - Servicios mock con datos de prueba
-- **Arquitectura preparada** para reemplazar fácilmente los mocks por servicios reales
-
-## 🎨 Stack Tecnológico
+## Tecnologías
 
 - **Backend**: Laravel 10, PHP 8.1
-- **Frontend**: Blade Templates, Tailwind CSS 3, Vite
-- **Gráficos**: Chart.js
-- **Idioma**: Español (es-VE)
-- **Timezone**: America/Caracas
+- **Frontend**: Blade Templates, Tailwind CSS, JavaScript
+- **Arquitectura**: Service Layer Pattern con Dependency Injection
+- **Autenticación**: Sistema personalizado basado en sesiones
 
-## 🎨 Identidad Visual GanaderaSoft
+## Estructura de Directorios
 
-El sistema utiliza la paleta de colores corporativa:
-- **Celeste principal**: `#6EC1E4`
-- **Verde lima**: `#B3D335`
-- **Azul profundo**: `#007B92`
-- **Negro suave**: `#333333`
-- **Blanco puro**: `#FFFFFF`
+### `/app`
+**Propósito**: Lógica principal de la aplicación Laravel
 
-Tipografía: Nunito (sans-serif limpia y moderna)
+- **`/Console`**: Comandos de consola Artisan
+- **`/Exceptions`**: Manejo de excepciones personalizadas
+- **`/Http`**: Controladores, middleware y requests HTTP
+  - **`/Controllers`**: Controladores de la aplicación (Dashboard, Animales, Lactancia, Leche, etc.)
+  - **`/Middleware`**: Middleware personalizado (`CheckMockAuth` para autenticación)
+- **`/Providers`**: Service Providers de Laravel (bindings, configuraciones)
+- **`/Services`**: Capa de servicios con patrón de arquitectura limpia
+  - **`/Api`**: Implementaciones que se conectan a APIs externas
+  - **`/Contracts`**: Interfaces que definen contratos de servicios
+  - **`/Mock`**: Implementaciones mock para desarrollo y testing
 
-## 📦 Instalación
+### `/bootstrap`
+**Propósito**: Archivos de arranque de Laravel
+- Configuración inicial del framework
 
-### Requisitos Previos
-- PHP 8.1+
-- Composer
-- Node.js y npm
+### `/config`
+**Propósito**: Archivos de configuración de Laravel
+- Configuraciones de base de datos, servicios, autenticación, etc.
 
-### Pasos de Instalación
+### `/database`
+**Propósito**: Esquema y migraciones de base de datos
+- `bd_ganadera_soft.sql`: Esquema SQL de referencia para producción
 
-1. **Clonar el repositorio**
+### `/docs`
+**Propósito**: Documentación técnica del proyecto
+- **`/apis_docs`**: Documentación detallada de endpoints de APIs externas (41 archivos)
+
+### `/public`
+**Propósito**: Archivos públicos accesibles por el navegador
+- Punto de entrada principal (`index.php`)
+- Assets estáticos (imágenes, CSS, JS compilados)
+
+### `/resources`
+**Propósito**: Recursos de frontend no compilados
+- **`/css`**: Stylesheets CSS fuente
+- **`/js`**: JavaScript fuente
+- **`/views`**: Templates Blade organizados por módulo (dashboard, animales, lactancia, etc.)
+
+### `/routes`
+**Propósito**: Definición de rutas de la aplicación
+- `web.php`: Rutas web principales
+- `api.php`: Rutas de API
+
+### `/scripts`
+**Propósito**: Scripts de utilidades y despliegue
+- `ganaderasoft-update.sh`: Script principal de actualización
+- `setup-gs-command.sh`: Configuración de comandos de sistema
+
+### `/storage`
+**Propósito**: Almacenamiento de archivos temporales y logs
+- Logs de aplicación, cache, sesiones, uploads
+
+### `/tests`
+**Propósito**: Tests automatizados
+- Configuración base para PHPUnit
+
+## Arquitectura de Servicios
+
+El proyecto utiliza **Dependency Injection** y **Service Layer Pattern**:
+
+1. **Interfaces** (`/Services/Contracts`): Definen contratos para cada servicio
+2. **Implementaciones API** (`/Services/Api`): Se conectan a APIs externas reales
+3. **Implementaciones Mock** (`/Services/Mock`): Datos simulados para desarrollo
+4. **Binding**: En `AppServiceProvider` se configuran qué implementaciones usar
+
+## Módulos Principales
+
+### Gestión de Animales
+- CRUD completo de animales
+- Seguimiento de etapas de vida
+- Estados de salud
+- Cambios y transiciones
+
+### Gestión de Fincas y Rebaños
+- Administración de propiedades ganaderas
+- Organización por rebaños
+- Gestión de personal
+
+### Producción Lechera
+- Registros de lactancia
+- Control de producción diaria
+- Análisis de rendimiento
+
+### Dashboard y Reportes
+- KPIs ganaderos
+- Visualización de datos
+- Métricas principales
+
+## Comandos de Desarrollo
+
 ```bash
-git clone https://github.com/leoromerbric/ganaderasoft_web.git
-cd ganaderasoft_web
-```
+# Instalar dependencias
+composer install && npm install
 
-2. **Instalar dependencias de PHP**
-```bash
-composer install
-```
-
-3. **Configurar el entorno**
-```bash
-cp .env.example .env  # Si no existe .env
-php artisan key:generate
-```
-
-4. **Instalar dependencias de Node.js**
-```bash
-npm install
-```
-
-5. **Compilar assets**
-```bash
-npm run build
-```
-
-Para desarrollo con hot-reload:
-```bash
+# Desarrollo con watch
 npm run dev
-```
 
-6. **Iniciar el servidor**
-```bash
+# Servir aplicación
 php artisan serve
-```
 
-Acceder a: http://localhost:8000
-
-## 🔐 Credenciales de Acceso (Demo)
-
-- **Email**: `admin@demo.cl`
-- **Contraseña**: `Password123!`
-
-## 📱 Pantallas
-
-### 1. Login (`/login`)
-- Formulario de autenticación
-- Validaciones server-side
-- Credenciales de demostración visibles
-- Diseño responsive con branding GanaderaSoft
-
-### 2. Dashboard (`/dashboard`)
-Pantalla principal protegida que incluye:
-
-#### KPIs (Tarjetas de métricas)
-- Total de animales: 1,247
-- Total de fincas: 18
-- Producción diaria: 4,582 L
-- Alertas activas: 7
-
-#### Gráfico de Producción
-- Chart.js mostrando producción de leche de la última semana
-- Datos simulados con tendencias realistas
-
-#### Alertas Recientes
-- Panel lateral con últimas alertas
-- Niveles: Alta (rojo), Media (amarillo), Baja (azul)
-
-#### Tabla de Alertas
-- Listado completo de alertas con fecha, nivel y mensaje
-- Diseño responsive
-
-## 🏗️ Arquitectura
-
-### Estructura de Servicios
-
-El sistema está diseñado con **interfaces y servicios mock** para facilitar la migración futura a APIs reales:
-
-```
-app/
-├── Services/
-│   ├── Contracts/
-│   │   ├── AuthServiceInterface.php
-│   │   └── DashboardServiceInterface.php
-│   └── Mock/
-│       ├── MockAuthService.php
-│       └── MockDashboardService.php
-```
-
-### Reemplazo de Mocks por APIs Reales
-
-Para conectar con APIs reales, simplemente:
-
-1. Crear nuevas implementaciones de las interfaces en `app/Services/Api/`
-2. Actualizar el binding en `app/Providers/AppServiceProvider.php`
-
-```php
-// En AppServiceProvider::register()
-$this->app->bind(
-    \App\Services\Contracts\AuthServiceInterface::class,
-    \App\Services\Api\RealAuthService::class  // Reemplazar MockAuthService
-);
-```
-
-### Middleware de Autenticación
-
-- `CheckMockAuth`: Middleware personalizado para proteger rutas
-- Utiliza sesiones de Laravel
-- Fácilmente reemplazable por Laravel Sanctum o Passport
-
-## 🛠️ Desarrollo
-
-### Linting
-```bash
-./vendor/bin/pint  # Formato PSR-12
-```
-
-### Testing
-```bash
-php artisan test
-```
-
-### Compilar assets para producción
-```bash
+# Construcción para producción
 npm run build
 ```
 
-## 📄 Licencia
+## Configuración
 
-MIT
+1. Copiar `.env.example` a `.env`
+2. Configurar variables de entorno (URLs de APIs, credenciales)
+3. Instalar dependencias
+4. Iniciar servidor de desarrollo
 
-## 👤 Autor
+## Notas Técnicas
 
-Sistema desarrollado para GanaderaSoft
-
+- **Autenticación**: Sistema personalizado con middleware `CheckMockAuth`
+- **API Gateway**: No usa base de datos local, se conecta a servicios externos
+- **Frontend**: Server-side rendering con Blade, CSS con Tailwind
+- **Servicios**: Intercambiables entre Mock y Api según configuración en `AppServiceProvider`
