@@ -151,9 +151,9 @@ class BaseApiService
     protected function delete(string $endpoint, array $headers = []): array
     {
         try {
-            $url = rtrim(env('API_BASE_URL', 'http://localhost:8000/api'), '/') . $endpoint;
-            
-            $response = Http::withHeaders($headers)->delete($url);
+            $response = Http::withHeaders($headers)
+                ->timeout(10)
+                ->delete($this->baseUrl . $endpoint);
 
             if ($response->successful()) {
                 return $response->json();
