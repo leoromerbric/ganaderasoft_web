@@ -78,6 +78,56 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Contracts\CambiosAnimalServiceInterface::class,
             \App\Services\Api\ApiCambiosAnimalService::class
         );
+
+        // Módulo Reproductivo
+        $this->app->bind(
+            \App\Services\Contracts\RegistroCeloServiceInterface::class,
+            \App\Services\Api\ApiRegistroCeloService::class
+        );
+        $this->app->bind(
+            \App\Services\Contracts\ServicioAnimalServiceInterface::class,
+            \App\Services\Api\ApiServicioAnimalService::class
+        );
+        $this->app->bind(
+            \App\Services\Contracts\ReproduccionAnimalServiceInterface::class,
+            \App\Services\Api\ApiReproduccionAnimalService::class
+        );
+        $this->app->bind(
+            \App\Services\Contracts\PalpacionServiceInterface::class,
+            \App\Services\Api\ApiPalpacionService::class
+        );
+        $this->app->bind(
+            \App\Services\Contracts\SemenToroServiceInterface::class,
+            \App\Services\Api\ApiSemenToroService::class
+        );
+
+        // Módulo Sanitario
+        $this->app->bind(
+            \App\Services\Contracts\DiagnosticoServiceInterface::class,
+            \App\Services\Api\ApiDiagnosticoService::class
+        );
+        $this->app->bind(
+            \App\Services\Contracts\TratamientoServiceInterface::class,
+            \App\Services\Api\ApiTratamientoService::class
+        );
+        $this->app->bind(
+            \App\Services\Contracts\VacunaServiceInterface::class,
+            \App\Services\Api\ApiVacunaService::class
+        );
+        $this->app->bind(
+            \App\Services\Contracts\CasaComercialServiceInterface::class,
+            \App\Services\Api\ApiCasaComercialService::class
+        );
+        $this->app->bind(
+            \App\Services\Contracts\HistoricoAplicacionServiceInterface::class,
+            \App\Services\Api\ApiHistoricoAplicacionService::class
+        );
+
+        // Movimiento de Rebaño
+        $this->app->bind(
+            \App\Services\Contracts\MovimientoRebanoServiceInterface::class,
+            \App\Services\Api\ApiMovimientoRebanoService::class
+        );
     }
 
     /**

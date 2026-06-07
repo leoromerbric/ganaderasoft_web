@@ -107,10 +107,25 @@
                 <div class="mt-6 px-4 mb-2">
                     <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Módulo Reproductivo</h3>
                 </div>
-                <a href="#" class="menu-item flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
-                    <span class="menu-icon text-xl mr-3">💝</span>
-                    <span class="menu-text font-medium">Calendario</span>
-                    <span class="menu-text ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
+                <a href="{{ route('registro-celo.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('registro-celo.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🌡️</span>
+                    <span class="menu-text font-medium">Registro de Celo</span>
+                </a>
+                <a href="{{ route('servicio-animal.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('servicio-animal.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🐂</span>
+                    <span class="menu-text font-medium">Servicio Animal</span>
+                </a>
+                <a href="{{ route('reproduccion-animal.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('reproduccion-animal.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🍼</span>
+                    <span class="menu-text font-medium">Reproducción</span>
+                </a>
+                <a href="{{ route('palpacion.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('palpacion.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🔬</span>
+                    <span class="menu-text font-medium">Palpación</span>
+                </a>
+                <a href="{{ route('semen-toro.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('semen-toro.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🧬</span>
+                    <span class="menu-text font-medium">Semen de Toro</span>
                 </a>
 
                 <!-- Producción Lechera -->
@@ -143,10 +158,34 @@
                 <div class="mt-6 px-4 mb-2">
                     <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Módulo Sanitario</h3>
                 </div>
-                <a href="#" class="menu-item flex items-center px-6 py-3 text-gray-400 cursor-not-allowed">
-                    <span class="menu-icon text-xl mr-3">🏥</span>
-                    <span class="menu-text font-medium">Plan de Vacunación</span>
-                    <span class="menu-text ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
+                <a href="{{ route('diagnostico.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('diagnostico.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🩺</span>
+                    <span class="menu-text font-medium">Diagnósticos</span>
+                </a>
+                <a href="{{ route('tratamiento.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('tratamiento.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">💊</span>
+                    <span class="menu-text font-medium">Tratamientos</span>
+                </a>
+                <a href="{{ route('vacuna.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('vacuna.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">💉</span>
+                    <span class="menu-text font-medium">Vacunas</span>
+                </a>
+                <a href="{{ route('casa-comercial.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('casa-comercial.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🏭</span>
+                    <span class="menu-text font-medium">Casas Comerciales</span>
+                </a>
+                <a href="{{ route('historico-aplicacion.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('historico-aplicacion.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">📋</span>
+                    <span class="menu-text font-medium">Historial de Vacunas</span>
+                </a>
+
+                <!-- Movimientos de Rebaño -->
+                <div class="mt-6 px-4 mb-2">
+                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Movimientos</h3>
+                </div>
+                <a href="{{ route('movimiento-rebano.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('movimiento-rebano.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🚛</span>
+                    <span class="menu-text font-medium">Movimiento de Rebaño</span>
                 </a>
 
                 <!-- Reportes -->

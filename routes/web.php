@@ -12,6 +12,17 @@ use App\Http\Controllers\LactanciaController;
 use App\Http\Controllers\LecheController;
 use App\Http\Controllers\PesoCorporalController;
 use App\Http\Controllers\MedidasCorporalesController;
+use App\Http\Controllers\RegistroCeloController;
+use App\Http\Controllers\ServicioAnimalController;
+use App\Http\Controllers\ReproduccionAnimalController;
+use App\Http\Controllers\PalpacionController;
+use App\Http\Controllers\SemenToroController;
+use App\Http\Controllers\DiagnosticoController;
+use App\Http\Controllers\TratamientoController;
+use App\Http\Controllers\VacunaController;
+use App\Http\Controllers\CasaComercialController;
+use App\Http\Controllers\HistoricoAplicacionController;
+use App\Http\Controllers\MovimientoRebanoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -123,4 +134,105 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::delete('/cambios-animal/{id}', [CambiosAnimalController::class, 'destroy'])->name('cambios-animal.destroy');
     // AJAX route for getting animal stage
     Route::get('/cambios-animal/animal/{id}/etapa', [CambiosAnimalController::class, 'getAnimalEtapa'])->name('cambios-animal.animal.etapa');
+
+    // ===================== MÓDULO REPRODUCTIVO =====================
+    // Registro de Celo
+    Route::get('/registro-celo', [RegistroCeloController::class, 'index'])->name('registro-celo.index');
+    Route::get('/registro-celo/create', [RegistroCeloController::class, 'create'])->name('registro-celo.create');
+    Route::post('/registro-celo', [RegistroCeloController::class, 'store'])->name('registro-celo.store');
+    Route::get('/registro-celo/{id}', [RegistroCeloController::class, 'show'])->name('registro-celo.show');
+    Route::get('/registro-celo/{id}/edit', [RegistroCeloController::class, 'edit'])->name('registro-celo.edit');
+    Route::put('/registro-celo/{id}', [RegistroCeloController::class, 'update'])->name('registro-celo.update');
+    Route::delete('/registro-celo/{id}', [RegistroCeloController::class, 'destroy'])->name('registro-celo.destroy');
+
+    // Servicio Animal
+    Route::get('/servicio-animal', [ServicioAnimalController::class, 'index'])->name('servicio-animal.index');
+    Route::get('/servicio-animal/create', [ServicioAnimalController::class, 'create'])->name('servicio-animal.create');
+    Route::post('/servicio-animal', [ServicioAnimalController::class, 'store'])->name('servicio-animal.store');
+    Route::get('/servicio-animal/{id}', [ServicioAnimalController::class, 'show'])->name('servicio-animal.show');
+    Route::get('/servicio-animal/{id}/edit', [ServicioAnimalController::class, 'edit'])->name('servicio-animal.edit');
+    Route::put('/servicio-animal/{id}', [ServicioAnimalController::class, 'update'])->name('servicio-animal.update');
+    Route::delete('/servicio-animal/{id}', [ServicioAnimalController::class, 'destroy'])->name('servicio-animal.destroy');
+
+    // Reproducción Animal
+    Route::get('/reproduccion-animal', [ReproduccionAnimalController::class, 'index'])->name('reproduccion-animal.index');
+    Route::get('/reproduccion-animal/create', [ReproduccionAnimalController::class, 'create'])->name('reproduccion-animal.create');
+    Route::post('/reproduccion-animal', [ReproduccionAnimalController::class, 'store'])->name('reproduccion-animal.store');
+    Route::get('/reproduccion-animal/{id}', [ReproduccionAnimalController::class, 'show'])->name('reproduccion-animal.show');
+    Route::get('/reproduccion-animal/{id}/edit', [ReproduccionAnimalController::class, 'edit'])->name('reproduccion-animal.edit');
+    Route::put('/reproduccion-animal/{id}', [ReproduccionAnimalController::class, 'update'])->name('reproduccion-animal.update');
+    Route::delete('/reproduccion-animal/{id}', [ReproduccionAnimalController::class, 'destroy'])->name('reproduccion-animal.destroy');
+
+    // Palpación
+    Route::get('/palpacion', [PalpacionController::class, 'index'])->name('palpacion.index');
+    Route::get('/palpacion/create', [PalpacionController::class, 'create'])->name('palpacion.create');
+    Route::post('/palpacion', [PalpacionController::class, 'store'])->name('palpacion.store');
+    Route::get('/palpacion/{id}', [PalpacionController::class, 'show'])->name('palpacion.show');
+    Route::get('/palpacion/{id}/edit', [PalpacionController::class, 'edit'])->name('palpacion.edit');
+    Route::put('/palpacion/{id}', [PalpacionController::class, 'update'])->name('palpacion.update');
+    Route::delete('/palpacion/{id}', [PalpacionController::class, 'destroy'])->name('palpacion.destroy');
+
+    // Semen de Toro
+    Route::get('/semen-toro', [SemenToroController::class, 'index'])->name('semen-toro.index');
+    Route::get('/semen-toro/create', [SemenToroController::class, 'create'])->name('semen-toro.create');
+    Route::post('/semen-toro', [SemenToroController::class, 'store'])->name('semen-toro.store');
+    Route::get('/semen-toro/{id}', [SemenToroController::class, 'show'])->name('semen-toro.show');
+    Route::get('/semen-toro/{id}/edit', [SemenToroController::class, 'edit'])->name('semen-toro.edit');
+    Route::put('/semen-toro/{id}', [SemenToroController::class, 'update'])->name('semen-toro.update');
+    Route::delete('/semen-toro/{id}', [SemenToroController::class, 'destroy'])->name('semen-toro.destroy');
+
+    // ===================== MÓDULO SANITARIO =====================
+    // Diagnóstico
+    Route::get('/diagnostico', [DiagnosticoController::class, 'index'])->name('diagnostico.index');
+    Route::get('/diagnostico/create', [DiagnosticoController::class, 'create'])->name('diagnostico.create');
+    Route::post('/diagnostico', [DiagnosticoController::class, 'store'])->name('diagnostico.store');
+    Route::get('/diagnostico/{id}', [DiagnosticoController::class, 'show'])->name('diagnostico.show');
+    Route::get('/diagnostico/{id}/edit', [DiagnosticoController::class, 'edit'])->name('diagnostico.edit');
+    Route::put('/diagnostico/{id}', [DiagnosticoController::class, 'update'])->name('diagnostico.update');
+    Route::delete('/diagnostico/{id}', [DiagnosticoController::class, 'destroy'])->name('diagnostico.destroy');
+
+    // Tratamiento
+    Route::get('/tratamiento', [TratamientoController::class, 'index'])->name('tratamiento.index');
+    Route::get('/tratamiento/create', [TratamientoController::class, 'create'])->name('tratamiento.create');
+    Route::post('/tratamiento', [TratamientoController::class, 'store'])->name('tratamiento.store');
+    Route::get('/tratamiento/{id}', [TratamientoController::class, 'show'])->name('tratamiento.show');
+    Route::get('/tratamiento/{id}/edit', [TratamientoController::class, 'edit'])->name('tratamiento.edit');
+    Route::put('/tratamiento/{id}', [TratamientoController::class, 'update'])->name('tratamiento.update');
+    Route::delete('/tratamiento/{id}', [TratamientoController::class, 'destroy'])->name('tratamiento.destroy');
+
+    // Vacunas
+    Route::get('/vacunas', [VacunaController::class, 'index'])->name('vacuna.index');
+    Route::get('/vacunas/create', [VacunaController::class, 'create'])->name('vacuna.create');
+    Route::post('/vacunas', [VacunaController::class, 'store'])->name('vacuna.store');
+    Route::get('/vacunas/{id}', [VacunaController::class, 'show'])->name('vacuna.show');
+    Route::get('/vacunas/{id}/edit', [VacunaController::class, 'edit'])->name('vacuna.edit');
+    Route::put('/vacunas/{id}', [VacunaController::class, 'update'])->name('vacuna.update');
+    Route::delete('/vacunas/{id}', [VacunaController::class, 'destroy'])->name('vacuna.destroy');
+
+    // Casas Comerciales
+    Route::get('/casas-comerciales', [CasaComercialController::class, 'index'])->name('casa-comercial.index');
+    Route::get('/casas-comerciales/create', [CasaComercialController::class, 'create'])->name('casa-comercial.create');
+    Route::post('/casas-comerciales', [CasaComercialController::class, 'store'])->name('casa-comercial.store');
+    Route::get('/casas-comerciales/{id}', [CasaComercialController::class, 'show'])->name('casa-comercial.show');
+    Route::get('/casas-comerciales/{id}/edit', [CasaComercialController::class, 'edit'])->name('casa-comercial.edit');
+    Route::put('/casas-comerciales/{id}', [CasaComercialController::class, 'update'])->name('casa-comercial.update');
+    Route::delete('/casas-comerciales/{id}', [CasaComercialController::class, 'destroy'])->name('casa-comercial.destroy');
+
+    // Histórico de Aplicación
+    Route::get('/historico-aplicacion', [HistoricoAplicacionController::class, 'index'])->name('historico-aplicacion.index');
+    Route::get('/historico-aplicacion/create', [HistoricoAplicacionController::class, 'create'])->name('historico-aplicacion.create');
+    Route::post('/historico-aplicacion', [HistoricoAplicacionController::class, 'store'])->name('historico-aplicacion.store');
+    Route::get('/historico-aplicacion/{id}', [HistoricoAplicacionController::class, 'show'])->name('historico-aplicacion.show');
+    Route::get('/historico-aplicacion/{id}/edit', [HistoricoAplicacionController::class, 'edit'])->name('historico-aplicacion.edit');
+    Route::put('/historico-aplicacion/{id}', [HistoricoAplicacionController::class, 'update'])->name('historico-aplicacion.update');
+    Route::delete('/historico-aplicacion/{id}', [HistoricoAplicacionController::class, 'destroy'])->name('historico-aplicacion.destroy');
+
+    // ===================== MOVIMIENTOS DE REBAÑO =====================
+    Route::get('/movimiento-rebano', [MovimientoRebanoController::class, 'index'])->name('movimiento-rebano.index');
+    Route::get('/movimiento-rebano/create', [MovimientoRebanoController::class, 'create'])->name('movimiento-rebano.create');
+    Route::post('/movimiento-rebano', [MovimientoRebanoController::class, 'store'])->name('movimiento-rebano.store');
+    Route::get('/movimiento-rebano/{id}', [MovimientoRebanoController::class, 'show'])->name('movimiento-rebano.show');
+    Route::get('/movimiento-rebano/{id}/edit', [MovimientoRebanoController::class, 'edit'])->name('movimiento-rebano.edit');
+    Route::put('/movimiento-rebano/{id}', [MovimientoRebanoController::class, 'update'])->name('movimiento-rebano.update');
+    Route::delete('/movimiento-rebano/{id}', [MovimientoRebanoController::class, 'destroy'])->name('movimiento-rebano.destroy');
 });

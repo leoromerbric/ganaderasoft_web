@@ -88,8 +88,15 @@ class PesoCorporalController extends Controller
         $response = $this->pesoCorporalService->createPesoCorporal($data);
 
         if ($response['success']) {
-            return redirect()->route('peso-corporal.index')
-                ->with('success', 'Registro de peso creado exitosamente.');
+            $mensaje = 'Registro de peso creado exitosamente.';
+            if (isset($response['data']['clasificacion_etaria'])) {
+                $ce = $response['data']['clasificacion_etaria'];
+                $etapaNombre = $ce['etapa_nombre'] ?? null;
+                if ($etapaNombre) {
+                    $mensaje .= " Clasificación etaria automática: {$etapaNombre}.";
+                }
+            }
+            return redirect()->route('peso-corporal.index')->with('success', $mensaje);
         }
 
         return back()->withInput()->with('error', $response['message']);
@@ -164,8 +171,15 @@ class PesoCorporalController extends Controller
         $response = $this->pesoCorporalService->updatePesoCorporal($id, $data);
 
         if ($response['success']) {
-            return redirect()->route('peso-corporal.index')
-                ->with('success', 'Registro de peso actualizado exitosamente.');
+            $mensaje = 'Registro de peso actualizado exitosamente.';
+            if (isset($response['data']['clasificacion_etaria'])) {
+                $ce = $response['data']['clasificacion_etaria'];
+                $etapaNombre = $ce['etapa_nombre'] ?? null;
+                if ($etapaNombre) {
+                    $mensaje .= " Clasificación etaria automática: {$etapaNombre}.";
+                }
+            }
+            return redirect()->route('peso-corporal.index')->with('success', $mensaje);
         }
 
         return back()->withInput()->with('error', $response['message']);
