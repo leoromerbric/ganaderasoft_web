@@ -9,7 +9,7 @@
             <h2 class="text-3xl font-bold text-ganaderasoft-negro">🧪 Dosis</h2>
             <p class="mt-1 text-gray-600">Gestión de dosis asociadas a vacunas y casas comerciales</p>
         </div>
-        <a href="{{ route('dosis.create') }}" class="rounded-lg bg-ganaderasoft-verde px-5 py-2 text-white transition-colors hover:bg-ganaderasoft-verde/80">+ Nueva dosis</a>
+        <a href="{{ route('dosis.create') }}" class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md">Nuevo Registro</a>
     </div>
 
     @if(session('success'))<div class="mb-6 rounded-lg border-l-4 border-green-500 bg-green-50 p-4 text-green-800">{{ session('success') }}</div>@endif
@@ -31,8 +31,8 @@
                 <label for="vigentes" class="text-sm text-gray-700">Solo vigentes</label>
             </div>
             <div class="flex items-end gap-3">
-                <button type="submit" class="rounded-lg bg-ganaderasoft-azul px-5 py-2 text-white transition-colors hover:bg-ganaderasoft-azul/90">Filtrar</button>
-                <a href="{{ route('dosis.index') }}" class="rounded-lg border border-gray-300 px-5 py-2 text-gray-700 hover:bg-gray-50">Limpiar</a>
+                <button type="submit" class="px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">Filtrar</button>
+                <a href="{{ route('dosis.index') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Limpiar</a>
             </div>
         </form>
     </div>

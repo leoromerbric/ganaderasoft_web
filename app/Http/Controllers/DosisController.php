@@ -9,6 +9,22 @@ class DosisController extends Controller
 {
     public function __construct(protected DosisServiceInterface $service) {}
 
+    private function apiMessage(array $response, string $fallback): string
+    {
+        if (!empty($response['message']) && is_string($response['message'])) {
+            return $response['message'];
+        }
+
+        if (!empty($response['errors']) && is_array($response['errors'])) {
+            $first = collect($response['errors'])->flatten()->first();
+            if (is_string($first) && $first !== '') {
+                return $first;
+            }
+        }
+
+        return $fallback;
+    }
+
     public function index(Request $request)
     {
         $vacunaId = $request->query('vacuna_id');
@@ -44,7 +60,7 @@ class DosisController extends Controller
             'dosis_etapa_animal_etid' => 'required|integer',
         ]);
 
-        $response = $this->service->create($request->only([
+        $data = $request->only([
             'dosis_vacuna_id',
             'dosis_casa_id',
             'dosis_frecuencia',
@@ -54,13 +70,21 @@ class DosisController extends Controller
             'dosis_fecha_uso_fin',
             'dosis_etapa_animal_anid',
             'dosis_etapa_animal_etid',
-        ]));
+        ]);
+
+        // DB legacy schema stores the etapa-animal pair with swapped column names.
+        $animalId = (int) $data['dosis_etapa_animal_anid'];
+        $etapaId = (int) $data['dosis_etapa_animal_etid'];
+        $data['dosis_etapa_animal_anid'] = $etapaId;
+        $data['dosis_etapa_animal_etid'] = $animalId;
+
+        $response = $this->service->create($data);
 
         if ($response['success'] ?? false) {
             return redirect()->route('dosis.index')->with('success', 'Dosis registrada exitosamente.');
         }
 
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al registrar la dosis.');
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al registrar la dosis.'));
     }
 
     public function show(int $id)
@@ -107,7 +131,7 @@ class DosisController extends Controller
             return redirect()->route('dosis.index')->with('success', 'Dosis actualizada exitosamente.');
         }
 
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al actualizar la dosis.');
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al actualizar la dosis.'));
     }
 
     public function destroy(int $id)
@@ -117,6 +141,6 @@ class DosisController extends Controller
             return redirect()->route('dosis.index')->with('success', 'Dosis eliminada.');
         }
 
-        return redirect()->route('dosis.index')->with('error', $response['message'] ?? 'Error al eliminar la dosis.');
+        return redirect()->route('dosis.index')->with('error', $this->apiMessage($response, 'Error al eliminar la dosis.'));
     }
 }

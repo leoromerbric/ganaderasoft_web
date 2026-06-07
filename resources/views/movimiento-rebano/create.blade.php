@@ -17,7 +17,7 @@
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
             <h3 class="text-lg font-semibold">Datos del Movimiento</h3>
         </div>
-        <form action="{{ route('movimiento-rebano.store') }}" method="POST" class="p-6">
+        <form action="{{ route('movimiento-rebano.store') }}" method="POST" class="p-6" id="movimiento-form">
             @csrf
             @if($errors->any())
                 <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
@@ -129,8 +129,8 @@
             <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
                 <a href="{{ route('movimiento-rebano.index') }}"
                    class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</a>
-                <button type="submit"
-                        class="px-6 py-2 bg-ganaderasoft-verde text-white rounded-lg hover:bg-ganaderasoft-verde/80 transition-colors">
+                <button type="submit" id="btn-guardar-movimiento"
+                        class="px-6 py-2 bg-ganaderasoft-verde text-white rounded-lg hover:bg-ganaderasoft-verde/80 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
                     💾 Guardar
                 </button>
             </div>
@@ -212,6 +212,15 @@ document.addEventListener('DOMContentLoaded', function () {
     filterRebanos(rebanoDestino, fincaDestino.value, rebanoOrigen.value);
     filterAnimales();
     syncDestinoNombre();
+
+    const form = document.getElementById('movimiento-form');
+    const submitBtn = document.getElementById('btn-guardar-movimiento');
+    if (form && submitBtn) {
+        form.addEventListener('submit', function () {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Guardando...';
+        });
+    }
 });
 </script>
 @endsection

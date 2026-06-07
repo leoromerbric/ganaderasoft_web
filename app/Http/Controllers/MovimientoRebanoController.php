@@ -9,6 +9,22 @@ class MovimientoRebanoController extends Controller
 {
     public function __construct(protected MovimientoRebanoServiceInterface $service) {}
 
+    private function apiMessage(array $response, string $fallback): string
+    {
+        if (!empty($response['message']) && is_string($response['message'])) {
+            return $response['message'];
+        }
+
+        if (!empty($response['errors']) && is_array($response['errors'])) {
+            $first = collect($response['errors'])->flatten()->first();
+            if (is_string($first) && $first !== '') {
+                return $first;
+            }
+        }
+
+        return $fallback;
+    }
+
     public function index(Request $request)
     {
         $fincaId  = $request->query('id_finca');
@@ -39,13 +55,14 @@ class MovimientoRebanoController extends Controller
             'id_Rebano_Destino' => 'required|integer',
             'Rebano_Destino'    => 'nullable|string|max:30',
             'Comentario'        => 'nullable|string|max:40',
-            'animales'          => 'nullable|array',
+            'animales'          => 'required|array|min:1',
             'animales.*'        => 'integer',
         ], [
             'id_Finca.required'          => 'La finca de origen es requerida.',
             'id_Rebano.required'         => 'El rebaño de origen es requerido.',
             'id_Finca_Destino.required'  => 'La finca de destino es requerida.',
             'id_Rebano_Destino.required' => 'El rebaño de destino es requerido.',
+            'animales.required'          => 'Debe seleccionar al menos un animal para mover.',
         ]);
 
         if ((int) $request->id_Finca === (int) $request->id_Finca_Destino) {
@@ -64,7 +81,7 @@ class MovimientoRebanoController extends Controller
             return back()->withInput()->with('error', 'El rebaño de destino no pertenece a la finca de destino seleccionada.');
         }
 
-        $animalesSeleccionados = collect($request->input('animales', []))->map(fn ($id) => (int) $id)->all();
+        $animalesSeleccionados = collect($request->input('animales', []))->map(fn ($id) => (int) $id)->unique()->values()->all();
         if (!empty($animalesSeleccionados)) {
             $animales = collect($this->service->getAnimales());
             $animalesInvalidos = $animales
@@ -82,12 +99,31 @@ class MovimientoRebanoController extends Controller
         $data = $request->only(['id_Finca', 'id_Rebano', 'id_Finca_Destino', 'id_Rebano_Destino', 'Comentario', 'animales']);
         $data['Rebano_Destino'] = $rebanoDestino['Nombre'] ?? $request->input('Rebano_Destino');
 
+        $hashPayload = [
+            'id_Finca' => (int) $request->id_Finca,
+            'id_Rebano' => (int) $request->id_Rebano,
+            'id_Finca_Destino' => (int) $request->id_Finca_Destino,
+            'id_Rebano_Destino' => (int) $request->id_Rebano_Destino,
+            'Comentario' => (string) ($request->Comentario ?? ''),
+            'animales' => $animalesSeleccionados,
+        ];
+        $requestHash = sha1(json_encode($hashPayload));
+        $lastHash = session('movimiento_rebano_last_hash');
+        $lastTs = (int) session('movimiento_rebano_last_ts', 0);
+        if ($lastHash === $requestHash && (time() - $lastTs) <= 10) {
+            return redirect()->route('movimiento-rebano.index')->with('success', 'Movimiento de rebaño registrado exitosamente.');
+        }
+
         $response = $this->service->create($data);
 
         if ($response['success'] ?? false) {
+            session([
+                'movimiento_rebano_last_hash' => $requestHash,
+                'movimiento_rebano_last_ts' => time(),
+            ]);
             return redirect()->route('movimiento-rebano.index')->with('success', 'Movimiento de rebaño registrado exitosamente.');
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al crear el registro.');
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al crear el registro.'));
     }
 
     public function show(int $id)
@@ -122,7 +158,7 @@ class MovimientoRebanoController extends Controller
         if ($response['success'] ?? false) {
             return redirect()->route('movimiento-rebano.index')->with('success', 'Movimiento de rebaño actualizado.');
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al actualizar.');
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al actualizar.'));
     }
 
     public function destroy(int $id)
@@ -131,6 +167,6 @@ class MovimientoRebanoController extends Controller
         if ($response['success'] ?? false) {
             return redirect()->route('movimiento-rebano.index')->with('success', 'Movimiento de rebaño eliminado.');
         }
-        return redirect()->route('movimiento-rebano.index')->with('error', $response['message'] ?? 'Error al eliminar.');
+        return redirect()->route('movimiento-rebano.index')->with('error', $this->apiMessage($response, 'Error al eliminar.'));
     }
 }

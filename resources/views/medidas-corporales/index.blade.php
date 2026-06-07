@@ -9,8 +9,8 @@
             <h2 class="text-3xl font-bold text-ganaderasoft-negro">📏 Medidas Corporales</h2>
             <p class="mt-1 text-gray-600">Control morfométrico de los animales</p>
         </div>
-        <a href="{{ route('medidas-corporales.create') }}" class="rounded-lg bg-ganaderasoft-verde px-5 py-2 text-white transition-colors hover:bg-ganaderasoft-verde/80">
-            + Nuevo registro
+        <a href="{{ route('medidas-corporales.create') }}" class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
+            Nuevo Registro
         </a>
     </div>
 
@@ -126,8 +126,8 @@
             <p class="mt-1 text-gray-600">Control morfométrico de los animales</p>
         </div>
         <a href="{{ route('medidas-corporales.create') }}"
-           class="rounded-lg bg-ganaderasoft-verde px-5 py-2 text-white transition-colors hover:bg-ganaderasoft-verde/80">
-            + Nuevo registro
+           class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
+            Nuevo Registro
         </a>
     </div>
 

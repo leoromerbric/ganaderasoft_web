@@ -43,7 +43,7 @@
                     <select name="dosis_etapa_animal_anid" id="dosis_etapa_animal_anid" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Seleccione un animal</option>
                         @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] ?? '' }}">{{ $animal['Nombre'] ?? ('Animal #'.($animal['id_Animal'] ?? '')) }}</option>
+                            <option value="{{ $animal['id_Animal'] ?? '' }}" {{ old('dosis_etapa_animal_anid') == ($animal['id_Animal'] ?? '') ? 'selected' : '' }}>{{ $animal['Nombre'] ?? ('Animal #'.($animal['id_Animal'] ?? '')) }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -100,8 +100,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
             const payload = await response.json();
             const etapa = payload?.data?.etapa_actual || null;
-            const etapaId = etapa?.etapa_id || etapa?.etan_etapa_id || '';
-            const etapaNombre = etapa?.Nombre || etapa?.nombre || etapa?.descripcion || '';
+            const etapaNode = etapa?.etapa || etapa;
+            const etapaId = etapaNode?.etapa_id || etapa?.etan_etapa_id || '';
+            const etapaNombre = etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.nombre || etapaNode?.descripcion || '';
             etapaInput.value = etapaId;
             etapaTexto.value = etapaId ? (etapaNombre || 'Etapa actual') : 'Animal sin etapa activa';
         } catch (error) {
