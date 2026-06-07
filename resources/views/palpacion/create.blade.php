@@ -59,9 +59,10 @@
                         <option value="">-- Sin técnico --</option>
                         @foreach($personal as $persona)
                             @php
-                                $personalId = data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Personal') ?? data_get($persona, 'id_Tecnico');
+                                $personalId = data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Personal');
                                 $personalNombre = trim((data_get($persona, 'Nombre') ?? data_get($persona, 'personal.Nombre') ?? '') . ' ' . (data_get($persona, 'Apellido') ?? data_get($persona, 'personal.Apellido') ?? ''));
                             @endphp
+                            @continue(!$personalId)
                             <option value="{{ $personalId }}" {{ old('id_Tecnico') == $personalId ? 'selected' : '' }}>
                                 {{ $personalNombre !== '' ? $personalNombre : 'Personal #'.$personalId }}
                             </option>
@@ -118,10 +119,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
             const payload = await response.json();
             const etapa = payload?.data?.etapa_actual || null;
-            const etapaId = etapa?.etapa_id || etapa?.etan_etapa_id || '';
-            const etapaNombre = etapa?.Nombre || etapa?.nombre || etapa?.descripcion || '';
+            const etapaNode = etapa?.etapa || etapa;
+            const etapaId = etapaNode?.etapa_id || etapa?.etan_etapa_id || '';
+            const etapaNombre = etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.nombre || etapaNode?.descripcion || 'Etapa actual';
             etapaInput.value = etapaId;
-            etapaTexto.value = etapaId ? `${etapaNombre || 'Etapa actual'} (#${etapaId})` : 'Animal sin etapa activa';
+            etapaTexto.value = etapaId ? etapaNombre : 'Animal sin etapa activa';
         } catch (error) {
             etapaTexto.value = 'No se pudo obtener la etapa actual';
         }

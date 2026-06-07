@@ -62,9 +62,6 @@
                     @enderror
                 </div>
 
-                <!-- Debug Info -->
-                <div id="debug-info" class="mb-4" style="display: none;"></div>
-
                 <!-- Etapa Animal -->
                 <div>
                     <label for="lactancia_etapa_etid" class="block text-sm font-medium text-gray-700 mb-2">
@@ -147,122 +144,70 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM cargado, inicializando funcionalidad de etapa actual');
-    
-    // Verificar que los elementos existan
     const animalSelect = document.getElementById('lactancia_etapa_anid');
     const etapaSelect = document.getElementById('lactancia_etapa_etid');
-    const debugDiv = document.getElementById('debug-info');
-    
-    if (!animalSelect || !etapaSelect || !debugDiv) {
-        console.error('Error: No se encontraron los elementos necesarios', {
-            animalSelect: !!animalSelect,
-            etapaSelect: !!etapaSelect,
-            debugDiv: !!debugDiv
-        });
+    if (!animalSelect || !etapaSelect) {
         return;
     }
-    
-    console.log('✅ Elementos encontrados, registrando event listener');
-    
-    // Función para mostrar información de debug
-    function showDebug(message, isError = false) {
-        const debugInfo = document.getElementById('debug-info');
-        debugInfo.style.display = 'block';
-        debugInfo.textContent = message;
-        debugInfo.className = isError ? 
-            'mb-2 p-2 bg-red-100 text-red-800 text-xs rounded' : 
-            'mb-2 p-2 bg-blue-100 text-blue-800 text-xs rounded';
-        console.log('DEBUG:', message);
-    }
-    
-    // Filtrar etapas basándose en el animal seleccionado - SOLO ETAPA ACTUAL
-    document.getElementById('lactancia_etapa_anid').addEventListener('change', function(e) {
-        console.log('🎯 Animal cambiado, iniciando proceso...');
-        const animalSelect = e.target;
-        const etapaSelect = document.getElementById('lactancia_etapa_etid');
-        const selectedOption = animalSelect.options[animalSelect.selectedIndex];
-        
-        showDebug('Animal seleccionado, obteniendo solo su etapa actual...');
-        
-        // Reiniciar etapa
+
+    const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
+
+    function resetEtapa(message = 'Seleccione una etapa') {
+        etapaSelect.innerHTML = `<option value="">${message}</option>`;
         etapaSelect.value = '';
-        
-        if (!animalSelect.value) {
-            showDebug('No hay animal seleccionado');
-            // Limpiar select y mostrar solo la opción por defecto
-            etapaSelect.innerHTML = '<option value="">Seleccione una etapa</option>';
-            document.getElementById('debug-info').style.display = 'none';
-            return;
-        }
-        
-        const animalId = animalSelect.value;
-        showDebug(`Obteniendo etapa actual para animal ID: ${animalId}`);
-        
-        // Obtener etapa actual del animal vía AJAX
-        fetch(`/lactancia/animal/${animalId}/etapa`, {
+    }
+
+    async function cargarEtapaActual(animalId) {
+        resetEtapa('Cargando etapa actual...');
+
+        try {
+            const response = await fetch(endpointTemplate.replace('__ID__', animalId), {
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
             }
-        })
-        .then(response => {
-            showDebug(`AJAX Response status: ${response.status}`);
+            });
+
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Respuesta completa del servidor:', data);
-            showDebug(`✅ Respuesta recibida: ${JSON.stringify(data).substring(0, 100)}...`);
-            
-            if (data.success && data.data && data.data.etapa_actual) {
-                const etapaActualData = data.data.etapa_actual;
-                console.log('Estructura etapa_actual completa:', etapaActualData);
-                
-                // Según la API, etapa_actual tiene una propiedad 'etapa' con los detalles
-                if (etapaActualData.etapa && etapaActualData.etapa.etapa_id && etapaActualData.etapa.etapa_nombre) {
-                    const etapaActual = etapaActualData.etapa;
-                    showDebug('✅ Etapa actual encontrada y procesada correctamente');
-                    showDebug(`✅ Etapa: ${etapaActual.etapa_nombre} (ID: ${etapaActual.etapa_id})`);
-                    
-                    // LIMPIAR el select y agregar SOLO la etapa actual
-                    etapaSelect.innerHTML = '<option value="">Seleccione una etapa</option>';
-                    
-                    const etapaOption = document.createElement('option');
-                    etapaOption.value = etapaActual.etapa_id;
-                    etapaOption.textContent = `${etapaActual.etapa_nombre} (ETAPA ACTUAL)`;
-                    etapaSelect.appendChild(etapaOption);
-                    
-                    showDebug(`✅ ¡LISTO! Solo se muestra: "${etapaOption.textContent}"`);
-                    
-                    // Auto-seleccionar la etapa actual
-                    etapaSelect.value = etapaActual.etapa_id;
-                    
-                    showDebug(`✅ Etapa preseleccionada automáticamente`);
-                } else {
-                    showDebug('ERROR: Estructura de etapa_actual.etapa no válida', true);
-                    console.error('Estructura etapa_actual.etapa no válida:', etapaActualData);
-                    etapaSelect.innerHTML = '<option value="">Estructura de etapa inválida</option>';
-                }
-            } else {
-                showDebug('ERROR: No se encontró etapa_actual en la respuesta', true);
-                console.error('Respuesta sin etapa_actual:', data);
-                if (data.data) {
-                    console.error('Claves disponibles en data:', Object.keys(data.data));
-                }
-                etapaSelect.innerHTML = '<option value="">Sin etapa disponible</option>';
+
+            const payload = await response.json();
+            const etapaActual = payload?.data?.etapa_actual || null;
+            const etapa = etapaActual?.etapa || etapaActual;
+            const etapaId = etapa?.etapa_id || etapaActual?.etan_etapa_id || null;
+            const etapaNombre = etapa?.etapa_nombre || etapa?.Nombre || etapa?.nombre || etapa?.descripcion || null;
+
+            if (!etapaId) {
+                resetEtapa('Animal sin etapa activa');
+                return;
             }
-        })
-        .catch(error => {
-            showDebug(`ERROR AJAX: ${error.message}`, true);
-            console.error('Error obteniendo etapa del animal:', error);
-            etapaSelect.innerHTML = '<option value="">Error al cargar etapa</option>';
-        });
+
+            resetEtapa();
+            const option = document.createElement('option');
+            option.value = etapaId;
+            option.textContent = etapaNombre || 'Etapa actual';
+            etapaSelect.appendChild(option);
+            etapaSelect.value = String(etapaId);
+        } catch (error) {
+            resetEtapa('Error al cargar etapa');
+        }
+    }
+
+    animalSelect.addEventListener('change', function(e) {
+        const animalId = e.target.value;
+        if (!animalId) {
+            resetEtapa();
+            return;
+        }
+        cargarEtapaActual(animalId);
     });
+
+    if (animalSelect.value) {
+        cargarEtapaActual(animalSelect.value);
+    }
 });
 </script>
 @endpush

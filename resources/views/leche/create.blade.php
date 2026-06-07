@@ -55,10 +55,11 @@
                             @php
                                 $fechaInicio = date('d/m/Y', strtotime($lactancia['lactancia_fecha_inicio']));
                                 $fechaFin = $lactancia['Lactancia_fecha_fin'] ? date('d/m/Y', strtotime($lactancia['Lactancia_fecha_fin'])) : 'En curso';
+                                $animalNombre = $lactancia['animal']['Nombre'] ?? ('Animal #'.($lactancia['lactancia_etapa_anid'] ?? 'N/A'));
                                 $isSelected = old('leche_lactancia_id', $lactanciaId) == $lactancia['lactancia_id'];
                             @endphp
                             <option value="{{ $lactancia['lactancia_id'] }}" {{ $isSelected ? 'selected' : '' }}>
-                                Animal {{ $lactancia['lactancia_etapa_anid'] }} - {{ $fechaInicio }} hasta {{ $fechaFin }}
+                                {{ $animalNombre }} - {{ $fechaInicio }} hasta {{ $fechaFin }}
                             </option>
                         @endforeach
                     </select>

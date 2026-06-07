@@ -46,9 +46,10 @@
                             @php
                                 $fechaInicio = date('d/m/Y', strtotime($lactancia['lactancia_fecha_inicio']));
                                 $fechaFin = $lactancia['Lactancia_fecha_fin'] ? date('d/m/Y', strtotime($lactancia['Lactancia_fecha_fin'])) : 'En curso';
+                                $animalNombre = $lactancia['animal']['Nombre'] ?? ('Animal #'.($lactancia['lactancia_etapa_anid'] ?? 'N/A'));
                             @endphp
                             <option value="{{ $lactancia['lactancia_id'] }}" {{ (string)$lactanciaId === (string)$lactancia['lactancia_id'] ? 'selected' : '' }}>
-                                Animal {{ $lactancia['lactancia_etapa_anid'] }} - {{ $fechaInicio }} hasta {{ $fechaFin }}
+                                {{ $animalNombre }} - {{ $fechaInicio }} hasta {{ $fechaFin }}
                             </option>
                         @endforeach
                     </select>
@@ -91,7 +92,8 @@
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Pesaje</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad (Litros)</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lactancia ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Animal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lactancia</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                             </tr>
                         </thead>
@@ -103,6 +105,9 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         <span class="font-semibold text-ganaderasoft-verde">{{ number_format($registro['leche_pesaje_Total'], 2) }} L</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $registro['animal_nombre'] ?? 'Animal no disponible' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $registro['leche_lactancia_id'] }}

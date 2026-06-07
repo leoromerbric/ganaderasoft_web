@@ -63,9 +63,10 @@
                         <option value="">-- Sin técnico --</option>
                         @foreach($personal as $persona)
                             @php
-                                $personalId = data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Personal') ?? data_get($persona, 'id_Tecnico');
+                                $personalId = data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Personal');
                                 $personalNombre = trim((data_get($persona, 'Nombre') ?? data_get($persona, 'personal.Nombre') ?? '') . ' ' . (data_get($persona, 'Apellido') ?? data_get($persona, 'personal.Apellido') ?? ''));
                             @endphp
+                            @continue(!$personalId)
                             <option value="{{ $personalId }}" {{ old('servicio_id_Tecnico') == $personalId ? 'selected' : '' }}>
                                 {{ $personalNombre !== '' ? $personalNombre : 'Personal #'.$personalId }}
                             </option>

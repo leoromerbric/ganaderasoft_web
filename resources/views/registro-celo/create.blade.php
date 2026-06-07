@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const etapaId = fetchedStage?.etapa_id || fetchedStage?.etan_etapa_id || option?.dataset.etapa || '';
         const etapaNombre = fetchedStage?.Nombre || fetchedStage?.nombre || fetchedStage?.descripcion || '';
         etapaInput.value = etapaId;
-        etapaTexto.value = etapaId ? `${etapaNombre || 'Etapa actual'} (#${etapaId})` : 'Animal sin etapa activa';
+        etapaTexto.value = etapaId ? (etapaNombre || 'Etapa actual') : 'Animal sin etapa activa';
     }
 
     async function updateStage() {

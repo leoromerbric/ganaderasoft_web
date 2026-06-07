@@ -9,6 +9,22 @@ class PalpacionController extends Controller
 {
     public function __construct(protected PalpacionServiceInterface $service) {}
 
+    private function apiMessage(array $response, string $fallback): string
+    {
+        if (!empty($response['message']) && is_string($response['message'])) {
+            return $response['message'];
+        }
+
+        if (!empty($response['errors']) && is_array($response['errors'])) {
+            $first = collect($response['errors'])->flatten()->first();
+            if (is_string($first) && $first !== '') {
+                return $first;
+            }
+        }
+
+        return $fallback;
+    }
+
     public function index(Request $request)
     {
         $animalId    = $request->query('animal_id');
@@ -50,7 +66,7 @@ class PalpacionController extends Controller
         if ($response['success'] ?? false) {
             return redirect()->route('palpacion.index')->with('success', 'Palpación registrada exitosamente.');
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al crear el registro.');
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al crear el registro.'));
     }
 
     public function show(int $id)
@@ -89,7 +105,7 @@ class PalpacionController extends Controller
         if ($response['success'] ?? false) {
             return redirect()->route('palpacion.index')->with('success', 'Palpación actualizada exitosamente.');
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al actualizar.');
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al actualizar.'));
     }
 
     public function destroy(int $id)
@@ -98,6 +114,6 @@ class PalpacionController extends Controller
         if ($response['success'] ?? false) {
             return redirect()->route('palpacion.index')->with('success', 'Palpación eliminada.');
         }
-        return redirect()->route('palpacion.index')->with('error', $response['message'] ?? 'Error al eliminar.');
+        return redirect()->route('palpacion.index')->with('error', $this->apiMessage($response, 'Error al eliminar.'));
     }
 }

@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const etapaId = etapa?.etapa_id || etapa?.etan_etapa_id || '';
             const etapaNombre = etapa?.Nombre || etapa?.nombre || etapa?.descripcion || '';
             etapaInput.value = etapaId;
-            etapaTexto.value = etapaId ? `${etapaNombre || 'Etapa actual'} (#${etapaId})` : 'Animal sin etapa activa';
+            etapaTexto.value = etapaId ? (etapaNombre || 'Etapa actual') : 'Animal sin etapa activa';
         } catch (error) {
             etapaTexto.value = 'No se pudo obtener la etapa actual';
         }

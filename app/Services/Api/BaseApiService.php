@@ -9,6 +9,35 @@ class BaseApiService
 {
     protected string $baseUrl;
 
+    private function formatApiFailure($response, string $defaultMessage): array
+    {
+        $json = $response->json();
+
+        if (is_array($json)) {
+            $message = $json['message'] ?? $defaultMessage;
+
+            if (!empty($json['errors']) && is_array($json['errors'])) {
+                $first = collect($json['errors'])->flatten()->first();
+                if (is_string($first) && $first !== '') {
+                    $message = $first;
+                }
+            }
+
+            return [
+                'success' => false,
+                'message' => $message,
+                'errors' => $json['errors'] ?? null,
+                'status' => $response->status(),
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => $defaultMessage,
+            'status' => $response->status(),
+        ];
+    }
+
     public function __construct()
     {
         $this->baseUrl = env('API_BASE_URL', 'http://ec2-54-219-108-54.us-west-1.compute.amazonaws.com:9000/api');
@@ -34,10 +63,7 @@ class BaseApiService
                 'body' => $response->body()
             ]);
 
-            return [
-                'success' => false,
-                'message' => 'Error al conectar con el servidor'
-            ];
+            return $this->formatApiFailure($response, 'Error al conectar con el servidor');
         } catch (\Exception $e) {
             Log::error('API GET request exception', [
                 'endpoint' => $endpoint,
@@ -71,10 +97,7 @@ class BaseApiService
                 'body' => $response->body()
             ]);
 
-            return [
-                'success' => false,
-                'message' => 'Error al conectar con el servidor'
-            ];
+            return $this->formatApiFailure($response, 'Error al conectar con el servidor');
         } catch (\Exception $e) {
             Log::error('API POST request exception', [
                 'endpoint' => $endpoint,
@@ -108,10 +131,7 @@ class BaseApiService
                 'body' => $response->body()
             ]);
 
-            return [
-                'success' => false,
-                'message' => 'Error al conectar con el servidor'
-            ];
+            return $this->formatApiFailure($response, 'Error al conectar con el servidor');
         } catch (\Exception $e) {
             Log::error('API PUT request exception', [
                 'endpoint' => $endpoint,
@@ -145,10 +165,7 @@ class BaseApiService
                 'body' => $response->body()
             ]);
 
-            return [
-                'success' => false,
-                'message' => 'Error al conectar con el servidor'
-            ];
+            return $this->formatApiFailure($response, 'Error al conectar con el servidor');
         } catch (\Exception $e) {
             Log::error('API DELETE request exception', [
                 'endpoint' => $endpoint,

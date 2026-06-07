@@ -75,7 +75,7 @@
                                 @endphp
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        Animal ID: {{ $lactancia['lactancia_etapa_anid'] }}
+                                        {{ $lactancia['animal_nombre'] ?? ('Animal #'.($lactancia['lactancia_etapa_anid'] ?? 'N/A')) }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {{ isset($lactancia['lactancia_fecha_inicio']) ? date('d/m/Y', strtotime($lactancia['lactancia_fecha_inicio'])) : 'N/A' }}

@@ -19,6 +19,22 @@ class LecheController extends Controller
         $this->lactanciaService = $lactanciaService;
     }
 
+    private function apiMessage(array $response, string $fallback): string
+    {
+        if (!empty($response['message']) && is_string($response['message'])) {
+            return $response['message'];
+        }
+
+        if (!empty($response['errors']) && is_array($response['errors'])) {
+            $first = collect($response['errors'])->flatten()->first();
+            if (is_string($first) && $first !== '') {
+                return $first;
+            }
+        }
+
+        return $fallback;
+    }
+
     /**
      * Display a listing of milk production records
      */
@@ -37,8 +53,26 @@ class LecheController extends Controller
         // Get lactation periods for filter dropdown
         $lactanciasResponse = $this->lactanciaService->getLactancias();
         $lactancias = $lactanciasResponse['success'] ? ($lactanciasResponse['data'] ?? []) : [];
+        $lactanciaMap = collect($lactancias)
+            ->filter(fn ($lactancia) => isset($lactancia['lactancia_id']))
+            ->mapWithKeys(function ($lactancia) {
+                $animalId = $lactancia['lactancia_etapa_anid'] ?? null;
+                $animalNombre = $lactancia['animal']['Nombre'] ?? ($animalId ? ('Animal #'.$animalId) : 'Animal no disponible');
+                return [(int)$lactancia['lactancia_id'] => [
+                    'animal_nombre' => $animalNombre,
+                    'animal_id' => $animalId,
+                ]];
+            })
+            ->all();
 
         $registrosLeche = $response['data'] ?? [];
+        $registrosLeche = array_map(function ($registro) use ($lactanciaMap) {
+            $lactanciaId = (int)($registro['leche_lactancia_id'] ?? 0);
+            $meta = $lactanciaMap[$lactanciaId] ?? null;
+            $registro['animal_nombre'] = $registro['lactancia']['animal']['Nombre']
+                ?? ($meta['animal_nombre'] ?? 'Animal no disponible');
+            return $registro;
+        }, $registrosLeche);
 
         return view('leche.index', compact('registrosLeche', 'lactancias', 'lactanciaId'));
     }
@@ -88,7 +122,7 @@ class LecheController extends Controller
                 ->with('success', 'Registro de leche creado exitosamente.');
         }
 
-        return back()->withInput()->with('error', $response['message']);
+        return back()->withInput()->with('error', $this->apiMessage($response, 'No se pudo crear el registro de leche.'));
     }
 
     /**
@@ -99,7 +133,7 @@ class LecheController extends Controller
         $response = $this->lecheService->getRegistroLeche($id);
 
         if (!$response['success']) {
-            return redirect()->route('leche.index')->with('error', $response['message']);
+            return redirect()->route('leche.index')->with('error', $this->apiMessage($response, 'No se pudo cargar el registro de leche.'));
         }
 
         $registroLeche = $response['data'];
@@ -115,7 +149,7 @@ class LecheController extends Controller
         $response = $this->lecheService->getRegistroLeche($id);
 
         if (!$response['success']) {
-            return redirect()->route('leche.index')->with('error', $response['message']);
+            return redirect()->route('leche.index')->with('error', $this->apiMessage($response, 'No se pudo cargar el registro de leche.'));
         }
 
         $registroLeche = $response['data'];
@@ -157,7 +191,7 @@ class LecheController extends Controller
                 ->with('success', 'Registro de leche actualizado exitosamente.');
         }
 
-        return back()->withInput()->with('error', $response['message']);
+        return back()->withInput()->with('error', $this->apiMessage($response, 'No se pudo actualizar el registro de leche.'));
     }
 
     /**
@@ -172,6 +206,6 @@ class LecheController extends Controller
                 ->with('success', 'Registro de leche eliminado exitosamente.');
         }
 
-        return redirect()->route('leche.index')->with('error', $response['message']);
+        return redirect()->route('leche.index')->with('error', $this->apiMessage($response, 'No se pudo eliminar el registro de leche.'));
     }
 }

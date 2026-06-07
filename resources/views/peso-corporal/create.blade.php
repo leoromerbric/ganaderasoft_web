@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const etapaId = fetchedStage?.etapa_id || fetchedStage?.etan_etapa_id || option?.dataset.etapaId || '';
         const etapaNombre = fetchedStage?.Nombre || fetchedStage?.nombre || fetchedStage?.descripcion || option?.dataset.etapaNombre || '';
         etapaInput.value = etapaId;
-        etapaTexto.value = etapaId ? `${etapaNombre || 'Etapa actual'} (#${etapaId})` : 'Animal sin etapa activa';
+        etapaTexto.value = etapaId ? (etapaNombre || 'Etapa actual') : 'Animal sin etapa activa';
     }
 
     async function updateStage() {
@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const etapaId = (fetchedStage && (fetchedStage.etapa_id || fetchedStage.etan_etapa_id)) || (option && option.dataset.etapaId) || '';
         const etapaNombre = (fetchedStage && (fetchedStage.Nombre || fetchedStage.nombre || fetchedStage.descripcion)) || (option && option.dataset.etapaNombre) || '';
         etapaInput.value = etapaId;
-        etapaTexto.value = etapaId ? `${etapaNombre || 'Etapa actual'} (#${etapaId})` : 'Animal sin etapa activa';
+        etapaTexto.value = etapaId ? (etapaNombre || 'Etapa actual') : 'Animal sin etapa activa';
     }
 
     async function updateStage() {

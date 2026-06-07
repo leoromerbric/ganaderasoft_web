@@ -20,6 +20,33 @@ class LactanciaController extends Controller
         $this->animalesService = $animalesService;
     }
 
+    private function apiMessage(array $response, string $fallback): string
+    {
+        if (!empty($response['message']) && is_string($response['message'])) {
+            return $response['message'];
+        }
+
+        if (!empty($response['errors']) && is_array($response['errors'])) {
+            $first = collect($response['errors'])->flatten()->first();
+            if (is_string($first) && $first !== '') {
+                return $first;
+            }
+        }
+
+        return $fallback;
+    }
+
+    private function isFemale(array $animal): bool
+    {
+        $sexo = strtoupper((string)($animal['Sexo'] ?? $animal['sexo'] ?? ''));
+        if ($sexo !== '') {
+            return in_array($sexo, ['F', 'FEMENINO', 'HEMBRA'], true);
+        }
+
+        $label = strtolower((string)($animal['sexo_label'] ?? $animal['genero'] ?? ''));
+        return in_array($label, ['femenino', 'hembra'], true);
+    }
+
     /**
      * Display a listing of lactation periods
      */
@@ -37,8 +64,19 @@ class LactanciaController extends Controller
         // Get animals for filter dropdown
         $animalesResponse = $this->animalesService->getAnimales();
         $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
+        $animalMap = collect($animales)
+            ->filter(fn ($animal) => isset($animal['id_Animal']))
+            ->mapWithKeys(fn ($animal) => [(int)$animal['id_Animal'] => ($animal['Nombre'] ?? ('Animal #'.$animal['id_Animal']))])
+            ->all();
 
         $lactancias = $response['data'] ?? [];
+        $lactancias = array_map(function ($lactancia) use ($animalMap) {
+            $animalId = $lactancia['lactancia_etapa_anid'] ?? null;
+            $animalNombre = $lactancia['animal']['Nombre']
+                ?? ($animalId !== null ? ($animalMap[(int)$animalId] ?? ('Animal #'.$animalId)) : 'Animal no disponible');
+            $lactancia['animal_nombre'] = $animalNombre;
+            return $lactancia;
+        }, $lactancias);
 
         return view('lactancia.index', compact('lactancias', 'animales', 'animalId'));
     }
@@ -50,6 +88,7 @@ class LactanciaController extends Controller
     {
         $animalesResponse = $this->animalesService->getAnimales();
         $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
+        $animales = array_values(array_filter($animales, fn ($animal) => $this->isFemale($animal)));
 
         return view('lactancia.create', compact('animales'));
     }
@@ -89,7 +128,7 @@ class LactanciaController extends Controller
                 ->with('success', 'Período de lactancia registrado exitosamente.');
         }
 
-        return back()->withInput()->with('error', $response['message']);
+        return back()->withInput()->with('error', $this->apiMessage($response, 'No se pudo registrar la lactancia.'));
     }
 
     /**
@@ -100,7 +139,7 @@ class LactanciaController extends Controller
         $response = $this->lactanciaService->getLactancia($id);
 
         if (!$response['success']) {
-            return redirect()->route('lactancia.index')->with('error', $response['message']);
+            return redirect()->route('lactancia.index')->with('error', $this->apiMessage($response, 'No se pudo cargar la lactancia.'));
         }
 
         $lactancia = $response['data'];
@@ -116,13 +155,14 @@ class LactanciaController extends Controller
         $response = $this->lactanciaService->getLactancia($id);
 
         if (!$response['success']) {
-            return redirect()->route('lactancia.index')->with('error', $response['message']);
+            return redirect()->route('lactancia.index')->with('error', $this->apiMessage($response, 'No se pudo cargar la lactancia.'));
         }
 
         $lactancia = $response['data'];
 
         $animalesResponse = $this->animalesService->getAnimales();
         $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
+        $animales = array_values(array_filter($animales, fn ($animal) => $this->isFemale($animal)));
 
         return view('lactancia.edit', compact('lactancia', 'animales'));
     }
@@ -162,7 +202,7 @@ class LactanciaController extends Controller
                 ->with('success', 'Período de lactancia actualizado exitosamente.');
         }
 
-        return back()->withInput()->with('error', $response['message']);
+        return back()->withInput()->with('error', $this->apiMessage($response, 'No se pudo actualizar la lactancia.'));
     }
 
     /**
@@ -177,7 +217,7 @@ class LactanciaController extends Controller
                 ->with('success', 'Período de lactancia eliminado exitosamente.');
         }
 
-        return redirect()->route('lactancia.index')->with('error', $response['message']);
+        return redirect()->route('lactancia.index')->with('error', $this->apiMessage($response, 'No se pudo eliminar la lactancia.'));
     }
 
     /**
