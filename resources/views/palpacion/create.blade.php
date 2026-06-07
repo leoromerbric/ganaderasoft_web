@@ -30,8 +30,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal <span class="text-red-500">*</span></label>
-                    <select name="palpacion_etapa_anid" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('palpacion_etapa_anid') border-red-500 @enderror">
+                        <select name="palpacion_etapa_anid" required
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('palpacion_etapa_anid') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione un animal</option>
                         @foreach($animales as $animal)
                             <option value="{{ $animal['id_Animal'] }}" {{ old('palpacion_etapa_anid') == $animal['id_Animal'] ? 'selected' : '' }}>
@@ -44,22 +44,26 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">ID Etapa Animal <span class="text-red-500">*</span></label>
-                    <input type="number" name="palpacion_etapa_etid" required
-                           value="{{ old('palpacion_etapa_etid') }}" placeholder="ID de etapa activa del animal"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('palpacion_etapa_etid') border-red-500 @enderror">
-                    <p class="text-xs text-gray-500 mt-1">Ingrese el ID de la etapa activa del animal</p>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Etapa actual <span class="text-red-500">*</span></label>
+                      <input type="text" id="palpacion_etapa_texto" readonly
+                          class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600"
+                          placeholder="Se completará al seleccionar el animal">
+                      <input type="hidden" name="palpacion_etapa_etid" id="palpacion_etapa_etid" value="{{ old('palpacion_etapa_etid') }}">
                     @error('palpacion_etapa_etid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Técnico</label>
-                    <select name="id_Tecnico"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('id_Tecnico') border-red-500 @enderror">
+                        <select name="id_Tecnico"
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('id_Tecnico') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">-- Sin técnico --</option>
                         @foreach($personal as $persona)
-                            <option value="{{ $persona['id_Personal'] }}" {{ old('id_Tecnico') == $persona['id_Personal'] ? 'selected' : '' }}>
-                                {{ $persona['Nombre'] ?? 'Personal #'.$persona['id_Personal'] }}
+                            @php
+                                $personalId = data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Personal') ?? data_get($persona, 'id_Tecnico');
+                                $personalNombre = trim((data_get($persona, 'Nombre') ?? data_get($persona, 'personal.Nombre') ?? '') . ' ' . (data_get($persona, 'Apellido') ?? data_get($persona, 'personal.Apellido') ?? ''));
+                            @endphp
+                            <option value="{{ $personalId }}" {{ old('id_Tecnico') == $personalId ? 'selected' : '' }}>
+                                {{ $personalNombre !== '' ? $personalNombre : 'Personal #'.$personalId }}
                             </option>
                         @endforeach
                     </select>
@@ -68,8 +72,8 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Palpación</label>
-                    <select name="palpacion_tipo"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('palpacion_tipo') border-red-500 @enderror">
+                        <select name="palpacion_tipo"
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('palpacion_tipo') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione un tipo</option>
                         <option value="Preñez" {{ old('palpacion_tipo') == 'Preñez' ? 'selected' : '' }}>Preñez</option>
                         <option value="Revision" {{ old('palpacion_tipo') == 'Revision' ? 'selected' : '' }}>Revisión</option>
@@ -79,8 +83,8 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Palpación</label>
-                    <input type="date" name="palpacion_fecha" value="{{ old('palpacion_fecha', date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('palpacion_fecha') border-red-500 @enderror">
+                          <input type="date" name="palpacion_fecha" value="{{ old('palpacion_fecha', date('Y-m-d')) }}"
+                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('palpacion_fecha') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('palpacion_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -96,4 +100,35 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const animalSelect = document.querySelector('select[name="palpacion_etapa_anid"]');
+    const etapaInput = document.getElementById('palpacion_etapa_etid');
+    const etapaTexto = document.getElementById('palpacion_etapa_texto');
+    const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
+
+    async function updateStage() {
+        if (!animalSelect.value) {
+            etapaInput.value = '';
+            etapaTexto.value = '';
+            return;
+        }
+
+        try {
+            const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
+            const payload = await response.json();
+            const etapa = payload?.data?.etapa_actual || null;
+            const etapaId = etapa?.etapa_id || etapa?.etan_etapa_id || '';
+            const etapaNombre = etapa?.Nombre || etapa?.nombre || etapa?.descripcion || '';
+            etapaInput.value = etapaId;
+            etapaTexto.value = etapaId ? `${etapaNombre || 'Etapa actual'} (#${etapaId})` : 'Animal sin etapa activa';
+        } catch (error) {
+            etapaTexto.value = 'No se pudo obtener la etapa actual';
+        }
+    }
+
+    animalSelect.addEventListener('change', updateStage);
+    updateStage();
+});
+</script>
 @endsection

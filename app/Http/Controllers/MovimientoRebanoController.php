@@ -48,7 +48,39 @@ class MovimientoRebanoController extends Controller
             'id_Rebano_Destino.required' => 'El rebaño de destino es requerido.',
         ]);
 
-        $data = $request->only(['id_Finca', 'id_Rebano', 'Rebano_Destino', 'id_Finca_Destino', 'id_Rebano_Destino', 'Comentario', 'animales']);
+        if ((int) $request->id_Finca === (int) $request->id_Finca_Destino) {
+            return back()->withInput()->with('error', 'La finca de destino debe ser diferente a la finca de origen.');
+        }
+
+        $rebanos = collect($this->service->getRebanos());
+        $rebanoOrigen = $rebanos->first(fn ($rebano) => (int) ($rebano['id_Rebano'] ?? 0) === (int) $request->id_Rebano);
+        $rebanoDestino = $rebanos->first(fn ($rebano) => (int) ($rebano['id_Rebano'] ?? 0) === (int) $request->id_Rebano_Destino);
+
+        if (!$rebanoOrigen || (int) ($rebanoOrigen['id_Finca'] ?? 0) !== (int) $request->id_Finca) {
+            return back()->withInput()->with('error', 'El rebaño de origen no pertenece a la finca de origen seleccionada.');
+        }
+
+        if (!$rebanoDestino || (int) ($rebanoDestino['id_Finca'] ?? 0) !== (int) $request->id_Finca_Destino) {
+            return back()->withInput()->with('error', 'El rebaño de destino no pertenece a la finca de destino seleccionada.');
+        }
+
+        $animalesSeleccionados = collect($request->input('animales', []))->map(fn ($id) => (int) $id)->all();
+        if (!empty($animalesSeleccionados)) {
+            $animales = collect($this->service->getAnimales());
+            $animalesInvalidos = $animales
+                ->whereIn('id_Animal', $animalesSeleccionados)
+                ->filter(function ($animal) use ($request) {
+                    $rebanoId = data_get($animal, 'id_Rebano') ?? data_get($animal, 'rebano.id_Rebano');
+                    return $rebanoId !== null && (int) $rebanoId !== (int) $request->id_Rebano;
+                });
+
+            if ($animalesInvalidos->isNotEmpty()) {
+                return back()->withInput()->with('error', 'Todos los animales seleccionados deben pertenecer al rebaño de origen.');
+            }
+        }
+
+        $data = $request->only(['id_Finca', 'id_Rebano', 'id_Finca_Destino', 'id_Rebano_Destino', 'Comentario', 'animales']);
+        $data['Rebano_Destino'] = $rebanoDestino['Nombre'] ?? $request->input('Rebano_Destino');
 
         $response = $this->service->create($data);
 

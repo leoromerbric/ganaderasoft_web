@@ -45,11 +45,11 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">ID Etapa Animal <span class="text-red-500">*</span></label>
-                    <input type="number" name="celo_etapa_etid" id="celo_etapa_etid" required
-                           value="{{ old('celo_etapa_etid') }}" placeholder="ID de etapa del animal"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('celo_etapa_etid') border-red-500 @enderror">
-                    <p class="text-xs text-gray-500 mt-1">Ingrese el ID de la etapa activa del animal</p>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Etapa actual <span class="text-red-500">*</span></label>
+                    <input type="text" id="celo_etapa_texto" readonly
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600"
+                           placeholder="Se completará al seleccionar el animal">
+                    <input type="hidden" name="celo_etapa_etid" id="celo_etapa_etid" value="{{ old('celo_etapa_etid') }}">
                     @error('celo_etapa_etid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
@@ -80,4 +80,42 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const animalSelect = document.getElementById('celo_etapa_anid');
+    const etapaInput = document.getElementById('celo_etapa_etid');
+    const etapaTexto = document.getElementById('celo_etapa_texto');
+    const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
+
+    function renderStage(option, fetchedStage) {
+        const etapaId = fetchedStage?.etapa_id || fetchedStage?.etan_etapa_id || option?.dataset.etapa || '';
+        const etapaNombre = fetchedStage?.Nombre || fetchedStage?.nombre || fetchedStage?.descripcion || '';
+        etapaInput.value = etapaId;
+        etapaTexto.value = etapaId ? `${etapaNombre || 'Etapa actual'} (#${etapaId})` : 'Animal sin etapa activa';
+    }
+
+    async function updateStage() {
+        const option = animalSelect.options[animalSelect.selectedIndex];
+        if (!animalSelect.value) {
+            etapaInput.value = '';
+            etapaTexto.value = '';
+            return;
+        }
+
+        renderStage(option, null);
+        if (etapaInput.value) return;
+
+        try {
+            const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
+            const payload = await response.json();
+            renderStage(option, payload?.data?.etapa_actual || null);
+        } catch (error) {
+            etapaTexto.value = 'No se pudo obtener la etapa actual';
+        }
+    }
+
+    animalSelect.addEventListener('change', updateStage);
+    updateStage();
+});
+</script>
 @endsection

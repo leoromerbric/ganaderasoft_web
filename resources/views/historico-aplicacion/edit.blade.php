@@ -58,6 +58,9 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Dosis</label>
+                    <div class="mb-2 text-sm">
+                        <a href="{{ route('dosis.create') }}" class="text-ganaderasoft-azul hover:underline">Agregar nueva dosis</a>
+                    </div>
                     <select name="ha_dosis_id"
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('ha_dosis_id') border-red-500 @enderror">
                         <option value="">-- Sin dosis --</option>
@@ -67,6 +70,9 @@
                             </option>
                         @endforeach
                     </select>
+                    @if(count($dosis) === 0)
+                        <p class="mt-2 text-sm text-gray-500">No hay dosis registradas. Use el enlace anterior para agregar una.</p>
+                    @endif
                     @error('ha_dosis_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 

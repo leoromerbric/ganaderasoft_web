@@ -20,6 +20,7 @@ use App\Http\Controllers\SemenToroController;
 use App\Http\Controllers\DiagnosticoController;
 use App\Http\Controllers\TratamientoController;
 use App\Http\Controllers\VacunaController;
+use App\Http\Controllers\DosisController;
 use App\Http\Controllers\CasaComercialController;
 use App\Http\Controllers\HistoricoAplicacionController;
 use App\Http\Controllers\MovimientoRebanoController;
@@ -208,6 +209,15 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/vacunas/{id}/edit', [VacunaController::class, 'edit'])->name('vacuna.edit');
     Route::put('/vacunas/{id}', [VacunaController::class, 'update'])->name('vacuna.update');
     Route::delete('/vacunas/{id}', [VacunaController::class, 'destroy'])->name('vacuna.destroy');
+
+    // Dosis
+    Route::get('/dosis', [DosisController::class, 'index'])->name('dosis.index');
+    Route::get('/dosis/create', [DosisController::class, 'create'])->name('dosis.create');
+    Route::post('/dosis', [DosisController::class, 'store'])->name('dosis.store');
+    Route::get('/dosis/{id}', [DosisController::class, 'show'])->name('dosis.show');
+    Route::get('/dosis/{id}/edit', [DosisController::class, 'edit'])->name('dosis.edit');
+    Route::put('/dosis/{id}', [DosisController::class, 'update'])->name('dosis.update');
+    Route::delete('/dosis/{id}', [DosisController::class, 'destroy'])->name('dosis.destroy');
 
     // Casas Comerciales
     Route::get('/casas-comerciales', [CasaComercialController::class, 'index'])->name('casa-comercial.index');

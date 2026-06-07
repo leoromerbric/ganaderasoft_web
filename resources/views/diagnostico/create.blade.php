@@ -30,8 +30,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal <span class="text-red-500">*</span></label>
-                    <select name="fk_etapa_animal_anid" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fk_etapa_animal_anid') border-red-500 @enderror">
+                        <select name="fk_etapa_animal_anid" required
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('fk_etapa_animal_anid') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione un animal</option>
                         @foreach($animales as $animal)
                             <option value="{{ $animal['id_Animal'] }}" {{ old('fk_etapa_animal_anid') == $animal['id_Animal'] ? 'selected' : '' }}>
@@ -44,25 +44,25 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Diagnóstico</label>
-                    <input type="text" name="diagnostico_tipo" value="{{ old('diagnostico_tipo') }}" maxlength="30"
+                          <input type="text" name="diagnostico_tipo" value="{{ old('diagnostico_tipo') }}" maxlength="30"
                            placeholder="Tipo de diagnóstico..."
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('diagnostico_tipo') border-red-500 @enderror">
+                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('diagnostico_tipo') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('diagnostico_tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del Diagnóstico</label>
-                    <input type="date" name="diagnostico_fecha" value="{{ old('diagnostico_fecha', date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('diagnostico_fecha') border-red-500 @enderror">
+                          <input type="date" name="diagnostico_fecha" value="{{ old('diagnostico_fecha', date('Y-m-d')) }}"
+                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('diagnostico_fecha') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('diagnostico_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">ID Etapa Animal <span class="text-red-500">*</span></label>
-                    <input type="number" name="fk_etapa_animal_etid" required
-                           value="{{ old('fk_etapa_animal_etid') }}" placeholder="ID de etapa activa del animal"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fk_etapa_animal_etid') border-red-500 @enderror">
-                    <p class="text-xs text-gray-500 mt-1">Ingrese el ID de la etapa activa del animal seleccionado</p>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Etapa actual <span class="text-red-500">*</span></label>
+                    <input type="text" id="diagnostico_etapa_texto" readonly
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600"
+                           placeholder="Se completará al seleccionar el animal">
+                    <input type="hidden" name="fk_etapa_animal_etid" id="diagnostico_etapa_etid" value="{{ old('fk_etapa_animal_etid') }}">
                     @error('fk_etapa_animal_etid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
@@ -70,7 +70,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
                     <textarea name="diagnostico_descripcion" rows="4"
                               placeholder="Descripción del diagnóstico..."
-                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('diagnostico_descripcion') border-red-500 @enderror">{{ old('diagnostico_descripcion') }}</textarea>
+                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('diagnostico_descripcion') ? 'border-red-500' : 'border-gray-300' }}">{{ old('diagnostico_descripcion') }}</textarea>
                     @error('diagnostico_descripcion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -86,4 +86,35 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const animalSelect = document.querySelector('select[name="fk_etapa_animal_anid"]');
+    const etapaInput = document.getElementById('diagnostico_etapa_etid');
+    const etapaTexto = document.getElementById('diagnostico_etapa_texto');
+    const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
+
+    async function updateStage() {
+        if (!animalSelect.value) {
+            etapaInput.value = '';
+            etapaTexto.value = '';
+            return;
+        }
+
+        try {
+            const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
+            const payload = await response.json();
+            const etapa = payload?.data?.etapa_actual || null;
+            const etapaId = etapa?.etapa_id || etapa?.etan_etapa_id || '';
+            const etapaNombre = etapa?.Nombre || etapa?.nombre || etapa?.descripcion || '';
+            etapaInput.value = etapaId;
+            etapaTexto.value = etapaId ? `${etapaNombre || 'Etapa actual'} (#${etapaId})` : 'Animal sin etapa activa';
+        } catch (error) {
+            etapaTexto.value = 'No se pudo obtener la etapa actual';
+        }
+    }
+
+    animalSelect.addEventListener('change', updateStage);
+    updateStage();
+});
+</script>
 @endsection

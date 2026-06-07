@@ -29,17 +29,17 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Animal <span class="text-red-500">*</span></label>
-                    <select name="repro_etapa_anid" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('repro_etapa_anid') border-red-500 @enderror">
-                        <option value="">Seleccione un animal</option>
-                        @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}" {{ old('repro_etapa_anid', $reproduccion['repro_etapa_anid'] ?? '') == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('repro_etapa_anid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
+                    <input type="text" readonly
+                           value="{{ $reproduccion['animal']['Nombre'] ?? ('Animal #'.($reproduccion['repro_etapa_anid'] ?? '')) }}"
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Etapa actual</label>
+                    <input type="text" readonly
+                           value="{{ $reproduccion['etapa']['Nombre'] ?? $reproduccion['etapa']['descripcion'] ?? ('Etapa #'.($reproduccion['repro_etapa_etid'] ?? '')) }}"
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600">
                 </div>
 
                 <div>

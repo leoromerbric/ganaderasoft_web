@@ -29,18 +29,17 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Animal <span class="text-red-500">*</span></label>
-                    <select name="palpacion_etapa_anid" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('palpacion_etapa_anid') border-red-500 @enderror">
-                        <option value="">Seleccione un animal</option>
-                        @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}" {{ old('palpacion_etapa_anid', $palpacion['palpacion_etapa_anid'] ?? '') == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}
-                                @if(isset($animal['Sexo'])) ({{ $animal['Sexo'] === 'F' ? 'Hembra' : 'Macho' }}) @endif
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('palpacion_etapa_anid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
+                    <input type="text" readonly
+                           value="{{ $palpacion['animal']['Nombre'] ?? ('Animal #'.($palpacion['palpacion_etapa_anid'] ?? '')) }}"
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Etapa actual</label>
+                    <input type="text" readonly
+                           value="{{ $palpacion['etapa']['Nombre'] ?? $palpacion['etapa']['descripcion'] ?? ('Etapa #'.($palpacion['palpacion_etapa_etid'] ?? '')) }}"
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600">
                 </div>
 
                 <div>
@@ -49,8 +48,12 @@
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('id_Tecnico') border-red-500 @enderror">
                         <option value="">-- Sin técnico --</option>
                         @foreach($personal as $persona)
-                            <option value="{{ $persona['id_Personal'] }}" {{ old('id_Tecnico', $palpacion['id_Tecnico'] ?? '') == $persona['id_Personal'] ? 'selected' : '' }}>
-                                {{ $persona['Nombre'] ?? 'Personal #'.$persona['id_Personal'] }}
+                            @php
+                                $personalId = data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Personal') ?? data_get($persona, 'id_Tecnico');
+                                $personalNombre = trim((data_get($persona, 'Nombre') ?? data_get($persona, 'personal.Nombre') ?? '') . ' ' . (data_get($persona, 'Apellido') ?? data_get($persona, 'personal.Apellido') ?? ''));
+                            @endphp
+                            <option value="{{ $personalId }}" {{ old('id_Tecnico', $palpacion['id_Tecnico'] ?? '') == $personalId ? 'selected' : '' }}>
+                                {{ $personalNombre !== '' ? $personalNombre : 'Personal #'.$personalId }}
                             </option>
                         @endforeach
                     </select>

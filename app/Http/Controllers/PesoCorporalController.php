@@ -38,9 +38,30 @@ class PesoCorporalController extends Controller
         $animalesResponse = $this->animalesService->getAnimales();
         $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
 
-        $pesosCorporales = $response['data'] ?? [];
+        $animalesPorId = collect($animales)->keyBy(fn ($animal) => $animal['id_Animal'] ?? null);
 
-        return view('peso-corporal.index', compact('pesosCorporales', 'animales', 'animalId', 'fechaInicio', 'fechaFin'));
+        $pesosCorporales = collect($response['data'] ?? [])->map(function ($peso) use ($animalesPorId) {
+            $animalIdRegistro = $peso['peso_etapa_anid'] ?? $peso['animal_id'] ?? null;
+            $animal = $animalesPorId->get($animalIdRegistro, []);
+
+            $peso['animal_nombre'] = $peso['animal_nombre'] ?? ($animal['Nombre'] ?? null);
+            $peso['animal_identificacion'] = $peso['animal_identificacion'] ?? ($animal['Nombre'] ?? null);
+
+            return $peso;
+        })->all();
+
+        $pesos = collect($pesosCorporales)
+            ->pluck('Peso')
+            ->filter(fn ($peso) => is_numeric($peso))
+            ->map(fn ($peso) => (float) $peso);
+
+        $estadisticas = [
+            'peso_promedio' => $pesos->isNotEmpty() ? number_format($pesos->avg(), 2, ',', '.') : '0,00',
+            'peso_maximo' => $pesos->isNotEmpty() ? number_format($pesos->max(), 2, ',', '.') : '0,00',
+            'peso_minimo' => $pesos->isNotEmpty() ? number_format($pesos->min(), 2, ',', '.') : '0,00',
+        ];
+
+        return view('peso-corporal.index', compact('pesosCorporales', 'animales', 'animalId', 'fechaInicio', 'fechaFin', 'estadisticas'));
     }
 
     /**
@@ -63,6 +84,7 @@ class PesoCorporalController extends Controller
             'Fecha_Peso' => 'required|date',
             'Peso' => 'required|numeric|min:1|max:9999',
             'peso_etapa_anid' => 'required|integer',
+            'peso_etapa_etid' => 'nullable|integer',
             'Comentario' => 'nullable|string|max:255',
         ], [
             'Fecha_Peso.required' => 'La fecha de pesaje es requerida.',
@@ -79,11 +101,13 @@ class PesoCorporalController extends Controller
             'Fecha_Peso',
             'Peso',
             'Comentario',
-            'peso_etapa_anid'
+            'peso_etapa_anid',
+            'peso_etapa_etid'
         ]);
-        
-        // Default stage ID
-        $data['peso_etapa_etid'] = 15;
+
+        if (empty($data['peso_etapa_etid'])) {
+            unset($data['peso_etapa_etid']);
+        }
 
         $response = $this->pesoCorporalService->createPesoCorporal($data);
 
@@ -146,6 +170,7 @@ class PesoCorporalController extends Controller
             'Fecha_Peso' => 'required|date',
             'Peso' => 'required|numeric|min:1|max:9999',
             'peso_etapa_anid' => 'required|integer',
+            'peso_etapa_etid' => 'nullable|integer',
             'Comentario' => 'nullable|string|max:255',
         ], [
             'Fecha_Peso.required' => 'La fecha de pesaje es requerida.',
@@ -162,11 +187,13 @@ class PesoCorporalController extends Controller
             'Fecha_Peso',
             'Peso',
             'Comentario',
-            'peso_etapa_anid'
+            'peso_etapa_anid',
+            'peso_etapa_etid'
         ]);
-        
-        // Default stage ID
-        $data['peso_etapa_etid'] = 15;
+
+        if (empty($data['peso_etapa_etid'])) {
+            unset($data['peso_etapa_etid']);
+        }
 
         $response = $this->pesoCorporalService->updatePesoCorporal($id, $data);
 

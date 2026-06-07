@@ -55,8 +55,12 @@
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('servicio_id_Tecnico') border-red-500 @enderror">
                         <option value="">-- Sin técnico --</option>
                         @foreach($personal as $persona)
-                            <option value="{{ $persona['id_Personal'] }}" {{ old('servicio_id_Tecnico', $servicio['servicio_id_Tecnico'] ?? '') == $persona['id_Personal'] ? 'selected' : '' }}>
-                                {{ $persona['Nombre'] ?? 'Personal #'.$persona['id_Personal'] }}
+                            @php
+                                $personalId = data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Personal') ?? data_get($persona, 'id_Tecnico');
+                                $personalNombre = trim((data_get($persona, 'Nombre') ?? data_get($persona, 'personal.Nombre') ?? '') . ' ' . (data_get($persona, 'Apellido') ?? data_get($persona, 'personal.Apellido') ?? ''));
+                            @endphp
+                            <option value="{{ $personalId }}" {{ old('servicio_id_Tecnico', $servicio['servicio_id_Tecnico'] ?? '') == $personalId ? 'selected' : '' }}>
+                                {{ $personalNombre !== '' ? $personalNombre : 'Personal #'.$personalId }}
                             </option>
                         @endforeach
                     </select>

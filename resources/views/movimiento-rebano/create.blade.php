@@ -30,8 +30,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Finca Origen <span class="text-red-500">*</span></label>
-                    <select name="id_Finca" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('id_Finca') border-red-500 @enderror">
+                            <select name="id_Finca" id="id_Finca" required
+                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('id_Finca') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione finca de origen</option>
                         @foreach($fincas as $finca)
                             <option value="{{ $finca['id_Finca'] }}" {{ old('id_Finca') == $finca['id_Finca'] ? 'selected' : '' }}>
@@ -44,8 +44,8 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Rebaño Origen <span class="text-red-500">*</span></label>
-                    <select name="id_Rebano" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('id_Rebano') border-red-500 @enderror">
+                            <select name="id_Rebano" id="id_Rebano" required
+                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('id_Rebano') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione rebaño de origen</option>
                         @foreach($rebanos as $rebano)
                             <option value="{{ $rebano['id_Rebano'] }}" {{ old('id_Rebano') == $rebano['id_Rebano'] ? 'selected' : '' }}
@@ -59,8 +59,8 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Finca Destino <span class="text-red-500">*</span></label>
-                    <select name="id_Finca_Destino" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('id_Finca_Destino') border-red-500 @enderror">
+                            <select name="id_Finca_Destino" id="id_Finca_Destino" required
+                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('id_Finca_Destino') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione finca de destino</option>
                         @foreach($fincas as $finca)
                             <option value="{{ $finca['id_Finca'] }}" {{ old('id_Finca_Destino') == $finca['id_Finca'] ? 'selected' : '' }}>
@@ -73,8 +73,8 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Rebaño Destino <span class="text-red-500">*</span></label>
-                    <select name="id_Rebano_Destino" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('id_Rebano_Destino') border-red-500 @enderror">
+                            <select name="id_Rebano_Destino" id="id_Rebano_Destino" required
+                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('id_Rebano_Destino') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione rebaño de destino</option>
                         @foreach($rebanos as $rebano)
                             <option value="{{ $rebano['id_Rebano'] }}" {{ old('id_Rebano_Destino') == $rebano['id_Rebano'] ? 'selected' : '' }}
@@ -88,17 +88,17 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Rebaño Destino</label>
-                    <input type="text" name="Rebano_Destino" value="{{ old('Rebano_Destino') }}" maxlength="30"
+                              <input type="text" name="Rebano_Destino" id="Rebano_Destino" value="{{ old('Rebano_Destino') }}" maxlength="30" readonly
                            placeholder="Nombre del rebaño destino..."
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('Rebano_Destino') border-red-500 @enderror">
+                                  class="w-full border rounded-lg px-4 py-2 bg-gray-50 text-gray-600 {{ $errors->has('Rebano_Destino') ? 'border-red-500' : 'border-gray-200' }}">
                     @error('Rebano_Destino')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
-                    <input type="text" name="Comentario" value="{{ old('Comentario') }}" maxlength="40"
+                          <input type="text" name="Comentario" value="{{ old('Comentario') }}" maxlength="40"
                            placeholder="Comentario sobre el movimiento..."
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('Comentario') border-red-500 @enderror">
+                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('Comentario') ? 'border-red-500' : 'border-gray-300' }}">
                     @error('Comentario')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -109,7 +109,9 @@
                 @if(count($animales) > 0)
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-64 overflow-y-auto">
                         @foreach($animales as $animal)
-                        <label class="flex items-center space-x-2 p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                           <label class="animal-item flex items-center space-x-2 p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
+                               data-rebano="{{ data_get($animal, 'id_Rebano') ?? data_get($animal, 'rebano.id_Rebano') }}"
+                               data-finca="{{ data_get($animal, 'rebano.id_Finca') ?? data_get($animal, 'rebano.finca.id_Finca') }}">
                             <input type="checkbox" name="animales[]" value="{{ $animal['id_Animal'] }}"
                                    {{ in_array($animal['id_Animal'], old('animales', [])) ? 'checked' : '' }}
                                    class="rounded border-gray-300 text-ganaderasoft-celeste focus:ring-ganaderasoft-celeste">
@@ -135,4 +137,81 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const fincaOrigen = document.getElementById('id_Finca');
+    const rebanoOrigen = document.getElementById('id_Rebano');
+    const fincaDestino = document.getElementById('id_Finca_Destino');
+    const rebanoDestino = document.getElementById('id_Rebano_Destino');
+    const nombreRebanoDestino = document.getElementById('Rebano_Destino');
+    const animales = Array.from(document.querySelectorAll('.animal-item'));
+
+    function filterRebanos(select, fincaId, excludedRebanoId = null) {
+        Array.from(select.options).forEach((option, index) => {
+            if (index === 0) {
+                option.hidden = false;
+                return;
+            }
+
+            const belongs = !fincaId || option.dataset.finca === fincaId;
+            const excluded = excludedRebanoId && option.value === excludedRebanoId;
+            option.hidden = !belongs || excluded;
+        });
+
+        if (select.selectedOptions[0]?.hidden) {
+            select.value = '';
+        }
+    }
+
+    function syncDestinoNombre() {
+        const option = rebanoDestino.options[rebanoDestino.selectedIndex];
+        nombreRebanoDestino.value = option && option.value ? option.text.trim() : '';
+    }
+
+    function filterAnimales() {
+        const rebanoId = rebanoOrigen.value;
+        animales.forEach((item) => {
+            const visible = !rebanoId || item.dataset.rebano === rebanoId;
+            item.style.display = visible ? '' : 'none';
+            if (!visible) {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                if (checkbox) checkbox.checked = false;
+            }
+        });
+    }
+
+    fincaOrigen.addEventListener('change', function () {
+        if (fincaDestino.value === fincaOrigen.value) {
+            fincaDestino.value = '';
+        }
+        filterRebanos(rebanoOrigen, fincaOrigen.value);
+        filterRebanos(rebanoDestino, fincaDestino.value, rebanoOrigen.value);
+        filterAnimales();
+    });
+
+    rebanoOrigen.addEventListener('change', function () {
+        filterRebanos(rebanoDestino, fincaDestino.value, rebanoOrigen.value);
+        if (rebanoDestino.value === rebanoOrigen.value) {
+            rebanoDestino.value = '';
+        }
+        syncDestinoNombre();
+        filterAnimales();
+    });
+
+    fincaDestino.addEventListener('change', function () {
+        if (fincaDestino.value && fincaDestino.value === fincaOrigen.value) {
+            fincaDestino.value = '';
+        }
+        filterRebanos(rebanoDestino, fincaDestino.value, rebanoOrigen.value);
+        syncDestinoNombre();
+    });
+
+    rebanoDestino.addEventListener('change', syncDestinoNombre);
+
+    filterRebanos(rebanoOrigen, fincaOrigen.value);
+    filterRebanos(rebanoDestino, fincaDestino.value, rebanoOrigen.value);
+    filterAnimales();
+    syncDestinoNombre();
+});
+</script>
 @endsection

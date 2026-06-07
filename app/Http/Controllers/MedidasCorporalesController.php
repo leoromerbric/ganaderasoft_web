@@ -36,9 +36,29 @@ class MedidasCorporalesController extends Controller
         $animalesResponse = $this->animalesService->getAnimales();
         $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
 
-        $medidasCorporales = $response['data'] ?? [];
+        $animalesPorId = collect($animales)->keyBy(fn ($animal) => $animal['id_Animal'] ?? null);
 
-        return view('medidas-corporales.index', compact('medidasCorporales', 'animales', 'animalId'));
+        $medidasCorporales = collect($response['data'] ?? [])->map(function ($medida) use ($animalesPorId) {
+            $animalIdRegistro = $medida['medida_etapa_anid'] ?? $medida['animal_id'] ?? null;
+            $animal = $animalesPorId->get($animalIdRegistro, []);
+
+            $medida['animal_nombre'] = $medida['animal_nombre'] ?? ($animal['Nombre'] ?? null);
+            $medida['animal_identificacion'] = $medida['animal_identificacion'] ?? ($animal['Nombre'] ?? null);
+
+            return $medida;
+        })->all();
+
+        $alturas = collect($medidasCorporales)->pluck('Altura_HC')->filter(fn ($valor) => is_numeric($valor))->map(fn ($valor) => (float) $valor);
+        $longitudes = collect($medidasCorporales)->pluck('Longitud_LC')->filter(fn ($valor) => is_numeric($valor))->map(fn ($valor) => (float) $valor);
+        $perimetros = collect($medidasCorporales)->pluck('Perimetro_PT')->filter(fn ($valor) => is_numeric($valor))->map(fn ($valor) => (float) $valor);
+
+        $estadisticas = [
+            'altura_promedio' => $alturas->isNotEmpty() ? number_format($alturas->avg(), 2, ',', '.') : '0,00',
+            'largura_promedio' => $longitudes->isNotEmpty() ? number_format($longitudes->avg(), 2, ',', '.') : '0,00',
+            'circunferencia_promedio' => $perimetros->isNotEmpty() ? number_format($perimetros->avg(), 2, ',', '.') : '0,00',
+        ];
+
+        return view('medidas-corporales.index', compact('medidasCorporales', 'animales', 'animalId', 'estadisticas'));
     }
 
     /**
@@ -59,6 +79,7 @@ class MedidasCorporalesController extends Controller
     {
         $request->validate([
             'medida_etapa_anid' => 'required|integer',
+            'medida_etapa_etid' => 'required|integer',
             'Altura_HC' => 'nullable|numeric|min:0|max:300',
             'Altura_HG' => 'nullable|numeric|min:0|max:300',
             'Perimetro_PT' => 'nullable|numeric|min:0|max:500',
@@ -92,11 +113,9 @@ class MedidasCorporalesController extends Controller
             'Longitud_LC',
             'Longitud_LG',
             'Anchura_AG',
-            'medida_etapa_anid'
+            'medida_etapa_anid',
+            'medida_etapa_etid'
         ]);
-        
-        // Default stage ID
-        $data['medida_etapa_etid'] = 15;
 
         $response = $this->medidasCorporalesService->createMedidaCorporal($data);
 
@@ -150,6 +169,7 @@ class MedidasCorporalesController extends Controller
     {
         $request->validate([
             'medida_etapa_anid' => 'required|integer',
+            'medida_etapa_etid' => 'required|integer',
             'Altura_HC' => 'nullable|numeric|min:0|max:300',
             'Altura_HG' => 'nullable|numeric|min:0|max:300',
             'Perimetro_PT' => 'nullable|numeric|min:0|max:500',
@@ -183,11 +203,9 @@ class MedidasCorporalesController extends Controller
             'Longitud_LC',
             'Longitud_LG',
             'Anchura_AG',
-            'medida_etapa_anid'
+            'medida_etapa_anid',
+            'medida_etapa_etid'
         ]);
-        
-        // Default stage ID
-        $data['medida_etapa_etid'] = 15;
 
         $response = $this->medidasCorporalesService->updateMedidaCorporal($id, $data);
 
