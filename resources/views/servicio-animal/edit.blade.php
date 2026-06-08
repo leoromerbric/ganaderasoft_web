@@ -97,7 +97,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del Servicio</label>
                           <input type="date" name="servicio_fecha"
-                           value="{{ old('servicio_fecha', $servicio['servicio_fecha'] ?? date('Y-m-d')) }}"
+                           value="{{ old('servicio_fecha', !empty($servicio['servicio_fecha']) ? date('Y-m-d', strtotime($servicio['servicio_fecha'])) : date('Y-m-d')) }}"
                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('servicio_fecha') }}">
                     @error('servicio_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>

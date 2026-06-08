@@ -26,7 +26,6 @@
                     </ul>
                 </div>
             @endif
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
@@ -38,8 +37,8 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Celo <span class="text-red-500">*</span></label>
                     <input type="date" name="celo_fecha" required
-                           value="{{ old('celo_fecha', $registro['celo_fecha'] ?? date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('celo_fecha') border-red-500 @enderror">
+                           value="{{ old('celo_fecha', !empty($registro['celo_fecha']) ? date('Y-m-d', strtotime($registro['celo_fecha'])) : date('Y-m-d')) }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('celo_fecha') ring-2 ring-red-500 @enderror">
                     @error('celo_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 

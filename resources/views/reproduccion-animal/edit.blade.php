@@ -56,7 +56,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Reproducción <span class="text-red-500">*</span></label>
                     <input type="date" name="repro_fecha_reproduccion" required
-                           value="{{ old('repro_fecha_reproduccion', $reproduccion['repro_fecha_reproduccion'] ?? date('Y-m-d')) }}"
+                           value="{{ old('repro_fecha_reproduccion', !empty($reproduccion['repro_fecha_reproduccion']) ? date('Y-m-d', strtotime($reproduccion['repro_fecha_reproduccion'])) : date('Y-m-d')) }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('repro_fecha_reproduccion') border-red-500 @enderror">
                     @error('repro_fecha_reproduccion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>

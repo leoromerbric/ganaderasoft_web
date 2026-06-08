@@ -78,7 +78,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Palpación</label>
                               <input type="date" name="palpacion_fecha"
-                           value="{{ old('palpacion_fecha', $palpacion['palpacion_fecha'] ?? date('Y-m-d')) }}"
+                           value="{{ old('palpacion_fecha', !empty($palpacion['palpacion_fecha']) ? date('Y-m-d', strtotime($palpacion['palpacion_fecha'])) : date('Y-m-d')) }}"
                                   class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('palpacion_fecha') }}">
                     @error('palpacion_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
