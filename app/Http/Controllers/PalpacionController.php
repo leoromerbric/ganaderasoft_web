@@ -9,6 +9,38 @@ class PalpacionController extends Controller
 {
     public function __construct(protected PalpacionServiceInterface $service) {}
 
+    private function isFemale(array $animal): bool
+    {
+        $sexo = strtoupper((string)($animal['Sexo'] ?? $animal['sexo'] ?? ''));
+        if ($sexo !== '') {
+            return in_array($sexo, ['F', 'H', 'FEMENINO', 'HEMBRA'], true);
+        }
+
+        $label = strtolower(trim((string)($animal['sexo_label'] ?? $animal['genero'] ?? '')));
+        return in_array($label, ['femenino', 'hembra'], true);
+    }
+
+    private function filterFemaleAnimals(array $animales): array
+    {
+        return array_values(array_filter($animales, fn (array $animal) => $this->isFemale($animal)));
+    }
+
+    private function isVetOrTech(array $persona): bool
+    {
+        $tipo = strtolower(trim((string) (data_get($persona, 'Tipo_Trabajador') ?? data_get($persona, 'tipo_trabajador') ?? data_get($persona, 'personal.Tipo_Trabajador') ?? '')));
+
+        if ($tipo === '') {
+            return true;
+        }
+
+        return str_contains($tipo, 'veterinario') || str_contains($tipo, 'tecnico') || str_contains($tipo, 'técnico');
+    }
+
+    private function filterVetTechStaff(array $personal): array
+    {
+        return array_values(array_filter($personal, fn (array $persona) => $this->isVetOrTech($persona)));
+    }
+
     private function apiMessage(array $response, string $fallback): string
     {
         if (!empty($response['message']) && is_string($response['message'])) {
@@ -34,15 +66,15 @@ class PalpacionController extends Controller
 
         $response   = $this->service->getList($animalId, $tipo, $fechaInicio, $fechaFin);
         $palpaciones = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
-        $animales   = $this->service->getAnimales();
+        $animales   = $this->filterFemaleAnimals($this->service->getAnimales());
 
         return view('palpacion.index', compact('palpaciones', 'animales', 'animalId', 'tipo', 'fechaInicio', 'fechaFin'));
     }
 
     public function create()
     {
-        $animales = $this->service->getAnimales();
-        $personal = $this->service->getPersonalFinca();
+        $animales = $this->filterFemaleAnimals($this->service->getAnimales());
+        $personal = $this->filterVetTechStaff($this->service->getPersonalFinca());
         return view('palpacion.create', compact('animales', 'personal'));
     }
 
@@ -86,8 +118,8 @@ class PalpacionController extends Controller
             return redirect()->route('palpacion.index')->with('error', 'Registro no encontrado.');
         }
         $palpacion = $response['data'];
-        $animales  = $this->service->getAnimales();
-        $personal  = $this->service->getPersonalFinca();
+        $animales  = $this->filterFemaleAnimals($this->service->getAnimales());
+        $personal  = $this->filterVetTechStaff($this->service->getPersonalFinca());
         return view('palpacion.edit', compact('palpacion', 'animales', 'personal'));
     }
 

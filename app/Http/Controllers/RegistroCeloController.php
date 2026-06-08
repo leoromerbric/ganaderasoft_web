@@ -9,6 +9,22 @@ class RegistroCeloController extends Controller
 {
     public function __construct(protected RegistroCeloServiceInterface $service) {}
 
+    private function isFemale(array $animal): bool
+    {
+        $sexo = strtoupper((string) ($animal['Sexo'] ?? $animal['sexo'] ?? ''));
+        if ($sexo !== '') {
+            return in_array($sexo, ['F', 'H', 'FEMENINO', 'HEMBRA'], true);
+        }
+
+        $label = strtolower(trim((string) ($animal['sexo_label'] ?? $animal['genero'] ?? '')));
+        return in_array($label, ['femenino', 'hembra'], true);
+    }
+
+    private function filterFemaleAnimals(array $animales): array
+    {
+        return array_values(array_filter($animales, fn (array $animal) => $this->isFemale($animal)));
+    }
+
     public function index(Request $request)
     {
         $animalId    = $request->query('animal_id');
@@ -17,14 +33,14 @@ class RegistroCeloController extends Controller
 
         $response = $this->service->getList($animalId, $fechaInicio, $fechaFin);
         $registros = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
-        $animales  = $this->service->getAnimales();
+        $animales  = $this->filterFemaleAnimals($this->service->getAnimales());
 
         return view('registro-celo.index', compact('registros', 'animales', 'animalId', 'fechaInicio', 'fechaFin'));
     }
 
     public function create()
     {
-        $animales = $this->service->getAnimales();
+        $animales = $this->filterFemaleAnimals($this->service->getAnimales());
         return view('registro-celo.create', compact('animales'));
     }
 
@@ -66,7 +82,7 @@ class RegistroCeloController extends Controller
             return redirect()->route('registro-celo.index')->with('error', 'Registro no encontrado.');
         }
         $registro = $response['data'];
-        $animales = $this->service->getAnimales();
+        $animales = $this->filterFemaleAnimals($this->service->getAnimales());
         return view('registro-celo.edit', compact('registro', 'animales'));
     }
 

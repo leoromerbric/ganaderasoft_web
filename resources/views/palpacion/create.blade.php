@@ -59,7 +59,7 @@
                         <option value="">-- Sin técnico --</option>
                         @foreach($personal as $persona)
                             @php
-                                $personalId = data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Personal');
+                                $personalId = data_get($persona, 'id_Tecnico') ?? data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Tecnico') ?? data_get($persona, 'personal.id_Personal');
                                 $personalNombre = trim((data_get($persona, 'Nombre') ?? data_get($persona, 'personal.Nombre') ?? '') . ' ' . (data_get($persona, 'Apellido') ?? data_get($persona, 'personal.Apellido') ?? ''));
                             @endphp
                             @continue(!$personalId)

@@ -26,6 +26,7 @@
                     </ul>
                 </div>
             @endif
+            @php($borderClass = fn (string $field) => $errors->has($field) ? 'border-red-500' : 'border-gray-300')
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -37,8 +38,8 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Semen / Toro</label>
-                    <select name="servicio_semen_id"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('servicio_semen_id') border-red-500 @enderror">
+                            <select name="servicio_semen_id"
+                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('servicio_semen_id') }}">
                         <option value="">-- Sin semen --</option>
                         @foreach($semenToros as $semen)
                             <option value="{{ $semen['semen_id'] }}" {{ old('servicio_semen_id', $servicio['servicio_semen_id'] ?? '') == $semen['semen_id'] ? 'selected' : '' }}>
@@ -51,12 +52,12 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Técnico</label>
-                    <select name="servicio_id_Tecnico"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('servicio_id_Tecnico') border-red-500 @enderror">
+                            <select name="servicio_id_Tecnico"
+                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('servicio_id_Tecnico') }}">
                         <option value="">-- Sin técnico --</option>
                         @foreach($personal as $persona)
                             @php
-                                $personalId = data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Personal');
+                                $personalId = data_get($persona, 'id_Tecnico') ?? data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Tecnico') ?? data_get($persona, 'personal.id_Personal');
                                 $personalNombre = trim((data_get($persona, 'Nombre') ?? data_get($persona, 'personal.Nombre') ?? '') . ' ' . (data_get($persona, 'Apellido') ?? data_get($persona, 'personal.Apellido') ?? ''));
                             @endphp
                             @continue(!$personalId)
@@ -70,8 +71,8 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Registro de Celo</label>
-                    <select name="servicio_celo_id"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('servicio_celo_id') border-red-500 @enderror">
+                            <select name="servicio_celo_id"
+                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('servicio_celo_id') }}">
                         <option value="">-- Sin registro de celo --</option>
                         @foreach($registrosCelo as $celo)
                             <option value="{{ $celo['celo_id'] }}" {{ old('servicio_celo_id', $servicio['servicio_celo_id'] ?? '') == $celo['celo_id'] ? 'selected' : '' }}>
@@ -84,18 +85,18 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Servicio</label>
-                    <input type="text" name="servicio_tipo" maxlength="11"
+                          <input type="text" name="servicio_tipo" maxlength="11"
                            value="{{ old('servicio_tipo', $servicio['servicio_tipo'] ?? '') }}"
                            placeholder="Ej: IA, Natural..."
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('servicio_tipo') border-red-500 @enderror">
+                               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('servicio_tipo') }}">
                     @error('servicio_tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del Servicio</label>
-                    <input type="date" name="servicio_fecha"
+                          <input type="date" name="servicio_fecha"
                            value="{{ old('servicio_fecha', $servicio['servicio_fecha'] ?? date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('servicio_fecha') border-red-500 @enderror">
+                               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('servicio_fecha') }}">
                     @error('servicio_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 

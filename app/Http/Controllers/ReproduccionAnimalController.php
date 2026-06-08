@@ -9,6 +9,22 @@ class ReproduccionAnimalController extends Controller
 {
     public function __construct(protected ReproduccionAnimalServiceInterface $service) {}
 
+    private function isFemale(array $animal): bool
+    {
+        $sexo = strtoupper((string) ($animal['Sexo'] ?? $animal['sexo'] ?? ''));
+        if ($sexo !== '') {
+            return in_array($sexo, ['F', 'H', 'FEMENINO', 'HEMBRA'], true);
+        }
+
+        $label = strtolower(trim((string) ($animal['sexo_label'] ?? $animal['genero'] ?? '')));
+        return in_array($label, ['femenino', 'hembra'], true);
+    }
+
+    private function filterFemaleAnimals(array $animales): array
+    {
+        return array_values(array_filter($animales, fn (array $animal) => $this->isFemale($animal)));
+    }
+
     public function index(Request $request)
     {
         $animalId    = $request->query('animal_id');
@@ -18,14 +34,14 @@ class ReproduccionAnimalController extends Controller
 
         $response     = $this->service->getList($animalId, $tipo, $fechaInicio, $fechaFin);
         $reproducciones = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
-        $animales     = $this->service->getAnimales();
+        $animales     = $this->filterFemaleAnimals($this->service->getAnimales());
 
         return view('reproduccion-animal.index', compact('reproducciones', 'animales', 'animalId', 'tipo', 'fechaInicio', 'fechaFin'));
     }
 
     public function create()
     {
-        $animales = $this->service->getAnimales();
+        $animales = $this->filterFemaleAnimals($this->service->getAnimales());
         return view('reproduccion-animal.create', compact('animales'));
     }
 
@@ -71,7 +87,7 @@ class ReproduccionAnimalController extends Controller
             return redirect()->route('reproduccion-animal.index')->with('error', 'Registro no encontrado.');
         }
         $reproduccion = $response['data'];
-        $animales = $this->service->getAnimales();
+        $animales = $this->filterFemaleAnimals($this->service->getAnimales());
         return view('reproduccion-animal.edit', compact('reproduccion', 'animales'));
     }
 

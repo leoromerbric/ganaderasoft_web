@@ -193,9 +193,14 @@
                                     required>
                                 <option value="">Seleccione una finca</option>
                                 @foreach($fincas as $finca)
-                                    <option value="{{ $finca['id_Finca'] }}" 
-                                            {{ old('id_Finca') == $finca['id_Finca'] ? 'selected' : '' }}>
-                                        {{ $finca['Nombre'] }} - {{ $finca['Municipio'] }}
+                                    @php
+                                        $fincaId = data_get($finca, 'id_Finca');
+                                        $fincaNombre = data_get($finca, 'Nombre', 'Finca sin nombre');
+                                        $fincaMunicipio = data_get($finca, 'Municipio') ?? data_get($finca, 'municipio') ?? data_get($finca, 'Parroquia') ?? 'Municipio no disponible';
+                                    @endphp
+                                    <option value="{{ $fincaId }}" 
+                                            {{ old('id_Finca') == $fincaId ? 'selected' : '' }}>
+                                        {{ $fincaNombre }} - {{ $fincaMunicipio }}
                                     </option>
                                 @endforeach
                             </select>

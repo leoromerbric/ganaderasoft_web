@@ -26,6 +26,7 @@
                     </ul>
                 </div>
             @endif
+            @php($borderClass = fn (string $field) => $errors->has($field) ? 'border-red-500' : 'border-gray-300')
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -44,12 +45,12 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Técnico</label>
-                    <select name="id_Tecnico"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('id_Tecnico') border-red-500 @enderror">
+                            <select name="id_Tecnico"
+                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('id_Tecnico') }}">
                         <option value="">-- Sin técnico --</option>
                         @foreach($personal as $persona)
                             @php
-                                $personalId = data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Personal');
+                                $personalId = data_get($persona, 'id_Tecnico') ?? data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Tecnico') ?? data_get($persona, 'personal.id_Personal');
                                 $personalNombre = trim((data_get($persona, 'Nombre') ?? data_get($persona, 'personal.Nombre') ?? '') . ' ' . (data_get($persona, 'Apellido') ?? data_get($persona, 'personal.Apellido') ?? ''));
                             @endphp
                             @continue(!$personalId)
@@ -63,8 +64,8 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Palpación</label>
-                    <select name="palpacion_tipo"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('palpacion_tipo') border-red-500 @enderror">
+                            <select name="palpacion_tipo"
+                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('palpacion_tipo') }}">
                         <option value="">Seleccione un tipo</option>
                         <option value="Preñez" {{ old('palpacion_tipo', $palpacion['palpacion_tipo'] ?? '') == 'Preñez' ? 'selected' : '' }}>Preñez</option>
                         <option value="Revision" {{ old('palpacion_tipo', $palpacion['palpacion_tipo'] ?? '') == 'Revision' ? 'selected' : '' }}>Revisión</option>
@@ -74,9 +75,9 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Palpación</label>
-                    <input type="date" name="palpacion_fecha"
+                              <input type="date" name="palpacion_fecha"
                            value="{{ old('palpacion_fecha', $palpacion['palpacion_fecha'] ?? date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('palpacion_fecha') border-red-500 @enderror">
+                                  class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('palpacion_fecha') }}">
                     @error('palpacion_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
