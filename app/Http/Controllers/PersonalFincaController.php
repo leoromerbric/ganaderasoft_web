@@ -135,8 +135,9 @@ class PersonalFincaController extends Controller
         }
 
         $personalFinca = $response['data'];
-        
-        return view('personal-finca.show', compact('personalFinca'));
+        $personal = $personalFinca;
+
+        return view('personal-finca.show', compact('personalFinca', 'personal'));
     }
 
     /**
@@ -151,11 +152,12 @@ class PersonalFincaController extends Controller
         }
 
         $personalFinca = $response['data'];
+        $personal = $personalFinca;
 
         $fincasResponse = $this->fincasService->getFincas();
         $fincas = $fincasResponse['success'] ? ($fincasResponse['data']['data'] ?? []) : [];
 
-        return view('personal-finca.edit', compact('personalFinca', 'fincas'));
+        return view('personal-finca.edit', compact('personalFinca', 'personal', 'fincas'));
     }
 
     /**

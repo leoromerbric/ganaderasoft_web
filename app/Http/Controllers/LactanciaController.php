@@ -239,6 +239,10 @@ class LactanciaController extends Controller
             }
             
             $animal = $animalResponse['data'];
+            $etapaActual = data_get($animal, 'etapa_actual')
+                ?? data_get($animal, 'etapaActual')
+                ?? data_get($animal, 'etapa_actual.0')
+                ?? data_get($animal, 'etapaActual.0');
             
             Log::info('LactanciaController@getAnimalEtapa - Animal obtenido', [
                 'animal_id' => $id,
@@ -250,7 +254,7 @@ class LactanciaController extends Controller
                 'success' => true,
                 'data' => [
                     'animal' => $animal,
-                    'etapa_actual' => $animal['etapa_actual'] ?? null
+                    'etapa_actual' => $etapaActual
                 ]
             ]);
         } catch (\Exception $e) {

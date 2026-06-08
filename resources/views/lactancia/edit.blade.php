@@ -39,10 +39,15 @@
                 @php
                     $animalNombre = data_get($lactancia, 'animal.Nombre')
                         ?? ('Animal #'.(data_get($lactancia, 'lactancia_etapa_anid') ?? 'N/A'));
+                    $etapaActual = data_get($lactancia, 'animal.etapa_actual.etapa.etapa_nombre')
+                        ?? data_get($lactancia, 'animal.etapaActual.etapa.etapa_nombre')
+                        ?? data_get($lactancia, 'animal.etapa_actual.etapa.Nombre')
+                        ?? data_get($lactancia, 'animal.etapaActual.etapa.Nombre');
                 @endphp
                 <input type="text" readonly value="{{ $animalNombre }}" class="w-full px-4 py-3 border border-gray-200 bg-gray-50 rounded-lg text-gray-600">
                 <input type="hidden" name="lactancia_etapa_anid" value="{{ old('lactancia_etapa_anid', data_get($lactancia, 'lactancia_etapa_anid')) }}">
                 <input type="hidden" name="lactancia_etapa_etid" value="{{ old('lactancia_etapa_etid', data_get($lactancia, 'lactancia_etapa_etid')) }}">
+                <p class="mt-2 text-sm text-gray-500">Etapa actual: {{ $etapaActual ?? 'No disponible' }}</p>
             </div>
 
             <div>
