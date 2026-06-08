@@ -116,7 +116,7 @@ class ServicioAnimalController extends Controller
         }
         $servicio = $response['data'];
         return view('servicio-animal.show', compact('servicio'));
-        $personal   = $this->filterVetTechStaff($this->service->getPersonalFinca());
+    }
 
     public function edit(int $id)
     {
@@ -126,7 +126,7 @@ class ServicioAnimalController extends Controller
         }
         $servicio   = $response['data'];
         $semenToros = $this->service->getSemenToros();
-        $personal   = $this->service->getPersonalFinca();
+        $personal   = $this->filterVetTechStaff($this->service->getPersonalFinca());
         $registrosCelo = $this->service->getRegistrosCelo();
         return view('servicio-animal.edit', compact('servicio', 'semenToros', 'personal', 'registrosCelo'));
     }

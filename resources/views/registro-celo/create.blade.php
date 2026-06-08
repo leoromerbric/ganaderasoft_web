@@ -88,8 +88,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
 
     function renderStage(option, fetchedStage) {
-        const etapaId = fetchedStage?.etapa_id || fetchedStage?.etan_etapa_id || option?.dataset.etapa || '';
-        const etapaNombre = fetchedStage?.Nombre || fetchedStage?.nombre || fetchedStage?.descripcion || '';
+        const etapaNode = fetchedStage?.etapa || fetchedStage;
+        const etapaId = etapaNode?.etapa_id || fetchedStage?.etan_etapa_id || option?.dataset.etapa || '';
+        const etapaNombre = etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.nombre || etapaNode?.descripcion || '';
         etapaInput.value = etapaId;
         etapaTexto.value = etapaId ? (etapaNombre || 'Etapa actual') : 'Animal sin etapa activa';
     }
@@ -108,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
             const payload = await response.json();
-            renderStage(option, payload?.data?.etapa_actual || null);
+            renderStage(option, payload?.data?.etapa_actual || payload?.data?.etapaActual || null);
         } catch (error) {
             etapaTexto.value = 'No se pudo obtener la etapa actual';
         }

@@ -58,6 +58,14 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Etapa actual del animal</label>
+                    <input type="text" id="servicio_etapa_texto" readonly
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600"
+                           placeholder="Se completará al seleccionar el animal">
+                    <input type="hidden" id="servicio_etapa_etid" value="">
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Técnico</label>
                             <select name="servicio_id_Tecnico"
                                 class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('servicio_id_Tecnico') }}">
@@ -125,4 +133,36 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const animalSelect = document.querySelector('select[name="servicio_id_Animal"]');
+    const etapaInput = document.getElementById('servicio_etapa_etid');
+    const etapaTexto = document.getElementById('servicio_etapa_texto');
+    const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
+
+    async function updateStage() {
+        if (!animalSelect || !animalSelect.value) {
+            etapaInput.value = '';
+            etapaTexto.value = '';
+            return;
+        }
+
+        try {
+            const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
+            const payload = await response.json();
+            const etapa = payload?.data?.etapa_actual || null;
+            const etapaNode = etapa?.etapa || etapa;
+            const etapaId = etapaNode?.etapa_id || etapa?.etan_etapa_id || '';
+            const etapaNombre = etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.nombre || etapaNode?.descripcion || 'Etapa actual';
+            etapaInput.value = etapaId;
+            etapaTexto.value = etapaId ? etapaNombre : 'Animal sin etapa activa';
+        } catch (error) {
+            etapaTexto.value = 'No se pudo obtener la etapa actual';
+        }
+    }
+
+    animalSelect?.addEventListener('change', updateStage);
+    updateStage();
+});
+</script>
 @endsection
