@@ -40,7 +40,9 @@
 
         <!-- Form Card -->
         <div class="bg-white rounded-xl shadow-md p-8">
-            @php($borderClass = fn (string $field) => $errors->has($field) ? 'border-red-500' : 'border-gray-300')
+            @php
+                $borderClass = fn (string $field) => $errors->has($field) ? 'border-red-500' : 'border-gray-300';
+            @endphp
             <form method="POST" action="{{ route('lactancia.store') }}" class="space-y-6">
                 @csrf
 
