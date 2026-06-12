@@ -84,11 +84,19 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Registro de Celo</label>
-                            <select name="servicio_celo_id"
+                            <select name="servicio_celo_id" id="servicio_celo_id"
                                 class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('servicio_celo_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">-- Sin registro de celo --</option>
                         @foreach($registrosCelo as $celo)
-                            <option value="{{ $celo['celo_id'] }}" {{ old('servicio_celo_id') == $celo['celo_id'] ? 'selected' : '' }}>
+                            @php
+                                $celoAnimalId = data_get($celo, 'animal.id_Animal')
+                                    ?? data_get($celo, 'animal.id_animal')
+                                    ?? data_get($celo, 'celo_etapa_anid')
+                                    ?? data_get($celo, 'etapa_animal.etan_animal_id');
+                            @endphp
+                            <option value="{{ $celo['celo_id'] }}"
+                                    data-animal-id="{{ $celoAnimalId }}"
+                                    {{ old('servicio_celo_id') == $celo['celo_id'] ? 'selected' : '' }}>
                                 {{ $celo['animal']['Nombre'] ?? '' }} - {{ isset($celo['celo_fecha']) ? date('d/m/Y', strtotime($celo['celo_fecha'])) : '' }} (#{{ $celo['celo_id'] }})
                             </option>
                         @endforeach
@@ -134,9 +142,35 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const animalSelect = document.querySelector('select[name="servicio_id_Animal"]');
+    const celoSelect = document.getElementById('servicio_celo_id');
     const etapaInput = document.getElementById('servicio_etapa_etid');
     const etapaTexto = document.getElementById('servicio_etapa_texto');
     const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
+    const baseCeloOptions = celoSelect
+        ? Array.from(celoSelect.querySelectorAll('option[value]')).filter(option => option.value !== '').map(option => option.cloneNode(true))
+        : [];
+
+    function updateCeloOptions() {
+        if (!celoSelect) return;
+
+        const selectedAnimalId = animalSelect?.value || '';
+        const previousValue = celoSelect.value;
+
+        celoSelect.innerHTML = '<option value="">-- Sin registro de celo --</option>';
+
+        if (!selectedAnimalId) {
+            return;
+        }
+
+        const filteredOptions = baseCeloOptions.filter(option => (option.dataset.animalId || '') === selectedAnimalId);
+        filteredOptions.forEach(option => {
+            celoSelect.appendChild(option.cloneNode(true));
+        });
+
+        if (Array.from(celoSelect.options).some(option => option.value === previousValue)) {
+            celoSelect.value = previousValue;
+        }
+    }
 
     async function updateStage() {
         if (!animalSelect || !animalSelect.value) {
@@ -159,7 +193,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    animalSelect?.addEventListener('change', updateStage);
+    animalSelect?.addEventListener('change', function () {
+        updateCeloOptions();
+        updateStage();
+    });
+    updateCeloOptions();
     updateStage();
 });
 </script>
