@@ -131,7 +131,7 @@
                    class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</a>
                 <button type="submit" id="btn-guardar-movimiento"
                         class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed">
-                    💾 Guardar
+                    Guardar
                 </button>
             </div>
         </form>

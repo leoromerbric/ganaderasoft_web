@@ -72,8 +72,8 @@
                     </a>
                     <button 
                         type="submit"
-                        class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg flex items-center space-x-2">
-                        <span>Guardar</span>
+                        class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
+                        Guardar
                     </button>
                 </div>
             </form>

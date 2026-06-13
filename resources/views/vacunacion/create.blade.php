@@ -98,7 +98,7 @@
         <div class="flex items-center justify-end border-t border-gray-200 pt-6">
             <div class="space-x-2">
                 <a href="{{ route('vacunacion.index') }}" class="rounded-lg border border-gray-300 px-6 py-2 text-gray-700 hover:bg-gray-50">Cancelar</a>
-                <button type="submit" class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">Guardar vacunación</button>
+                <button type="submit" class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">Guardar</button>
             </div>
         </div>
     </form>
