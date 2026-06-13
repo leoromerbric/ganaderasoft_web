@@ -22,52 +22,27 @@ class FincasController extends Controller
     /**
      * Display list of fincas
      */
-    public function index()
+    public function index(Request $request)
     {
+        $nombre     = $request->query('nombre', '');
+        $tipoFiltro = $request->query('tipo', '');
+
         $response = $this->fincasService->getFincas();
+        $fincas   = ($response['success'] ?? false) ? ($response['data']['data'] ?? []) : [];
 
-        if (isset($response['success']) && $response['success']) {
-            $fincas = $response['data']['data'] ?? [];
-            $pagination = [
-                'current_page' => $response['data']['current_page'] ?? 1,
-                'last_page' => $response['data']['last_page'] ?? 1,
-                'total' => $response['data']['total'] ?? 0,
-            ];
+        // Tipos únicos para el filtro
+        $tipos = array_values(array_unique(array_filter(array_column($fincas, 'Explotacion_Tipo'))));
+        sort($tipos);
 
-            return view('fincas.index', compact('fincas', 'pagination'));
-        }
-
-        return view('fincas.index', [
-            'fincas' => [],
-            'pagination' => [],
-            'error' => $response['message'] ?? 'Error al obtener las fincas'
-        ]);
+        return view('fincas.index', compact('fincas', 'tipos', 'nombre', 'tipoFiltro'));
     }
 
     /**
-     * Display dashboard for a specific finca
+     * Redirect legacy dashboard URL to fincas index
      */
     public function dashboard($id)
     {
-        $response = $this->fincasService->getFincas();
-
-        if (isset($response['success']) && $response['success']) {
-            $fincas = $response['data']['data'] ?? [];
-            
-            // Find the selected finca
-            $finca = collect($fincas)->firstWhere('id_Finca', (int)$id);
-
-            if ($finca) {
-                // Store selected finca in session
-                session(['selected_finca' => $finca]);
-                
-                return view('fincas.dashboard', compact('finca'));
-            }
-
-            return redirect()->route('fincas.index')->with('error', 'Finca no encontrada');
-        }
-
-        return redirect()->route('fincas.index')->with('error', $response['message'] ?? 'Error al obtener la finca');
+        return redirect()->route('fincas.index');
     }
 
     /**
