@@ -51,8 +51,8 @@
                 <input type="date" name="fecha_fin" id="fecha_fin" value="{{ $fechaFin }}" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
             </div>
             <div class="flex items-end gap-3">
-                <button type="submit" class="rounded-lg bg-ganaderasoft-azul px-5 py-2 text-white transition-colors hover:bg-ganaderasoft-azul/90">Filtrar</button>
-                <a href="{{ route('peso-corporal.index') }}" class="rounded-lg border border-gray-300 px-5 py-2 text-gray-700 transition-colors hover:bg-gray-50">Limpiar</a>
+                <button type="submit" class="px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">Filtrar</button>
+                <a href="{{ route('peso-corporal.index') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Limpiar</a>
             </div>
         </form>
     </div>
@@ -185,8 +185,8 @@
             </div>
 
             <div class="flex items-end gap-3">
-                <button type="submit" class="rounded-lg bg-ganaderasoft-azul px-5 py-2 text-white transition-colors hover:bg-ganaderasoft-azul/90">Filtrar</button>
-                <a href="{{ route('peso-corporal.index') }}" class="rounded-lg border border-gray-300 px-5 py-2 text-gray-700 transition-colors hover:bg-gray-50">Limpiar</a>
+                <button type="submit" class="px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">Filtrar</button>
+                <a href="{{ route('peso-corporal.index') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Limpiar</a>
             </div>
         </form>
     </div>
