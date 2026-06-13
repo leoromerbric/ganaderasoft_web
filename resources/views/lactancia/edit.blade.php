@@ -52,8 +52,9 @@
 
             <div>
                 <label for="lactancia_fecha_inicio" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Inicio</label>
+                @php $vFechaInicio = old('lactancia_fecha_inicio', data_get($lactancia,'lactancia_fecha_inicio')); $vFechaInicio = $vFechaInicio ? date('Y-m-d', strtotime($vFechaInicio)) : ''; @endphp
                 <input type="date" name="lactancia_fecha_inicio" id="lactancia_fecha_inicio"
-                       value="{{ old('lactancia_fecha_inicio', data_get($lactancia, 'lactancia_fecha_inicio')) }}"
+                       value="{{ $vFechaInicio }}"
                        required
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste @error('lactancia_fecha_inicio') border-red-500 @enderror">
                 @error('lactancia_fecha_inicio')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
@@ -61,16 +62,18 @@
 
             <div>
                 <label for="Lactancia_fecha_fin" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Fin (Opcional)</label>
+                @php $vFechaFin = old('Lactancia_fecha_fin', data_get($lactancia,'Lactancia_fecha_fin')); $vFechaFin = $vFechaFin ? date('Y-m-d', strtotime($vFechaFin)) : ''; @endphp
                 <input type="date" name="Lactancia_fecha_fin" id="Lactancia_fecha_fin"
-                       value="{{ old('Lactancia_fecha_fin', data_get($lactancia, 'Lactancia_fecha_fin')) }}"
+                       value="{{ $vFechaFin }}"
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste @error('Lactancia_fecha_fin') border-red-500 @enderror">
                 @error('Lactancia_fecha_fin')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
             </div>
 
             <div>
                 <label for="lactancia_secado" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Secado (Opcional)</label>
+                @php $vSecado = old('lactancia_secado', data_get($lactancia,'lactancia_secado')); $vSecado = $vSecado ? date('Y-m-d', strtotime($vSecado)) : ''; @endphp
                 <input type="date" name="lactancia_secado" id="lactancia_secado"
-                       value="{{ old('lactancia_secado', data_get($lactancia, 'lactancia_secado')) }}"
+                       value="{{ $vSecado }}"
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste @error('lactancia_secado') border-red-500 @enderror">
                 @error('lactancia_secado')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
             </div>
