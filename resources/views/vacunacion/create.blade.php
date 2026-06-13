@@ -78,14 +78,23 @@
             </div>
 
             <div class="mt-4">
-                <div class="mb-2 flex items-center justify-between">
-                    <p class="text-xs text-gray-500">Desmarque los animales que no desea vacunar.</p>
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600">
-                        <input type="checkbox" id="check-all" class="rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde"> Marcar/Desmarcar todos
-                    </label>
-                </div>
-                <div id="animales-lista" class="grid max-h-72 grid-cols-1 gap-2 overflow-y-auto rounded-lg border border-gray-200 bg-white p-3 sm:grid-cols-2 lg:grid-cols-3">
-                    <p class="col-span-full p-3 text-center text-gray-400">Seleccione un rebaño y presione "Cargar animales".</p>
+                <p class="mb-2 text-xs text-gray-500">Desmarque los animales que no desea vacunar.</p>
+                <div class="max-h-72 overflow-y-auto rounded-lg border border-gray-200 bg-white">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="sticky top-0 bg-gray-50">
+                            <tr>
+                                <th class="w-12 px-4 py-3 text-left">
+                                    <input type="checkbox" id="check-all" class="rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde" title="Marcar/Desmarcar todos">
+                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Animal</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Código</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Sexo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="animales-lista" class="divide-y divide-gray-200 bg-white">
+                            <tr><td colspan="4" class="px-4 py-4 text-center text-gray-400">Seleccione un rebaño y presione "Cargar animales".</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -138,7 +147,7 @@
 
     async function cargar() {
         if (!rebano.value) {
-            lista.innerHTML = '<p class="col-span-full p-3 text-center text-red-500">Seleccione un rebaño.</p>';
+            lista.innerHTML = '<tr><td colspan="4" class="px-4 py-4 text-center text-red-500">Seleccione un rebaño.</td></tr>';
             return;
         }
 
@@ -156,14 +165,14 @@
             const json = await response.json();
 
             if (!json.success) {
-                lista.innerHTML = `<p class="col-span-full p-3 text-center text-red-500">${json.message || 'No se pudieron cargar los animales.'}</p>`;
+                lista.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-red-500">${json.message || 'No se pudieron cargar los animales.'}</td></tr>`;
                 updateTotals();
                 return;
             }
 
             const animales = json.data || [];
             if (animales.length === 0) {
-                lista.innerHTML = '<p class="col-span-full p-3 text-center text-gray-400">No hay animales que coincidan con los filtros.</p>';
+                lista.innerHTML = '<tr><td colspan="4" class="px-4 py-4 text-center text-gray-400">No hay animales que coincidan con los filtros.</td></tr>';
                 updateTotals();
                 return;
             }
@@ -171,19 +180,21 @@
             lista.innerHTML = animales.map((a) => {
                 const id = a.id_Animal;
                 const nombre = a.Nombre || ('Animal #' + id);
-                const codigo = a.codigo_animal ? ` (${a.codigo_animal})` : '';
+                const codigo = a.codigo_animal || '—';
                 const sx = sexoLabel[a.Sexo] || a.Sexo || '';
-                return `<label class="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm transition-colors hover:bg-gray-50">
-                    <input type="checkbox" class="animal-check rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde" name="vacunacion_animal_ids[]" value="${id}" checked>
-                    <span class="truncate">${nombre}${codigo} <span class="text-xs text-gray-400">${sx}</span></span>
-                </label>`;
+                return `<tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3"><input type="checkbox" class="animal-check rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde" name="vacunacion_animal_ids[]" value="${id}" checked></td>
+                    <td class="px-4 py-3 text-sm text-gray-900">${nombre}</td>
+                    <td class="px-4 py-3 text-sm text-gray-500">${codigo}</td>
+                    <td class="px-4 py-3 text-sm text-gray-500">${sx}</td>
+                </tr>`;
             }).join('');
 
             checkAll.checked = true;
             lista.querySelectorAll('input.animal-check').forEach((cb) => cb.addEventListener('change', updateTotals));
             updateTotals();
         } catch (e) {
-            lista.innerHTML = '<p class="col-span-full p-3 text-center text-red-500">Error al cargar los animales.</p>';
+            lista.innerHTML = '<tr><td colspan="4" class="px-4 py-4 text-center text-red-500">Error al cargar los animales.</td></tr>';
         } finally {
             btnCargar.disabled = false;
             btnCargar.textContent = 'Cargar animales';
