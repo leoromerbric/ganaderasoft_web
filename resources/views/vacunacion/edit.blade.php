@@ -117,7 +117,7 @@
 
         <div class="mt-8 flex justify-end space-x-4 border-t border-gray-200 pt-6">
             <a href="{{ route('vacunacion.index') }}" class="rounded-lg border border-gray-300 px-6 py-2 text-gray-700 hover:bg-gray-50">Cancelar</a>
-            <button type="submit" class="rounded-lg bg-ganaderasoft-verde px-6 py-2 text-white transition-colors hover:bg-ganaderasoft-verde/80">Actualizar</button>
+            <button type="submit" class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">Actualizar</button>
         </div>
     </form>
 </div>

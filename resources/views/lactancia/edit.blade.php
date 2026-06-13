@@ -77,7 +77,7 @@
 
             <div class="flex justify-end gap-4 pt-4">
                 <a href="{{ route('lactancia.index') }}" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Cancelar</a>
-                <button type="submit" class="px-6 py-3 bg-ganaderasoft-verde text-white rounded-lg hover:bg-ganaderasoft-verde/80">Actualizar</button>
+                <button type="submit" class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">Actualizar</button>
             </div>
         </form>
     </div>

@@ -252,7 +252,7 @@
                             Cancelar
                         </a>
                         <button type="submit" 
-                                class="px-6 py-2 bg-ganaderasoft-verde text-white rounded-md hover:bg-ganaderasoft-verde/90 focus:outline-none focus:ring-2 focus:ring-ganaderasoft-verde transition-colors">
+                                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
                             ✏️ Actualizar Personal
                         </button>
                     </div>

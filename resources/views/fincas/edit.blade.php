@@ -245,7 +245,7 @@
                     Cancelar
                 </a>
                 <button type="submit" 
-                    class="px-6 py-2 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white rounded-lg font-medium transition-colors duration-200 shadow-sm">
+                    class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
                     Actualizar
                 </button>
             </div>
