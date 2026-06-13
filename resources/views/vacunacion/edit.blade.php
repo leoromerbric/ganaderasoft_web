@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+<div class="overflow-hidden rounded-xl bg-white shadow-md">
     <div class="rounded-t-xl bg-ganaderasoft-celeste px-6 py-4 text-white"><h3 class="text-lg font-semibold">Actualizar registro de vacunación</h3></div>
     <form action="{{ route('vacunacion.update', data_get($vacunacion, 'vacunacion_id')) }}" method="POST" class="space-y-6 p-6" id="vacunacionForm">
         @csrf
@@ -78,7 +78,7 @@
                     </select>
                 </div>
                 <div class="flex items-end">
-                    <button type="button" id="btn-cargar" class="w-full rounded-lg bg-ganaderasoft-celeste px-4 py-2 text-sm font-medium text-white hover:bg-ganaderasoft-celeste/80">Cargar animales</button>
+                    <button type="button" id="btn-cargar" class="w-full rounded-lg bg-ganaderasoft-azul px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-ganaderasoft-azul/90">Cargar animales</button>
                 </div>
             </div>
 
@@ -89,7 +89,7 @@
                         <input type="checkbox" id="check-all" checked class="rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde"> Marcar/Desmarcar todos
                     </label>
                 </div>
-                <div id="animales-lista" class="max-h-72 space-y-1 overflow-y-auto rounded-lg border border-gray-200 bg-white p-2 text-sm">
+                <div id="animales-lista" class="grid max-h-72 grid-cols-1 gap-2 overflow-y-auto rounded-lg border border-gray-200 bg-white p-3 sm:grid-cols-2 lg:grid-cols-3">
                     @forelse($selectedAnimales as $item)
                         @php
                             $animalId = data_get($item, 'va_animal_id');
@@ -99,12 +99,12 @@
                             $sx = data_get($animalData, 'Sexo');
                             $sxLabel = $sx === 'M' ? 'Macho' : ($sx === 'H' ? 'Hembra' : $sx);
                         @endphp
-                        <label class="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-50">
+                        <label class="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm transition-colors hover:bg-gray-50">
                             <input type="checkbox" class="animal-check rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde" name="vacunacion_animal_ids[]" value="{{ $animalId }}" checked>
-                            <span>{{ $nombre }}{{ $codigo ? ' ('.$codigo.')' : '' }} <span class="text-xs text-gray-400">{{ $sxLabel }}</span></span>
+                            <span class="truncate">{{ $nombre }}{{ $codigo ? ' ('.$codigo.')' : '' }} <span class="text-xs text-gray-400">{{ $sxLabel }}</span></span>
                         </label>
                     @empty
-                        <p class="p-3 text-center text-gray-400">No hay animales asociados. Use los filtros para cargar.</p>
+                        <p class="col-span-full p-3 text-center text-gray-400">No hay animales asociados. Use los filtros para cargar.</p>
                     @endforelse
                 </div>
             </div>
@@ -160,7 +160,7 @@
 
     async function cargar() {
         if (!rebano.value) {
-            lista.innerHTML = '<p class="p-3 text-center text-red-500">Seleccione un rebaño.</p>';
+            lista.innerHTML = '<p class="col-span-full p-3 text-center text-red-500">Seleccione un rebaño.</p>';
             return;
         }
 
@@ -178,14 +178,14 @@
             const json = await response.json();
 
             if (!json.success) {
-                lista.innerHTML = `<p class="p-3 text-center text-red-500">${json.message || 'No se pudieron cargar los animales.'}</p>`;
+                lista.innerHTML = `<p class="col-span-full p-3 text-center text-red-500">${json.message || 'No se pudieron cargar los animales.'}</p>`;
                 updateTotals();
                 return;
             }
 
             const animales = json.data || [];
             if (animales.length === 0) {
-                lista.innerHTML = '<p class="p-3 text-center text-gray-400">No hay animales que coincidan con los filtros.</p>';
+                lista.innerHTML = '<p class="col-span-full p-3 text-center text-gray-400">No hay animales que coincidan con los filtros.</p>';
                 updateTotals();
                 return;
             }
@@ -195,9 +195,9 @@
                 const nombre = a.Nombre || ('Animal #' + id);
                 const codigo = a.codigo_animal ? ` (${a.codigo_animal})` : '';
                 const sx = sexoLabel[a.Sexo] || a.Sexo || '';
-                return `<label class="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-50">
+                return `<label class="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm transition-colors hover:bg-gray-50">
                     <input type="checkbox" class="animal-check rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde" name="vacunacion_animal_ids[]" value="${id}" checked>
-                    <span>${nombre}${codigo} <span class="text-xs text-gray-400">${sx}</span></span>
+                    <span class="truncate">${nombre}${codigo} <span class="text-xs text-gray-400">${sx}</span></span>
                 </label>`;
             }).join('');
 
@@ -205,7 +205,7 @@
             bindBoxes();
             updateTotals();
         } catch (e) {
-            lista.innerHTML = '<p class="p-3 text-center text-red-500">Error al cargar los animales.</p>';
+            lista.innerHTML = '<p class="col-span-full p-3 text-center text-red-500">Error al cargar los animales.</p>';
         } finally {
             btnCargar.disabled = false;
             btnCargar.textContent = 'Cargar animales';

@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+<div class="rounded-xl bg-white p-6 shadow-md">
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div><p class="text-sm text-gray-500">Vacuna</p><p class="text-gray-900">{{ data_get($vacunacion, 'vacuna.vacuna_nombre') ?? ('Vacuna #'.data_get($vacunacion, 'vacunacion_vacuna_id')) }}</p></div>
         <div><p class="text-sm text-gray-500">Rebaño</p><p class="text-gray-900">{{ data_get($vacunacion, 'rebano.Nombre') ?? ('#'.data_get($vacunacion, 'vacunacion_rebano_id')) }}</p></div>
@@ -22,7 +22,7 @@
     </div>
 </div>
 
-<div class="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+<div class="mt-6 rounded-xl bg-white p-6 shadow-md">
     <h3 class="mb-4 text-lg font-semibold text-ganaderasoft-negro">Animales incluidos</h3>
     @php $items = data_get($vacunacion, 'animales', []); @endphp
     @if(empty($items))
