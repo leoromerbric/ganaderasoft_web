@@ -79,10 +79,6 @@
             </div>
         </div>
 
-            </div>
-        </div>
-        @endif
-
         <!-- Quick Stats -->
         @if(count($registrosLeche) > 0)
         <div class="bg-white rounded-xl shadow-md p-6 mb-6">
