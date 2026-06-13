@@ -96,7 +96,7 @@
                     <div id="preview-campana-resultado" class="mt-3 hidden rounded border border-blue-200 bg-white p-3 text-sm"></div>
                 </div>
 
-                <div>
+                <div id="bloque-animal">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
                     <select name="ha_animal_id"
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
@@ -107,7 +107,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <p class="mt-1 text-xs text-gray-500">Si selecciona dosis, este campo es opcional y la API puede expandir al grupo objetivo.</p>
+                    <p id="ayuda-animal" class="mt-1 text-xs text-gray-500">Si selecciona dosis, este campo es opcional y la API puede expandir al grupo objetivo.</p>
                     @error('ha_animal_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
@@ -144,6 +144,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const vacunaSelect = document.querySelector('select[name="ha_vacuna_id"]');
     const casaSelect = document.querySelector('select[name="ha_casa_id"]');
     const animalSelect = document.querySelector('select[name="ha_animal_id"]');
+    const bloqueAnimal = document.getElementById('bloque-animal');
+    const ayudaAnimal = document.getElementById('ayuda-animal');
     const previewBtn = document.getElementById('btn-preview-campana');
     const previewBox = document.getElementById('preview-campana-resultado');
 
@@ -151,6 +153,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const isCampaign = !!dosisSelect.value;
         vacunaSelect.required = !isCampaign;
         casaSelect.required = !isCampaign;
+
+        if (isCampaign) {
+            animalSelect.value = '';
+            animalSelect.disabled = true;
+            bloqueAnimal.classList.add('opacity-60');
+            ayudaAnimal.textContent = 'No aplica en modo campaña: los animales se determinan por la dosis seleccionada.';
+        } else {
+            animalSelect.disabled = false;
+            bloqueAnimal.classList.remove('opacity-60');
+            ayudaAnimal.textContent = 'Si selecciona dosis, este campo es opcional y la API puede expandir al grupo objetivo.';
+        }
     }
 
     dosisSelect.addEventListener('change', function () {
