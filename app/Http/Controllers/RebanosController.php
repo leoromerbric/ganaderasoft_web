@@ -3,59 +3,46 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\RebanosServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
 use Illuminate\Http\Request;
 
 class RebanosController extends Controller
 {
-    protected RebanosServiceInterface $rebanosService;
-
-    public function __construct(RebanosServiceInterface $rebanosService)
-    {
-        $this->rebanosService = $rebanosService;
-    }
+    public function __construct(
+        protected RebanosServiceInterface $rebanosService,
+        protected FincasServiceInterface $fincasService,
+    ) {}
 
     /**
      * Display list of rebaños
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Check if there's a selected finca in session
-        $selectedFinca = session('selected_finca');
-        
-        if (!$selectedFinca) {
-            return view('rebanos.index', [
-                'rebanos' => [],
-                'pagination' => [],
-                'error' => 'Debe seleccionar una finca primero desde el listado de fincas'
-            ]);
-        }
+        $idFinca = $request->query('id_finca');
+        $nombre  = $request->query('nombre', '');
 
         $response = $this->rebanosService->getRebanos();
+        $allRebanos = ($response['success'] ?? false) ? ($response['data']['data'] ?? []) : [];
 
-        if (isset($response['success']) && $response['success']) {
-            $allRebanos = $response['data']['data'] ?? [];
-            
-            // Filter rebanos by selected finca
-            $rebanos = array_filter($allRebanos, function($rebano) use ($selectedFinca) {
-                return isset($rebano['id_Finca']) && $rebano['id_Finca'] == $selectedFinca['id_Finca'];
-            });
-            
-            $rebanos = array_values($rebanos); // Re-index array
-            
-            $pagination = [
-                'current_page' => 1,
-                'last_page' => 1,
-                'total' => count($rebanos),
-            ];
+        // Cargar fincas para el filtro
+        $fincasResponse = $this->fincasService->getFincas();
+        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-            return view('rebanos.index', compact('rebanos', 'pagination'));
-        }
+        // Filtrar por finca y nombre
+        $rebanos = array_values(array_filter($allRebanos, function ($rebano) use ($idFinca, $nombre) {
+            if ($idFinca && ($rebano['id_Finca'] ?? null) != $idFinca) return false;
+            if ($nombre && stripos($rebano['Nombre'] ?? '', $nombre) === false) return false;
+            return true;
+        }));
 
-        return view('rebanos.index', [
-            'rebanos' => [],
-            'pagination' => [],
-            'error' => $response['message'] ?? 'Error al obtener los rebaños'
-        ]);
+        // Stats
+        $totalAnimales = array_sum(array_map(fn($r) => count($r['animales'] ?? []), $rebanos));
+        $estadisticas = [
+            'total'          => count($rebanos),
+            'totalAnimales'  => $totalAnimales,
+        ];
+
+        return view('rebanos.index', compact('rebanos', 'fincas', 'idFinca', 'nombre', 'estadisticas'));
     }
 
     /**
