@@ -125,6 +125,8 @@
                                 <td class="px-6 py-4 text-sm text-gray-600">{{ $comentario ?: '-' }}</td>
                                 <td class="px-6 py-4 text-right">
                                     @if($pesoId)
+                                        <a href="{{ route('peso-corporal.edit', $pesoId) }}"
+                                           class="mr-2 rounded-lg border border-yellow-300 px-3 py-2 text-sm text-yellow-600 transition-colors hover:bg-yellow-50">Editar</a>
                                         <form action="{{ route('peso-corporal.destroy', $pesoId) }}" method="POST" class="inline" onsubmit="return confirm('¿Desea eliminar este registro?')">
                                             @csrf
                                             @method('DELETE')
