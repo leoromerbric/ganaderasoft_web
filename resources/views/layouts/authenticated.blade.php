@@ -93,6 +93,10 @@
                     <span class="menu-icon text-xl mr-3">📝</span>
                     <span class="menu-text font-medium">Cambios de Animal</span>
                 </a>
+                <a href="{{ route('movimiento-rebano.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('movimiento-rebano.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">🚛</span>
+                    <span class="menu-text font-medium">Movimiento de Rebaño</span>
+                </a>
 
                 <!-- Personal -->
                 <div class="mt-6 px-4 mb-2">
@@ -177,15 +181,6 @@
                 <a href="{{ route('casa-comercial.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('casa-comercial.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
                     <span class="menu-icon text-xl mr-3">🏭</span>
                     <span class="menu-text font-medium">Casas Comerciales</span>
-                </a>
-
-                <!-- Movimientos de Rebaño -->
-                <div class="mt-6 px-4 mb-2">
-                    <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Movimientos</h3>
-                </div>
-                <a href="{{ route('movimiento-rebano.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('movimiento-rebano.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
-                    <span class="menu-icon text-xl mr-3">🚛</span>
-                    <span class="menu-text font-medium">Movimiento de Rebaño</span>
                 </a>
 
                 <!-- Reportes -->
