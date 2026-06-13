@@ -24,30 +24,26 @@
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Finca Origen</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ $movimiento['fincaOrigen']['Nombre'] ?? (isset($movimiento['id_Finca']) ? 'Finca #'.$movimiento['id_Finca'] : '-') }}
+                    {{ $mapaFincas[$movimiento['id_Finca'] ?? ''] ?? ($movimiento['fincaOrigen']['Nombre'] ?? '-') }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Rebaño Origen</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ $movimiento['rebanoOrigen']['Nombre'] ?? (isset($movimiento['id_Rebano']) ? 'Rebaño #'.$movimiento['id_Rebano'] : '-') }}
+                    {{ $mapaRebanos[$movimiento['id_Rebano'] ?? ''] ?? ($movimiento['rebanoOrigen']['Nombre'] ?? '-') }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Finca Destino</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ $movimiento['fincaDestino']['Nombre'] ?? (isset($movimiento['id_Finca_Destino']) ? 'Finca #'.$movimiento['id_Finca_Destino'] : '-') }}
+                    {{ $mapaFincas[$movimiento['id_Finca_Destino'] ?? ''] ?? ($movimiento['fincaDestino']['Nombre'] ?? '-') }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Rebaño Destino</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ $movimiento['rebanoDestino']['Nombre'] ?? $movimiento['Rebano_Destino'] ?? (isset($movimiento['id_Rebano_Destino']) ? 'Rebaño #'.$movimiento['id_Rebano_Destino'] : '-') }}
+                    {{ $mapaRebanos[$movimiento['id_Rebano_Destino'] ?? ''] ?? ($movimiento['rebanoDestino']['Nombre'] ?? $movimiento['Rebano_Destino'] ?? '-') }}
                 </p>
-            </div>
-            <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Nombre Rebaño Destino</p>
-                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $movimiento['Rebano_Destino'] ?? '-' }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Comentario</p>

@@ -28,35 +28,61 @@
 
     <!-- Filtros -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-        <form method="GET" action="{{ route('movimiento-rebano.index') }}" class="flex flex-wrap gap-4 items-end">
-            <div class="flex-1 min-w-40">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Finca Origen</label>
-                <select name="finca_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste">
-                    <option value="">Todas</option>
-                    @foreach($fincas as $finca)
-                        <option value="{{ $finca['id_Finca'] }}" {{ $fincaId == $finca['id_Finca'] ? 'selected' : '' }}>
-                            {{ $finca['Nombre'] ?? 'Finca #'.$finca['id_Finca'] }}
-                        </option>
-                    @endforeach
-                </select>
+        <form method="GET" action="{{ route('movimiento-rebano.index') }}">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Finca Origen</label>
+                    <select name="id_finca" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todas</option>
+                        @foreach($fincas as $finca)
+                            <option value="{{ $finca['id_Finca'] }}" {{ $fincaId == $finca['id_Finca'] ? 'selected' : '' }}>
+                                {{ $finca['Nombre'] ?? 'Finca #'.$finca['id_Finca'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Rebaño Origen</label>
+                    <select name="id_rebano" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todos</option>
+                        @foreach($rebanos as $rebano)
+                            <option value="{{ $rebano['id_Rebano'] }}" {{ $rebanoId == $rebano['id_Rebano'] ? 'selected' : '' }}>
+                                {{ $rebano['Nombre'] ?? 'Rebaño #'.$rebano['id_Rebano'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Finca Destino</label>
+                    <select name="id_finca_destino" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todas</option>
+                        @foreach($fincas as $finca)
+                            <option value="{{ $finca['id_Finca'] }}" {{ $fincaDestinoId == $finca['id_Finca'] ? 'selected' : '' }}>
+                                {{ $finca['Nombre'] ?? 'Finca #'.$finca['id_Finca'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Rebaño Destino</label>
+                    <select name="id_rebano_destino" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todos</option>
+                        @foreach($rebanos as $rebano)
+                            <option value="{{ $rebano['id_Rebano'] }}" {{ $rebanoDestinoId == $rebano['id_Rebano'] ? 'selected' : '' }}>
+                                {{ $rebano['Nombre'] ?? 'Rebaño #'.$rebano['id_Rebano'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="flex-1 px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">
+                        Filtrar
+                    </button>
+                    <a href="{{ route('movimiento-rebano.index') }}" class="flex-1 text-center px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">
+                        Limpiar
+                    </a>
+                </div>
             </div>
-            <div class="flex-1 min-w-40">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Rebaño Origen</label>
-                <select name="rebano_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste">
-                    <option value="">Todos</option>
-                    @foreach($rebanos as $rebano)
-                        <option value="{{ $rebano['id_Rebano'] }}" {{ $rebanoId == $rebano['id_Rebano'] ? 'selected' : '' }}>
-                            {{ $rebano['Nombre'] ?? 'Rebaño #'.$rebano['id_Rebano'] }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <button type="submit" class="px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">
-                Filtrar
-            </button>
-            <a href="{{ route('movimiento-rebano.index') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">
-                Limpiar
-            </a>
         </form>
     </div>
 
@@ -80,16 +106,16 @@
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $movimiento['id_Movimiento'] ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $movimiento['fincaOrigen']['Nombre'] ?? (isset($movimiento['id_Finca']) ? 'Finca #'.$movimiento['id_Finca'] : '-') }}
+                                {{ $mapaFincas[$movimiento['id_Finca'] ?? ''] ?? ($movimiento['fincaOrigen']['Nombre'] ?? '-') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $movimiento['rebanoOrigen']['Nombre'] ?? (isset($movimiento['id_Rebano']) ? 'Rebaño #'.$movimiento['id_Rebano'] : '-') }}
+                                {{ $mapaRebanos[$movimiento['id_Rebano'] ?? ''] ?? ($movimiento['rebanoOrigen']['Nombre'] ?? '-') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $movimiento['fincaDestino']['Nombre'] ?? (isset($movimiento['id_Finca_Destino']) ? 'Finca #'.$movimiento['id_Finca_Destino'] : '-') }}
+                                {{ $mapaFincas[$movimiento['id_Finca_Destino'] ?? ''] ?? ($movimiento['fincaDestino']['Nombre'] ?? '-') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $movimiento['rebanoDestino']['Nombre'] ?? $movimiento['Rebano_Destino'] ?? (isset($movimiento['id_Rebano_Destino']) ? 'Rebaño #'.$movimiento['id_Rebano_Destino'] : '-') }}
+                                {{ $mapaRebanos[$movimiento['id_Rebano_Destino'] ?? ''] ?? ($movimiento['rebanoDestino']['Nombre'] ?? $movimiento['Rebano_Destino'] ?? '-') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 {{ isset($movimiento['animales']) ? count($movimiento['animales']) : 0 }}

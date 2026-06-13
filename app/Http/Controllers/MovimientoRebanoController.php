@@ -27,15 +27,31 @@ class MovimientoRebanoController extends Controller
 
     public function index(Request $request)
     {
-        $fincaId  = $request->query('id_finca');
-        $rebanoId = $request->query('id_rebano');
+        $fincaId         = $request->query('id_finca')         ? (int) $request->query('id_finca')         : null;
+        $rebanoId        = $request->query('id_rebano')        ? (int) $request->query('id_rebano')        : null;
+        $fincaDestinoId  = $request->query('id_finca_destino') ? (int) $request->query('id_finca_destino') : null;
+        $rebanoDestinoId = $request->query('id_rebano_destino')? (int) $request->query('id_rebano_destino'): null;
 
         $response    = $this->service->getList($fincaId, $rebanoId);
         $movimientos = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $fincas      = $this->service->getFincas();
         $rebanos     = $this->service->getRebanos();
 
-        return view('movimiento-rebano.index', compact('movimientos', 'fincas', 'rebanos', 'fincaId', 'rebanoId'));
+        $mapaFincas  = collect($fincas)->keyBy('id_Finca')->map(fn($f) => $f['Nombre'] ?? '')->all();
+        $mapaRebanos = collect($rebanos)->keyBy('id_Rebano')->map(fn($r) => $r['Nombre'] ?? '')->all();
+
+        if ($fincaDestinoId) {
+            $movimientos = array_values(array_filter($movimientos, fn($m) => (int) ($m['id_Finca_Destino'] ?? 0) === $fincaDestinoId));
+        }
+        if ($rebanoDestinoId) {
+            $movimientos = array_values(array_filter($movimientos, fn($m) => (int) ($m['id_Rebano_Destino'] ?? 0) === $rebanoDestinoId));
+        }
+
+        return view('movimiento-rebano.index', compact(
+            'movimientos', 'fincas', 'rebanos',
+            'fincaId', 'rebanoId', 'fincaDestinoId', 'rebanoDestinoId',
+            'mapaFincas', 'mapaRebanos'
+        ));
     }
 
     public function create()
@@ -132,8 +148,12 @@ class MovimientoRebanoController extends Controller
         if (!($response['success'] ?? false)) {
             return redirect()->route('movimiento-rebano.index')->with('error', 'Movimiento no encontrado.');
         }
-        $movimiento = $response['data'];
-        return view('movimiento-rebano.show', compact('movimiento'));
+        $movimiento  = $response['data'];
+        $fincas      = $this->service->getFincas();
+        $rebanos     = $this->service->getRebanos();
+        $mapaFincas  = collect($fincas)->keyBy('id_Finca')->map(fn($f) => $f['Nombre'] ?? '')->all();
+        $mapaRebanos = collect($rebanos)->keyBy('id_Rebano')->map(fn($r) => $r['Nombre'] ?? '')->all();
+        return view('movimiento-rebano.show', compact('movimiento', 'mapaFincas', 'mapaRebanos'));
     }
 
     public function edit(int $id)
