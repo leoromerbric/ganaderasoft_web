@@ -13,11 +13,9 @@
 <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div><p class="text-sm text-gray-500">Vacuna</p><p class="text-gray-900">{{ data_get($vacunacion, 'vacuna.vacuna_nombre') ?? ('Vacuna #'.data_get($vacunacion, 'vacunacion_vacuna_id')) }}</p></div>
-        <div><p class="text-sm text-gray-500">Casa comercial</p><p class="text-gray-900">{{ data_get($vacunacion, 'casa_comercial.laboratorio') ?? data_get($vacunacion, 'casaComercial.laboratorio') ?? '-' }}</p></div>
         <div><p class="text-sm text-gray-500">Rebaño</p><p class="text-gray-900">{{ data_get($vacunacion, 'rebano.Nombre') ?? ('#'.data_get($vacunacion, 'vacunacion_rebano_id')) }}</p></div>
-        <div><p class="text-sm text-gray-500">Modo de selección</p><p class="text-gray-900">{{ data_get($vacunacion, 'vacunacion_modo_seleccion') }}</p></div>
         <div><p class="text-sm text-gray-500">Fecha de vacunación</p><p class="text-gray-900">{{ data_get($vacunacion, 'vacunacion_fecha') }}</p></div>
-        <div><p class="text-sm text-gray-500">Costo por dosis</p><p class="text-gray-900">{{ number_format((float) data_get($vacunacion, 'vacunacion_costo_dosis', 0), 2, ',', '.') }}</p></div>
+        <div><p class="text-sm text-gray-500">Costo individual de la dosis</p><p class="text-gray-900">{{ number_format((float) data_get($vacunacion, 'vacunacion_costo_dosis', 0), 2, ',', '.') }}</p></div>
         <div><p class="text-sm text-gray-500">Total animales</p><p class="text-gray-900">{{ data_get($vacunacion, 'animales_count', data_get($vacunacion, 'vacunacion_total_animales', 0)) }}</p></div>
         <div><p class="text-sm text-gray-500">Monto total</p><p class="text-gray-900">{{ number_format((float) data_get($vacunacion, 'vacunacion_monto_total', 0), 2, ',', '.') }}</p></div>
         <div class="md:col-span-2"><p class="text-sm text-gray-500">Observación</p><p class="text-gray-900">{{ data_get($vacunacion, 'vacunacion_observacion') ?: '-' }}</p></div>

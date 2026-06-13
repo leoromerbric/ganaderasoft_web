@@ -9,19 +9,19 @@
     </a>
     <div>
         <h2 class="text-3xl font-bold text-ganaderasoft-negro">💉 Nueva Vacunación</h2>
-        <p class="mt-1 text-gray-600">Seleccione por rebaño completo, lista de animales o filtros</p>
+        <p class="mt-1 text-gray-600">Filtre los animales por rebaño, sexo o etapa y confirme quiénes se vacunan</p>
     </div>
 </div>
 
 <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-    <div class="rounded-t-xl bg-ganaderasoft-celeste px-6 py-4 text-white"><h3 class="text-lg font-semibold">Registro principal de vacunación</h3></div>
+    <div class="rounded-t-xl bg-ganaderasoft-celeste px-6 py-4 text-white"><h3 class="text-lg font-semibold">Registro de vacunación</h3></div>
     <form action="{{ route('vacunacion.store') }}" method="POST" class="space-y-6 p-6" id="vacunacionForm">
         @csrf
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Vacuna *</label>
-                <select name="vacunacion_vacuna_id" id="vacunacion_vacuna_id" class="w-full rounded-lg border border-gray-300 px-4 py-2">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Vacuna utilizada *</label>
+                <select name="vacunacion_vacuna_id" class="w-full rounded-lg border border-gray-300 px-4 py-2">
                     <option value="">Seleccione</option>
                     @foreach($vacunas as $vacuna)
                         <option value="{{ $vacuna['vacuna_id'] ?? '' }}" {{ old('vacunacion_vacuna_id') == ($vacuna['vacuna_id'] ?? '') ? 'selected' : '' }}>{{ $vacuna['vacuna_nombre'] ?? 'Vacuna' }}</option>
@@ -29,91 +29,73 @@
                 </select>
             </div>
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Casa comercial</label>
-                <select name="vacunacion_casa_id" class="w-full rounded-lg border border-gray-300 px-4 py-2">
-                    <option value="">No especificar</option>
-                    @foreach($casas as $casa)
-                        <option value="{{ $casa['casa_id'] ?? '' }}" {{ old('vacunacion_casa_id') == ($casa['casa_id'] ?? '') ? 'selected' : '' }}>{{ ($casa['laboratorio'] ?? 'Casa').' - '.($casa['marca_comercial'] ?? '') }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Rebaño *</label>
-                <select name="vacunacion_rebano_id" id="vacunacion_rebano_id" class="w-full rounded-lg border border-gray-300 px-4 py-2">
-                    <option value="">Seleccione</option>
-                    @foreach($rebanos as $rebano)
-                        <option value="{{ $rebano['id_Rebano'] ?? '' }}" {{ old('vacunacion_rebano_id') == ($rebano['id_Rebano'] ?? '') ? 'selected' : '' }}>{{ $rebano['Nombre'] ?? ('Rebaño #'.($rebano['id_Rebano'] ?? '')) }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Modo de selección *</label>
-                <select name="vacunacion_modo_seleccion" id="vacunacion_modo_seleccion" class="w-full rounded-lg border border-gray-300 px-4 py-2">
-                    <option value="todos_rebano" {{ old('vacunacion_modo_seleccion', 'todos_rebano') === 'todos_rebano' ? 'selected' : '' }}>Todos los animales del rebaño</option>
-                    <option value="lista_animales" {{ old('vacunacion_modo_seleccion') === 'lista_animales' ? 'selected' : '' }}>Lista manual de animales</option>
-                    <option value="filtros" {{ old('vacunacion_modo_seleccion') === 'filtros' ? 'selected' : '' }}>Filtros dentro del rebaño</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="bloque-lista" class="hidden rounded-lg border border-gray-200 bg-gray-50 p-4">
-            <label class="mb-1 block text-sm font-medium text-gray-700">Animales (múltiple) *</label>
-            <select name="vacunacion_animal_ids[]" id="vacunacion_animal_ids" multiple size="8" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                @foreach($animales as $animal)
-                    @php
-                        $animalId = $animal['id_Animal'] ?? null;
-                        $animalRebano = $animal['id_Rebano'] ?? null;
-                    @endphp
-                    <option value="{{ $animalId }}" data-rebano="{{ $animalRebano }}" {{ in_array((string) $animalId, old('vacunacion_animal_ids', []), true) ? 'selected' : '' }}>
-                        {{ $animal['Nombre'] ?? ('Animal #'.$animalId) }} - Rebaño #{{ $animalRebano }}
-                    </option>
-                @endforeach
-            </select>
-            <p class="mt-1 text-xs text-gray-500">Solo se mostrarán habilitados los animales del rebaño seleccionado.</p>
-        </div>
-
-        <div id="bloque-filtros" class="hidden rounded-lg border border-gray-200 bg-gray-50 p-4">
-            <p class="mb-3 text-sm font-medium text-gray-700">Filtros aplicados dentro del rebaño</p>
-            <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
-                <div>
-                    <label class="mb-1 block text-xs font-medium text-gray-600">Sexo</label>
-                    <select name="vacunacion_filtros[sexo]" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                        <option value="">Todos</option>
-                        <option value="H" {{ old('vacunacion_filtros.sexo') === 'H' ? 'selected' : '' }}>Hembra</option>
-                        <option value="M" {{ old('vacunacion_filtros.sexo') === 'M' ? 'selected' : '' }}>Macho</option>
-                    </select>
-                </div>
-                <div><label class="mb-1 block text-xs font-medium text-gray-600">Nombre contiene</label><input type="text" name="vacunacion_filtros[nombre_like]" value="{{ old('vacunacion_filtros.nombre_like') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></div>
-                <div><label class="mb-1 block text-xs font-medium text-gray-600">Código contiene</label><input type="text" name="vacunacion_filtros[codigo_like]" value="{{ old('vacunacion_filtros.codigo_like') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></div>
-                <div><label class="mb-1 block text-xs font-medium text-gray-600">Etapa ID</label><input type="number" min="1" name="vacunacion_filtros[etapa_id]" value="{{ old('vacunacion_filtros.etapa_id') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></div>
-                <div><label class="mb-1 block text-xs font-medium text-gray-600">Edad mínima (días)</label><input type="number" min="0" name="vacunacion_filtros[edad_min_dias]" value="{{ old('vacunacion_filtros.edad_min_dias') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></div>
-                <div><label class="mb-1 block text-xs font-medium text-gray-600">Edad máxima (días)</label><input type="number" min="0" name="vacunacion_filtros[edad_max_dias]" value="{{ old('vacunacion_filtros.edad_max_dias') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div>
                 <label class="mb-1 block text-sm font-medium text-gray-700">Fecha de vacunación *</label>
-                <input type="date" name="vacunacion_fecha" id="vacunacion_fecha" value="{{ old('vacunacion_fecha', date('Y-m-d')) }}" class="w-full rounded-lg border border-gray-300 px-4 py-2">
+                <input type="date" name="vacunacion_fecha" value="{{ old('vacunacion_fecha', date('Y-m-d')) }}" class="w-full rounded-lg border border-gray-300 px-4 py-2">
             </div>
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Costo por dosis *</label>
+                <label class="mb-1 block text-sm font-medium text-gray-700">Costo individual de la dosis *</label>
                 <input type="number" step="0.01" min="0" name="vacunacion_costo_dosis" id="vacunacion_costo_dosis" value="{{ old('vacunacion_costo_dosis', '0.00') }}" class="w-full rounded-lg border border-gray-300 px-4 py-2">
             </div>
             <div class="rounded-lg border border-ganaderasoft-celeste/40 bg-ganaderasoft-celeste/10 p-4">
-                <p class="text-sm text-gray-600">Monto estimado</p>
+                <p class="text-sm text-gray-600">Total estimado</p>
                 <p id="monto-total-label" class="text-xl font-bold text-ganaderasoft-azul">0,00</p>
-                <p id="animales-count-label" class="text-xs text-gray-500">0 animales</p>
+                <p id="animales-count-label" class="text-xs text-gray-500">0 animales seleccionados</p>
+            </div>
+        </div>
+
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <p class="mb-3 text-sm font-medium text-gray-700">Animales a vacunar</p>
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
+                <div>
+                    <label class="mb-1 block text-xs font-medium text-gray-600">Rebaño *</label>
+                    <select name="vacunacion_rebano_id" id="filtro_rebano" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <option value="">Seleccione</option>
+                        @foreach($rebanos as $rebano)
+                            <option value="{{ $rebano['id_Rebano'] ?? '' }}" {{ old('vacunacion_rebano_id') == ($rebano['id_Rebano'] ?? '') ? 'selected' : '' }}>{{ $rebano['Nombre'] ?? ('Rebaño #'.($rebano['id_Rebano'] ?? '')) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-medium text-gray-600">Sexo</label>
+                    <select name="vacunacion_filtros[sexo]" id="filtro_sexo" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <option value="">Todos</option>
+                        <option value="M" {{ old('vacunacion_filtros.sexo') === 'M' ? 'selected' : '' }}>Macho</option>
+                        <option value="H" {{ old('vacunacion_filtros.sexo') === 'H' ? 'selected' : '' }}>Hembra</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-medium text-gray-600">Etapa</label>
+                    <select name="vacunacion_filtros[etapa_id]" id="filtro_etapa" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <option value="">Todas</option>
+                        @foreach($etapas as $etapa)
+                            <option value="{{ $etapa['etapa_id'] ?? '' }}" {{ old('vacunacion_filtros.etapa_id') == ($etapa['etapa_id'] ?? '') ? 'selected' : '' }}>{{ $etapa['etapa_nombre'] ?? ('Etapa #'.($etapa['etapa_id'] ?? '')) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button type="button" id="btn-cargar" class="w-full rounded-lg bg-ganaderasoft-celeste px-4 py-2 text-sm font-medium text-white hover:bg-ganaderasoft-celeste/80">Cargar animales</button>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <div class="mb-2 flex items-center justify-between">
+                    <p class="text-xs text-gray-500">Desmarque los animales que no desea vacunar.</p>
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600">
+                        <input type="checkbox" id="check-all" class="rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde"> Marcar/Desmarcar todos
+                    </label>
+                </div>
+                <div id="animales-lista" class="max-h-72 space-y-1 overflow-y-auto rounded-lg border border-gray-200 bg-white p-2 text-sm">
+                    <p class="p-3 text-center text-gray-400">Seleccione un rebaño y presione "Cargar animales".</p>
+                </div>
             </div>
         </div>
 
         <div>
-            <label class="mb-1 block text-sm font-medium text-gray-700">Observación</label>
+            <label class="mb-1 block text-sm font-medium text-gray-700">Observaciones</label>
             <textarea name="vacunacion_observacion" rows="3" class="w-full rounded-lg border border-gray-300 px-4 py-2">{{ old('vacunacion_observacion') }}</textarea>
         </div>
 
-        <div class="flex items-center justify-between border-t border-gray-200 pt-6">
-            <button type="button" id="btn-preview" class="rounded-lg border border-ganaderasoft-celeste px-4 py-2 text-sm text-ganaderasoft-azul hover:bg-ganaderasoft-celeste/10">Previsualizar selección</button>
+        <div class="flex items-center justify-end border-t border-gray-200 pt-6">
             <div class="space-x-2">
                 <a href="{{ route('vacunacion.index') }}" class="rounded-lg border border-gray-300 px-6 py-2 text-gray-700 hover:bg-gray-50">Cancelar</a>
                 <button type="submit" class="rounded-lg bg-ganaderasoft-verde px-6 py-2 text-white transition-colors hover:bg-ganaderasoft-verde/80">Guardar vacunación</button>
@@ -126,87 +108,96 @@
 @push('scripts')
 <script>
 (function () {
-    const mode = document.getElementById('vacunacion_modo_seleccion');
-    const rebano = document.getElementById('vacunacion_rebano_id');
-    const listaBlock = document.getElementById('bloque-lista');
-    const filtrosBlock = document.getElementById('bloque-filtros');
-    const animalesSelect = document.getElementById('vacunacion_animal_ids');
-    const previewButton = document.getElementById('btn-preview');
+    const rebano = document.getElementById('filtro_rebano');
+    const sexo = document.getElementById('filtro_sexo');
+    const etapa = document.getElementById('filtro_etapa');
+    const btnCargar = document.getElementById('btn-cargar');
+    const lista = document.getElementById('animales-lista');
+    const checkAll = document.getElementById('check-all');
+    const costoInput = document.getElementById('vacunacion_costo_dosis');
+    const montoLabel = document.getElementById('monto-total-label');
+    const countLabel = document.getElementById('animales-count-label');
+    const endpoint = '{{ route('vacunacion.animales-elegibles') }}';
 
-    function updateModeBlocks() {
-        const current = mode.value;
-        listaBlock.classList.toggle('hidden', current !== 'lista_animales');
-        filtrosBlock.classList.toggle('hidden', current !== 'filtros');
-    }
-
-    function filterAnimalsByRebano() {
-        const selectedRebano = rebano.value;
-        Array.from(animalesSelect.options).forEach((option) => {
-            const belongs = !selectedRebano || option.dataset.rebano === selectedRebano;
-            option.disabled = !belongs;
-            if (!belongs) {
-                option.selected = false;
-            }
-        });
-    }
+    const sexoLabel = { M: 'Macho', H: 'Hembra' };
 
     function toMoney(value) {
         return new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
     }
 
-    async function preview() {
-        const form = document.getElementById('vacunacionForm');
-        const data = new FormData(form);
+    function checkedBoxes() {
+        return Array.from(lista.querySelectorAll('input.animal-check:checked'));
+    }
 
-        const payload = {
-            vacunacion_vacuna_id: data.get('vacunacion_vacuna_id'),
-            vacunacion_casa_id: data.get('vacunacion_casa_id') || null,
-            vacunacion_rebano_id: data.get('vacunacion_rebano_id'),
-            vacunacion_modo_seleccion: data.get('vacunacion_modo_seleccion'),
-            vacunacion_fecha: data.get('vacunacion_fecha'),
-            vacunacion_costo_dosis: data.get('vacunacion_costo_dosis') || 0,
-            vacunacion_observacion: data.get('vacunacion_observacion') || null,
-            vacunacion_animal_ids: data.getAll('vacunacion_animal_ids[]'),
-            vacunacion_filtros: {
-                sexo: data.get('vacunacion_filtros[sexo]') || null,
-                nombre_like: data.get('vacunacion_filtros[nombre_like]') || null,
-                codigo_like: data.get('vacunacion_filtros[codigo_like]') || null,
-                edad_min_dias: data.get('vacunacion_filtros[edad_min_dias]') || null,
-                edad_max_dias: data.get('vacunacion_filtros[edad_max_dias]') || null,
-                etapa_id: data.get('vacunacion_filtros[etapa_id]') || null,
-            }
-        };
+    function updateTotals() {
+        const count = checkedBoxes().length;
+        const costo = parseFloat(costoInput.value) || 0;
+        countLabel.textContent = `${count} animales seleccionados`;
+        montoLabel.textContent = toMoney(count * costo);
+    }
 
-        const response = await fetch('{{ route('vacunacion.preview') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-
-        const json = await response.json();
-
-        if (!json.success) {
-            alert(json.message || 'No fue posible calcular la previsualización.');
+    async function cargar() {
+        if (!rebano.value) {
+            lista.innerHTML = '<p class="p-3 text-center text-red-500">Seleccione un rebaño.</p>';
             return;
         }
 
-        const count = Number(json.data?.animales_count || 0);
-        const amount = Number(json.data?.monto_total || 0);
+        btnCargar.disabled = true;
+        btnCargar.textContent = 'Cargando...';
 
-        document.getElementById('animales-count-label').textContent = `${count} animales`;
-        document.getElementById('monto-total-label').textContent = toMoney(amount);
+        const params = new URLSearchParams({ rebano_id: rebano.value });
+        if (sexo.value) params.append('sexo', sexo.value);
+        if (etapa.value) params.append('etapa_id', etapa.value);
+
+        try {
+            const response = await fetch(`${endpoint}?${params.toString()}`, {
+                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            });
+            const json = await response.json();
+
+            if (!json.success) {
+                lista.innerHTML = `<p class="p-3 text-center text-red-500">${json.message || 'No se pudieron cargar los animales.'}</p>`;
+                updateTotals();
+                return;
+            }
+
+            const animales = json.data || [];
+            if (animales.length === 0) {
+                lista.innerHTML = '<p class="p-3 text-center text-gray-400">No hay animales que coincidan con los filtros.</p>';
+                updateTotals();
+                return;
+            }
+
+            lista.innerHTML = animales.map((a) => {
+                const id = a.id_Animal;
+                const nombre = a.Nombre || ('Animal #' + id);
+                const codigo = a.codigo_animal ? ` (${a.codigo_animal})` : '';
+                const sx = sexoLabel[a.Sexo] || a.Sexo || '';
+                return `<label class="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-50">
+                    <input type="checkbox" class="animal-check rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde" name="vacunacion_animal_ids[]" value="${id}" checked>
+                    <span>${nombre}${codigo} <span class="text-xs text-gray-400">${sx}</span></span>
+                </label>`;
+            }).join('');
+
+            checkAll.checked = true;
+            lista.querySelectorAll('input.animal-check').forEach((cb) => cb.addEventListener('change', updateTotals));
+            updateTotals();
+        } catch (e) {
+            lista.innerHTML = '<p class="p-3 text-center text-red-500">Error al cargar los animales.</p>';
+        } finally {
+            btnCargar.disabled = false;
+            btnCargar.textContent = 'Cargar animales';
+        }
     }
 
-    mode.addEventListener('change', updateModeBlocks);
-    rebano.addEventListener('change', filterAnimalsByRebano);
-    previewButton.addEventListener('click', preview);
+    checkAll.addEventListener('change', function () {
+        lista.querySelectorAll('input.animal-check').forEach((cb) => { cb.checked = checkAll.checked; });
+        updateTotals();
+    });
 
-    updateModeBlocks();
-    filterAnimalsByRebano();
+    btnCargar.addEventListener('click', cargar);
+    costoInput.addEventListener('input', updateTotals);
 })();
 </script>
 @endpush
+

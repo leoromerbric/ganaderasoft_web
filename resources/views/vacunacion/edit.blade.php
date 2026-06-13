@@ -4,7 +4,10 @@
 
 @section('content')
 @php
-    $selectedAnimalIds = collect(data_get($vacunacion, 'animales', []))->pluck('va_animal_id')->map(fn ($id) => (string) $id)->all();
+    $selectedAnimales = collect(data_get($vacunacion, 'animales', []));
+    $fechaValor = data_get($vacunacion, 'vacunacion_fecha');
+    $fechaValor = $fechaValor ? \Illuminate\Support\Carbon::parse($fechaValor)->format('Y-m-d') : date('Y-m-d');
+    $filtros = old('vacunacion_filtros', data_get($vacunacion, 'vacunacion_filtros', []));
 @endphp
 
 <div class="mb-8 flex items-center">
@@ -18,13 +21,13 @@
 
 <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
     <div class="rounded-t-xl bg-ganaderasoft-celeste px-6 py-4 text-white"><h3 class="text-lg font-semibold">Actualizar registro de vacunación</h3></div>
-    <form action="{{ route('vacunacion.update', data_get($vacunacion, 'vacunacion_id')) }}" method="POST" class="space-y-6 p-6">
+    <form action="{{ route('vacunacion.update', data_get($vacunacion, 'vacunacion_id')) }}" method="POST" class="space-y-6 p-6" id="vacunacionForm">
         @csrf
         @method('PUT')
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Vacuna *</label>
+                <label class="mb-1 block text-sm font-medium text-gray-700">Vacuna utilizada *</label>
                 <select name="vacunacion_vacuna_id" class="w-full rounded-lg border border-gray-300 px-4 py-2">
                     @foreach($vacunas as $vacuna)
                         <option value="{{ $vacuna['vacuna_id'] ?? '' }}" {{ old('vacunacion_vacuna_id', data_get($vacunacion, 'vacunacion_vacuna_id')) == ($vacuna['vacuna_id'] ?? '') ? 'selected' : '' }}>{{ $vacuna['vacuna_nombre'] ?? 'Vacuna' }}</option>
@@ -32,75 +35,83 @@
                 </select>
             </div>
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Casa comercial</label>
-                <select name="vacunacion_casa_id" class="w-full rounded-lg border border-gray-300 px-4 py-2">
-                    <option value="">No especificar</option>
-                    @foreach($casas as $casa)
-                        <option value="{{ $casa['casa_id'] ?? '' }}" {{ old('vacunacion_casa_id', data_get($vacunacion, 'vacunacion_casa_id')) == ($casa['casa_id'] ?? '') ? 'selected' : '' }}>{{ ($casa['laboratorio'] ?? 'Casa').' - '.($casa['marca_comercial'] ?? '') }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Rebaño *</label>
-                <select name="vacunacion_rebano_id" class="w-full rounded-lg border border-gray-300 px-4 py-2">
-                    @foreach($rebanos as $rebano)
-                        <option value="{{ $rebano['id_Rebano'] ?? '' }}" {{ old('vacunacion_rebano_id', data_get($vacunacion, 'vacunacion_rebano_id')) == ($rebano['id_Rebano'] ?? '') ? 'selected' : '' }}>{{ $rebano['Nombre'] ?? ('Rebaño #'.($rebano['id_Rebano'] ?? '')) }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Modo de selección *</label>
-                <select name="vacunacion_modo_seleccion" class="w-full rounded-lg border border-gray-300 px-4 py-2">
-                    @php $modo = old('vacunacion_modo_seleccion', data_get($vacunacion, 'vacunacion_modo_seleccion', 'todos_rebano')); @endphp
-                    <option value="todos_rebano" {{ $modo === 'todos_rebano' ? 'selected' : '' }}>Todos los animales del rebaño</option>
-                    <option value="lista_animales" {{ $modo === 'lista_animales' ? 'selected' : '' }}>Lista manual de animales</option>
-                    <option value="filtros" {{ $modo === 'filtros' ? 'selected' : '' }}>Filtros dentro del rebaño</option>
-                </select>
-            </div>
-        </div>
-
-        <div>
-            <label class="mb-1 block text-sm font-medium text-gray-700">Animales (múltiple para modo lista)</label>
-            <select name="vacunacion_animal_ids[]" multiple size="8" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                @foreach($animales as $animal)
-                    @php $animalId = (string) ($animal['id_Animal'] ?? ''); @endphp
-                    <option value="{{ $animalId }}" {{ in_array($animalId, old('vacunacion_animal_ids', $selectedAnimalIds), true) ? 'selected' : '' }}>
-                        {{ $animal['Nombre'] ?? ('Animal #'.$animalId) }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        @php $filtros = old('vacunacion_filtros', data_get($vacunacion, 'vacunacion_filtros', [])); @endphp
-        <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
-            <div>
-                <label class="mb-1 block text-xs font-medium text-gray-600">Sexo</label>
-                <select name="vacunacion_filtros[sexo]" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                    <option value="">Todos</option>
-                    <option value="H" {{ data_get($filtros, 'sexo') === 'H' ? 'selected' : '' }}>Hembra</option>
-                    <option value="M" {{ data_get($filtros, 'sexo') === 'M' ? 'selected' : '' }}>Macho</option>
-                </select>
-            </div>
-            <div><label class="mb-1 block text-xs font-medium text-gray-600">Nombre contiene</label><input type="text" name="vacunacion_filtros[nombre_like]" value="{{ data_get($filtros, 'nombre_like') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></div>
-            <div><label class="mb-1 block text-xs font-medium text-gray-600">Código contiene</label><input type="text" name="vacunacion_filtros[codigo_like]" value="{{ data_get($filtros, 'codigo_like') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></div>
-            <div><label class="mb-1 block text-xs font-medium text-gray-600">Etapa ID</label><input type="number" min="1" name="vacunacion_filtros[etapa_id]" value="{{ data_get($filtros, 'etapa_id') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></div>
-            <div><label class="mb-1 block text-xs font-medium text-gray-600">Edad mínima (días)</label><input type="number" min="0" name="vacunacion_filtros[edad_min_dias]" value="{{ data_get($filtros, 'edad_min_dias') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></div>
-            <div><label class="mb-1 block text-xs font-medium text-gray-600">Edad máxima (días)</label><input type="number" min="0" name="vacunacion_filtros[edad_max_dias]" value="{{ data_get($filtros, 'edad_max_dias') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></div>
-        </div>
-
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
                 <label class="mb-1 block text-sm font-medium text-gray-700">Fecha de vacunación *</label>
-                <input type="date" name="vacunacion_fecha" value="{{ old('vacunacion_fecha', data_get($vacunacion, 'vacunacion_fecha')) }}" class="w-full rounded-lg border border-gray-300 px-4 py-2">
+                <input type="date" name="vacunacion_fecha" value="{{ old('vacunacion_fecha', $fechaValor) }}" class="w-full rounded-lg border border-gray-300 px-4 py-2">
             </div>
             <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Costo por dosis *</label>
-                <input type="number" step="0.01" min="0" name="vacunacion_costo_dosis" value="{{ old('vacunacion_costo_dosis', data_get($vacunacion, 'vacunacion_costo_dosis')) }}" class="w-full rounded-lg border border-gray-300 px-4 py-2">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Costo individual de la dosis *</label>
+                <input type="number" step="0.01" min="0" name="vacunacion_costo_dosis" id="vacunacion_costo_dosis" value="{{ old('vacunacion_costo_dosis', data_get($vacunacion, 'vacunacion_costo_dosis')) }}" class="w-full rounded-lg border border-gray-300 px-4 py-2">
+            </div>
+            <div class="rounded-lg border border-ganaderasoft-celeste/40 bg-ganaderasoft-celeste/10 p-4">
+                <p class="text-sm text-gray-600">Total estimado</p>
+                <p id="monto-total-label" class="text-xl font-bold text-ganaderasoft-azul">0,00</p>
+                <p id="animales-count-label" class="text-xs text-gray-500">0 animales seleccionados</p>
+            </div>
+        </div>
+
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <p class="mb-3 text-sm font-medium text-gray-700">Animales a vacunar</p>
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
+                <div>
+                    <label class="mb-1 block text-xs font-medium text-gray-600">Rebaño *</label>
+                    <select name="vacunacion_rebano_id" id="filtro_rebano" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        @foreach($rebanos as $rebano)
+                            <option value="{{ $rebano['id_Rebano'] ?? '' }}" {{ old('vacunacion_rebano_id', data_get($vacunacion, 'vacunacion_rebano_id')) == ($rebano['id_Rebano'] ?? '') ? 'selected' : '' }}>{{ $rebano['Nombre'] ?? ('Rebaño #'.($rebano['id_Rebano'] ?? '')) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-medium text-gray-600">Sexo</label>
+                    <select name="vacunacion_filtros[sexo]" id="filtro_sexo" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <option value="">Todos</option>
+                        <option value="M" {{ data_get($filtros, 'sexo') === 'M' ? 'selected' : '' }}>Macho</option>
+                        <option value="H" {{ data_get($filtros, 'sexo') === 'H' ? 'selected' : '' }}>Hembra</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-medium text-gray-600">Etapa</label>
+                    <select name="vacunacion_filtros[etapa_id]" id="filtro_etapa" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        <option value="">Todas</option>
+                        @foreach($etapas as $etapa)
+                            <option value="{{ $etapa['etapa_id'] ?? '' }}" {{ data_get($filtros, 'etapa_id') == ($etapa['etapa_id'] ?? '') ? 'selected' : '' }}>{{ $etapa['etapa_nombre'] ?? ('Etapa #'.($etapa['etapa_id'] ?? '')) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button type="button" id="btn-cargar" class="w-full rounded-lg bg-ganaderasoft-celeste px-4 py-2 text-sm font-medium text-white hover:bg-ganaderasoft-celeste/80">Cargar animales</button>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <div class="mb-2 flex items-center justify-between">
+                    <p class="text-xs text-gray-500">Desmarque los animales que no desea vacunar. "Cargar animales" reemplaza la lista actual.</p>
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600">
+                        <input type="checkbox" id="check-all" checked class="rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde"> Marcar/Desmarcar todos
+                    </label>
+                </div>
+                <div id="animales-lista" class="max-h-72 space-y-1 overflow-y-auto rounded-lg border border-gray-200 bg-white p-2 text-sm">
+                    @forelse($selectedAnimales as $item)
+                        @php
+                            $animalId = data_get($item, 'va_animal_id');
+                            $animalData = data_get($item, 'animal', []);
+                            $nombre = data_get($animalData, 'Nombre', 'Animal #'.$animalId);
+                            $codigo = data_get($animalData, 'codigo_animal');
+                            $sx = data_get($animalData, 'Sexo');
+                            $sxLabel = $sx === 'M' ? 'Macho' : ($sx === 'H' ? 'Hembra' : $sx);
+                        @endphp
+                        <label class="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-50">
+                            <input type="checkbox" class="animal-check rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde" name="vacunacion_animal_ids[]" value="{{ $animalId }}" checked>
+                            <span>{{ $nombre }}{{ $codigo ? ' ('.$codigo.')' : '' }} <span class="text-xs text-gray-400">{{ $sxLabel }}</span></span>
+                        </label>
+                    @empty
+                        <p class="p-3 text-center text-gray-400">No hay animales asociados. Use los filtros para cargar.</p>
+                    @endforelse
+                </div>
             </div>
         </div>
 
         <div>
-            <label class="mb-1 block text-sm font-medium text-gray-700">Observación</label>
+            <label class="mb-1 block text-sm font-medium text-gray-700">Observaciones</label>
             <textarea name="vacunacion_observacion" rows="3" class="w-full rounded-lg border border-gray-300 px-4 py-2">{{ old('vacunacion_observacion', data_get($vacunacion, 'vacunacion_observacion')) }}</textarea>
         </div>
 
@@ -111,3 +122,106 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const rebano = document.getElementById('filtro_rebano');
+    const sexo = document.getElementById('filtro_sexo');
+    const etapa = document.getElementById('filtro_etapa');
+    const btnCargar = document.getElementById('btn-cargar');
+    const lista = document.getElementById('animales-lista');
+    const checkAll = document.getElementById('check-all');
+    const costoInput = document.getElementById('vacunacion_costo_dosis');
+    const montoLabel = document.getElementById('monto-total-label');
+    const countLabel = document.getElementById('animales-count-label');
+    const endpoint = '{{ route('vacunacion.animales-elegibles') }}';
+
+    const sexoLabel = { M: 'Macho', H: 'Hembra' };
+
+    function toMoney(value) {
+        return new Intl.NumberFormat('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value || 0);
+    }
+
+    function checkedBoxes() {
+        return Array.from(lista.querySelectorAll('input.animal-check:checked'));
+    }
+
+    function updateTotals() {
+        const count = checkedBoxes().length;
+        const costo = parseFloat(costoInput.value) || 0;
+        countLabel.textContent = `${count} animales seleccionados`;
+        montoLabel.textContent = toMoney(count * costo);
+    }
+
+    function bindBoxes() {
+        lista.querySelectorAll('input.animal-check').forEach((cb) => cb.addEventListener('change', updateTotals));
+    }
+
+    async function cargar() {
+        if (!rebano.value) {
+            lista.innerHTML = '<p class="p-3 text-center text-red-500">Seleccione un rebaño.</p>';
+            return;
+        }
+
+        btnCargar.disabled = true;
+        btnCargar.textContent = 'Cargando...';
+
+        const params = new URLSearchParams({ rebano_id: rebano.value });
+        if (sexo.value) params.append('sexo', sexo.value);
+        if (etapa.value) params.append('etapa_id', etapa.value);
+
+        try {
+            const response = await fetch(`${endpoint}?${params.toString()}`, {
+                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+            });
+            const json = await response.json();
+
+            if (!json.success) {
+                lista.innerHTML = `<p class="p-3 text-center text-red-500">${json.message || 'No se pudieron cargar los animales.'}</p>`;
+                updateTotals();
+                return;
+            }
+
+            const animales = json.data || [];
+            if (animales.length === 0) {
+                lista.innerHTML = '<p class="p-3 text-center text-gray-400">No hay animales que coincidan con los filtros.</p>';
+                updateTotals();
+                return;
+            }
+
+            lista.innerHTML = animales.map((a) => {
+                const id = a.id_Animal;
+                const nombre = a.Nombre || ('Animal #' + id);
+                const codigo = a.codigo_animal ? ` (${a.codigo_animal})` : '';
+                const sx = sexoLabel[a.Sexo] || a.Sexo || '';
+                return `<label class="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-50">
+                    <input type="checkbox" class="animal-check rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde" name="vacunacion_animal_ids[]" value="${id}" checked>
+                    <span>${nombre}${codigo} <span class="text-xs text-gray-400">${sx}</span></span>
+                </label>`;
+            }).join('');
+
+            checkAll.checked = true;
+            bindBoxes();
+            updateTotals();
+        } catch (e) {
+            lista.innerHTML = '<p class="p-3 text-center text-red-500">Error al cargar los animales.</p>';
+        } finally {
+            btnCargar.disabled = false;
+            btnCargar.textContent = 'Cargar animales';
+        }
+    }
+
+    checkAll.addEventListener('change', function () {
+        lista.querySelectorAll('input.animal-check').forEach((cb) => { cb.checked = checkAll.checked; });
+        updateTotals();
+    });
+
+    btnCargar.addEventListener('click', cargar);
+    costoInput.addEventListener('input', updateTotals);
+
+    bindBoxes();
+    updateTotals();
+})();
+</script>
+@endpush

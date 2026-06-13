@@ -6,7 +6,7 @@
 <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
     <div>
         <h2 class="text-3xl font-bold text-ganaderasoft-negro">💉 Vacunación</h2>
-        <p class="mt-1 text-gray-600">Registros de vacunación con selección por rebaño, lista o filtros</p>
+        <p class="mt-1 text-gray-600">Registros de vacunación filtrados por rebaño, sexo o etapa</p>
     </div>
     <a href="{{ route('vacunacion.create') }}" class="rounded-lg bg-ganaderasoft-verde-oscuro px-6 py-3 text-white shadow-md transition-all duration-200 hover:bg-opacity-90">Nueva vacunación</a>
 </div>
@@ -59,7 +59,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Rebaño</th>
                         <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Fecha</th>
                         <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Animales</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Costo por dosis</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Costo dosis</th>
                         <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Monto total</th>
                         <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Acciones</th>
                     </tr>

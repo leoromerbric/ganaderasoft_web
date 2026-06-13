@@ -212,7 +212,7 @@ Route::middleware(['mock.auth'])->group(function () {
     // Vacunación (modelo sanitario principal)
     Route::get('/vacunaciones', [VacunacionController::class, 'index'])->name('vacunacion.index');
     Route::get('/vacunaciones/create', [VacunacionController::class, 'create'])->name('vacunacion.create');
-    Route::post('/vacunaciones/preview', [VacunacionController::class, 'preview'])->name('vacunacion.preview');
+    Route::get('/vacunaciones/animales-elegibles', [VacunacionController::class, 'animalesElegibles'])->name('vacunacion.animales-elegibles');
     Route::post('/vacunaciones', [VacunacionController::class, 'store'])->name('vacunacion.store');
     Route::get('/vacunaciones/{id}', [VacunacionController::class, 'show'])->name('vacunacion.show');
     Route::get('/vacunaciones/{id}/edit', [VacunacionController::class, 'edit'])->name('vacunacion.edit');

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\Contracts\VacunacionServiceInterface;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class VacunacionController extends Controller
 {
@@ -43,27 +42,27 @@ class VacunacionController extends Controller
     public function create()
     {
         $vacunas = $this->service->getVacunas();
-        $casas = $this->service->getCasasComerciales();
-        $animales = $this->service->getAnimales();
         $rebanos = $this->service->getRebanos();
+        $etapas = $this->service->getEtapas();
 
-        return view('vacunacion.create', compact('vacunas', 'casas', 'animales', 'rebanos'));
+        return view('vacunacion.create', compact('vacunas', 'rebanos', 'etapas'));
     }
 
-    public function preview(Request $request)
+    public function animalesElegibles(Request $request)
     {
         $request->validate([
-            'vacunacion_vacuna_id' => 'required|integer',
-            'vacunacion_rebano_id' => 'required|integer',
-            'vacunacion_modo_seleccion' => 'required|in:todos_rebano,lista_animales,filtros',
-            'vacunacion_animal_ids' => 'nullable|array',
-            'vacunacion_animal_ids.*' => 'integer',
-            'vacunacion_filtros' => 'nullable|array',
-            'vacunacion_costo_dosis' => 'required|numeric|min:0',
-            'vacunacion_fecha' => 'required|date',
+            'rebano_id' => 'required|integer',
+            'sexo' => 'nullable|in:M,H',
+            'etapa_id' => 'nullable|integer',
         ]);
 
-        return response()->json($this->service->preview($request->all()));
+        $response = $this->service->getAnimalesElegibles($request->only(['rebano_id', 'sexo', 'etapa_id']));
+
+        return response()->json([
+            'success' => $response['success'] ?? false,
+            'data' => ($response['success'] ?? false) ? ($response['data'] ?? []) : [],
+            'message' => $this->apiMessage($response, 'No se pudieron cargar los animales.'),
+        ]);
     }
 
     public function store(Request $request)
@@ -98,11 +97,10 @@ class VacunacionController extends Controller
 
         $vacunacion = $response['data'];
         $vacunas = $this->service->getVacunas();
-        $casas = $this->service->getCasasComerciales();
-        $animales = $this->service->getAnimales();
         $rebanos = $this->service->getRebanos();
+        $etapas = $this->service->getEtapas();
 
-        return view('vacunacion.edit', compact('vacunacion', 'vacunas', 'casas', 'animales', 'rebanos'));
+        return view('vacunacion.edit', compact('vacunacion', 'vacunas', 'rebanos', 'etapas'));
     }
 
     public function update(Request $request, int $id)
@@ -130,31 +128,20 @@ class VacunacionController extends Controller
 
     private function validateRequest(Request $request): array
     {
-        $validated = $request->validate([
+        return $request->validate([
             'vacunacion_vacuna_id' => 'required|integer',
-            'vacunacion_casa_id' => 'nullable|integer',
             'vacunacion_rebano_id' => 'required|integer',
-            'vacunacion_modo_seleccion' => 'required|in:todos_rebano,lista_animales,filtros',
-            'vacunacion_animal_ids' => 'nullable|array',
+            'vacunacion_animal_ids' => 'required|array|min:1',
             'vacunacion_animal_ids.*' => 'integer',
             'vacunacion_filtros' => 'nullable|array',
-            'vacunacion_filtros.sexo' => 'nullable|in:H,M',
-            'vacunacion_filtros.nombre_like' => 'nullable|string',
-            'vacunacion_filtros.codigo_like' => 'nullable|string',
-            'vacunacion_filtros.edad_min_dias' => 'nullable|integer|min:0',
-            'vacunacion_filtros.edad_max_dias' => 'nullable|integer|min:0',
+            'vacunacion_filtros.sexo' => 'nullable|in:M,H',
             'vacunacion_filtros.etapa_id' => 'nullable|integer|min:1',
             'vacunacion_costo_dosis' => 'required|numeric|min:0',
             'vacunacion_fecha' => 'required|date',
             'vacunacion_observacion' => 'nullable|string',
+        ], [
+            'vacunacion_animal_ids.required' => 'Seleccione al menos un animal para vacunar.',
+            'vacunacion_animal_ids.min' => 'Seleccione al menos un animal para vacunar.',
         ]);
-
-        if (($validated['vacunacion_modo_seleccion'] ?? null) === 'lista_animales' && empty($validated['vacunacion_animal_ids'])) {
-            throw ValidationException::withMessages([
-                'vacunacion_animal_ids' => 'Seleccione al menos un animal para modo lista.',
-            ]);
-        }
-
-        return $validated;
     }
 }
