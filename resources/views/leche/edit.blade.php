@@ -55,8 +55,9 @@
 
             <div>
                 <label for="leche_fecha_pesaje" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Pesaje</label>
+                @php $vFechaPesaje = old('leche_fecha_pesaje') ?: (($r=$registroLeche['leche_fecha_pesaje']??null) ? substr($r,0,10) : ''); @endphp
                 <input type="date" name="leche_fecha_pesaje" id="leche_fecha_pesaje"
-                       value="{{ old('leche_fecha_pesaje', $registroLeche['leche_fecha_pesaje']) }}"
+                       value="{{ $vFechaPesaje }}"
                        required
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste @error('leche_fecha_pesaje') border-red-500 @enderror">
                 @error('leche_fecha_pesaje')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
