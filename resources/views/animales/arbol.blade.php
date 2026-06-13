@@ -58,28 +58,52 @@
         <div class="tree-row">
             <div class="tree-col">
                 @if($abueloP)
-                    <x-arbol-card :animal="$abueloP" label="Abuelo paterno" color="blue" />
+                    <div class="tree-card-parent blue relative">
+                        <div class="tree-card-badge blue">Abuelo paterno</div>
+                        <a href="{{ route('animales.show', $abueloP['id_Animal']) }}" class="block hover:opacity-80 transition-opacity">
+                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abueloP['Nombre'] }}</p>
+                            @if($abueloP['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abueloP['codigo_animal'] }}</p>@endif
+                        </a>
+                    </div>
                 @else
                     <div class="tree-empty">Sin registro</div>
                 @endif
             </div>
             <div class="tree-col">
                 @if($abuelaP)
-                    <x-arbol-card :animal="$abuelaP" label="Abuela paterna" color="pink" />
+                    <div class="tree-card-parent pink relative">
+                        <div class="tree-card-badge pink">Abuela paterna</div>
+                        <a href="{{ route('animales.show', $abuelaP['id_Animal']) }}" class="block hover:opacity-80 transition-opacity">
+                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abuelaP['Nombre'] }}</p>
+                            @if($abuelaP['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abuelaP['codigo_animal'] }}</p>@endif
+                        </a>
+                    </div>
                 @else
                     <div class="tree-empty">Sin registro</div>
                 @endif
             </div>
             <div class="tree-col">
                 @if($abueloM)
-                    <x-arbol-card :animal="$abueloM" label="Abuelo materno" color="blue" />
+                    <div class="tree-card-parent blue relative">
+                        <div class="tree-card-badge blue">Abuelo materno</div>
+                        <a href="{{ route('animales.show', $abueloM['id_Animal']) }}" class="block hover:opacity-80 transition-opacity">
+                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abueloM['Nombre'] }}</p>
+                            @if($abueloM['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abueloM['codigo_animal'] }}</p>@endif
+                        </a>
+                    </div>
                 @else
                     <div class="tree-empty">Sin registro</div>
                 @endif
             </div>
             <div class="tree-col">
                 @if($abuelaM)
-                    <x-arbol-card :animal="$abuelaM" label="Abuela materna" color="pink" />
+                    <div class="tree-card-parent pink relative">
+                        <div class="tree-card-badge pink">Abuela materna</div>
+                        <a href="{{ route('animales.show', $abuelaM['id_Animal']) }}" class="block hover:opacity-80 transition-opacity">
+                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abuelaM['Nombre'] }}</p>
+                            @if($abuelaM['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abuelaM['codigo_animal'] }}</p>@endif
+                        </a>
+                    </div>
                 @else
                     <div class="tree-empty">Sin registro</div>
                 @endif
