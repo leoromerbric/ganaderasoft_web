@@ -11,6 +11,10 @@
                 <p class="text-gray-600 mt-1">Información completa del animal</p>
             </div>
             <div class="flex space-x-3">
+                <a href="{{ route('arbol-gen.show', $animal['id_Animal']) }}"
+                   class="px-6 py-3 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-all duration-200">
+                    🌳 Árbol Genealógico
+                </a>
                 <a href="{{ route('animales.edit', $animal['id_Animal']) }}" 
                    class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
                     Editar

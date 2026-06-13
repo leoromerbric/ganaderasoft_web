@@ -22,6 +22,7 @@ use App\Http\Controllers\TratamientoController;
 use App\Http\Controllers\VacunaController;
 use App\Http\Controllers\VacunacionController;
 use App\Http\Controllers\CasaComercialController;
+use App\Http\Controllers\ArbolGenController;
 use App\Http\Controllers\MovimientoRebanoController;
 use Illuminate\Support\Facades\Route;
 
@@ -72,6 +73,12 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/personal/{id}/edit', [PersonalController::class, 'edit'])->name('personal.edit');
     Route::put('/personal/{id}', [PersonalController::class, 'update'])->name('personal.update');
     
+    // Árbol genealógico
+    Route::get('/animales/{id}/arbol', [ArbolGenController::class, 'show'])->name('arbol-gen.show');
+    Route::post('/animales/{id}/arbol', [ArbolGenController::class, 'store'])->name('arbol-gen.store');
+    Route::delete('/animales/{id}/arbol/{tipo}', [ArbolGenController::class, 'destroy'])->name('arbol-gen.destroy');
+    Route::get('/animales/{id}/progenitores-disponibles', [ArbolGenController::class, 'disponibles'])->name('arbol-gen.disponibles');
+
     // Animales routes
     Route::get('/animales', [AnimalesController::class, 'index'])->name('animales.index');
     Route::get('/animales/create', [AnimalesController::class, 'create'])->name('animales.create');

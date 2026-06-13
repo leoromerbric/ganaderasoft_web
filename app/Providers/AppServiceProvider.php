@@ -136,6 +136,12 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Contracts\MovimientoRebanoServiceInterface::class,
             \App\Services\Api\ApiMovimientoRebanoService::class
         );
+
+        // Árbol Genealógico
+        $this->app->bind(
+            \App\Services\Contracts\ArbolGenServiceInterface::class,
+            \App\Services\Api\ApiArbolGenService::class
+        );
     }
 
     /**
