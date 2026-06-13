@@ -160,8 +160,6 @@ class LactanciaController extends Controller
 
         $lactancia = $response['data'];
 
-        \Log::info('LACTANCIA_EDIT_DEBUG', ['id' => $id, 'data' => $lactancia]);
-
         $animalesResponse = $this->animalesService->getAnimales();
         $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
         $animales = array_values(array_filter($animales, fn ($animal) => $this->isFemale($animal)));

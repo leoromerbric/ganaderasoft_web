@@ -52,7 +52,7 @@
 
             <div>
                 <label for="lactancia_fecha_inicio" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Inicio</label>
-                @php $vFechaInicio = old('lactancia_fecha_inicio', data_get($lactancia,'lactancia_fecha_inicio')); $vFechaInicio = $vFechaInicio ? date('Y-m-d', strtotime($vFechaInicio)) : ''; @endphp
+                @php $vFechaInicio = old('lactancia_fecha_inicio') ?: (($r=data_get($lactancia,'lactancia_fecha_inicio')) ? substr($r,0,10) : ''); @endphp
                 <input type="date" name="lactancia_fecha_inicio" id="lactancia_fecha_inicio"
                        value="{{ $vFechaInicio }}"
                        required
@@ -62,7 +62,7 @@
 
             <div>
                 <label for="Lactancia_fecha_fin" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Fin (Opcional)</label>
-                @php $vFechaFin = old('Lactancia_fecha_fin', data_get($lactancia,'Lactancia_fecha_fin')); $vFechaFin = $vFechaFin ? date('Y-m-d', strtotime($vFechaFin)) : ''; @endphp
+                @php $vFechaFin = old('Lactancia_fecha_fin') ?: (($r=data_get($lactancia,'Lactancia_fecha_fin')) ? substr($r,0,10) : ''); @endphp
                 <input type="date" name="Lactancia_fecha_fin" id="Lactancia_fecha_fin"
                        value="{{ $vFechaFin }}"
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste @error('Lactancia_fecha_fin') border-red-500 @enderror">
@@ -71,7 +71,7 @@
 
             <div>
                 <label for="lactancia_secado" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Secado (Opcional)</label>
-                @php $vSecado = old('lactancia_secado', data_get($lactancia,'lactancia_secado')); $vSecado = $vSecado ? date('Y-m-d', strtotime($vSecado)) : ''; @endphp
+                @php $vSecado = old('lactancia_secado') ?: (($r=data_get($lactancia,'lactancia_secado')) ? substr($r,0,10) : ''); @endphp
                 <input type="date" name="lactancia_secado" id="lactancia_secado"
                        value="{{ $vSecado }}"
                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste @error('lactancia_secado') border-red-500 @enderror">
