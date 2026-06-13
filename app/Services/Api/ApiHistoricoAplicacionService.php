@@ -46,6 +46,14 @@ class ApiHistoricoAplicacionService extends BaseApiService implements HistoricoA
         return $this->delete("/historico-aplicacion/{$id}", $this->authHeaders());
     }
 
+    public function previewCampana(int $dosisId): array
+    {
+        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
+        return $this->post('/historico-aplicacion/preview-campana', [
+            'ha_dosis_id' => $dosisId,
+        ], $this->authHeaders() + ['Content-Type' => 'application/json']);
+    }
+
     public function getVacunas(): array
     {
         if (!session('user.token')) return [];

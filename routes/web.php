@@ -231,6 +231,7 @@ Route::middleware(['mock.auth'])->group(function () {
     // Histórico de Aplicación
     Route::get('/historico-aplicacion', [HistoricoAplicacionController::class, 'index'])->name('historico-aplicacion.index');
     Route::get('/historico-aplicacion/create', [HistoricoAplicacionController::class, 'create'])->name('historico-aplicacion.create');
+    Route::post('/historico-aplicacion/preview-campana', [HistoricoAplicacionController::class, 'previewCampana'])->name('historico-aplicacion.preview-campana');
     Route::post('/historico-aplicacion', [HistoricoAplicacionController::class, 'store'])->name('historico-aplicacion.store');
     Route::get('/historico-aplicacion/{id}', [HistoricoAplicacionController::class, 'show'])->name('historico-aplicacion.show');
     Route::get('/historico-aplicacion/{id}/edit', [HistoricoAplicacionController::class, 'edit'])->name('historico-aplicacion.edit');

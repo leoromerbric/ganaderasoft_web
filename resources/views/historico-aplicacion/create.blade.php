@@ -17,6 +17,12 @@
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
             <h3 class="text-lg font-semibold">Datos de la Aplicación</h3>
         </div>
+
+        <div class="mx-6 mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+            <p class="font-semibold">Modo campaña de vacunación</p>
+            <p class="mt-1">Seleccione una dosis de tipo rebaño o subgrupo, use "Previsualizar campaña" para ver cuántos animales se aplicarán y luego guarde.</p>
+        </div>
+
         <form action="{{ route('historico-aplicacion.store') }}" method="POST" class="p-6">
             @csrf
             @if($errors->any())
@@ -30,7 +36,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Vacuna <span class="text-red-500">*</span></label>
-                    <select name="ha_vacuna_id" required
+                    <select name="ha_vacuna_id"
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Seleccione una vacuna</option>
                         @foreach($vacunas as $vacuna)
@@ -76,6 +82,20 @@
                     @error('ha_dosis_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
+                <div class="md:col-span-2 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                    <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">Previsualización de campaña</p>
+                            <p class="text-xs text-gray-600">Calcula cuántos animales serán impactados con la dosis seleccionada.</p>
+                        </div>
+                        <button type="button" id="btn-preview-campana"
+                                class="inline-flex items-center justify-center rounded-lg bg-ganaderasoft-azul px-4 py-2 text-sm font-medium text-white hover:bg-ganaderasoft-azul/90">
+                            Previsualizar campaña
+                        </button>
+                    </div>
+                    <div id="preview-campana-resultado" class="mt-3 hidden rounded border border-blue-200 bg-white p-3 text-sm"></div>
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
                     <select name="ha_animal_id"
@@ -117,4 +137,80 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const dosisSelect = document.querySelector('select[name="ha_dosis_id"]');
+    const vacunaSelect = document.querySelector('select[name="ha_vacuna_id"]');
+    const casaSelect = document.querySelector('select[name="ha_casa_id"]');
+    const animalSelect = document.querySelector('select[name="ha_animal_id"]');
+    const previewBtn = document.getElementById('btn-preview-campana');
+    const previewBox = document.getElementById('preview-campana-resultado');
+
+    function syncCampaignMode() {
+        const isCampaign = !!dosisSelect.value;
+        vacunaSelect.required = !isCampaign;
+        casaSelect.required = !isCampaign;
+    }
+
+    dosisSelect.addEventListener('change', function () {
+        syncCampaignMode();
+        previewBox.classList.add('hidden');
+        previewBox.innerHTML = '';
+    });
+
+    previewBtn.addEventListener('click', async function () {
+        if (!dosisSelect.value) {
+            previewBox.classList.remove('hidden');
+            previewBox.className = 'mt-3 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700';
+            previewBox.textContent = 'Seleccione una dosis para previsualizar la campaña.';
+            return;
+        }
+
+        previewBtn.disabled = true;
+        previewBtn.textContent = 'Calculando...';
+
+        try {
+            const response = await fetch('{{ route('historico-aplicacion.preview-campana') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({ ha_dosis_id: parseInt(dosisSelect.value, 10) }),
+            });
+
+            const payload = await response.json();
+
+            if (!response.ok || !payload.success) {
+                throw new Error(payload.message || 'No se pudo calcular la campaña.');
+            }
+
+            const data = payload.data || {};
+            const objetivo = data.objetivo_tipo || '-';
+            const count = Number(data.animales_count || 0);
+            const vacuna = data.vacuna || 'N/A';
+            const casa = data.casa_comercial || 'N/A';
+
+            previewBox.classList.remove('hidden');
+            previewBox.className = 'mt-3 rounded border border-green-200 bg-green-50 p-3 text-sm text-green-800';
+            previewBox.innerHTML =
+                '<p class="font-semibold">Campaña lista para aplicar</p>' +
+                '<p class="mt-1">Vacuna: <strong>' + vacuna + '</strong> | Casa: <strong>' + casa + '</strong></p>' +
+                '<p class="mt-1">Objetivo: <strong>' + objetivo + '</strong> | Animales estimados: <strong>' + count + '</strong></p>' +
+                '<p class="mt-1">Al guardar, se crearán registros en histórico por cada animal objetivo.</p>';
+        } catch (error) {
+            previewBox.classList.remove('hidden');
+            previewBox.className = 'mt-3 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700';
+            previewBox.textContent = error.message;
+        } finally {
+            previewBtn.disabled = false;
+            previewBtn.textContent = 'Previsualizar campaña';
+        }
+    });
+
+    syncCampaignMode();
+});
+</script>
 @endsection

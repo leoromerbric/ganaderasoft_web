@@ -9,6 +9,22 @@ class HistoricoAplicacionController extends Controller
 {
     public function __construct(protected HistoricoAplicacionServiceInterface $service) {}
 
+    private function apiMessage(array $response, string $fallback): string
+    {
+        if (!empty($response['message']) && is_string($response['message'])) {
+            return $response['message'];
+        }
+
+        if (!empty($response['errors']) && is_array($response['errors'])) {
+            $first = collect($response['errors'])->flatten()->first();
+            if (is_string($first) && $first !== '') {
+                return $first;
+            }
+        }
+
+        return $fallback;
+    }
+
     public function index(Request $request)
     {
         $vacunaId    = $request->query('vacuna_id');
@@ -49,9 +65,38 @@ class HistoricoAplicacionController extends Controller
         $response = $this->service->create($request->only(['ha_vacuna_id', 'ha_casa_id', 'ha_dosis_id', 'ha_animal_id', 'fecha_inyeccion', 'observacion']));
 
         if ($response['success'] ?? false) {
+            $createdCount = (int) ($response['created_count'] ?? 1);
+            if ($createdCount > 1) {
+                return redirect()->route('historico-aplicacion.index')->with('success', "Campaña aplicada correctamente a {$createdCount} animales.");
+            }
+
             return redirect()->route('historico-aplicacion.index')->with('success', 'Histórico de aplicación registrado exitosamente.');
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al crear el registro.');
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al crear el registro.'));
+    }
+
+    public function previewCampana(Request $request)
+    {
+        $request->validate([
+            'ha_dosis_id' => 'required|integer',
+        ], [
+            'ha_dosis_id.required' => 'Debe seleccionar una dosis para previsualizar la campaña.',
+        ]);
+
+        $response = $this->service->previewCampana((int) $request->input('ha_dosis_id'));
+
+        if ($response['success'] ?? false) {
+            return response()->json([
+                'success' => true,
+                'data' => $response['data'] ?? [],
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => $this->apiMessage($response, 'No se pudo previsualizar la campaña.'),
+            'errors' => $response['errors'] ?? null,
+        ], 422);
     }
 
     public function show(int $id)
