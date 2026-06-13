@@ -28,41 +28,63 @@ class CambiosAnimalController extends Controller
         try {
             Log::info('CambiosAnimalController@index - Iniciando carga de datos');
             
-            $idAnimal = $request->get('animal_id');
-            
-            Log::info('CambiosAnimalController@index - Filtro animal recibido', ['animal_id' => $idAnimal]);
-            
-            // Obtener animales (siempre todos para el dropdown)
-            $animales = $this->cambiosAnimalService->getAnimales();
-            Log::info('CambiosAnimalController@index - Animales obtenidos: ' . count($animales));
-            
-            // Obtener cambios filtrados por animal si se especifica
-            $cambios = $this->cambiosAnimalService->getList($idAnimal, null);
-            Log::info('CambiosAnimalController@index - Cambios obtenidos: ' . count($cambios));
-            
+            $idAnimal  = $request->get('animal_id');
+            $idFinca   = $request->get('finca_id');
+            $idRebano  = $request->get('rebano_id');
+
+            // Cargar datos para dropdowns
+            $animalesTodos = $this->cambiosAnimalService->getAnimales();
+            $fincas        = $this->cambiosAnimalService->getFincas();
+            $rebanos       = $this->cambiosAnimalService->getRebanos();
+
+            // Filtrar rebaños por finca seleccionada
+            if ($idFinca) {
+                $rebanos = array_values(array_filter($rebanos, fn($r) => ($r['id_Finca'] ?? null) == $idFinca));
+            }
+
+            // Filtrar animales por rebaño o finca
+            $animales = $animalesTodos;
+            if ($idRebano) {
+                $animales = array_values(array_filter($animales, fn($a) => ($a['id_Rebano'] ?? null) == $idRebano));
+            } elseif ($idFinca) {
+                $animales = array_values(array_filter($animales, fn($a) => ($a['rebano']['id_Finca'] ?? ($a['rebano']['finca']['id_Finca'] ?? null)) == $idFinca));
+            }
+
+            // IDs de animales permitidos por el filtro de finca/rebaño
+            $idsPermitidos = array_column($animales, 'id_Animal');
+
+            // Obtener todos los cambios y filtrar
+            $cambiosTodos = $this->cambiosAnimalService->getList($idAnimal, null);
+            $cambios = $idFinca || $idRebano
+                ? array_values(array_filter($cambiosTodos, fn($c) => in_array($c['cambios_etapa_anid'] ?? null, $idsPermitidos)))
+                : $cambiosTodos;
+
+            // Mapear id → nombre de animal para mostrar en tabla
+            $mapaAnimales = [];
+            foreach ($animalesTodos as $a) {
+                if (isset($a['id_Animal'])) $mapaAnimales[$a['id_Animal']] = $a['Nombre'] ?? ('Animal #' . $a['id_Animal']);
+            }
+
             $estadisticas = $this->cambiosAnimalService->getEstadisticas();
-            
-            Log::info('CambiosAnimalController@index - Completado exitosamente', [
-                'cambios_count' => count($cambios),
-                'animales_count' => count($animales)
-            ]);
-            
-            return view('cambios-animal.index', compact('cambios', 'estadisticas', 'animales', 'idAnimal'));
+
+            return view('cambios-animal.index', compact(
+                'cambios', 'estadisticas', 'animales', 'idAnimal',
+                'fincas', 'rebanos', 'idFinca', 'idRebano', 'mapaAnimales'
+            ));
         } catch (\Exception $e) {
             Log::error('Error en CambiosAnimalController@index: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
             
             return view('cambios-animal.index', [
                 'cambios' => [],
-                'estadisticas' => [
-                    'total_cambios' => 0,
-                    'por_etapa' => [],
-                    'ultimos_30_dias' => 0,
-                    'promedio_peso' => 0,
-                    'promedio_altura' => 0
-                ],
-                'animales' => [],
-                'idAnimal' => null
+                'estadisticas' => ['total_cambios'=>0,'por_etapa'=>[],'ultimos_30_dias'=>0,'promedio_peso'=>0,'promedio_altura'=>0],
+                'animales'    => [],
+                'idAnimal'    => null,
+                'fincas'      => [],
+                'rebanos'     => [],
+                'idFinca'     => null,
+                'idRebano'    => null,
+                'mapaAnimales'=> [],
             ])->with('error', 'Error al cargar los cambios de animales');
         }
     }

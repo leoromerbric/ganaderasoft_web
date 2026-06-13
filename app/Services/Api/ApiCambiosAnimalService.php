@@ -210,6 +210,26 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
         }
     }
 
+    public function getRebanos(): array
+    {
+        try {
+            $user = session('user');
+            if (!$user || !isset($user['token'])) return [];
+            $response = $this->get('/rebanos', [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $user['token'],
+            ]);
+            if (isset($response['success']) && $response['success']) {
+                $paginatedData = $response['data'] ?? [];
+                return $paginatedData['data'] ?? [];
+            }
+            return [];
+        } catch (Exception $e) {
+            \Log::error('Error obteniendo rebanios: ' . $e->getMessage());
+            return [];
+        }
+    }
+
     /**
      * Obtiene estadísticas de cambios 
      * 

@@ -42,6 +42,8 @@ interface CambiosAnimalServiceInterface
      */
     public function getFincas(): array;
 
+    public function getRebanos(): array;
+
     /**
      * Obtiene estadísticas de cambios
      * 
