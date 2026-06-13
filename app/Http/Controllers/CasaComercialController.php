@@ -26,14 +26,15 @@ class CasaComercialController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'laboratorio'     => 'required|string|max:30',
-            'marca_comercial' => 'required|string|max:25',
+            'laboratorio'     => 'required|string|max:60',
+            'marca_comercial' => 'required|string|max:60',
+            'activa'          => 'nullable|boolean',
         ], [
             'laboratorio.required'     => 'El laboratorio es requerido.',
             'marca_comercial.required' => 'La marca comercial es requerida.',
         ]);
 
-        $response = $this->service->create($request->only(['laboratorio', 'marca_comercial']));
+        $response = $this->service->create($request->only(['laboratorio', 'marca_comercial', 'activa']));
 
         if ($response['success'] ?? false) {
             return redirect()->route('casa-comercial.index')->with('success', 'Casa comercial registrada exitosamente.');
@@ -64,11 +65,12 @@ class CasaComercialController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'laboratorio'     => 'required|string|max:30',
-            'marca_comercial' => 'required|string|max:25',
+            'laboratorio'     => 'required|string|max:60',
+            'marca_comercial' => 'required|string|max:60',
+            'activa'          => 'nullable|boolean',
         ]);
 
-        $response = $this->service->update($id, $request->only(['laboratorio', 'marca_comercial']));
+        $response = $this->service->update($id, $request->only(['laboratorio', 'marca_comercial', 'activa']));
 
         if ($response['success'] ?? false) {
             return redirect()->route('casa-comercial.index')->with('success', 'Casa comercial actualizada exitosamente.');

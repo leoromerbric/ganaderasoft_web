@@ -30,18 +30,28 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Laboratorio <span class="text-red-500">*</span></label>
-                    <input type="text" name="laboratorio" value="{{ old('laboratorio') }}" maxlength="30" required
+                    <input type="text" name="laboratorio" value="{{ old('laboratorio') }}" maxlength="60" required
                            placeholder="Nombre del laboratorio..."
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('laboratorio') border-red-500 @enderror">
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                     @error('laboratorio')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Marca Comercial <span class="text-red-500">*</span></label>
-                    <input type="text" name="marca_comercial" value="{{ old('marca_comercial') }}" maxlength="25" required
+                    <input type="text" name="marca_comercial" value="{{ old('marca_comercial') }}" maxlength="60" required
                            placeholder="Nombre de la marca..."
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('marca_comercial') border-red-500 @enderror">
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                     @error('marca_comercial')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
+                        <input type="hidden" name="activa" value="0">
+                        <input type="checkbox" name="activa" value="1" {{ old('activa', '1') == '1' ? 'checked' : '' }}
+                               class="h-4 w-4 rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-celeste">
+                        Casa comercial activa
+                    </label>
+                    @error('activa')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 

@@ -13,10 +13,15 @@
         <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
             <div><p class="text-sm text-gray-500">Vacuna</p><p class="text-gray-900">{{ data_get($dosis, 'vacuna.vacuna_nombre') ?? ('Vacuna #'.data_get($dosis, 'dosis_vacuna_id')) }}</p></div>
             <div><p class="text-sm text-gray-500">Casa comercial</p><p class="text-gray-900">{{ data_get($dosis, 'casa_comercial.laboratorio') ?? data_get($dosis, 'casaComercial.laboratorio') ?? ('Casa #'.data_get($dosis, 'dosis_casa_id')) }}</p></div>
+            <div><p class="text-sm text-gray-500">Objetivo</p><p class="text-gray-900">{{ ucfirst(data_get($dosis, 'dosis_objetivo_tipo', '-')) }}</p></div>
+            <div><p class="text-sm text-gray-500">Animal objetivo</p><p class="text-gray-900">{{ data_get($dosis, 'animal.Nombre') ?? (data_get($dosis, 'dosis_objetivo_animal_id') ? ('Animal #'.data_get($dosis, 'dosis_objetivo_animal_id')) : '-') }}</p></div>
+            <div><p class="text-sm text-gray-500">Rebaño objetivo</p><p class="text-gray-900">{{ data_get($dosis, 'rebano.Nombre') ?? (data_get($dosis, 'dosis_objetivo_rebano_id') ? ('Rebaño #'.data_get($dosis, 'dosis_objetivo_rebano_id')) : '-') }}</p></div>
             <div><p class="text-sm text-gray-500">Frecuencia</p><p class="text-gray-900">{{ $dosis['dosis_frecuencia'] ?? '-' }}</p></div>
             <div><p class="text-sm text-gray-500">Costo</p><p class="text-gray-900">{{ $dosis['dosis_costo'] ?? '-' }}</p></div>
             <div><p class="text-sm text-gray-500">Costo frasco</p><p class="text-gray-900">{{ $dosis['dosis_costo_frasco'] ?? '-' }}</p></div>
             <div><p class="text-sm text-gray-500">Vigencia</p><p class="text-gray-900">{{ $dosis['dosis_fecha_uso_ini'] ?? '-' }}{{ isset($dosis['dosis_fecha_uso_fin']) ? ' a '.$dosis['dosis_fecha_uso_fin'] : '' }}</p></div>
+            <div class="md:col-span-2"><p class="text-sm text-gray-500">Filtros de subgrupo</p><p class="text-gray-900">{{ json_encode(data_get($dosis, 'dosis_objetivo_filtros', []), JSON_UNESCAPED_UNICODE) ?: '-' }}</p></div>
+            <div class="md:col-span-2"><p class="text-sm text-gray-500">Observación</p><p class="text-gray-900">{{ data_get($dosis, 'dosis_observacion') ?: '-' }}</p></div>
         </div>
     </div>
 </div>

@@ -44,10 +44,26 @@
                 </p>
             </div>
             <div>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Animal</p>
+                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
+                    {{ data_get($historico, 'animal.Nombre') ?? (isset($historico['ha_animal_id']) ? 'Animal #'.$historico['ha_animal_id'] : '-') }}
+                </p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Origen</p>
+                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
+                    {{ $historico['ha_origen_tipo'] ?? '-' }}
+                </p>
+            </div>
+            <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de Inyección</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
                     {{ isset($historico['fecha_inyeccion']) ? date('d/m/Y', strtotime($historico['fecha_inyeccion'])) : 'N/A' }}
                 </p>
+            </div>
+            <div class="md:col-span-2">
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Observación</p>
+                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $historico['observacion'] ?? '-' }}</p>
             </div>
         </div>
     </div>

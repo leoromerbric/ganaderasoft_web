@@ -30,10 +30,28 @@
             <div class="grid grid-cols-1 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Vacuna</label>
-                    <input type="text" name="vacuna_nombre" value="{{ old('vacuna_nombre') }}" maxlength="50"
+                          <input type="text" name="vacuna_nombre" value="{{ old('vacuna_nombre') }}" maxlength="80"
                            placeholder="Nombre de la vacuna..."
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('vacuna_nombre') border-red-500 @enderror">
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                     @error('vacuna_nombre')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                    <textarea name="vacuna_descripcion" rows="4"
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste"
+                              placeholder="Descripción opcional de la vacuna">{{ old('vacuna_descripcion') }}</textarea>
+                    @error('vacuna_descripcion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
+                        <input type="hidden" name="activa" value="0">
+                        <input type="checkbox" name="activa" value="1" {{ old('activa', '1') == '1' ? 'checked' : '' }}
+                               class="h-4 w-4 rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-celeste">
+                        Vacuna activa
+                    </label>
+                    @error('activa')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 

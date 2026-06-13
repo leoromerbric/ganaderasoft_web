@@ -12,7 +12,7 @@
     </div>
 
     <div class="rounded-xl bg-white shadow-md">
-        <div class="rounded-t-xl bg-ganaderasoft-celeste px-6 py-4 text-white"><h3 class="text-lg font-semibold">Datos de la dosis</h3></div>
+        <div class="rounded-t-xl bg-ganaderasoft-celeste px-6 py-4 text-white"><h3 class="text-lg font-semibold">Plantilla de dosis y objetivo</h3></div>
         <form action="{{ route('dosis.store') }}" method="POST" class="p-6">
             @csrf
             @if($errors->any())
@@ -38,22 +38,66 @@
                         @endforeach
                     </select>
                 </div>
+
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Animal <span class="text-red-500">*</span></label>
-                    <select name="dosis_etapa_animal_anid" id="dosis_etapa_animal_anid" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Objetivo <span class="text-red-500">*</span></label>
+                    <select name="dosis_objetivo_tipo" id="dosis_objetivo_tipo" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="animal" {{ old('dosis_objetivo_tipo', 'animal') === 'animal' ? 'selected' : '' }}>Animal individual</option>
+                        <option value="rebano" {{ old('dosis_objetivo_tipo') === 'rebano' ? 'selected' : '' }}>Rebaño completo</option>
+                        <option value="subgrupo" {{ old('dosis_objetivo_tipo') === 'subgrupo' ? 'selected' : '' }}>Subgrupo de un rebaño</option>
+                    </select>
+                </div>
+
+                <div id="campo_animal">
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Animal objetivo</label>
+                    <select name="dosis_objetivo_animal_id" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Seleccione un animal</option>
                         @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] ?? '' }}" {{ old('dosis_etapa_animal_anid') == ($animal['id_Animal'] ?? '') ? 'selected' : '' }}>{{ $animal['Nombre'] ?? ('Animal #'.($animal['id_Animal'] ?? '')) }}</option>
+                            <option value="{{ $animal['id_Animal'] ?? '' }}" {{ old('dosis_objetivo_animal_id') == ($animal['id_Animal'] ?? '') ? 'selected' : '' }}>{{ $animal['Nombre'] ?? ('Animal #'.($animal['id_Animal'] ?? '')) }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Etapa actual <span class="text-red-500">*</span></label>
-                    <input type="text" id="dosis_etapa_texto" readonly class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-gray-600" placeholder="Se completará al seleccionar el animal">
-                    <input type="hidden" name="dosis_etapa_animal_etid" id="dosis_etapa_animal_etid" value="{{ old('dosis_etapa_animal_etid') }}">
+
+                <div id="campo_rebano" class="hidden">
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Rebaño objetivo</label>
+                    <select name="dosis_objetivo_rebano_id" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Seleccione un rebaño</option>
+                        @foreach($rebanos as $rebano)
+                            <option value="{{ $rebano['id_Rebano'] ?? '' }}" {{ old('dosis_objetivo_rebano_id') == ($rebano['id_Rebano'] ?? '') ? 'selected' : '' }}>
+                                {{ $rebano['Nombre'] ?? ('Rebaño #'.($rebano['id_Rebano'] ?? '')) }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
+
+                <div id="campo_subgrupo" class="hidden md:col-span-2">
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Filtros del subgrupo</label>
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-4 rounded-lg bg-gray-50 p-4">
+                        <div>
+                            <label class="mb-1 block text-xs font-medium text-gray-600">Sexo</label>
+                            <select name="dosis_objetivo_filtros[sexo]" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                                <option value="">Todos</option>
+                                <option value="H" {{ old('dosis_objetivo_filtros.sexo') === 'H' ? 'selected' : '' }}>Hembra</option>
+                                <option value="M" {{ old('dosis_objetivo_filtros.sexo') === 'M' ? 'selected' : '' }}>Macho</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-xs font-medium text-gray-600">Edad mínima (días)</label>
+                            <input type="number" min="0" name="dosis_objetivo_filtros[edad_min_dias]" value="{{ old('dosis_objetivo_filtros.edad_min_dias') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-xs font-medium text-gray-600">Edad máxima (días)</label>
+                            <input type="number" min="0" name="dosis_objetivo_filtros[edad_max_dias]" value="{{ old('dosis_objetivo_filtros.edad_max_dias') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-xs font-medium text-gray-600">Etapa ID</label>
+                            <input type="number" min="1" name="dosis_objetivo_filtros[etapa_id]" value="{{ old('dosis_objetivo_filtros.etapa_id') }}" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                    </div>
+                </div>
+
                 <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Frecuencia <span class="text-red-500">*</span></label>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Frecuencia (días) <span class="text-red-500">*</span></label>
                     <input type="number" min="1" name="dosis_frecuencia" value="{{ old('dosis_frecuencia', 1) }}" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                 </div>
                 <div>
@@ -72,6 +116,11 @@
                     <label class="mb-1 block text-sm font-medium text-gray-700">Fecha uso final</label>
                     <input type="date" name="dosis_fecha_uso_fin" value="{{ old('dosis_fecha_uso_fin') }}" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                 </div>
+
+                <div class="md:col-span-2">
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Observación</label>
+                    <textarea name="dosis_observacion" rows="3" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">{{ old('dosis_observacion') }}</textarea>
+                </div>
             </div>
 
             <div class="mt-8 flex justify-end space-x-4 border-t border-gray-200 pt-6">
@@ -84,34 +133,20 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const animalSelect = document.getElementById('dosis_etapa_animal_anid');
-    const etapaInput = document.getElementById('dosis_etapa_animal_etid');
-    const etapaTexto = document.getElementById('dosis_etapa_texto');
-    const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
+    const objetivo = document.getElementById('dosis_objetivo_tipo');
+    const campoAnimal = document.getElementById('campo_animal');
+    const campoRebano = document.getElementById('campo_rebano');
+    const campoSubgrupo = document.getElementById('campo_subgrupo');
 
-    async function updateStage() {
-        if (!animalSelect.value) {
-            etapaInput.value = '';
-            etapaTexto.value = '';
-            return;
-        }
-
-        try {
-            const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
-            const payload = await response.json();
-            const etapa = payload?.data?.etapa_actual || null;
-            const etapaNode = etapa?.etapa || etapa;
-            const etapaId = etapaNode?.etapa_id || etapa?.etan_etapa_id || '';
-            const etapaNombre = etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.nombre || etapaNode?.descripcion || '';
-            etapaInput.value = etapaId;
-            etapaTexto.value = etapaId ? (etapaNombre || 'Etapa actual') : 'Animal sin etapa activa';
-        } catch (error) {
-            etapaTexto.value = 'No se pudo obtener la etapa actual';
-        }
+    function refreshObjectiveFields() {
+        const value = objetivo.value;
+        campoAnimal.classList.toggle('hidden', value !== 'animal');
+        campoRebano.classList.toggle('hidden', value === 'animal');
+        campoSubgrupo.classList.toggle('hidden', value !== 'subgrupo');
     }
 
-    animalSelect.addEventListener('change', updateStage);
-    updateStage();
+    objetivo.addEventListener('change', refreshObjectiveFields);
+    refreshObjectiveFields();
 });
 </script>
 @endsection

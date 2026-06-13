@@ -42,8 +42,9 @@ class DosisController extends Controller
         $vacunas = $this->service->getVacunas();
         $casas = $this->service->getCasasComerciales();
         $animales = $this->service->getAnimales();
+        $rebanos = $this->service->getRebanos();
 
-        return view('dosis.create', compact('vacunas', 'casas', 'animales'));
+        return view('dosis.create', compact('vacunas', 'casas', 'animales', 'rebanos'));
     }
 
     public function store(Request $request)
@@ -51,32 +52,32 @@ class DosisController extends Controller
         $request->validate([
             'dosis_vacuna_id' => 'required|integer',
             'dosis_casa_id' => 'required|integer',
+            'dosis_objetivo_tipo' => 'required|in:animal,rebano,subgrupo',
+            'dosis_objetivo_animal_id' => 'nullable|integer',
+            'dosis_objetivo_rebano_id' => 'nullable|integer',
+            'dosis_objetivo_filtros' => 'nullable|array',
             'dosis_frecuencia' => 'required|integer|min:1',
             'dosis_costo' => 'nullable|numeric|min:0',
             'dosis_costo_frasco' => 'nullable|numeric|min:0',
             'dosis_fecha_uso_ini' => 'required|date',
             'dosis_fecha_uso_fin' => 'nullable|date|after:dosis_fecha_uso_ini',
-            'dosis_etapa_animal_anid' => 'required|integer',
-            'dosis_etapa_animal_etid' => 'required|integer',
+            'dosis_observacion' => 'nullable|string',
         ]);
 
         $data = $request->only([
             'dosis_vacuna_id',
             'dosis_casa_id',
+            'dosis_objetivo_tipo',
+            'dosis_objetivo_animal_id',
+            'dosis_objetivo_rebano_id',
+            'dosis_objetivo_filtros',
             'dosis_frecuencia',
             'dosis_costo',
             'dosis_costo_frasco',
             'dosis_fecha_uso_ini',
             'dosis_fecha_uso_fin',
-            'dosis_etapa_animal_anid',
-            'dosis_etapa_animal_etid',
+            'dosis_observacion',
         ]);
-
-        // DB legacy schema stores the etapa-animal pair with swapped column names.
-        $animalId = (int) $data['dosis_etapa_animal_anid'];
-        $etapaId = (int) $data['dosis_etapa_animal_etid'];
-        $data['dosis_etapa_animal_anid'] = $etapaId;
-        $data['dosis_etapa_animal_etid'] = $animalId;
 
         $response = $this->service->create($data);
 
@@ -106,25 +107,43 @@ class DosisController extends Controller
         }
 
         $dosis = $response['data'];
-        return view('dosis.edit', compact('dosis'));
+        $vacunas = $this->service->getVacunas();
+        $casas = $this->service->getCasasComerciales();
+        $animales = $this->service->getAnimales();
+        $rebanos = $this->service->getRebanos();
+        return view('dosis.edit', compact('dosis', 'vacunas', 'casas', 'animales', 'rebanos'));
     }
 
     public function update(Request $request, int $id)
     {
         $request->validate([
+            'dosis_vacuna_id' => 'required|integer',
+            'dosis_casa_id' => 'required|integer',
+            'dosis_objetivo_tipo' => 'required|in:animal,rebano,subgrupo',
+            'dosis_objetivo_animal_id' => 'nullable|integer',
+            'dosis_objetivo_rebano_id' => 'nullable|integer',
+            'dosis_objetivo_filtros' => 'nullable|array',
             'dosis_frecuencia' => 'required|integer|min:1',
             'dosis_costo' => 'nullable|numeric|min:0',
             'dosis_costo_frasco' => 'nullable|numeric|min:0',
             'dosis_fecha_uso_ini' => 'required|date',
             'dosis_fecha_uso_fin' => 'nullable|date|after:dosis_fecha_uso_ini',
+            'dosis_observacion' => 'nullable|string',
         ]);
 
         $response = $this->service->update($id, $request->only([
+            'dosis_vacuna_id',
+            'dosis_casa_id',
+            'dosis_objetivo_tipo',
+            'dosis_objetivo_animal_id',
+            'dosis_objetivo_rebano_id',
+            'dosis_objetivo_filtros',
             'dosis_frecuencia',
             'dosis_costo',
             'dosis_costo_frasco',
             'dosis_fecha_uso_ini',
             'dosis_fecha_uso_fin',
+            'dosis_observacion',
         ]));
 
         if ($response['success'] ?? false) {

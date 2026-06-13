@@ -71,4 +71,11 @@ class ApiDosisService extends BaseApiService implements DosisServiceInterface
         $response = $this->get('/animales', $this->authHeaders());
         return ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
     }
+
+    public function getRebanos(): array
+    {
+        if (!session('user.token')) return [];
+        $response = $this->get('/rebanos', $this->authHeaders());
+        return ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
+    }
 }

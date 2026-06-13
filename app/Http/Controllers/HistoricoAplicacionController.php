@@ -27,24 +27,26 @@ class HistoricoAplicacionController extends Controller
         $vacunas = $this->service->getVacunas();
         $casas   = $this->service->getCasasComerciales();
         $dosis   = $this->service->getDosis();
-        return view('historico-aplicacion.create', compact('vacunas', 'casas', 'dosis'));
+        $animales = $this->service->getAnimales();
+        return view('historico-aplicacion.create', compact('vacunas', 'casas', 'dosis', 'animales'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'ha_vacuna_id'    => 'required|integer',
-            'ha_casa_id'      => 'required|integer',
-            'ha_dosis_id'     => 'required|integer',
+            'ha_vacuna_id'    => 'nullable|integer|required_without:ha_dosis_id',
+            'ha_casa_id'      => 'nullable|integer|required_without:ha_dosis_id',
+            'ha_dosis_id'     => 'nullable|integer',
+            'ha_animal_id'    => 'nullable|integer',
             'fecha_inyeccion' => 'required|date',
+            'observacion'     => 'nullable|string',
         ], [
-            'ha_vacuna_id.required'    => 'La vacuna es requerida.',
-            'ha_casa_id.required'      => 'La casa comercial es requerida.',
-            'ha_dosis_id.required'     => 'La dosis es requerida.',
+            'ha_vacuna_id.required_without' => 'La vacuna es requerida cuando no selecciona dosis.',
+            'ha_casa_id.required_without' => 'La casa comercial es requerida cuando no selecciona dosis.',
             'fecha_inyeccion.required' => 'La fecha de inyección es requerida.',
         ]);
 
-        $response = $this->service->create($request->only(['ha_vacuna_id', 'ha_casa_id', 'ha_dosis_id', 'fecha_inyeccion']));
+        $response = $this->service->create($request->only(['ha_vacuna_id', 'ha_casa_id', 'ha_dosis_id', 'ha_animal_id', 'fecha_inyeccion', 'observacion']));
 
         if ($response['success'] ?? false) {
             return redirect()->route('historico-aplicacion.index')->with('success', 'Histórico de aplicación registrado exitosamente.');
@@ -72,18 +74,20 @@ class HistoricoAplicacionController extends Controller
         $vacunas   = $this->service->getVacunas();
         $casas     = $this->service->getCasasComerciales();
         $dosis     = $this->service->getDosis();
-        return view('historico-aplicacion.edit', compact('historico', 'vacunas', 'casas', 'dosis'));
+        $animales  = $this->service->getAnimales();
+        return view('historico-aplicacion.edit', compact('historico', 'vacunas', 'casas', 'dosis', 'animales'));
     }
 
     public function update(Request $request, int $id)
     {
         $request->validate([
             'fecha_inyeccion' => 'required|date',
+            'observacion' => 'nullable|string',
         ], [
             'fecha_inyeccion.required' => 'La fecha de inyección es requerida.',
         ]);
 
-        $response = $this->service->update($id, $request->only(['fecha_inyeccion']));
+        $response = $this->service->update($id, $request->only(['fecha_inyeccion', 'observacion']));
 
         if ($response['success'] ?? false) {
             return redirect()->route('historico-aplicacion.index')->with('success', 'Histórico de aplicación actualizado.');

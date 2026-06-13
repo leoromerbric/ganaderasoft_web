@@ -50,6 +50,7 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Vacuna</th>
                             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Casa comercial</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Objetivo</th>
                             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Frecuencia</th>
                             <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Vigencia</th>
                             <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Acciones</th>
@@ -61,6 +62,18 @@
                             <tr>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'vacuna.vacuna_nombre') ?? ('Vacuna #'.data_get($item, 'dosis_vacuna_id')) }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'casa_comercial.laboratorio') ?? data_get($item, 'casaComercial.laboratorio') ?? ('Casa #'.data_get($item, 'dosis_casa_id')) }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">
+                                    @php $tipo = data_get($item, 'dosis_objetivo_tipo'); @endphp
+                                    @if($tipo === 'animal')
+                                        Animal: {{ data_get($item, 'animal.Nombre') ?? ('#'.data_get($item, 'dosis_objetivo_animal_id')) }}
+                                    @elseif($tipo === 'rebano')
+                                        Rebaño: {{ data_get($item, 'rebano.Nombre') ?? ('#'.data_get($item, 'dosis_objetivo_rebano_id')) }}
+                                    @elseif($tipo === 'subgrupo')
+                                        Subgrupo en rebaño {{ data_get($item, 'rebano.Nombre') ?? ('#'.data_get($item, 'dosis_objetivo_rebano_id')) }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'dosis_frecuencia') ?? '-' }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'dosis_fecha_uso_ini') }}{{ data_get($item, 'dosis_fecha_uso_fin') ? ' a '.data_get($item, 'dosis_fecha_uso_fin') : '' }}</td>
                                 <td class="px-6 py-4 text-right text-sm">

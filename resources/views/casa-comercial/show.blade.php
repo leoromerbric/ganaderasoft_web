@@ -29,6 +29,10 @@
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Marca Comercial</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $casa['marca_comercial'] ?? '-' }}</p>
             </div>
+            <div>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Estado</p>
+                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ (int)($casa['activa'] ?? 1) === 1 ? 'Activa' : 'Inactiva' }}</p>
+            </div>
         </div>
     </div>
 

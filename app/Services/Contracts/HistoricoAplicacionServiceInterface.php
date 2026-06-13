@@ -12,4 +12,5 @@ interface HistoricoAplicacionServiceInterface
     public function getVacunas(): array;
     public function getCasasComerciales(): array;
     public function getDosis(): array;
+    public function getAnimales(): array;
 }

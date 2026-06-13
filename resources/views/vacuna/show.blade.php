@@ -25,6 +25,14 @@
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Nombre</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $vacuna['vacuna_nombre'] ?? '-' }}</p>
             </div>
+            <div>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Estado</p>
+                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ (int)($vacuna['activa'] ?? 1) === 1 ? 'Activa' : 'Inactiva' }}</p>
+            </div>
+            <div class="md:col-span-2">
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Descripción</p>
+                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $vacuna['vacuna_descripcion'] ?? '-' }}</p>
+            </div>
         </div>
     </div>
 

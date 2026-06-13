@@ -31,7 +31,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Vacuna <span class="text-red-500">*</span></label>
                     <select name="ha_vacuna_id" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('ha_vacuna_id') border-red-500 @enderror">
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Seleccione una vacuna</option>
                         @foreach($vacunas as $vacuna)
                             <option value="{{ $vacuna['vacuna_id'] }}" {{ old('ha_vacuna_id') == $vacuna['vacuna_id'] ? 'selected' : '' }}>
@@ -45,7 +45,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Casa Comercial</label>
                     <select name="ha_casa_id"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('ha_casa_id') border-red-500 @enderror">
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">-- Sin casa comercial --</option>
                         @foreach($casas as $casa)
                             <option value="{{ $casa['casa_id'] }}" {{ old('ha_casa_id') == $casa['casa_id'] ? 'selected' : '' }}>
@@ -62,7 +62,7 @@
                         <a href="{{ route('dosis.create') }}" class="text-ganaderasoft-azul hover:underline">Agregar nueva dosis</a>
                     </div>
                     <select name="ha_dosis_id"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('ha_dosis_id') border-red-500 @enderror">
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">-- Sin dosis --</option>
                         @foreach($dosis as $d)
                             <option value="{{ $d['dosis_id'] }}" {{ old('ha_dosis_id') == $d['dosis_id'] ? 'selected' : '' }}>
@@ -77,10 +77,32 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
+                    <select name="ha_animal_id"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">-- Seleccione un animal --</option>
+                        @foreach($animales as $animal)
+                            <option value="{{ $animal['id_Animal'] }}" {{ old('ha_animal_id') == $animal['id_Animal'] ? 'selected' : '' }}>
+                                {{ $animal['Nombre'] ?? ('Animal #'.$animal['id_Animal']) }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="mt-1 text-xs text-gray-500">Si selecciona dosis, este campo es opcional y la API puede expandir al grupo objetivo.</p>
+                    @error('ha_animal_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Inyección <span class="text-red-500">*</span></label>
                     <input type="date" name="fecha_inyeccion" required value="{{ old('fecha_inyeccion', date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha_inyeccion') border-red-500 @enderror">
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                     @error('fecha_inyeccion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
+                    <textarea name="observacion" rows="3"
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">{{ old('observacion') }}</textarea>
+                    @error('observacion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 

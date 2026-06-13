@@ -66,4 +66,11 @@ class ApiHistoricoAplicacionService extends BaseApiService implements HistoricoA
         $r = $this->get('/dosis', $this->authHeaders());
         return ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
     }
+
+    public function getAnimales(): array
+    {
+        if (!session('user.token')) return [];
+        $r = $this->get('/animales', $this->authHeaders());
+        return ($r['success'] ?? false) ? ($r['data']['data'] ?? $r['data'] ?? []) : [];
+    }
 }

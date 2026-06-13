@@ -12,4 +12,5 @@ interface DosisServiceInterface
     public function getVacunas(): array;
     public function getCasasComerciales(): array;
     public function getAnimales(): array;
+    public function getRebanos(): array;
 }

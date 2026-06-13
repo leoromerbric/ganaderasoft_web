@@ -29,59 +29,39 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Vacuna <span class="text-red-500">*</span></label>
-                    <select name="ha_vacuna_id" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('ha_vacuna_id') border-red-500 @enderror">
-                        <option value="">Seleccione una vacuna</option>
-                        @foreach($vacunas as $vacuna)
-                            <option value="{{ $vacuna['vacuna_id'] }}" {{ old('ha_vacuna_id', $historico['ha_vacuna_id'] ?? '') == $vacuna['vacuna_id'] ? 'selected' : '' }}>
-                                {{ $vacuna['vacuna_nombre'] ?? 'Vacuna #'.$vacuna['vacuna_id'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('ha_vacuna_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Vacuna</label>
+                    <input type="text" disabled
+                           value="{{ data_get($historico, 'vacuna.vacuna_nombre') ?? ('Vacuna #'.($historico['ha_vacuna_id'] ?? '-')) }}"
+                           class="w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-2 text-gray-600">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Casa Comercial</label>
-                    <select name="ha_casa_id"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('ha_casa_id') border-red-500 @enderror">
-                        <option value="">-- Sin casa comercial --</option>
-                        @foreach($casas as $casa)
-                            <option value="{{ $casa['casa_id'] }}" {{ old('ha_casa_id', $historico['ha_casa_id'] ?? '') == $casa['casa_id'] ? 'selected' : '' }}>
-                                {{ $casa['laboratorio'] ?? '' }} - {{ $casa['marca_comercial'] ?? '' }} (#{{ $casa['casa_id'] }})
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('ha_casa_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Dosis</label>
-                    <div class="mb-2 text-sm">
-                        <a href="{{ route('dosis.create') }}" class="text-ganaderasoft-azul hover:underline">Agregar nueva dosis</a>
-                    </div>
-                    <select name="ha_dosis_id"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('ha_dosis_id') border-red-500 @enderror">
-                        <option value="">-- Sin dosis --</option>
-                        @foreach($dosis as $d)
-                            <option value="{{ $d['dosis_id'] }}" {{ old('ha_dosis_id', $historico['ha_dosis_id'] ?? '') == $d['dosis_id'] ? 'selected' : '' }}>
-                                {{ $d['vacuna']['vacuna_nombre'] ?? '' }} - {{ $d['dosis_frecuencia'] ?? '' }} (#{{ $d['dosis_id'] }})
-                            </option>
-                        @endforeach
-                    </select>
-                    @if(count($dosis) === 0)
-                        <p class="mt-2 text-sm text-gray-500">No hay dosis registradas. Use el enlace anterior para agregar una.</p>
-                    @endif
-                    @error('ha_dosis_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
+                    <input type="text" disabled
+                           value="{{ data_get($historico, 'animal.Nombre') ?? ('Animal #'.($historico['ha_animal_id'] ?? '-')) }}"
+                           class="w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-2 text-gray-600">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Inyección <span class="text-red-500">*</span></label>
                     <input type="date" name="fecha_inyeccion" required
                            value="{{ old('fecha_inyeccion', $historico['fecha_inyeccion'] ?? date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha_inyeccion') border-red-500 @enderror">
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                     @error('fecha_inyeccion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Origen</label>
+                    <input type="text" disabled
+                           value="{{ $historico['ha_origen_tipo'] ?? '-' }}"
+                           class="w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-2 text-gray-600">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
+                    <textarea name="observacion" rows="3"
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">{{ old('observacion', $historico['observacion'] ?? '') }}</textarea>
+                    @error('observacion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 
