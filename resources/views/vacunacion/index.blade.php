@@ -19,40 +19,51 @@
     <div class="mb-6 rounded-lg border-l-4 border-red-500 bg-red-50 p-4 text-red-800">{{ session('error') }}</div>
 @endif
 
-<div class="mb-6 rounded-xl bg-white shadow-md">
-    <div class="rounded-t-xl bg-ganaderasoft-celeste px-6 py-4 text-white">
-        <h3 class="text-lg font-semibold">Filtros</h3>
-    </div>
-    <form method="GET" action="{{ route('vacunacion.index') }}" class="grid grid-cols-1 gap-4 p-6 md:grid-cols-2 lg:grid-cols-4">
-        <div>
-            <label class="mb-1 block text-sm font-medium text-gray-700">Vacuna</label>
-            <select name="vacuna_id" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
-                <option value="">Todas</option>
-                @foreach($vacunas as $vacuna)
-                    <option value="{{ $vacuna['vacuna_id'] ?? '' }}" {{ ($filters['vacuna_id'] ?? '') == ($vacuna['vacuna_id'] ?? '') ? 'selected' : '' }}>{{ $vacuna['vacuna_nombre'] ?? 'Vacuna' }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label class="mb-1 block text-sm font-medium text-gray-700">Rebaño</label>
-            <select name="rebano_id" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
-                <option value="">Todos</option>
-                @foreach($rebanos as $rebano)
-                    <option value="{{ $rebano['id_Rebano'] ?? '' }}" {{ ($filters['rebano_id'] ?? '') == ($rebano['id_Rebano'] ?? '') ? 'selected' : '' }}>{{ $rebano['Nombre'] ?? ('Rebaño #'.($rebano['id_Rebano'] ?? '')) }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label class="mb-1 block text-sm font-medium text-gray-700">Desde</label>
-            <input type="date" name="fecha_inicio" value="{{ $filters['fecha_inicio'] ?? '' }}" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
-        </div>
-        <div>
-            <label class="mb-1 block text-sm font-medium text-gray-700">Hasta</label>
-            <input type="date" name="fecha_fin" value="{{ $filters['fecha_fin'] ?? '' }}" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
-        </div>
-        <div class="flex items-end gap-3 lg:col-span-4">
-            <button type="submit" class="px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">Filtrar</button>
-            <a href="{{ route('vacunacion.index') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Limpiar</a>
+<div class="mb-6 bg-white rounded-xl shadow-md p-6">
+    <form method="GET" action="{{ route('vacunacion.index') }}">
+        <div class="flex flex-nowrap gap-3 items-end">
+            <div class="flex-1 min-w-0">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Finca</label>
+                <select id="filtroFinca" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                    <option value="">Todas las fincas</option>
+                </select>
+            </div>
+            <div class="flex-1 min-w-0">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Rebano</label>
+                <select name="rebano_id" id="filtroAnimal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                    <option value="">Todos los rebanos</option>
+                        @foreach($rebanos as $rebano)
+                            <option value="{{ $rebano['id_Rebano'] ?? '' }}"
+                                    data-finca-id="{{ $rebano['id_Finca'] ?? '' }}"
+                                    {{ ($filters['rebano_id'] ?? '') == ($rebano['id_Rebano'] ?? '') ? 'selected' : '' }}>
+                                {{ $rebano['Nombre'] ?? ('Rebano #'.($rebano['id_Rebano'] ?? '')) }}
+                            </option>
+                        @endforeach
+                </select>
+            </div>
+            <div class="flex-1 min-w-0">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Vacuna</label>
+                <select name="vacuna_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                    <option value="">Todas</option>
+                        @foreach($vacunas as $vac)
+                            <option value="{{ $vac['vacuna_id'] ?? '' }}" {{ ($filters['vacuna_id'] ?? '') == ($vac['vacuna_id'] ?? '') ? 'selected' : '' }}>
+                                {{ $vac['vacuna_nombre'] ?? 'Vacuna' }}
+                            </option>
+                        @endforeach
+                </select>
+            </div>
+            <div class="flex-none">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Desde</label>
+                <input type="date" name="fecha_inicio" value="{{ $filters['fecha_inicio'] ?? '' }}" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+            </div>
+            <div class="flex-none">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Hasta</label>
+                <input type="date" name="fecha_fin" value="{{ $filters['fecha_fin'] ?? '' }}" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+            </div>
+            <div class="flex-none flex gap-2">
+                <button type="submit" class="px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">Filtrar</button>
+                <a href="{{ route('vacunacion.index') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Limpiar</a>
+            </div>
         </div>
     </form>
 </div>
@@ -111,4 +122,16 @@
         </div>
     @endif
 </div>
+    <script>
+    (function(){
+        var f=document.getElementById('filtroFinca'),r=document.getElementById('filtroAnimal');
+        if(!f||!r)return;
+        var rebOpts=Array.prototype.slice.call(r.options).filter(function(o){return!!o.value;});
+        var fM={};
+        rebOpts.forEach(function(o){var fi=o.dataset.fincaId;if(fi&&!fM[fi])fM[fi]='Finca #'+fi;});
+        Object.keys(fM).sort().forEach(function(id){var o=document.createElement('option');o.value=id;o.textContent=fM[id];f.appendChild(o);});
+        f.addEventListener('change',function(){var fv=f.value;rebOpts.forEach(function(o){o.hidden=!!(fv&&o.dataset.fincaId!==fv);});if(r.value&&r.options[r.selectedIndex]&&r.options[r.selectedIndex].hidden)r.value='';});
+        if(r.value){var s=rebOpts.find(function(o){return o.value===r.value;});if(s&&s.dataset.fincaId)f.value=s.dataset.fincaId;}
+    })();
+    </script>
 @endsection

@@ -28,8 +28,8 @@
 
     <!-- Filtros -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-        <form method="GET" action="{{ route('vacuna.index') }}" class="flex flex-wrap gap-4 items-end">
-            <div class="flex-1 min-w-40">
+        <form method="GET" action="{{ route('vacuna.index') }}" class="flex flex-nowrap gap-3 items-end">
+            <div class="flex-1 min-w-0">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
                 <input type="text" name="nombre" value="{{ $nombre }}" maxlength="50" placeholder="Buscar por nombre..."
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste">

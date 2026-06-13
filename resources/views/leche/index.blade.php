@@ -29,31 +29,56 @@
             </div>
         @endif
 
-        <!-- Filter by Lactation Period -->
-        @if(count($lactancias) > 0)
+        <!-- Filtros -->
         <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-            <div class="flex items-end space-x-4">
-                <div class="flex-1">
-                    <label for="lactancia_select" class="block text-sm font-medium text-gray-700 mb-2">
-                        Seleccionar Período de Lactancia
-                    </label>
-                    <select 
-                        id="lactancia_select" 
-                        onchange="filterByLactancia(this.value)"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
-                        <option value="">Todos los Períodos</option>
-                        @foreach($lactancias as $lactancia)
+            <div class="flex flex-nowrap gap-3 items-end">
+                <div class="flex-1 min-w-0">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Finca</label>
+                    <select id="filtroFinca" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todas las fincas</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Rebano</label>
+                    <select id="filtroRebano" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todos los rebanos</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Animal / Periodo</label>
+                    <select name="lactancia_id" id="filtroAnimal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todos los periodos</option>
+                        @foreach($lactancias as $lact)
                             @php
-                                $fechaInicio = date('d/m/Y', strtotime($lactancia['lactancia_fecha_inicio']));
-                                $fechaFin = $lactancia['Lactancia_fecha_fin'] ? date('d/m/Y', strtotime($lactancia['Lactancia_fecha_fin'])) : 'En curso';
-                                $animalNombre = $lactancia['animal']['Nombre'] ?? ('Animal #'.($lactancia['lactancia_etapa_anid'] ?? 'N/A'));
+                                $li   = $lact['lactancia_id'] ?? '';
+                                $anId = $lact['lactancia_etapa_anid'] ?? '';
+                                $anNm = $lact['animal']['Nombre'] ?? ($lact['animal_nombre'] ?? '');
+                                $rId  = $lact['animal']['rebano']['id_Rebano'] ?? ($lact['animal']['id_Rebano'] ?? '');
+                                $rNm  = $lact['animal']['rebano']['Nombre'] ?? '';
+                                $fId  = $lact['animal']['rebano']['id_Finca'] ?? '';
+                                $fNm  = $lact['animal']['rebano']['finca']['Nombre'] ?? ('Finca #'.$fId);
+                                $fi   = isset($lact['lactancia_fecha_inicio']) ? date('d/m/Y', strtotime($lact['lactancia_fecha_inicio'])) : '?';
+                                $ff   = $lact['Lactancia_fecha_fin'] ? date('d/m/Y', strtotime($lact['Lactancia_fecha_fin'])) : 'en curso';
                             @endphp
-                            <option value="{{ $lactancia['lactancia_id'] }}" {{ (string)$lactanciaId === (string)$lactancia['lactancia_id'] ? 'selected' : '' }}>
-                                {{ $animalNombre }} - {{ $fechaInicio }} hasta {{ $fechaFin }}
+                            <option value="{{ $li }}"
+                                    data-animal-id="{{ $anId }}"
+                                    data-rebano-id="{{ $rId }}"
+                                    data-rebano-nombre="{{ $rNm }}"
+                                    data-finca-id="{{ $fId }}"
+                                    data-finca-nombre="{{ $fNm }}"
+                                    {{ (string)$lactanciaId === (string)$li ? 'selected' : '' }}>
+                                {{ $anNm }} — {{ $fi }} / {{ $ff }}
                             </option>
                         @endforeach
                     </select>
                 </div>
+                <div class="flex-none flex gap-2">
+                    <button type="submit" class="px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">Filtrar</button>
+                    <a href="{{ route('leche.index') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Limpiar</a>
+                </div>
+            </div>
+        </div>
+
             </div>
         </div>
         @endif
@@ -157,16 +182,18 @@
             @endif
         </div>
     </div>
-
     <script>
-        function filterByLactancia(lactanciaId) {
-            const url = new URL(window.location.href);
-            if (lactanciaId) {
-                url.searchParams.set('lactancia_id', lactanciaId);
-            } else {
-                url.searchParams.delete('lactancia_id');
-            }
-            window.location.href = url.toString();
-        }
+    (function(){
+        var f=document.getElementById('filtroFinca'),r=document.getElementById('filtroRebano'),a=document.getElementById('filtroAnimal');
+        if(!f||!r||!a)return;
+        var opts=Array.prototype.slice.call(a.options).filter(function(o){return!!o.value;});
+        var fM={},rM={};
+        opts.forEach(function(o){var fi=o.dataset.fincaId,fn=o.dataset.fincaNombre,ri=o.dataset.rebanoId,rn=o.dataset.rebanoNombre;if(fi&&!fM[fi])fM[fi]=fn||'Finca #'+fi;if(ri&&!rM[ri])rM[ri]={n:rn||'Rebano #'+ri,f:fi};});
+        Object.keys(fM).sort(function(a,b){return fM[a].localeCompare(fM[b]);}).forEach(function(id){var o=document.createElement('option');o.value=id;o.textContent=fM[id];f.appendChild(o);});
+        Object.keys(rM).sort(function(a,b){return rM[a].n.localeCompare(rM[b].n);}).forEach(function(id){var o=document.createElement('option');o.value=id;o.textContent=rM[id].n;o.dataset.fincaId=rM[id].f;r.appendChild(o);});
+        function cas(){var fv=f.value,rv=r.value;Array.prototype.forEach.call(r.options,function(o){if(o.value)o.hidden=!!(fv&&o.dataset.fincaId!==fv);});if(r.value&&r.options[r.selectedIndex]&&r.options[r.selectedIndex].hidden)r.value='';var rv2=r.value;opts.forEach(function(o){o.hidden=!!(fv&&o.dataset.fincaId!==fv)||!!(rv2&&o.dataset.rebanoId!==rv2);});if(a.value&&a.options[a.selectedIndex]&&a.options[a.selectedIndex].hidden)a.value='';}
+        f.addEventListener('change',cas);r.addEventListener('change',cas);
+        if(a.value){var s=opts.find(function(o){return o.value===a.value;});if(s){f.value=s.dataset.fincaId||'';r.value=s.dataset.rebanoId||'';cas();}}
+    })();
     </script>
 @endsection

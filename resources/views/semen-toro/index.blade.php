@@ -28,32 +28,49 @@
 
     <!-- Filtros -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-        <form method="GET" action="{{ route('semen-toro.index') }}" class="flex flex-wrap gap-4 items-end">
-            <div class="flex-1 min-w-40">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Toro</label>
-                <select name="toro_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste">
-                    <option value="">Todos</option>
-                    @foreach($toros as $toro)
-                        <option value="{{ $toro['id_Animal'] }}" {{ $toroId == $toro['id_Animal'] ? 'selected' : '' }}>
-                            {{ $toro['Nombre'] ?? 'Toro #'.$toro['id_Animal'] }}
-                        </option>
-                    @endforeach
-                </select>
+        <form method="GET" action="{{ route('semen-toro.index') }}">
+            <div class="flex flex-nowrap gap-3 items-end">
+                <div class="flex-1 min-w-0">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Finca</label>
+                    <select id="filtroFinca" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todas las fincas</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Rebano</label>
+                    <select id="filtroRebano" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todos los rebanos</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Toro</label>
+                    <select name="toro_id" id="filtroAnimal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todos</option>
+                        @foreach($toros as $animal)
+                            <option value="{{ $animal['id_Animal'] }}"
+                                    data-rebano-id="{{ $animal['rebano']['id_Rebano'] ?? ($animal['id_Rebano'] ?? '') }}"
+                                    data-rebano-nombre="{{ $animal['rebano']['Nombre'] ?? '' }}"
+                                    data-finca-id="{{ $animal['rebano']['id_Finca'] ?? '' }}"
+                                    data-finca-nombre="{{ $animal['rebano']['finca']['Nombre'] ?? ('Finca #'.($animal['rebano']['id_Finca'] ?? '')) }}"
+                                    {{ $toroId == $animal['id_Animal'] ? 'selected' : '' }}>
+                                {{ $animal['Nombre'] ?? 'Toro #'.$animal['id_Animal'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
+                    <select name="activo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        <option value="">Todos</option>
+                        <option value="1" {{ $activo === '1' ? 'selected' : '' }}>Activo</option>
+                        <option value="0" {{ $activo === '0' ? 'selected' : '' }}>Inactivo</option>
+                    </select>
+                </div>
+                <div class="flex-none flex gap-2">
+                    <button type="submit" class="px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">Filtrar</button>
+                    <a href="{{ route('semen-toro.index') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Limpiar</a>
+                </div>
             </div>
-            <div class="flex-1 min-w-40">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-                <select name="activo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste">
-                    <option value="">Todos</option>
-                    <option value="1" {{ $activo === '1' ? 'selected' : '' }}>Activo</option>
-                    <option value="0" {{ $activo === '0' ? 'selected' : '' }}>Inactivo</option>
-                </select>
-            </div>
-            <button type="submit" class="px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">
-                Filtrar
-            </button>
-            <a href="{{ route('semen-toro.index') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">
-                Limpiar
-            </a>
         </form>
     </div>
 
@@ -122,4 +139,18 @@
         @endif
     </div>
 </div>
+    <script>
+    (function(){
+        var f=document.getElementById('filtroFinca'),r=document.getElementById('filtroRebano'),a=document.getElementById('filtroAnimal');
+        if(!f||!r||!a)return;
+        var opts=Array.prototype.slice.call(a.options).filter(function(o){return!!o.value;});
+        var fM={},rM={};
+        opts.forEach(function(o){var fi=o.dataset.fincaId,fn=o.dataset.fincaNombre,ri=o.dataset.rebanoId,rn=o.dataset.rebanoNombre;if(fi&&!fM[fi])fM[fi]=fn||'Finca #'+fi;if(ri&&!rM[ri])rM[ri]={n:rn||'Rebano #'+ri,f:fi};});
+        Object.keys(fM).sort(function(a,b){return fM[a].localeCompare(fM[b]);}).forEach(function(id){var o=document.createElement('option');o.value=id;o.textContent=fM[id];f.appendChild(o);});
+        Object.keys(rM).sort(function(a,b){return rM[a].n.localeCompare(rM[b].n);}).forEach(function(id){var o=document.createElement('option');o.value=id;o.textContent=rM[id].n;o.dataset.fincaId=rM[id].f;r.appendChild(o);});
+        function cas(){var fv=f.value,rv=r.value;Array.prototype.forEach.call(r.options,function(o){if(o.value)o.hidden=!!(fv&&o.dataset.fincaId!==fv);});if(r.value&&r.options[r.selectedIndex]&&r.options[r.selectedIndex].hidden)r.value='';var rv2=r.value;opts.forEach(function(o){o.hidden=!!(fv&&o.dataset.fincaId!==fv)||!!(rv2&&o.dataset.rebanoId!==rv2);});if(a.value&&a.options[a.selectedIndex]&&a.options[a.selectedIndex].hidden)a.value='';}
+        f.addEventListener('change',cas);r.addEventListener('change',cas);
+        if(a.value){var s=opts.find(function(o){return o.value===a.value;});if(s){f.value=s.dataset.fincaId||'';r.value=s.dataset.rebanoId||'';cas();}}
+    })();
+    </script>
 @endsection
