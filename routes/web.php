@@ -20,9 +20,8 @@ use App\Http\Controllers\SemenToroController;
 use App\Http\Controllers\DiagnosticoController;
 use App\Http\Controllers\TratamientoController;
 use App\Http\Controllers\VacunaController;
-use App\Http\Controllers\DosisController;
+use App\Http\Controllers\VacunacionController;
 use App\Http\Controllers\CasaComercialController;
-use App\Http\Controllers\HistoricoAplicacionController;
 use App\Http\Controllers\MovimientoRebanoController;
 use Illuminate\Support\Facades\Route;
 
@@ -210,14 +209,15 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::put('/vacunas/{id}', [VacunaController::class, 'update'])->name('vacuna.update');
     Route::delete('/vacunas/{id}', [VacunaController::class, 'destroy'])->name('vacuna.destroy');
 
-    // Dosis
-    Route::get('/dosis', [DosisController::class, 'index'])->name('dosis.index');
-    Route::get('/dosis/create', [DosisController::class, 'create'])->name('dosis.create');
-    Route::post('/dosis', [DosisController::class, 'store'])->name('dosis.store');
-    Route::get('/dosis/{id}', [DosisController::class, 'show'])->name('dosis.show');
-    Route::get('/dosis/{id}/edit', [DosisController::class, 'edit'])->name('dosis.edit');
-    Route::put('/dosis/{id}', [DosisController::class, 'update'])->name('dosis.update');
-    Route::delete('/dosis/{id}', [DosisController::class, 'destroy'])->name('dosis.destroy');
+    // Vacunación (modelo sanitario principal)
+    Route::get('/vacunaciones', [VacunacionController::class, 'index'])->name('vacunacion.index');
+    Route::get('/vacunaciones/create', [VacunacionController::class, 'create'])->name('vacunacion.create');
+    Route::post('/vacunaciones/preview', [VacunacionController::class, 'preview'])->name('vacunacion.preview');
+    Route::post('/vacunaciones', [VacunacionController::class, 'store'])->name('vacunacion.store');
+    Route::get('/vacunaciones/{id}', [VacunacionController::class, 'show'])->name('vacunacion.show');
+    Route::get('/vacunaciones/{id}/edit', [VacunacionController::class, 'edit'])->name('vacunacion.edit');
+    Route::put('/vacunaciones/{id}', [VacunacionController::class, 'update'])->name('vacunacion.update');
+    Route::delete('/vacunaciones/{id}', [VacunacionController::class, 'destroy'])->name('vacunacion.destroy');
 
     // Casas Comerciales
     Route::get('/casas-comerciales', [CasaComercialController::class, 'index'])->name('casa-comercial.index');
@@ -227,16 +227,6 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/casas-comerciales/{id}/edit', [CasaComercialController::class, 'edit'])->name('casa-comercial.edit');
     Route::put('/casas-comerciales/{id}', [CasaComercialController::class, 'update'])->name('casa-comercial.update');
     Route::delete('/casas-comerciales/{id}', [CasaComercialController::class, 'destroy'])->name('casa-comercial.destroy');
-
-    // Histórico de Aplicación
-    Route::get('/historico-aplicacion', [HistoricoAplicacionController::class, 'index'])->name('historico-aplicacion.index');
-    Route::get('/historico-aplicacion/create', [HistoricoAplicacionController::class, 'create'])->name('historico-aplicacion.create');
-    Route::post('/historico-aplicacion/preview-campana', [HistoricoAplicacionController::class, 'previewCampana'])->name('historico-aplicacion.preview-campana');
-    Route::post('/historico-aplicacion', [HistoricoAplicacionController::class, 'store'])->name('historico-aplicacion.store');
-    Route::get('/historico-aplicacion/{id}', [HistoricoAplicacionController::class, 'show'])->name('historico-aplicacion.show');
-    Route::get('/historico-aplicacion/{id}/edit', [HistoricoAplicacionController::class, 'edit'])->name('historico-aplicacion.edit');
-    Route::put('/historico-aplicacion/{id}', [HistoricoAplicacionController::class, 'update'])->name('historico-aplicacion.update');
-    Route::delete('/historico-aplicacion/{id}', [HistoricoAplicacionController::class, 'destroy'])->name('historico-aplicacion.destroy');
 
     // ===================== MOVIMIENTOS DE REBAÑO =====================
     Route::get('/movimiento-rebano', [MovimientoRebanoController::class, 'index'])->name('movimiento-rebano.index');

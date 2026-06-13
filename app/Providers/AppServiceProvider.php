@@ -119,6 +119,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Api\ApiDosisService::class
         );
         $this->app->bind(
+            \App\Services\Contracts\VacunacionServiceInterface::class,
+            \App\Services\Api\ApiVacunacionService::class
+        );
+        $this->app->bind(
             \App\Services\Contracts\CasaComercialServiceInterface::class,
             \App\Services\Api\ApiCasaComercialService::class
         );

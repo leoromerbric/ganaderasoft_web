@@ -170,17 +170,13 @@
                     <span class="menu-icon text-xl mr-3">💉</span>
                     <span class="menu-text font-medium">Vacunas</span>
                 </a>
-                <a href="{{ route('dosis.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('dosis.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
-                    <span class="menu-icon text-xl mr-3">🧪</span>
-                    <span class="menu-text font-medium">Dosis</span>
+                <a href="{{ route('vacunacion.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('vacunacion.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">💉</span>
+                    <span class="menu-text font-medium">Vacunación</span>
                 </a>
                 <a href="{{ route('casa-comercial.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('casa-comercial.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
                     <span class="menu-icon text-xl mr-3">🏭</span>
                     <span class="menu-text font-medium">Casas Comerciales</span>
-                </a>
-                <a href="{{ route('historico-aplicacion.index') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('historico-aplicacion.*') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
-                    <span class="menu-icon text-xl mr-3">📋</span>
-                    <span class="menu-text font-medium">Historial de Vacunas</span>
                 </a>
 
                 <!-- Movimientos de Rebaño -->
@@ -221,5 +217,7 @@
             @yield('content')
         </main>
     </div>
+
+    @stack('scripts')
 </body>
 </html>
