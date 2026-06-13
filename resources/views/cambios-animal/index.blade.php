@@ -149,7 +149,7 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $mapaAnimales[$cambio['cambios_etapa_anid'] ?? null] ?? ('Animal #'.($cambio['cambios_etapa_anid'] ?? 'N/A')) }}
+                                        {{ $cambio['animal']['Nombre'] ?? $mapaAnimales[$cambio['cambios_etapa_anid'] ?? null] ?? ('Animal #'.($cambio['cambios_etapa_anid'] ?? 'N/A')) }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @php $etapa = strtolower($cambio['Etapa_Cambio'] ?? ''); @endphp
