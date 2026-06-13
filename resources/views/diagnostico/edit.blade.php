@@ -52,8 +52,20 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del Diagnóstico</label>
+                    @php
+                        $diagnosticoFechaRaw = old('diagnostico_fecha', $diagnostico['diagnostico_fecha'] ?? null);
+                        $diagnosticoFechaValue = '';
+
+                        if (!empty($diagnosticoFechaRaw)) {
+                            try {
+                                $diagnosticoFechaValue = \Carbon\Carbon::parse($diagnosticoFechaRaw)->format('Y-m-d');
+                            } catch (\Exception $e) {
+                                $diagnosticoFechaValue = '';
+                            }
+                        }
+                    @endphp
                     <input type="date" name="diagnostico_fecha"
-                           value="{{ old('diagnostico_fecha', $diagnostico['diagnostico_fecha'] ?? date('Y-m-d')) }}"
+                           value="{{ $diagnosticoFechaValue }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('diagnostico_fecha') border-red-500 @enderror">
                     @error('diagnostico_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>

@@ -103,11 +103,13 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
             const payload = await response.json();
-            const etapa = payload?.data?.etapa_actual || null;
-            const etapaId = etapa?.etapa_id || etapa?.etan_etapa_id || '';
-            const etapaNombre = etapa?.Nombre || etapa?.nombre || etapa?.descripcion || '';
+            const animal = payload?.data?.animal || payload?.data || {};
+            const etapaActual = payload?.data?.etapa_actual || payload?.data?.etapaActual || animal?.etapa_actual || animal?.etapaActual || null;
+            const etapa = etapaActual?.etapa || etapaActual;
+            const etapaId = etapa?.etapa_id || etapaActual?.etan_etapa_id || etapaActual?.etanEtapaId || '';
+            const etapaNombre = etapa?.etapa_nombre || etapa?.Nombre || etapa?.nombre || etapa?.descripcion || etapaActual?.etapa_nombre || etapaActual?.nombre || '';
             etapaInput.value = etapaId;
-            etapaTexto.value = etapaId ? (etapaNombre || 'Etapa actual') : 'Animal sin etapa activa';
+            etapaTexto.value = etapaId ? (etapaNombre || ('Etapa #' + etapaId)) : 'Animal sin etapa activa';
         } catch (error) {
             etapaTexto.value = 'No se pudo obtener la etapa actual';
         }
