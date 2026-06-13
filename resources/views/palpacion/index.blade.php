@@ -95,7 +95,7 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($palpaciones as $palpacion)
-                        <tr class="hover:bg-gray-50 transition-colors">
+                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $palpacion['animal']['id_Animal'] ?? $palpacion['palpacion_etapa_anid'] ?? '' }}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $palpacion['palpacion_id'] ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 {{ $palpacion['animal']['Nombre'] ?? ('Animal #'.($palpacion['palpacion_etapa_anid'] ?? 'N/A')) }}
@@ -149,8 +149,22 @@
         opts.forEach(function(o){var fi=o.dataset.fincaId,fn=o.dataset.fincaNombre,ri=o.dataset.rebanoId,rn=o.dataset.rebanoNombre;if(fi&&!fM[fi])fM[fi]=fn||'Finca #'+fi;if(ri&&!rM[ri])rM[ri]={n:rn||'Rebano #'+ri,f:fi};});
         Object.keys(fM).sort(function(a,b){return fM[a].localeCompare(fM[b]);}).forEach(function(id){var o=document.createElement('option');o.value=id;o.textContent=fM[id];f.appendChild(o);});
         Object.keys(rM).sort(function(a,b){return rM[a].n.localeCompare(rM[b].n);}).forEach(function(id){var o=document.createElement('option');o.value=id;o.textContent=rM[id].n;o.dataset.fincaId=rM[id].f;r.appendChild(o);});
-        function cas(){var fv=f.value,rv=r.value;Array.prototype.forEach.call(r.options,function(o){if(o.value)o.hidden=!!(fv&&o.dataset.fincaId!==fv);});if(r.value&&r.options[r.selectedIndex]&&r.options[r.selectedIndex].hidden)r.value='';var rv2=r.value;opts.forEach(function(o){o.hidden=!!(fv&&o.dataset.fincaId!==fv)||!!(rv2&&o.dataset.rebanoId!==rv2);});if(a.value&&a.options[a.selectedIndex]&&a.options[a.selectedIndex].hidden)a.value='';}
-        f.addEventListener('change',cas);r.addEventListener('change',cas);
+        function cas(){
+            var fv=f.value,rv=r.value;
+            Array.prototype.forEach.call(r.options,function(o){if(o.value)o.hidden=!!(fv&&o.dataset.fincaId!==fv);});
+            if(r.value&&r.options[r.selectedIndex]&&r.options[r.selectedIndex].hidden)r.value='';
+            var rv2=r.value;
+            opts.forEach(function(o){o.hidden=!!(fv&&o.dataset.fincaId!==fv)||!!(rv2&&o.dataset.rebanoId!==rv2);});
+            if(a.value&&a.options[a.selectedIndex]&&a.options[a.selectedIndex].hidden)a.value='';
+            var av=a.value;
+            var rows=document.querySelectorAll('tbody tr[data-animal-id]');
+            if(!fv&&!rv2&&!av){rows.forEach(function(row){row.style.display='';});return;}
+            var allowed={};
+            if(av){allowed[String(av)]=true;}
+            else{opts.forEach(function(o){if(!o.hidden&&o.value)allowed[String(o.value)]=true;});}
+            rows.forEach(function(row){row.style.display=allowed[String(row.dataset.animalId)]?'':'none';});
+        }
+        f.addEventListener('change',cas);r.addEventListener('change',cas);a.addEventListener('change',cas);
         if(a.value){var s=opts.find(function(o){return o.value===a.value;});if(s){f.value=s.dataset.fincaId||'';r.value=s.dataset.rebanoId||'';cas();}}
     })();
     </script>

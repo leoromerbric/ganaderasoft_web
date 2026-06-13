@@ -92,7 +92,7 @@
                 <tbody class="divide-y divide-gray-200 bg-white">
                     @foreach($vacunaciones as $item)
                         @php $id = $item['vacunacion_id'] ?? null; @endphp
-                        <tr class="hover:bg-gray-50 transition-colors">
+                        <tr class="hover:bg-gray-50 transition-colors" data-rebano-id="{{ data_get($item, 'vacunacion_rebano_id', '') }}">
                             <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">{{ $id }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'vacuna.vacuna_nombre') ?? ('Vacuna #'.data_get($item, 'vacunacion_vacuna_id')) }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'rebano.Nombre') ?? ('Rebaño #'.data_get($item, 'vacunacion_rebano_id')) }}</td>
@@ -128,10 +128,22 @@
         if(!f||!r)return;
         var rebOpts=Array.prototype.slice.call(r.options).filter(function(o){return!!o.value;});
         var fM={};
-        rebOpts.forEach(function(o){var fi=o.dataset.fincaId;if(fi&&!fM[fi])fM[fi]='Finca #'+fi;});
-        Object.keys(fM).sort().forEach(function(id){var o=document.createElement('option');o.value=id;o.textContent=fM[id];f.appendChild(o);});
-        f.addEventListener('change',function(){var fv=f.value;rebOpts.forEach(function(o){o.hidden=!!(fv&&o.dataset.fincaId!==fv);});if(r.value&&r.options[r.selectedIndex]&&r.options[r.selectedIndex].hidden)r.value='';});
-        if(r.value){var s=rebOpts.find(function(o){return o.value===r.value;});if(s&&s.dataset.fincaId)f.value=s.dataset.fincaId;}
+        rebOpts.forEach(function(o){var fi=o.dataset.fincaId,fn=o.dataset.fincaNombre;if(fi&&!fM[fi])fM[fi]=fn||'Finca #'+fi;});
+        Object.keys(fM).sort(function(a,b){return fM[a].localeCompare(fM[b]);}).forEach(function(id){var o=document.createElement('option');o.value=id;o.textContent=fM[id];f.appendChild(o);});
+        function cas(){
+            var fv=f.value;
+            rebOpts.forEach(function(o){o.hidden=!!(fv&&o.dataset.fincaId!==fv);});
+            if(r.value&&r.options[r.selectedIndex]&&r.options[r.selectedIndex].hidden)r.value='';
+            var rv=r.value;
+            var rows=document.querySelectorAll('tbody tr[data-rebano-id]');
+            if(!fv&&!rv){rows.forEach(function(row){row.style.display='';});return;}
+            var allowed={};
+            if(rv){allowed[String(rv)]=true;}
+            else{rebOpts.forEach(function(o){if(!o.hidden&&o.value)allowed[String(o.value)]=true;});}
+            rows.forEach(function(row){row.style.display=allowed[String(row.dataset.rebanoId)]?'':'none';});
+        }
+        f.addEventListener('change',cas);r.addEventListener('change',cas);
+        if(r.value){var s=rebOpts.find(function(o){return o.value===r.value;});if(s&&s.dataset.fincaId)f.value=s.dataset.fincaId;cas();}
     })();
     </script>
 @endsection
