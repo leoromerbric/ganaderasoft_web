@@ -3,48 +3,54 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\AnimalesServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
 use App\Services\Contracts\RebanosServiceInterface;
 use Illuminate\Http\Request;
 
 class AnimalesController extends Controller
 {
-    protected AnimalesServiceInterface $animalesService;
-    protected RebanosServiceInterface $rebanosService;
-
     public function __construct(
-        AnimalesServiceInterface $animalesService,
-        RebanosServiceInterface $rebanosService
-    ) {
-        $this->animalesService = $animalesService;
-        $this->rebanosService = $rebanosService;
-    }
+        protected AnimalesServiceInterface $animalesService,
+        protected RebanosServiceInterface  $rebanosService,
+        protected FincasServiceInterface   $fincasService,
+    ) {}
 
     /**
      * Display a listing of animals
      */
     public function index(Request $request)
     {
-        $rebanoId = $request->query('id_rebano');
-        
-        // Convert to integer if not null and not empty
-        if ($rebanoId && is_numeric($rebanoId)) {
-            $rebanoId = (int) $rebanoId;
-        } else {
-            $rebanoId = null;
-        }
-        
-        $response = $this->animalesService->getAnimales($rebanoId);
+        $idFinca  = $request->query('id_finca')  ? (int) $request->query('id_finca')  : null;
+        $idRebano = $request->query('id_rebano') ? (int) $request->query('id_rebano') : null;
+        $sexo     = $request->query('sexo', '');
+        $nombre   = $request->query('nombre', '');
 
-        if (!$response['success']) {
-            return redirect()->route('dashboard')->with('error', $response['message']);
-        }
+        // Load all animales (client-side filtering for finca/sexo/nombre)
+        $response = $this->animalesService->getAnimales($idRebano);
+        $animales = ($response['success'] ?? false) ? ($response['data']['data'] ?? []) : [];
 
-        // Extract animals from paginated data structure
-        $animales = $response['data']['data'] ?? [];
         $rebanosResponse = $this->rebanosService->getRebanos();
-        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data']['data'] ?? []) : [];
+        $rebanos = ($rebanosResponse['success'] ?? false) ? ($rebanosResponse['data']['data'] ?? []) : [];
 
-        return view('animales.index', compact('animales', 'rebanos', 'rebanoId'));
+        $fincasResponse = $this->fincasService->getFincas();
+        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
+
+        // Build rebano→finca map for JS
+        $mapaRebanoFinca = collect($rebanos)->keyBy('id_Rebano')->map(fn($r) => $r['id_Finca'] ?? null)->all();
+
+        // Estadísticas sobre los animales cargados
+        $estadisticas = [
+            'total'     => count($animales),
+            'machos'    => count(array_filter($animales, fn($a) => ($a['Sexo'] ?? '') === 'M')),
+            'hembras'   => count(array_filter($animales, fn($a) => ($a['Sexo'] ?? '') === 'F')),
+            'activos'   => count(array_filter($animales, fn($a) => !($a['archivado'] ?? false))),
+        ];
+
+        return view('animales.index', compact(
+            'animales', 'rebanos', 'fincas',
+            'idFinca', 'idRebano', 'sexo', 'nombre',
+            'mapaRebanoFinca', 'estadisticas'
+        ));
     }
 
     /**
