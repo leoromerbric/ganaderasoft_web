@@ -24,7 +24,7 @@
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Toro</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ $semen['toro']['Nombre'] ?? ('Toro #'.($semen['id_Toro'] ?? 'N/A')) }}
+                    {{ $semen['toro']['nombre'] ?? ($semen['toro']['Nombre'] ?? ('Toro #'.($semen['animal_id'] ?? ($semen['id_Toro'] ?? 'N/A')))) }}
                 </p>
             </div>
             <div>

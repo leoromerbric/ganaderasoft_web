@@ -92,7 +92,7 @@
                         <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $semen['id_Toro'] ?? '' }}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $semen['semen_id'] ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $semen['toro']['Nombre'] ?? ('Toro #'.($semen['id_Toro'] ?? 'N/A')) }}
+                                {{ $semen['toro']['nombre'] ?? ($semen['toro']['Nombre'] ?? ('Toro #'.($semen['animal_id'] ?? ($semen['id_Toro'] ?? 'N/A')))) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if(isset($semen['semen_estado']))

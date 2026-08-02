@@ -15,7 +15,8 @@ class SemenToroController extends Controller
         $activo  = $request->query('activo');
 
         $response = $this->service->getList($toroId, $activo !== null ? (bool)$activo : null);
-        $semenToros = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $responseData = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $semenToros = isset($responseData['data']) && is_array($responseData['data']) ? $responseData['data'] : $responseData;
         $toros    = $this->service->getToros();
 
         return view('semen-toro.index', compact('semenToros', 'toros', 'toroId', 'activo'));
@@ -72,11 +73,12 @@ class SemenToroController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
+            'id_Toro'      => 'required|integer',
             'semen_estado' => 'nullable|boolean',
             'semen_fecha'  => 'nullable|date',
         ]);
 
-        $data = $request->only(['semen_estado', 'semen_fecha']);
+        $data = $request->only(['id_Toro', 'semen_estado', 'semen_fecha']);
 
         $response = $this->service->update($id, $data);
         if ($response['success'] ?? false) {

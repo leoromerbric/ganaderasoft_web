@@ -37,8 +37,8 @@
                             class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('id_Toro') }}">
                         <option value="">Seleccione un toro</option>
                         @foreach($toros as $toro)
-                            <option value="{{ $toro['id_Animal'] }}" {{ old('id_Toro', $semen['id_Toro'] ?? '') == $toro['id_Animal'] ? 'selected' : '' }}>
-                                {{ $toro['Nombre'] ?? 'Animal #'.$toro['id_Animal'] }}
+                            <option value="{{ $toro['id_Animal'] ?? $toro['id'] ?? '' }}" {{ old('id_Toro', $semen['animal_id'] ?? $semen['id_Toro'] ?? '') == ($toro['id_Animal'] ?? $toro['id'] ?? '') ? 'selected' : '' }}>
+                                {{ $toro['nombre'] ?? $toro['Nombre'] ?? 'Animal #'.($toro['id_Animal'] ?? $toro['id'] ?? '') }}
                             </option>
                         @endforeach
                     </select>
