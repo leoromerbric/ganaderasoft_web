@@ -1,0 +1,31 @@
+# Ignorar dependencias locales de PHP y Node (se instalan en el contenedor)
+/vendor/
+/node_modules/
+
+# Ignorar archivos generados por Vite en desarrollo que rompen producción
+/public/hot
+
+# Ignorar el contenido de las carpetas de almacenamiento, pero NO las carpetas
+/public/storage
+/storage/*.key
+/storage/logs/*
+!/storage/logs/.gitignore
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+
+# Ignorar variables de entorno locales (se usan las de producción o el docker-compose)
+/.env
+/.env.*
+
+# Ignorar carpetas de control de versiones y editores de código
+/.git/
+/.idea/
+/.vscode/
+
+# Ignorar logs de NPM/Yarn
+/npm-debug.log
+/yarn-error.log

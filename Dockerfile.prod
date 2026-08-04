@@ -12,11 +12,10 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nginx \
     supervisor \
-    socat \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Instalar Node.js 18 para la compilación de recursos con Vite
+# Instalar Node.js temporalmente solo para construir los recursos (assets)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -26,18 +25,36 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# No copiamos el código de la aplicación aquí porque se montará a través de docker-compose.yml en desarrollo
-# Usaremos un script entrypoint para instalar dependencias cuando el contenedor inicie.
+# Instalar dependencias primero para optimización de caché de Docker
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
+
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Copiar el código fuente de la aplicación
+COPY . .
+
+# Ejecutar scripts de composer
+RUN composer dump-autoload --optimize
+
+# Construir recursos del frontend y eliminar Node.js/node_modules para ahorrar espacio
+RUN npm run build \
+    && rm -rf node_modules \
+    && apt-get remove -y nodejs \
+    && apt-get autoremove -y
 
 # Copiar configuraciones
 COPY docker/nginx/default.conf /etc/nginx/sites-available/default
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-RUN chmod +x /usr/local/bin/entrypoint.sh && \
-    sed -i 's/\r$//' /usr/local/bin/entrypoint.sh
+# Establecer permisos
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod +x /usr/local/bin/entrypoint.sh \
+    && sed -i 's/\r$//' /usr/local/bin/entrypoint.sh
 
 EXPOSE 80
-EXPOSE 5173
 
 CMD ["/usr/local/bin/entrypoint.sh"]
