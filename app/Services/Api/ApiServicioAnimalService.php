@@ -11,6 +11,7 @@ class ApiServicioAnimalService extends BaseApiService implements ServicioAnimalS
         return [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
+            'X-Api-Version' => '2',
         ];
     }
 
@@ -18,7 +19,7 @@ class ApiServicioAnimalService extends BaseApiService implements ServicioAnimalS
     {
         if (!session('user.token')) return ['success' => false, 'data' => []];
         $params = array_filter(['animal_id' => $animalId, 'tipo' => $tipo, 'fecha_inicio' => $fechaInicio, 'fecha_fin' => $fechaFin]);
-        $endpoint = '/servicio-animal' . (!empty($params) ? '?' . http_build_query($params) : '');
+        $endpoint = '/servicio-animal?nopaginate=true' . (!empty($params) ? '&' . http_build_query($params) : '');
         return $this->get($endpoint, $this->authHeaders());
     }
 
@@ -49,28 +50,32 @@ class ApiServicioAnimalService extends BaseApiService implements ServicioAnimalS
     public function getAnimales(): array
     {
         if (!session('user.token')) return [];
-        $r = $this->get('/animales', $this->authHeaders());
-        return ($r['success'] ?? false) ? ($r['data']['data'] ?? $r['data'] ?? []) : [];
+        $r = $this->get('/animales?nopaginate=true', $this->authHeaders());
+        $data = ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 
     public function getSemenToros(): array
     {
         if (!session('user.token')) return [];
-        $r = $this->get('/semen-toro?activo=1', $this->authHeaders());
-        return ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        $r = $this->get('/semen-toro?activo=1&nopaginate=true', $this->authHeaders());
+        $data = ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 
     public function getPersonalFinca(): array
     {
         if (!session('user.token')) return [];
-        $r = $this->get('/personal-finca', $this->authHeaders());
-        return ($r['success'] ?? false) ? ($r['data']['data'] ?? $r['data'] ?? []) : [];
+        $r = $this->get('/personal-finca?nopaginate=true', $this->authHeaders());
+        $data = ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 
     public function getRegistrosCelo(): array
     {
         if (!session('user.token')) return [];
-        $r = $this->get('/registro-celo', $this->authHeaders());
-        return ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        $r = $this->get('/registro-celo?nopaginate=true', $this->authHeaders());
+        $data = ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 }

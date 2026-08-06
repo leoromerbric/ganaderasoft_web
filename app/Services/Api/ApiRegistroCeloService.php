@@ -11,6 +11,7 @@ class ApiRegistroCeloService extends BaseApiService implements RegistroCeloServi
         return [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
+            'X-Api-Version' => '2',
         ];
     }
 
@@ -23,7 +24,7 @@ class ApiRegistroCeloService extends BaseApiService implements RegistroCeloServi
             'fecha_inicio'=> $fechaInicio,
             'fecha_fin'   => $fechaFin,
         ]);
-        $endpoint = '/registro-celo' . (!empty($params) ? '?' . http_build_query($params) : '');
+        $endpoint = '/registro-celo?nopaginate=true' . (!empty($params) ? '&' . http_build_query($params) : '');
         return $this->get($endpoint, $this->authHeaders());
     }
 
@@ -54,7 +55,8 @@ class ApiRegistroCeloService extends BaseApiService implements RegistroCeloServi
     public function getAnimales(): array
     {
         if (!session('user.token')) return [];
-        $response = $this->get('/animales', $this->authHeaders());
-        return ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
+        $response = $this->get('/animales?nopaginate=true', $this->authHeaders());
+        $data = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 }

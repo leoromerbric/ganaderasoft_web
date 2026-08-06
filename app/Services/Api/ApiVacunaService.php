@@ -11,13 +11,14 @@ class ApiVacunaService extends BaseApiService implements VacunaServiceInterface
         return [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
+            'X-Api-Version' => '2',
         ];
     }
 
     public function getList(?string $nombre = null): array
     {
         if (!session('user.token')) return ['success' => false, 'data' => []];
-        $endpoint = '/vacunas' . ($nombre ? '?nombre=' . urlencode($nombre) : '');
+        $endpoint = '/vacunas?nopaginate=true' . ($nombre ? '&nombre=' . urlencode($nombre) : '');
         return $this->get($endpoint, $this->authHeaders());
     }
 

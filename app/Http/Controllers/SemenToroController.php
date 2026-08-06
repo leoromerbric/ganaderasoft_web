@@ -15,7 +15,8 @@ class SemenToroController extends Controller
         $activo  = $request->query('activo');
 
         $response = $this->service->getList($toroId, $activo !== null ? (bool)$activo : null);
-        $semenToros = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $data = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $semenToros = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $toros    = $this->service->getToros();
 
         return view('semen-toro.index', compact('semenToros', 'toros', 'toroId', 'activo'));
@@ -27,25 +28,51 @@ class SemenToroController extends Controller
         return view('semen-toro.create', compact('toros'));
     }
 
+    private function apiMessage(array $response, string $fallback): string
+    {
+        if (!empty($response['message']) && is_string($response['message'])) {
+            if (!empty($response['errors']) && is_array($response['errors'])) {
+                $first = collect($response['errors'])->flatten()->first();
+                if (is_string($first) && $first !== '') {
+                    return $first;
+                }
+            }
+            return $response['message'];
+        }
+
+        if (!empty($response['errors']) && is_array($response['errors'])) {
+            $first = collect($response['errors'])->flatten()->first();
+            if (is_string($first) && $first !== '') {
+                return $first;
+            }
+        }
+
+        return $fallback;
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'animal_id' => 'required|integer',
-            'estado'    => 'nullable|boolean',
+            'estado'    => 'nullable',
             'fecha'     => 'nullable|date',
         ], [
             'animal_id.required' => 'El toro es requerido.',
         ]);
 
         $data = $request->only(['animal_id', 'estado', 'fecha']);
-        if (!isset($data['estado'])) $data['estado'] = false;
+        if (!isset($data['estado']) || $data['estado'] === '') {
+            $data['estado'] = false;
+        } else {
+            $data['estado'] = filter_var($data['estado'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         $response = $this->service->create($data);
 
         if ($response['success'] ?? false) {
             return redirect()->route('semen-toro.index')->with('success', 'Semen de toro registrado exitosamente.');
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al crear el registro.');
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al crear el registro.'));
     }
 
     public function show(int $id)
@@ -73,17 +100,22 @@ class SemenToroController extends Controller
     {
         $request->validate([
             'animal_id' => 'nullable|integer',
-            'estado'    => 'nullable|boolean',
+            'estado'    => 'nullable',
             'fecha'     => 'nullable|date',
         ]);
 
         $data = $request->only(['animal_id', 'estado', 'fecha']);
+        if (!isset($data['estado']) || $data['estado'] === '') {
+            $data['estado'] = false;
+        } else {
+            $data['estado'] = filter_var($data['estado'], FILTER_VALIDATE_BOOLEAN);
+        }
 
         $response = $this->service->update($id, $data);
         if ($response['success'] ?? false) {
             return redirect()->route('semen-toro.index')->with('success', 'Semen de toro actualizado exitosamente.');
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al actualizar.');
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al actualizar.'));
     }
 
     public function destroy(int $id)

@@ -24,7 +24,11 @@
                 <select name="vacunacion_vacuna_id" class="w-full rounded-lg border border-gray-300 px-4 py-2">
                     <option value="">Seleccione</option>
                     @foreach($vacunas as $vacuna)
-                        <option value="{{ $vacuna['vacuna_id'] ?? '' }}" {{ old('vacunacion_vacuna_id') == ($vacuna['vacuna_id'] ?? '') ? 'selected' : '' }}>{{ $vacuna['vacuna_nombre'] ?? 'Vacuna' }}</option>
+                        @php
+                            $vacunaId = $vacuna['id'] ?? $vacuna['vacuna_id'] ?? '';
+                            $vacunaNombre = $vacuna['nombre'] ?? $vacuna['vacuna_nombre'] ?? 'Vacuna';
+                        @endphp
+                        <option value="{{ $vacunaId }}" {{ old('vacunacion_vacuna_id') == $vacunaId ? 'selected' : '' }}>{{ $vacunaNombre }}</option>
                     @endforeach
                 </select>
             </div>
@@ -51,7 +55,11 @@
                     <select name="vacunacion_rebano_id" id="filtro_rebano" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
                         <option value="">Seleccione</option>
                         @foreach($rebanos as $rebano)
-                            <option value="{{ $rebano['id_Rebano'] ?? '' }}" {{ old('vacunacion_rebano_id') == ($rebano['id_Rebano'] ?? '') ? 'selected' : '' }}>{{ $rebano['Nombre'] ?? ('Rebaño #'.($rebano['id_Rebano'] ?? '')) }}</option>
+                            @php
+                                $rebId = $rebano['id'] ?? $rebano['id_Rebano'] ?? '';
+                                $rebNombre = $rebano['Nombre'] ?? $rebano['nombre'] ?? ('Rebaño #'.$rebId);
+                            @endphp
+                            <option value="{{ $rebId }}" {{ old('vacunacion_rebano_id') == $rebId ? 'selected' : '' }}>{{ $rebNombre }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -68,7 +76,11 @@
                     <select name="vacunacion_filtros[etapa_id]" id="filtro_etapa" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
                         <option value="">Todas</option>
                         @foreach($etapas as $etapa)
-                            <option value="{{ $etapa['etapa_id'] ?? '' }}" {{ old('vacunacion_filtros.etapa_id') == ($etapa['etapa_id'] ?? '') ? 'selected' : '' }}>{{ $etapa['etapa_nombre'] ?? ('Etapa #'.($etapa['etapa_id'] ?? '')) }}</option>
+                            @php
+                                $etId = $etapa['id'] ?? $etapa['etapa_id'] ?? '';
+                                $etNombre = $etapa['nombre'] ?? $etapa['etapa_nombre'] ?? ('Etapa #'.$etId);
+                            @endphp
+                            <option value="{{ $etId }}" {{ old('vacunacion_filtros.etapa_id') == $etId ? 'selected' : '' }}>{{ $etNombre }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -178,7 +190,7 @@
             }
 
             lista.innerHTML = animales.map((a) => {
-                const id = a.id_Animal;
+                const id = a.id || a.id_Animal;
                 const nombre = a.Nombre || ('Animal #' + id);
                 const codigo = a.codigo_animal || '—';
                 const sx = sexoLabel[a.Sexo] || a.Sexo || '';

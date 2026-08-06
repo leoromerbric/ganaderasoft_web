@@ -27,7 +27,11 @@ class PalpacionController extends Controller
 
     private function isVetOrTech(array $persona): bool
     {
-        $tipo = strtolower(trim((string) (data_get($persona, 'Tipo_Trabajador') ?? data_get($persona, 'tipo_trabajador') ?? data_get($persona, 'personal.Tipo_Trabajador') ?? '')));
+        $tipoVal = data_get($persona, 'Tipo_Trabajador') ?? data_get($persona, 'tipo_trabajador') ?? data_get($persona, 'personal.Tipo_Trabajador') ?? '';
+        if (is_array($tipoVal)) {
+            $tipoVal = $tipoVal['nombre'] ?? $tipoVal['Nombre'] ?? '';
+        }
+        $tipo = strtolower(trim((string) $tipoVal));
 
         if ($tipo === '') {
             return true;
@@ -64,9 +68,10 @@ class PalpacionController extends Controller
         $fechaInicio = $request->query('fecha_inicio');
         $fechaFin    = $request->query('fecha_fin');
 
-        $response   = $this->service->getList($animalId, $tipo, $fechaInicio, $fechaFin);
-        $palpaciones = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
-        $animales   = $this->filterFemaleAnimals($this->service->getAnimales());
+        $response    = $this->service->getList($animalId, $tipo, $fechaInicio, $fechaFin);
+        $data        = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $palpaciones = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
+        $animales    = $this->filterFemaleAnimals($this->service->getAnimales());
 
         return view('palpacion.index', compact('palpaciones', 'animales', 'animalId', 'tipo', 'fechaInicio', 'fechaFin'));
     }
@@ -81,17 +86,22 @@ class PalpacionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'palpacion_fecha'      => 'nullable|date',
-            'palpacion_tipo'       => 'nullable|string|max:11',
-            'palpacion_etapa_anid' => 'required|integer',
-            'palpacion_etapa_etid' => 'required|integer',
+            'fecha'     => 'nullable|date',
+            'tipo'      => 'nullable|string|max:11',
+            'animal_id' => 'required|integer',
+            'etapa_id'  => 'required|integer',
         ], [
-            'palpacion_etapa_anid.required' => 'El animal es requerido.',
-            'palpacion_etapa_etid.required' => 'La etapa del animal es requerida.',
+            'animal_id.required' => 'El animal es requerido.',
+            'etapa_id.required'  => 'La etapa del animal es requerida.',
         ]);
 
-        $data = $request->only(['id_Tecnico', 'palpacion_tipo', 'palpacion_fecha', 'palpacion_etapa_anid', 'palpacion_etapa_etid']);
-        if (isset($data['id_Tecnico']) && $data['id_Tecnico'] === '') $data['id_Tecnico'] = null;
+        $data = [
+            'personal_finca_id' => $request->input('tecnico_id') !== '' ? $request->input('tecnico_id') : null,
+            'tipo'              => $request->input('tipo'),
+            'fecha'             => $request->input('fecha'),
+            'animal_id'         => $request->input('animal_id'),
+            'etapa_id'          => $request->input('etapa_id'),
+        ];
 
         $response = $this->service->create($data);
 
@@ -126,12 +136,15 @@ class PalpacionController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'palpacion_tipo'  => 'nullable|string|max:11',
-            'palpacion_fecha' => 'nullable|date',
+            'tipo'  => 'nullable|string|max:11',
+            'fecha' => 'nullable|date',
         ]);
 
-        $data = $request->only(['id_Tecnico', 'palpacion_tipo', 'palpacion_fecha']);
-        if (isset($data['id_Tecnico']) && $data['id_Tecnico'] === '') $data['id_Tecnico'] = null;
+        $data = [
+            'personal_finca_id' => $request->input('tecnico_id') !== '' ? $request->input('tecnico_id') : null,
+            'tipo'              => $request->input('tipo'),
+            'fecha'             => $request->input('fecha'),
+        ];
 
         $response = $this->service->update($id, $data);
         if ($response['success'] ?? false) {

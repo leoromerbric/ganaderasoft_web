@@ -30,31 +30,35 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal <span class="text-red-500">*</span></label>
-                        <select name="fk_etapa_animal_anid" required
-                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('fk_etapa_animal_anid') ? 'border-red-500' : 'border-gray-300' }}">
+                    <select name="animal_id" required
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('animal_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione un animal</option>
                         @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}" {{ old('fk_etapa_animal_anid') == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}
+                            @php
+                                $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
+                                $aNombre = $animal['Nombre'] ?? ('Animal #'.$aId);
+                            @endphp
+                            <option value="{{ $aId }}" {{ old('animal_id') == $aId ? 'selected' : '' }}>
+                                {{ $aNombre }}
                             </option>
                         @endforeach
                     </select>
-                    @error('fk_etapa_animal_anid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('animal_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Diagnóstico</label>
-                          <input type="text" name="diagnostico_tipo" value="{{ old('diagnostico_tipo') }}" maxlength="30"
+                    <input type="text" name="tipo" value="{{ old('tipo') }}" maxlength="30"
                            placeholder="Tipo de diagnóstico..."
-                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('diagnostico_tipo') ? 'border-red-500' : 'border-gray-300' }}">
-                    @error('diagnostico_tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                           class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('tipo') ? 'border-red-500' : 'border-gray-300' }}">
+                    @error('tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del Diagnóstico</label>
-                          <input type="date" name="diagnostico_fecha" value="{{ old('diagnostico_fecha', date('Y-m-d')) }}"
-                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('diagnostico_fecha') ? 'border-red-500' : 'border-gray-300' }}">
-                    @error('diagnostico_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="date" name="fecha" value="{{ old('fecha', date('Y-m-d')) }}"
+                           class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('fecha') ? 'border-red-500' : 'border-gray-300' }}">
+                    @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
@@ -62,16 +66,16 @@
                     <input type="text" id="diagnostico_etapa_texto" readonly
                            class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600"
                            placeholder="Se completará al seleccionar el animal">
-                    <input type="hidden" name="fk_etapa_animal_etid" id="diagnostico_etapa_etid" value="{{ old('fk_etapa_animal_etid') }}">
-                    @error('fk_etapa_animal_etid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="hidden" name="etapa_id" id="diagnostico_etapa_etid" value="{{ old('etapa_id') }}">
+                    @error('etapa_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                    <textarea name="diagnostico_descripcion" rows="4"
+                    <textarea name="descripcion" rows="4"
                               placeholder="Descripción del diagnóstico..."
-                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('diagnostico_descripcion') ? 'border-red-500' : 'border-gray-300' }}">{{ old('diagnostico_descripcion') }}</textarea>
-                    @error('diagnostico_descripcion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('descripcion') ? 'border-red-500' : 'border-gray-300' }}">{{ old('descripcion') }}</textarea>
+                    @error('descripcion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 
@@ -88,7 +92,7 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const animalSelect = document.querySelector('select[name="fk_etapa_animal_anid"]');
+    const animalSelect = document.querySelector('select[name="animal_id"]');
     const etapaInput = document.getElementById('diagnostico_etapa_etid');
     const etapaTexto = document.getElementById('diagnostico_etapa_texto');
     const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
@@ -106,8 +110,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const animal = payload?.data?.animal || payload?.data || {};
             const etapaActual = payload?.data?.etapa_actual || payload?.data?.etapaActual || animal?.etapa_actual || animal?.etapaActual || null;
             const etapa = etapaActual?.etapa || etapaActual;
-            const etapaId = etapa?.etapa_id || etapaActual?.etan_etapa_id || etapaActual?.etanEtapaId || '';
-            const etapaNombre = etapa?.etapa_nombre || etapa?.Nombre || etapa?.nombre || etapa?.descripcion || etapaActual?.etapa_nombre || etapaActual?.nombre || '';
+            const etapaId = etapa?.id || etapa?.etapa_id || etapaActual?.etan_etapa_id || etapaActual?.etanEtapaId || '';
+            const etapaNombre = etapa?.nombre || etapa?.etapa_nombre || etapa?.Nombre || etapa?.descripcion || etapaActual?.etapa_nombre || etapaActual?.nombre || '';
             etapaInput.value = etapaId;
             etapaTexto.value = etapaId ? (etapaNombre || ('Etapa #' + etapaId)) : 'Animal sin etapa activa';
         } catch (error) {

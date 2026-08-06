@@ -48,14 +48,14 @@
                         <option value="">Todos</option>
                         @foreach($diagnosticos as $diag)
                             @php
-                                $di  = $diag['diagnostico_id'] ?? '';
-                                $anId= $diag['fk_etapa_animal_anid'] ?? ($diag['animal']['id_Animal'] ?? '');
-                                $anNm= $diag['animal']['Nombre'] ?? '';
-                                $rId = $diag['animal']['rebano']['id_Rebano'] ?? ($diag['animal']['id_Rebano'] ?? '');
-                                $rNm = $diag['animal']['rebano']['Nombre'] ?? '';
-                                $fId = $diag['animal']['rebano']['id_Finca'] ?? '';
-                                $fNm = $diag['animal']['rebano']['finca']['Nombre'] ?? ('Finca #'.$fId);
-                                $tip = $diag['diagnostico_tipo'] ?? '';
+                                $di  = $diag['id'] ?? $diag['diagnostico_id'] ?? '';
+                                $anId= $diag['animal_id'] ?? $diag['fk_etapa_animal_anid'] ?? data_get($diag, 'etapa_animal.animal_id') ?? data_get($diag, 'animal.id') ?? data_get($diag, 'animal.id_Animal') ?? '';
+                                $anNm= data_get($diag, 'animal.Nombre') ?? '';
+                                $rId = data_get($diag, 'animal.rebano.id') ?? data_get($diag, 'animal.rebano.id_Rebano') ?? data_get($diag, 'animal.id_Rebano') ?? data_get($diag, 'animal.rebano_id') ?? '';
+                                $rNm = data_get($diag, 'animal.rebano.Nombre') ?? '';
+                                $fId = data_get($diag, 'animal.rebano.finca_id') ?? data_get($diag, 'animal.rebano.id_Finca') ?? '';
+                                $fNm = data_get($diag, 'animal.rebano.finca.Nombre') ?? ('Finca #'.$fId);
+                                $tip = $diag['tipo'] ?? $diag['diagnostico_tipo'] ?? '';
                             @endphp
                             <option value="{{ $di }}"
                                     data-animal-id="{{ $anId }}"
@@ -101,27 +101,35 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($tratamientos as $tratamiento)
-                        <tr class="hover:bg-gray-50 transition-colors" data-diag-id="{{ $tratamiento['tratamiento_diagnostico_id'] ?? '' }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $tratamiento['tratamiento_id'] ?? 'N/A' }}</td>
+                        @php
+                            $tId = $tratamiento['id'] ?? $tratamiento['tratamiento_id'] ?? null;
+                            $tDiagId = $tratamiento['diagnostico_id'] ?? $tratamiento['tratamiento_diagnostico_id'] ?? '';
+                            $tPlan = $tratamiento['plan'] ?? $tratamiento['tratamiento_plan'] ?? '-';
+                            $tFechaIni = $tratamiento['fecha_ini'] ?? $tratamiento['tratamiento_fecha_ini'] ?? null;
+                            $tFechaFin = $tratamiento['fecha_fin'] ?? $tratamiento['tratamiento_fecha_fin'] ?? null;
+                            $tDiagTipo = data_get($tratamiento, 'diagnostico.tipo') ?? data_get($tratamiento, 'diagnostico.diagnostico_tipo') ?? ($tDiagId ? 'Diag. #'.$tDiagId : '-');
+                        @endphp
+                        <tr class="hover:bg-gray-50 transition-colors" data-diag-id="{{ $tDiagId }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $tId ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ isset($tratamiento['diagnostico']['diagnostico_tipo']) ? $tratamiento['diagnostico']['diagnostico_tipo'] : (isset($tratamiento['tratamiento_diagnostico_id']) ? 'Diag. #'.$tratamiento['tratamiento_diagnostico_id'] : '-') }}
+                                {{ $tDiagTipo }}
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">{{ $tratamiento['tratamiento_plan'] ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">{{ $tPlan }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ isset($tratamiento['tratamiento_fecha_ini']) ? date('d/m/Y', strtotime($tratamiento['tratamiento_fecha_ini'])) : 'N/A' }}
+                                {{ $tFechaIni ? date('d/m/Y', strtotime($tFechaIni)) : 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ isset($tratamiento['tratamiento_fecha_fin']) ? date('d/m/Y', strtotime($tratamiento['tratamiento_fecha_fin'])) : 'N/A' }}
+                                {{ $tFechaFin ? date('d/m/Y', strtotime($tFechaFin)) : 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('tratamiento.show', $tratamiento['tratamiento_id']) }}"
+                                    <a href="{{ route('tratamiento.show', $tId) }}"
                                        class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
                                     <span class="text-gray-300">|</span>
-                                    <a href="{{ route('tratamiento.edit', $tratamiento['tratamiento_id']) }}"
+                                    <a href="{{ route('tratamiento.edit', $tId) }}"
                                        class="text-ganaderasoft-verde hover:text-green-700">Editar</a>
                                     <span class="text-gray-300">|</span>
-                                    <form method="POST" action="{{ route('tratamiento.destroy', $tratamiento['tratamiento_id']) }}" class="inline"
+                                    <form method="POST" action="{{ route('tratamiento.destroy', $tId) }}" class="inline"
                                           onsubmit="return confirm('¿Está seguro de que desea eliminar este registro?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">Eliminar</button>

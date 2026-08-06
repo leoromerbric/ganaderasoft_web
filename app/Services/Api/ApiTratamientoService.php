@@ -11,6 +11,7 @@ class ApiTratamientoService extends BaseApiService implements TratamientoService
         return [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
+            'X-Api-Version' => '2',
         ];
     }
 
@@ -18,7 +19,7 @@ class ApiTratamientoService extends BaseApiService implements TratamientoService
     {
         if (!session('user.token')) return ['success' => false, 'data' => []];
         $params = array_filter(['diagnostico_id' => $diagnosticoId, 'fecha_inicio' => $fechaInicio, 'fecha_fin' => $fechaFin]);
-        $endpoint = '/tratamiento' . (!empty($params) ? '?' . http_build_query($params) : '');
+        $endpoint = '/tratamiento?nopaginate=true' . (!empty($params) ? '&' . http_build_query($params) : '');
         return $this->get($endpoint, $this->authHeaders());
     }
 
@@ -49,7 +50,8 @@ class ApiTratamientoService extends BaseApiService implements TratamientoService
     public function getDiagnosticos(): array
     {
         if (!session('user.token')) return [];
-        $r = $this->get('/diagnostico', $this->authHeaders());
-        return ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        $r = $this->get('/diagnostico?nopaginate=true', $this->authHeaders());
+        $data = ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 }

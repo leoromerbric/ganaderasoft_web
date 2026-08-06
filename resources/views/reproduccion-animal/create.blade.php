@@ -30,16 +30,20 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal <span class="text-red-500">*</span></label>
-                        <select name="repro_etapa_anid" required
-                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('repro_etapa_anid') ? 'border-red-500' : 'border-gray-300' }}">
+                    <select name="animal_id" required
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('animal_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione un animal</option>
                         @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}" {{ old('repro_etapa_anid') == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}
+                            @php
+                                $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
+                                $aNombre = $animal['Nombre'] ?? ('Animal #'.$aId);
+                            @endphp
+                            <option value="{{ $aId }}" {{ old('animal_id') == $aId ? 'selected' : '' }}>
+                                {{ $aNombre }}
                             </option>
                         @endforeach
                     </select>
-                    @error('repro_etapa_anid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('animal_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
@@ -47,35 +51,35 @@
                     <input type="text" id="repro_etapa_texto" readonly
                            class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600"
                            placeholder="Se completará al seleccionar el animal">
-                    <input type="hidden" name="repro_etapa_etid" id="repro_etapa_etid" value="{{ old('repro_etapa_etid') }}">
-                    @error('repro_etapa_etid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="hidden" name="etapa_id" id="repro_etapa_etid" value="{{ old('etapa_id') }}">
+                    @error('etapa_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Reproducción</label>
-                        <select name="repro_tipo_reproduccion"
-                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('repro_tipo_reproduccion') ? 'border-red-500' : 'border-gray-300' }}">
+                    <select name="tipo"
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('tipo') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione un tipo</option>
-                        <option value="Natural" {{ old('repro_tipo_reproduccion') == 'Natural' ? 'selected' : '' }}>Natural</option>
-                        <option value="IA" {{ old('repro_tipo_reproduccion') == 'IA' ? 'selected' : '' }}>IA</option>
+                        <option value="Natural" {{ old('tipo') == 'Natural' ? 'selected' : '' }}>Natural</option>
+                        <option value="IA" {{ old('tipo') == 'IA' ? 'selected' : '' }}>IA</option>
                     </select>
-                    @error('repro_tipo_reproduccion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Reproducción <span class="text-red-500">*</span></label>
-                          <input type="date" name="repro_fecha_reproduccion" required
-                              value="{{ old('repro_fecha_reproduccion', date('Y-m-d')) }}"
-                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('repro_fecha_reproduccion') ? 'border-red-500' : 'border-gray-300' }}">
-                    @error('repro_fecha_reproduccion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="date" name="fecha" required
+                           value="{{ old('fecha', date('Y-m-d')) }}"
+                           class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('fecha') ? 'border-red-500' : 'border-gray-300' }}">
+                    @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-                          <input type="text" name="repro_observacion" value="{{ old('repro_observacion') }}" maxlength="60"
+                    <input type="text" name="observacion" value="{{ old('observacion') }}" maxlength="60"
                            placeholder="Observaciones..."
-                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('repro_observacion') ? 'border-red-500' : 'border-gray-300' }}">
-                    @error('repro_observacion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                           class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('observacion') ? 'border-red-500' : 'border-gray-300' }}">
+                    @error('observacion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 
@@ -92,7 +96,7 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const animalSelect = document.querySelector('select[name="repro_etapa_anid"]');
+    const animalSelect = document.querySelector('select[name="animal_id"]');
     const etapaInput = document.getElementById('repro_etapa_etid');
     const etapaTexto = document.getElementById('repro_etapa_texto');
     const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
@@ -107,12 +111,13 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
             const payload = await response.json();
-            const etapa = payload?.data?.etapa_actual || payload?.data?.etapaActual || null;
-            const etapaNode = etapa?.etapa || etapa;
-            const etapaId = etapaNode?.etapa_id || etapa?.etan_etapa_id || '';
-            const etapaNombre = etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.nombre || etapaNode?.descripcion || 'Etapa actual';
+            const animal = payload?.data?.animal || payload?.data || {};
+            const etapaActual = payload?.data?.etapa_actual || payload?.data?.etapaActual || animal?.etapa_actual || animal?.etapaActual || null;
+            const etapaNode = etapaActual?.etapa || etapaActual;
+            const etapaId = etapaNode?.id || etapaNode?.etapa_id || etapaActual?.etan_etapa_id || etapaActual?.etanEtapaId || '';
+            const etapaNombre = etapaNode?.nombre || etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.descripcion || etapaActual?.etapa_nombre || etapaActual?.nombre || 'Etapa actual';
             etapaInput.value = etapaId;
-            etapaTexto.value = etapaId ? etapaNombre : 'Animal sin etapa activa';
+            etapaTexto.value = etapaId ? (etapaNombre || ('Etapa #' + etapaId)) : 'Animal sin etapa activa';
         } catch (error) {
             etapaTexto.value = 'No se pudo obtener la etapa actual';
         }

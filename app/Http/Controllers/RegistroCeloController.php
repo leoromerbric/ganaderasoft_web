@@ -31,8 +31,9 @@ class RegistroCeloController extends Controller
         $fechaInicio = $request->query('fecha_inicio');
         $fechaFin    = $request->query('fecha_fin');
 
-        $response = $this->service->getList($animalId, $fechaInicio, $fechaFin);
-        $registros = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $response  = $this->service->getList($animalId, $fechaInicio, $fechaFin);
+        $data      = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $registros = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $animales  = $this->filterFemaleAnimals($this->service->getAnimales());
 
         return view('registro-celo.index', compact('registros', 'animales', 'animalId', 'fechaInicio', 'fechaFin'));
@@ -47,17 +48,17 @@ class RegistroCeloController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'celo_fecha'      => 'required|date',
-            'celo_observacon' => 'nullable|string|max:100',
-            'celo_etapa_anid' => 'required|integer',
-            'celo_etapa_etid' => 'required|integer',
+            'fecha'       => 'required|date',
+            'observacion' => 'nullable|string|max:100',
+            'animal_id'   => 'required|integer',
+            'etapa_id'    => 'required|integer',
         ], [
-            'celo_fecha.required'      => 'La fecha de celo es requerida.',
-            'celo_etapa_anid.required' => 'El animal es requerido.',
-            'celo_etapa_etid.required' => 'La etapa del animal es requerida.',
+            'fecha.required'     => 'La fecha de celo es requerida.',
+            'animal_id.required' => 'El animal es requerido.',
+            'etapa_id.required'  => 'La etapa del animal es requerida.',
         ]);
 
-        $response = $this->service->create($request->only(['celo_fecha', 'celo_observacon', 'celo_etapa_anid', 'celo_etapa_etid']));
+        $response = $this->service->create($request->only(['fecha', 'observacion', 'animal_id', 'etapa_id']));
 
         if ($response['success'] ?? false) {
             return redirect()->route('registro-celo.index')->with('success', 'Registro de celo creado exitosamente.');
@@ -89,13 +90,13 @@ class RegistroCeloController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'celo_fecha'      => 'required|date',
-            'celo_observacon' => 'nullable|string|max:100',
+            'fecha'       => 'required|date',
+            'observacion' => 'nullable|string|max:100',
         ], [
-            'celo_fecha.required' => 'La fecha de celo es requerida.',
+            'fecha.required' => 'La fecha de celo es requerida.',
         ]);
 
-        $response = $this->service->update($id, $request->only(['celo_fecha', 'celo_observacon']));
+        $response = $this->service->update($id, $request->only(['fecha', 'observacion']));
 
         if ($response['success'] ?? false) {
             return redirect()->route('registro-celo.index')->with('success', 'Registro de celo actualizado exitosamente.');

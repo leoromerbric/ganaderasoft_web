@@ -3,6 +3,17 @@
 @section('title', 'Detalle Tratamiento')
 
 @section('content')
+@php
+    $id = $tratamiento['id'] ?? $tratamiento['tratamiento_id'] ?? null;
+    $diagId = $tratamiento['diagnostico_id'] ?? $tratamiento['tratamiento_diagnostico_id'] ?? null;
+    $fechaIni = $tratamiento['fecha_ini'] ?? $tratamiento['tratamiento_fecha_ini'] ?? null;
+    $fechaFin = $tratamiento['fecha_fin'] ?? $tratamiento['tratamiento_fecha_fin'] ?? null;
+    $plan = $tratamiento['plan'] ?? $tratamiento['tratamiento_plan'] ?? '-';
+    $diag = $tratamiento['diagnostico'] ?? null;
+    $diagTipo = data_get($diag, 'tipo') ?? data_get($diag, 'diagnostico_tipo');
+    $diagFecha = data_get($diag, 'fecha') ?? data_get($diag, 'diagnostico_fecha');
+    $diagRefId = data_get($diag, 'id') ?? data_get($diag, 'diagnostico_id') ?? $diagId;
+@endphp
 <div>
     <div class="mb-6 flex items-center justify-between">
         <div class="flex items-center">
@@ -11,9 +22,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">💊 Tratamiento #{{ $tratamiento['tratamiento_id'] }}</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">💊 Tratamiento #{{ $id }}</h2>
         </div>
-        <a href="{{ route('tratamiento.edit', $tratamiento['tratamiento_id']) }}"
+        <a href="{{ route('tratamiento.edit', $id) }}"
            class="px-4 py-2 bg-ganaderasoft-verde text-white rounded-lg hover:bg-ganaderasoft-verde/80 transition-colors">
             Editar
         </a>
@@ -24,32 +35,32 @@
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Diagnóstico</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    @if(isset($tratamiento['diagnostico']))
-                        {{ $tratamiento['diagnostico']['diagnostico_tipo'] ?? '' }}
-                        @if(isset($tratamiento['diagnostico']['diagnostico_fecha']))
-                            ({{ date('d/m/Y', strtotime($tratamiento['diagnostico']['diagnostico_fecha'])) }})
+                    @if($diag)
+                        {{ $diagTipo ?? '' }}
+                        @if($diagFecha)
+                            ({{ date('d/m/Y', strtotime($diagFecha)) }})
                         @endif
-                        #{{ $tratamiento['diagnostico']['diagnostico_id'] ?? '' }}
+                        #{{ $diagRefId ?? '' }}
                     @else
-                        {{ isset($tratamiento['tratamiento_diagnostico_id']) ? 'Diag. #'.$tratamiento['tratamiento_diagnostico_id'] : '-' }}
+                        {{ $diagId ? 'Diag. #'.$diagId : '-' }}
                     @endif
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de Inicio</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ isset($tratamiento['tratamiento_fecha_ini']) ? date('d/m/Y', strtotime($tratamiento['tratamiento_fecha_ini'])) : 'N/A' }}
+                    {{ $fechaIni ? date('d/m/Y', strtotime($fechaIni)) : 'N/A' }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de Fin</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ isset($tratamiento['tratamiento_fecha_fin']) ? date('d/m/Y', strtotime($tratamiento['tratamiento_fecha_fin'])) : 'N/A' }}
+                    {{ $fechaFin ? date('d/m/Y', strtotime($fechaFin)) : 'N/A' }}
                 </p>
             </div>
             <div class="md:col-span-2">
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Plan de Tratamiento</p>
-                <p class="text-base text-ganaderasoft-negro mt-1">{{ $tratamiento['tratamiento_plan'] ?? '-' }}</p>
+                <p class="text-base text-ganaderasoft-negro mt-1">{{ $plan }}</p>
             </div>
         </div>
     </div>

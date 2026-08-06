@@ -10,14 +10,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">💉 Editar Vacuna #{{ $vacuna['vacuna_id'] }}</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">💉 Editar Vacuna #{{ $vacuna['id'] ?? $vacuna['vacuna_id'] }}</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
             <h3 class="text-lg font-semibold">Modificar Datos</h3>
         </div>
-        <form action="{{ route('vacuna.update', $vacuna['vacuna_id']) }}" method="POST" class="p-6">
+        <form action="{{ route('vacuna.update', $vacuna['id'] ?? $vacuna['vacuna_id']) }}" method="POST" class="p-6">
             @csrf @method('PUT')
             @if($errors->any())
                 <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
@@ -30,17 +30,17 @@
             <div class="grid grid-cols-1 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la Vacuna</label>
-                    <input type="text" name="vacuna_nombre" maxlength="80"
-                           value="{{ old('vacuna_nombre', $vacuna['vacuna_nombre'] ?? '') }}"
+                    <input type="text" name="nombre" maxlength="80"
+                           value="{{ old('nombre', $vacuna['nombre'] ?? $vacuna['vacuna_nombre'] ?? '') }}"
                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
-                    @error('vacuna_nombre')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('nombre')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                    <textarea name="vacuna_descripcion" rows="4"
-                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">{{ old('vacuna_descripcion', $vacuna['vacuna_descripcion'] ?? '') }}</textarea>
-                    @error('vacuna_descripcion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <textarea name="descripcion" rows="4"
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">{{ old('descripcion', $vacuna['descripcion'] ?? $vacuna['vacuna_descripcion'] ?? '') }}</textarea>
+                    @error('descripcion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>

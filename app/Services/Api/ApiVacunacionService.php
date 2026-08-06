@@ -11,6 +11,7 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
         return [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
+            'X-Api-Version' => '2',
         ];
     }
 
@@ -27,7 +28,7 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             'fecha_fin' => $filters['fecha_fin'] ?? null,
         ]);
 
-        $endpoint = '/vacunaciones' . (!empty($query) ? '?' . http_build_query($query) : '');
+        $endpoint = '/vacunaciones?nopaginate=true' . (!empty($query) ? '&' . http_build_query($query) : '');
         return $this->get($endpoint, $this->authHeaders());
     }
 
@@ -89,8 +90,9 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             return [];
         }
 
-        $response = $this->get('/vacunas', $this->authHeaders());
-        return ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $response = $this->get('/vacunas?nopaginate=true', $this->authHeaders());
+        $data = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 
     public function getEtapas(): array
@@ -99,8 +101,9 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             return [];
         }
 
-        $response = $this->get('/etapas', $this->authHeaders());
-        return ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
+        $response = $this->get('/etapas?nopaginate=true', $this->authHeaders());
+        $data = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 
     public function getRebanos(): array
@@ -109,7 +112,8 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             return [];
         }
 
-        $response = $this->get('/rebanos', $this->authHeaders());
-        return ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
+        $response = $this->get('/rebanos?nopaginate=true', $this->authHeaders());
+        $data = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 }

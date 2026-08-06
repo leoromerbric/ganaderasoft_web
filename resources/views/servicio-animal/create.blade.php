@@ -29,30 +29,38 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal <span class="text-red-500">*</span></label>
-                            <select name="servicio_id_Animal" required
-                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('servicio_id_Animal') ? 'border-red-500' : 'border-gray-300' }}">
+                    <select name="animal_id" required
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('animal_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione un animal</option>
                         @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}" {{ old('servicio_id_Animal') == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}
+                            @php
+                                $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
+                                $aNombre = $animal['Nombre'] ?? ('Animal #'.$aId);
+                            @endphp
+                            <option value="{{ $aId }}" {{ old('animal_id') == $aId ? 'selected' : '' }}>
+                                {{ $aNombre }}
                             </option>
                         @endforeach
                     </select>
-                    @error('servicio_id_Animal')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('animal_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Semen / Toro</label>
-                            <select name="servicio_semen_id"
-                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('servicio_semen_id') ? 'border-red-500' : 'border-gray-300' }}">
+                    <select name="semen_id"
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('semen_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">-- Sin semen --</option>
                         @foreach($semenToros as $semen)
-                            <option value="{{ $semen['semen_id'] }}" {{ old('servicio_semen_id') == $semen['semen_id'] ? 'selected' : '' }}>
-                                {{ $semen['toro']['Nombre'] ?? ('Semen #'.$semen['semen_id']) }}
+                            @php
+                                $semId = $semen['id'] ?? $semen['semen_id'] ?? '';
+                                $toroNombre = data_get($semen, 'toro.Nombre') ?? $semen['descripcion'] ?? $semen['codigo'] ?? ('Semen #'.$semId);
+                            @endphp
+                            <option value="{{ $semId }}" {{ old('semen_id') == $semId ? 'selected' : '' }}>
+                                {{ $toroNombre }}
                             </option>
                         @endforeach
                     </select>
-                    @error('servicio_semen_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('semen_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
@@ -65,66 +73,66 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Técnico</label>
-                            <select name="servicio_id_Tecnico"
-                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('servicio_id_Tecnico') ? 'border-red-500' : 'border-gray-300' }}">
+                    <select name="tecnico_id"
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('tecnico_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">-- Sin técnico --</option>
                         @foreach($personal as $persona)
                             @php
-                                $personalId = data_get($persona, 'id_Tecnico') ?? data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id_Tecnico') ?? data_get($persona, 'personal.id_Personal');
+                                $personalId = data_get($persona, 'id') ?? data_get($persona, 'id_Tecnico') ?? data_get($persona, 'id_Personal') ?? data_get($persona, 'personal.id') ?? data_get($persona, 'personal.id_Tecnico') ?? data_get($persona, 'personal.id_Personal');
                                 $personalNombre = trim((data_get($persona, 'Nombre') ?? data_get($persona, 'personal.Nombre') ?? '') . ' ' . (data_get($persona, 'Apellido') ?? data_get($persona, 'personal.Apellido') ?? ''));
                             @endphp
                             @continue(!$personalId)
-                            <option value="{{ $personalId }}" {{ old('servicio_id_Tecnico') == $personalId ? 'selected' : '' }}>
+                            <option value="{{ $personalId }}" {{ old('tecnico_id') == $personalId ? 'selected' : '' }}>
                                 {{ $personalNombre !== '' ? $personalNombre : 'Personal #'.$personalId }}
                             </option>
                         @endforeach
                     </select>
-                    @error('servicio_id_Tecnico')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('tecnico_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Registro de Celo</label>
-                            <select name="servicio_celo_id" id="servicio_celo_id"
-                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('servicio_celo_id') ? 'border-red-500' : 'border-gray-300' }}">
+                    <select name="celo_id" id="servicio_celo_id"
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('celo_id') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">-- Sin registro de celo --</option>
                         @foreach($registrosCelo as $celo)
                             @php
-                                $celoAnimalId = data_get($celo, 'animal.id_Animal')
-                                    ?? data_get($celo, 'animal.id_animal')
-                                    ?? data_get($celo, 'celo_etapa_anid')
-                                    ?? data_get($celo, 'etapa_animal.etan_animal_id');
+                                $celId = $celo['id'] ?? $celo['celo_id'] ?? '';
+                                $celoAnimalId = data_get($celo, 'animal.id') ?? data_get($celo, 'animal.id_Animal') ?? data_get($celo, 'animal_id') ?? data_get($celo, 'celo_etapa_anid') ?? data_get($celo, 'etapa_animal.animal_id') ?? '';
+                                $celoFecha = $celo['fecha'] ?? $celo['celo_fecha'] ?? null;
+                                $animalNombre = data_get($celo, 'animal.Nombre') ?? '';
                             @endphp
-                            <option value="{{ $celo['celo_id'] }}"
+                            <option value="{{ $celId }}"
                                     data-animal-id="{{ $celoAnimalId }}"
-                                    {{ old('servicio_celo_id') == $celo['celo_id'] ? 'selected' : '' }}>
-                                {{ $celo['animal']['Nombre'] ?? '' }} - {{ isset($celo['celo_fecha']) ? date('d/m/Y', strtotime($celo['celo_fecha'])) : '' }} (#{{ $celo['celo_id'] }})
+                                    {{ old('celo_id') == $celId ? 'selected' : '' }}>
+                                {{ $animalNombre }} - {{ $celoFecha ? date('d/m/Y', strtotime($celoFecha)) : '' }} (#{{ $celId }})
                             </option>
                         @endforeach
                     </select>
-                    @error('servicio_celo_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('celo_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Servicio</label>
-                          <input type="text" name="servicio_tipo" value="{{ old('servicio_tipo') }}" maxlength="11"
+                    <input type="text" name="tipo" value="{{ old('tipo') }}" maxlength="11"
                            placeholder="Ej: IA, Natural..."
-                               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('servicio_tipo') ? 'border-red-500' : 'border-gray-300' }}">
-                    @error('servicio_tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                           class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('tipo') ? 'border-red-500' : 'border-gray-300' }}">
+                    @error('tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del Servicio</label>
-                          <input type="date" name="servicio_fecha" value="{{ old('servicio_fecha', date('Y-m-d')) }}"
-                               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('servicio_fecha') ? 'border-red-500' : 'border-gray-300' }}">
-                    @error('servicio_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="date" name="fecha" value="{{ old('fecha', date('Y-m-d')) }}"
+                           class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('fecha') ? 'border-red-500' : 'border-gray-300' }}">
+                    @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-                          <input type="text" name="servicio_observacion" value="{{ old('servicio_observacion') }}" maxlength="100"
+                    <input type="text" name="observacion" value="{{ old('observacion') }}" maxlength="100"
                            placeholder="Observaciones del servicio..."
-                               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('servicio_observacion') ? 'border-red-500' : 'border-gray-300' }}">
-                    @error('servicio_observacion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                           class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('observacion') ? 'border-red-500' : 'border-gray-300' }}">
+                    @error('observacion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 
@@ -141,7 +149,7 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const animalSelect = document.querySelector('select[name="servicio_id_Animal"]');
+    const animalSelect = document.querySelector('select[name="animal_id"]');
     const celoSelect = document.getElementById('servicio_celo_id');
     const etapaInput = document.getElementById('servicio_etapa_etid');
     const etapaTexto = document.getElementById('servicio_etapa_texto');
@@ -182,12 +190,13 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
             const payload = await response.json();
-            const etapa = payload?.data?.etapa_actual || null;
-            const etapaNode = etapa?.etapa || etapa;
-            const etapaId = etapaNode?.etapa_id || etapa?.etan_etapa_id || '';
-            const etapaNombre = etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.nombre || etapaNode?.descripcion || 'Etapa actual';
+            const animal = payload?.data?.animal || payload?.data || {};
+            const etapaActual = payload?.data?.etapa_actual || payload?.data?.etapaActual || animal?.etapa_actual || animal?.etapaActual || null;
+            const etapaNode = etapaActual?.etapa || etapaActual;
+            const etapaId = etapaNode?.id || etapaNode?.etapa_id || etapaActual?.etan_etapa_id || etapaActual?.etanEtapaId || '';
+            const etapaNombre = etapaNode?.nombre || etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.descripcion || etapaActual?.etapa_nombre || etapaActual?.nombre || 'Etapa actual';
             etapaInput.value = etapaId;
-            etapaTexto.value = etapaId ? etapaNombre : 'Animal sin etapa activa';
+            etapaTexto.value = etapaId ? (etapaNombre || ('Etapa #' + etapaId)) : 'Animal sin etapa activa';
         } catch (error) {
             etapaTexto.value = 'No se pudo obtener la etapa actual';
         }

@@ -18,7 +18,11 @@ class ApiSemenToroService extends BaseApiService implements SemenToroServiceInte
     public function getList(?int $toroId = null, ?bool $activo = null): array
     {
         if (!session('user.token')) return ['success' => false, 'data' => []];
-        $params = array_filter(['toro_id' => $toroId, 'activo' => $activo !== null ? ($activo ? '1' : '0') : null]);
+        $params = array_filter([
+            'toro_id' => $toroId, 
+            'activo' => $activo !== null ? ($activo ? '1' : '0') : null,
+            'nopaginate' => 'true'
+        ]);
         $endpoint = '/semen-toro' . (!empty($params) ? '?' . http_build_query($params) : '');
         return $this->get($endpoint, $this->authHeaders());
     }
@@ -50,7 +54,7 @@ class ApiSemenToroService extends BaseApiService implements SemenToroServiceInte
     public function getToros(): array
     {
         if (!session('user.token')) return [];
-        $r = $this->get('/animales?sexo=M', $this->authHeaders());
+        $r = $this->get('/animales?sexo=M&nopaginate=true', $this->authHeaders());
         return ($r['success'] ?? false) ? ($r['data']['data'] ?? $r['data'] ?? []) : [];
     }
 }

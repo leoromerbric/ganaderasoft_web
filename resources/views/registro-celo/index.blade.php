@@ -47,13 +47,16 @@
                     <select name="animal_id" id="filtroAnimal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Todos</option>
                         @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}"
+                            @php
+                                $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
+                            @endphp
+                            <option value="{{ $aId }}"
                                     data-rebano-id="{{ $animal['rebano']['id_Rebano'] ?? ($animal['id_Rebano'] ?? '') }}"
                                     data-rebano-nombre="{{ $animal['rebano']['Nombre'] ?? '' }}"
                                     data-finca-id="{{ $animal['rebano']['id_Finca'] ?? '' }}"
                                     data-finca-nombre="{{ $animal['rebano']['finca']['Nombre'] ?? ('Finca #'.($animal['rebano']['id_Finca'] ?? '')) }}"
-                                    {{ $animalId == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}
+                                    {{ $animalId == $aId ? 'selected' : '' }}>
+                                {{ $animal['Nombre'] ?? 'Animal #'.$aId }}
                             </option>
                         @endforeach
                     </select>
@@ -89,24 +92,32 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($registros as $registro)
-                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $registro['animal']['id_Animal'] ?? $registro['celo_etapa_anid'] ?? '' }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $registro['celo_id'] ?? 'N/A' }}</td>
+                        @php
+                            $cId = $registro['id'] ?? $registro['celo_id'] ?? null;
+                            $animalId = $registro['animal_id'] ?? $registro['celo_etapa_anid'] ?? data_get($registro, 'etapa_animal.animal_id') ?? '';
+                            $animalRefId = data_get($registro, 'animal.id') ?? data_get($registro, 'animal.id_Animal') ?? $animalId;
+                            $animalNombre = data_get($registro, 'animal.Nombre') ?? ('Animal #'.$animalId);
+                            $fecha = $registro['fecha'] ?? $registro['celo_fecha'] ?? null;
+                            $observacion = $registro['observacion'] ?? $registro['celo_observacon'] ?? '-';
+                        @endphp
+                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $animalRefId }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $cId ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $registro['animal']['Nombre'] ?? ('Animal #'.($registro['celo_etapa_anid'] ?? 'N/A')) }}
+                                {{ $animalNombre }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ isset($registro['celo_fecha']) ? date('d/m/Y', strtotime($registro['celo_fecha'])) : 'N/A' }}
+                                {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500">{{ $registro['celo_observacon'] ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ $observacion }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('registro-celo.show', $registro['celo_id']) }}"
+                                    <a href="{{ route('registro-celo.show', $cId) }}"
                                        class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
                                     <span class="text-gray-300">|</span>
-                                    <a href="{{ route('registro-celo.edit', $registro['celo_id']) }}"
+                                    <a href="{{ route('registro-celo.edit', $cId) }}"
                                        class="text-ganaderasoft-verde hover:text-green-700">Editar</a>
                                     <span class="text-gray-300">|</span>
-                                    <form method="POST" action="{{ route('registro-celo.destroy', $registro['celo_id']) }}" class="inline"
+                                    <form method="POST" action="{{ route('registro-celo.destroy', $cId) }}" class="inline"
                                           onsubmit="return confirm('¿Eliminar este registro?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">Eliminar</button>

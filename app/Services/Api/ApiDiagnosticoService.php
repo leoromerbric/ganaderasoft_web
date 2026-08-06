@@ -11,6 +11,7 @@ class ApiDiagnosticoService extends BaseApiService implements DiagnosticoService
         return [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
+            'X-Api-Version' => '2',
         ];
     }
 
@@ -18,7 +19,7 @@ class ApiDiagnosticoService extends BaseApiService implements DiagnosticoService
     {
         if (!session('user.token')) return ['success' => false, 'data' => []];
         $params = array_filter(['animal_id' => $animalId, 'tipo' => $tipo, 'fecha_inicio' => $fechaInicio, 'fecha_fin' => $fechaFin]);
-        $endpoint = '/diagnostico' . (!empty($params) ? '?' . http_build_query($params) : '');
+        $endpoint = '/diagnostico?nopaginate=true' . (!empty($params) ? '&' . http_build_query($params) : '');
         return $this->get($endpoint, $this->authHeaders());
     }
 
@@ -49,7 +50,8 @@ class ApiDiagnosticoService extends BaseApiService implements DiagnosticoService
     public function getAnimales(): array
     {
         if (!session('user.token')) return [];
-        $r = $this->get('/animales', $this->authHeaders());
-        return ($r['success'] ?? false) ? ($r['data']['data'] ?? $r['data'] ?? []) : [];
+        $r = $this->get('/animales?nopaginate=true', $this->authHeaders());
+        $data = ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 }

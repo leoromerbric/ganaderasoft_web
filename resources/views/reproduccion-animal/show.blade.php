@@ -3,6 +3,16 @@
 @section('title', 'Detalle Reproducción Animal')
 
 @section('content')
+@php
+    $id = $reproduccion['id'] ?? $reproduccion['repro_id'] ?? null;
+    $animalId = $reproduccion['animal_id'] ?? $reproduccion['repro_etapa_anid'] ?? data_get($reproduccion, 'etapa_animal.animal_id');
+    $animalNombre = data_get($reproduccion, 'animal.Nombre') ?? ('Animal #'.$animalId);
+    $etapaId = $reproduccion['etapa_id'] ?? $reproduccion['repro_etapa_etid'] ?? data_get($reproduccion, 'etapa_animal.etapa_id');
+    $etapaNombre = data_get($reproduccion, 'etapa_animal.etapa.nombre') ?? data_get($reproduccion, 'etapa_animal.etapa.etapa_nombre') ?? data_get($reproduccion, 'etapa.nombre') ?? data_get($reproduccion, 'etapa.etapa_nombre') ?? ('ID: '.($etapaId ?? 'N/A'));
+    $tipo = $reproduccion['tipo'] ?? $reproduccion['repro_tipo_reproduccion'] ?? '-';
+    $fecha = $reproduccion['fecha'] ?? $reproduccion['repro_fecha_reproduccion'] ?? null;
+    $observacion = $reproduccion['observacion'] ?? $reproduccion['repro_observacion'] ?? '-';
+@endphp
 <div>
     <div class="mb-6 flex items-center justify-between">
         <div class="flex items-center">
@@ -11,9 +21,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🔬 Reproducción #{{ $reproduccion['repro_id'] }}</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🔬 Reproducción #{{ $id }}</h2>
         </div>
-        <a href="{{ route('reproduccion-animal.edit', $reproduccion['repro_id']) }}"
+        <a href="{{ route('reproduccion-animal.edit', $id) }}"
            class="px-4 py-2 bg-ganaderasoft-verde text-white rounded-lg hover:bg-ganaderasoft-verde/80 transition-colors">
             Editar
         </a>
@@ -24,28 +34,28 @@
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Animal</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ $reproduccion['animal']['Nombre'] ?? ('Animal #'.($reproduccion['repro_etapa_anid'] ?? 'N/A')) }}
+                    {{ $animalNombre }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Etapa</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ $reproduccion['etapa']['etapa_nombre'] ?? ('ID: '.($reproduccion['repro_etapa_etid'] ?? 'N/A')) }}
+                    {{ $etapaNombre }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Tipo de Reproducción</p>
-                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $reproduccion['repro_tipo_reproduccion'] ?? '-' }}</p>
+                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $tipo }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de Reproducción</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ isset($reproduccion['repro_fecha_reproduccion']) ? date('d/m/Y', strtotime($reproduccion['repro_fecha_reproduccion'])) : 'N/A' }}
+                    {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                 </p>
             </div>
             <div class="md:col-span-2">
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Observación</p>
-                <p class="text-lg text-ganaderasoft-negro mt-1">{{ $reproduccion['repro_observacion'] ?? '-' }}</p>
+                <p class="text-lg text-ganaderasoft-negro mt-1">{{ $observacion }}</p>
             </div>
         </div>
     </div>

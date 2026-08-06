@@ -11,6 +11,7 @@ class ApiPalpacionService extends BaseApiService implements PalpacionServiceInte
         return [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
+            'X-Api-Version' => '2',
         ];
     }
 
@@ -18,7 +19,7 @@ class ApiPalpacionService extends BaseApiService implements PalpacionServiceInte
     {
         if (!session('user.token')) return ['success' => false, 'data' => []];
         $params = array_filter(['animal_id' => $animalId, 'tipo' => $tipo, 'fecha_inicio' => $fechaInicio, 'fecha_fin' => $fechaFin]);
-        $endpoint = '/palpacion' . (!empty($params) ? '?' . http_build_query($params) : '');
+        $endpoint = '/palpacion?nopaginate=true' . (!empty($params) ? '&' . http_build_query($params) : '');
         return $this->get($endpoint, $this->authHeaders());
     }
 
@@ -49,14 +50,16 @@ class ApiPalpacionService extends BaseApiService implements PalpacionServiceInte
     public function getAnimales(): array
     {
         if (!session('user.token')) return [];
-        $r = $this->get('/animales', $this->authHeaders());
-        return ($r['success'] ?? false) ? ($r['data']['data'] ?? $r['data'] ?? []) : [];
+        $r = $this->get('/animales?nopaginate=true', $this->authHeaders());
+        $data = ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 
     public function getPersonalFinca(): array
     {
         if (!session('user.token')) return [];
-        $r = $this->get('/personal-finca', $this->authHeaders());
-        return ($r['success'] ?? false) ? ($r['data']['data'] ?? $r['data'] ?? []) : [];
+        $r = $this->get('/personal-finca?nopaginate=true', $this->authHeaders());
+        $data = ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 }

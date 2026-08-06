@@ -11,9 +11,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">💉 Vacuna #{{ $vacuna['vacuna_id'] }}</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">💉 Vacuna #{{ $vacuna['id'] ?? $vacuna['vacuna_id'] }}</h2>
         </div>
-        <a href="{{ route('vacuna.edit', $vacuna['vacuna_id']) }}"
+        <a href="{{ route('vacuna.edit', $vacuna['id'] ?? $vacuna['vacuna_id']) }}"
            class="px-4 py-2 bg-ganaderasoft-verde text-white rounded-lg hover:bg-ganaderasoft-verde/80 transition-colors">
             Editar
         </a>
@@ -23,7 +23,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Nombre</p>
-                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $vacuna['vacuna_nombre'] ?? '-' }}</p>
+                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $vacuna['nombre'] ?? $vacuna['vacuna_nombre'] ?? '-' }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Estado</p>
@@ -31,12 +31,15 @@
             </div>
             <div class="md:col-span-2">
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Descripción</p>
-                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $vacuna['vacuna_descripcion'] ?? '-' }}</p>
+                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $vacuna['descripcion'] ?? $vacuna['vacuna_descripcion'] ?? '-' }}</p>
             </div>
         </div>
     </div>
 
-    @if(isset($vacuna['casasComerciales']) && count($vacuna['casasComerciales']) > 0)
+    @php
+        $casas = $vacuna['casas_comerciales'] ?? $vacuna['casasComerciales'] ?? [];
+    @endphp
+    @if(count($casas) > 0)
     <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
         <div class="px-6 py-4 border-b border-gray-200">
             <h3 class="text-lg font-semibold text-ganaderasoft-negro">Casas Comerciales</h3>
@@ -50,7 +53,7 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($vacuna['casasComerciales'] as $casa)
+                    @foreach($casas as $casa)
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $casa['laboratorio'] ?? '-' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $casa['marca_comercial'] ?? '-' }}</td>
@@ -78,8 +81,8 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach($vacuna['dosis'] as $dosis)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $dosis['dosis_id'] ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $dosis['dosis_frecuencia'] ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $dosis['id'] ?? $dosis['dosis_id'] ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $dosis['frecuencia'] ?? $dosis['dosis_frecuencia'] ?? '-' }}</td>
                     </tr>
                     @endforeach
                 </tbody>
