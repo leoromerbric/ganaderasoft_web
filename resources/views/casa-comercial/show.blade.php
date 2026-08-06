@@ -11,9 +11,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🏭 Casa Comercial #{{ $casa['casa_id'] }}</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🏭 Casa Comercial #{{ $casa['id'] ?? $casa['casa_id'] }}</h2>
         </div>
-        <a href="{{ route('casa-comercial.edit', $casa['casa_id']) }}"
+        <a href="{{ route('casa-comercial.edit', $casa['id'] ?? $casa['casa_id']) }}"
            class="px-4 py-2 bg-ganaderasoft-verde text-white rounded-lg hover:bg-ganaderasoft-verde/80 transition-colors">
             Editar
         </a>
@@ -52,8 +52,8 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach($casa['vacunas'] as $vacuna)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $vacuna['vacuna_id'] ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $vacuna['vacuna_nombre'] ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $vacuna['id'] ?? $vacuna['vacuna_id'] ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $vacuna['nombre'] ?? $vacuna['vacuna_nombre'] ?? '-' }}</td>
                     </tr>
                     @endforeach
                 </tbody>

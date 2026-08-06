@@ -60,7 +60,7 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($casas as $casa)
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $casa['casa_id'] ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $casa['id'] ?? $casa['casa_id'] ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $casa['laboratorio'] ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $casa['marca_comercial'] ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -75,13 +75,13 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('casa-comercial.show', $casa['casa_id']) }}"
+                                    <a href="{{ route('casa-comercial.show', $casa['id'] ?? $casa['casa_id']) }}"
                                        class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
                                     <span class="text-gray-300">|</span>
-                                    <a href="{{ route('casa-comercial.edit', $casa['casa_id']) }}"
+                                    <a href="{{ route('casa-comercial.edit', $casa['id'] ?? $casa['casa_id']) }}"
                                        class="text-ganaderasoft-verde hover:text-green-700">Editar</a>
                                     <span class="text-gray-300">|</span>
-                                    <form method="POST" action="{{ route('casa-comercial.destroy', $casa['casa_id']) }}" class="inline"
+                                    <form method="POST" action="{{ route('casa-comercial.destroy', $casa['id'] ?? $casa['casa_id']) }}" class="inline"
                                           onsubmit="return confirm('¿Está seguro de que desea eliminar este registro?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">Eliminar</button>

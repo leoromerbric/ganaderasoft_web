@@ -11,13 +11,14 @@ class ApiCasaComercialService extends BaseApiService implements CasaComercialSer
         return [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
+            'X-Api-Version' => '2',
         ];
     }
 
     public function getList(?string $laboratorio = null): array
     {
         if (!session('user.token')) return ['success' => false, 'data' => []];
-        $endpoint = '/casas-comerciales' . ($laboratorio ? '?laboratorio=' . urlencode($laboratorio) : '');
+        $endpoint = '/casas-comerciales?nopaginate=true' . ($laboratorio ? '&laboratorio=' . urlencode($laboratorio) : '');
         return $this->get($endpoint, $this->authHeaders());
     }
 

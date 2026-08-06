@@ -10,14 +10,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🏭 Editar Casa Comercial #{{ $casa['casa_id'] }}</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🏭 Editar Casa Comercial #{{ $casa['id'] ?? $casa['casa_id'] }}</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
             <h3 class="text-lg font-semibold">Modificar Datos</h3>
         </div>
-        <form action="{{ route('casa-comercial.update', $casa['casa_id']) }}" method="POST" class="p-6">
+        <form action="{{ route('casa-comercial.update', $casa['id'] ?? $casa['casa_id']) }}" method="POST" class="p-6">
             @csrf @method('PUT')
             @if($errors->any())
                 <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
