@@ -30,15 +30,15 @@ class SemenToroController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_Toro'      => 'required|integer',
-            'semen_estado' => 'nullable|boolean',
-            'semen_fecha'  => 'nullable|date',
+            'animal_id' => 'required|integer',
+            'estado'    => 'nullable|boolean',
+            'fecha'     => 'nullable|date',
         ], [
-            'id_Toro.required' => 'El toro es requerido.',
+            'animal_id.required' => 'El toro es requerido.',
         ]);
 
-        $data = $request->only(['id_Toro', 'semen_estado', 'semen_fecha']);
-        if (!isset($data['semen_estado'])) $data['semen_estado'] = false;
+        $data = $request->only(['animal_id', 'estado', 'fecha']);
+        if (!isset($data['estado'])) $data['estado'] = false;
 
         $response = $this->service->create($data);
 
@@ -72,11 +72,12 @@ class SemenToroController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'semen_estado' => 'nullable|boolean',
-            'semen_fecha'  => 'nullable|date',
+            'animal_id' => 'nullable|integer',
+            'estado'    => 'nullable|boolean',
+            'fecha'     => 'nullable|date',
         ]);
 
-        $data = $request->only(['semen_estado', 'semen_fecha']);
+        $data = $request->only(['animal_id', 'estado', 'fecha']);
 
         $response = $this->service->update($id, $data);
         if ($response['success'] ?? false) {

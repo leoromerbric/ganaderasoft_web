@@ -11,6 +11,7 @@ class ApiSemenToroService extends BaseApiService implements SemenToroServiceInte
         return [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
+            'X-Api-Version' => '2',
         ];
     }
 

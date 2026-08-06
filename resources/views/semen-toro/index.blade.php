@@ -47,13 +47,21 @@
                     <select name="toro_id" id="filtroAnimal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Todos</option>
                         @foreach($toros as $animal)
-                            <option value="{{ $animal['id_Animal'] }}"
-                                    data-rebano-id="{{ $animal['rebano']['id_Rebano'] ?? ($animal['id_Rebano'] ?? '') }}"
-                                    data-rebano-nombre="{{ $animal['rebano']['Nombre'] ?? '' }}"
-                                    data-finca-id="{{ $animal['rebano']['id_Finca'] ?? '' }}"
-                                    data-finca-nombre="{{ $animal['rebano']['finca']['Nombre'] ?? ('Finca #'.($animal['rebano']['id_Finca'] ?? '')) }}"
-                                    {{ $toroId == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Toro #'.$animal['id_Animal'] }}
+                            @php
+                                $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
+                                $aNombre = $animal['nombre'] ?? $animal['Nombre'] ?? 'Toro #'.$aId;
+                                $rId = $animal['rebano']['id'] ?? $animal['rebano']['id_Rebano'] ?? ($animal['rebano_id'] ?? ($animal['id_Rebano'] ?? ''));
+                                $rNombre = $animal['rebano']['nombre'] ?? $animal['rebano']['Nombre'] ?? '';
+                                $fId = $animal['rebano']['finca_id'] ?? $animal['rebano']['id_Finca'] ?? '';
+                                $fNombre = $animal['rebano']['finca']['nombre'] ?? $animal['rebano']['finca']['Nombre'] ?? ('Finca #'.$fId);
+                            @endphp
+                            <option value="{{ $aId }}"
+                                    data-rebano-id="{{ $rId }}"
+                                    data-rebano-nombre="{{ $rNombre }}"
+                                    data-finca-id="{{ $fId }}"
+                                    data-finca-nombre="{{ $fNombre }}"
+                                    {{ $toroId == $aId ? 'selected' : '' }}>
+                                {{ $aNombre }}
                             </option>
                         @endforeach
                     </select>
@@ -89,32 +97,32 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($semenToros as $semen)
-                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $semen['id_Toro'] ?? '' }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $semen['semen_id'] ?? 'N/A' }}</td>
+                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $semen['animal_id'] ?? '' }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $semen['id'] ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $semen['toro']['Nombre'] ?? ('Toro #'.($semen['id_Toro'] ?? 'N/A')) }}
+                                {{ $semen['toro']['nombre'] ?? $semen['toro']['Nombre'] ?? ('Toro #'.($semen['animal_id'] ?? 'N/A')) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if(isset($semen['semen_estado']))
-                                    <span class="px-2 py-1 text-xs rounded-full {{ $semen['semen_estado'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                        {{ $semen['semen_estado'] ? 'Activo' : 'Inactivo' }}
+                                @if(isset($semen['estado']))
+                                    <span class="px-2 py-1 text-xs rounded-full {{ $semen['estado'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                        {{ $semen['estado'] ? 'Activo' : 'Inactivo' }}
                                     </span>
                                 @else
                                     <span class="text-gray-400 text-sm">-</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ isset($semen['semen_fecha']) ? date('d/m/Y', strtotime($semen['semen_fecha'])) : 'N/A' }}
+                                {{ isset($semen['fecha']) ? date('d/m/Y', strtotime($semen['fecha'])) : 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('semen-toro.show', $semen['semen_id']) }}"
+                                    <a href="{{ route('semen-toro.show', $semen['id']) }}"
                                        class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
                                     <span class="text-gray-300">|</span>
-                                    <a href="{{ route('semen-toro.edit', $semen['semen_id']) }}"
+                                    <a href="{{ route('semen-toro.edit', $semen['id']) }}"
                                        class="text-ganaderasoft-verde hover:text-green-700">Editar</a>
                                     <span class="text-gray-300">|</span>
-                                    <form method="POST" action="{{ route('semen-toro.destroy', $semen['semen_id']) }}" class="inline"
+                                    <form method="POST" action="{{ route('semen-toro.destroy', $semen['id']) }}" class="inline"
                                           onsubmit="return confirm('¿Está seguro de que desea eliminar este registro?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">Eliminar</button>
