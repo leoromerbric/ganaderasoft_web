@@ -24,19 +24,19 @@ class PersonalFincaController extends Controller
      */
     public function index(Request $request)
     {
-        $fincaId = $request->query('id_finca');
+        $fincaId = $request->query('id_finca') ?? $request->query('finca_id');
         
-        $response = $this->personalFincaService->getPersonalFinca($fincaId);
+        $response = $this->personalFincaService->getPersonalFinca($fincaId ? (int)$fincaId : null);
         
-        if (!$response['success']) {
-            return redirect()->route('dashboard')->with('error', $response['message']);
+        if (isset($response['success']) && !$response['success']) {
+            return redirect()->route('dashboard')->with('error', $response['message'] ?? 'Error al obtener el personal');
         }
 
         // Get fincas for filter dropdown
         $fincasResponse = $this->fincasService->getFincas();
-        $fincas = $fincasResponse['success'] ? ($fincasResponse['data']['data'] ?? []) : [];
+        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-        $personalFinca = $response['data'] ?? [];
+        $personalFinca = $response['data']['data'] ?? $response['data'] ?? [];
 
         // Calculate statistics
         $estadisticas = [
@@ -46,7 +46,7 @@ class PersonalFincaController extends Controller
 
         // Count by tipo
         foreach ($personalFinca as $persona) {
-            $tipo = $persona['Tipo_Trabajador'] ?? 'Sin especificar';
+            $tipo = $persona['tipo_trabajador']['nombre'] ?? $persona['Tipo_Trabajador'] ?? 'Sin especificar';
             if (!isset($estadisticas['por_tipo'][$tipo])) {
                 $estadisticas['por_tipo'][$tipo] = 0;
             }
@@ -62,65 +62,47 @@ class PersonalFincaController extends Controller
     public function create()
     {
         $fincasResponse = $this->fincasService->getFincas();
-        $fincas = $fincasResponse['success'] ? ($fincasResponse['data']['data'] ?? []) : [];
+        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
         return view('personal-finca.create', compact('fincas'));
     }
 
     /**
-     * Store a newly created personal de finca record
+     * Store a newly created personal de finca record (API V2 payload format)
      */
     public function store(Request $request)
     {
         $request->validate([
-            'id_Finca' => 'required|integer',
-            'Cedula' => 'required|min:7|max:12|regex:/^[0-9]+$/',
-            'Nombre' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
-            'Apellido' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
-            'Telefono' => 'required|string|max:20|regex:/^[0-9\+\-\s\(\)]+$/',
+            'id_Finca' => 'nullable|integer',
+            'finca_id' => 'nullable|integer',
+            'Cedula' => 'required|string|max:15',
+            'Nombre' => 'required|string|max:100',
+            'Apellido' => 'required|string|max:100',
+            'Telefono' => 'required|string|max:20',
             'Correo' => 'required|string|email|max:255',
-            'Tipo_Trabajador' => 'required|string|in:Técnico,Veterinario,Operario,Vigilante,Supervisor,Administrador',
-        ], [
-            'id_Finca.required' => 'Debe seleccionar una finca.',
-            'id_Finca.integer' => 'La finca seleccionada no es válida.',
-            'Cedula.required' => 'La cédula es requerida.',
-            'Cedula.min' => 'La cédula debe tener al menos 7 dígitos.',
-            'Cedula.max' => 'La cédula no puede tener más de 12 dígitos.',
-            'Cedula.regex' => 'La cédula debe contener solo números.',
-            'Nombre.required' => 'El nombre es requerido.',
-            'Nombre.max' => 'El nombre no puede exceder 100 caracteres.',
-            'Nombre.regex' => 'El nombre solo puede contener letras y espacios.',
-            'Apellido.required' => 'El apellido es requerido.',
-            'Apellido.max' => 'El apellido no puede exceder 100 caracteres.',
-            'Apellido.regex' => 'El apellido solo puede contener letras y espacios.',
-            'Telefono.required' => 'El teléfono es requerido.',
-            'Telefono.max' => 'El teléfono no puede exceder 20 caracteres.',
-            'Telefono.regex' => 'El teléfono debe tener un formato válido.',
-            'Correo.required' => 'El correo electrónico es requerido.',
-            'Correo.email' => 'El correo electrónico debe tener un formato válido.',
-            'Correo.max' => 'El correo electrónico no puede exceder 255 caracteres.',
-            'Tipo_Trabajador.required' => 'Debe seleccionar el tipo de trabajador.',
-            'Tipo_Trabajador.in' => 'El tipo de trabajador seleccionado no es válido.',
+            'Tipo_Trabajador' => 'required|string',
         ]);
 
-        $data = $request->only([
-            'id_Finca',
-            'Cedula',
-            'Nombre',
-            'Apellido',
-            'Telefono',
-            'Correo',
-            'Tipo_Trabajador'
-        ]);
+        $fincaId = $request->input('id_Finca') ?? $request->input('finca_id');
+
+        $data = [
+            'finca_id' => (int)$fincaId,
+            'cedula' => (string)($request->input('Cedula') ?? $request->input('cedula')),
+            'nombre' => $request->input('Nombre') ?? $request->input('nombre'),
+            'apellido' => $request->input('Apellido') ?? $request->input('apellido'),
+            'telefono' => $request->input('Telefono') ?? $request->input('telefono'),
+            'correo' => $request->input('Correo') ?? $request->input('correo'),
+            'Tipo_Trabajador' => $request->input('Tipo_Trabajador') ?? $request->input('tipo_trabajador'),
+        ];
 
         $response = $this->personalFincaService->createPersonalFinca($data);
 
-        if ($response['success']) {
+        if (isset($response['success']) && $response['success']) {
             return redirect()->route('personal-finca.index')
                 ->with('success', 'Personal de finca registrado exitosamente.');
         }
 
-        return back()->withInput()->with('error', $response['message']);
+        return back()->withInput()->with('error', $response['message'] ?? 'Error al crear el personal');
     }
 
     /**
@@ -128,13 +110,13 @@ class PersonalFincaController extends Controller
      */
     public function show(string $id)
     {
-        $response = $this->personalFincaService->getPersonalFincaById($id);
+        $response = $this->personalFincaService->getPersonalFincaById((int)$id);
 
-        if (!$response['success']) {
-            return redirect()->route('personal-finca.index')->with('error', $response['message']);
+        if (!isset($response['success']) || !$response['success']) {
+            return redirect()->route('personal-finca.index')->with('error', $response['message'] ?? 'Personal no encontrado');
         }
 
-        $personalFinca = $response['data'];
+        $personalFinca = $response['data'] ?? [];
         $personal = $personalFinca;
 
         return view('personal-finca.show', compact('personalFinca', 'personal'));
@@ -145,75 +127,57 @@ class PersonalFincaController extends Controller
      */
     public function edit(string $id)
     {
-        $response = $this->personalFincaService->getPersonalFincaById($id);
+        $response = $this->personalFincaService->getPersonalFincaById((int)$id);
 
-        if (!$response['success']) {
-            return redirect()->route('personal-finca.index')->with('error', $response['message']);
+        if (!isset($response['success']) || !$response['success']) {
+            return redirect()->route('personal-finca.index')->with('error', $response['message'] ?? 'Personal no encontrado');
         }
 
-        $personalFinca = $response['data'];
+        $personalFinca = $response['data'] ?? [];
         $personal = $personalFinca;
 
         $fincasResponse = $this->fincasService->getFincas();
-        $fincas = $fincasResponse['success'] ? ($fincasResponse['data']['data'] ?? []) : [];
+        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
         return view('personal-finca.edit', compact('personalFinca', 'personal', 'fincas'));
     }
 
     /**
-     * Update the specified personal de finca record
+     * Update the specified personal de finca record (API V2 payload format)
      */
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'id_Finca' => 'required|integer',
-            'Cedula' => 'required|min:7|max:12|regex:/^[0-9]+$/',
-            'Nombre' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
-            'Apellido' => 'required|string|max:100|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
-            'Telefono' => 'required|string|max:20|regex:/^[0-9\+\-\s\(\)]+$/',
+            'id_Finca' => 'nullable|integer',
+            'finca_id' => 'nullable|integer',
+            'Cedula' => 'required|string|max:15',
+            'Nombre' => 'required|string|max:100',
+            'Apellido' => 'required|string|max:100',
+            'Telefono' => 'required|string|max:20',
             'Correo' => 'required|string|email|max:255',
-            'Tipo_Trabajador' => 'required|string|in:Técnico,Veterinario,Operario,Vigilante,Supervisor,Administrador',
-        ], [
-            'id_Finca.required' => 'Debe seleccionar una finca.',
-            'id_Finca.integer' => 'La finca seleccionada no es válida.',
-            'Cedula.required' => 'La cédula es requerida.',
-            'Cedula.min' => 'La cédula debe tener al menos 7 dígitos.',
-            'Cedula.max' => 'La cédula no puede tener más de 12 dígitos.',
-            'Cedula.regex' => 'La cédula debe contener solo números.',
-            'Nombre.required' => 'El nombre es requerido.',
-            'Nombre.max' => 'El nombre no puede exceder 100 caracteres.',
-            'Nombre.regex' => 'El nombre solo puede contener letras y espacios.',
-            'Apellido.required' => 'El apellido es requerido.',
-            'Apellido.max' => 'El apellido no puede exceder 100 caracteres.',
-            'Apellido.regex' => 'El apellido solo puede contener letras y espacios.',
-            'Telefono.required' => 'El teléfono es requerido.',
-            'Telefono.max' => 'El teléfono no puede exceder 20 caracteres.',
-            'Telefono.regex' => 'El teléfono debe tener un formato válido.',
-            'Correo.required' => 'El correo electrónico es requerido.',
-            'Correo.email' => 'El correo electrónico debe tener un formato válido.',
-            'Correo.max' => 'El correo electrónico no puede exceder 255 caracteres.',
-            'Tipo_Trabajador.required' => 'Debe seleccionar el tipo de trabajador.',
-            'Tipo_Trabajador.in' => 'El tipo de trabajador seleccionado no es válido.',
+            'Tipo_Trabajador' => 'required|string',
         ]);
 
-        $data = $request->only([
-            'id_Finca',
-            'Cedula',
-            'Nombre',
-            'Apellido',
-            'Telefono',
-            'Correo',
-            'Tipo_Trabajador'
-        ]);
+        $fincaId = $request->input('id_Finca') ?? $request->input('finca_id');
 
-        $response = $this->personalFincaService->updatePersonalFinca($id, $data);
+        $data = [
+            'finca_id' => (int)$fincaId,
+            'cedula' => (string)($request->input('Cedula') ?? $request->input('cedula')),
+            'nombre' => $request->input('Nombre') ?? $request->input('nombre'),
+            'apellido' => $request->input('Apellido') ?? $request->input('apellido'),
+            'telefono' => $request->input('Telefono') ?? $request->input('telefono'),
+            'correo' => $request->input('Correo') ?? $request->input('correo'),
+            'Tipo_Trabajador' => $request->input('Tipo_Trabajador') ?? $request->input('tipo_trabajador'),
+        ];
 
-        if ($response['success']) {
+        $response = $this->personalFincaService->updatePersonalFinca((int)$id, $data);
+
+        if (isset($response['success']) && $response['success']) {
             return redirect()->route('personal-finca.index')
                 ->with('success', 'Personal de finca actualizado exitosamente.');
         }
 
-        return back()->withInput()->with('error', $response['message']);
+        return back()->withInput()->with('error', $response['message'] ?? 'Error al actualizar el personal');
     }
 
     /**
@@ -221,13 +185,13 @@ class PersonalFincaController extends Controller
      */
     public function destroy(string $id)
     {
-        $response = $this->personalFincaService->deletePersonalFinca($id);
+        $response = $this->personalFincaService->deletePersonalFinca((int)$id);
 
-        if ($response['success']) {
+        if (isset($response['success']) && $response['success']) {
             return redirect()->route('personal-finca.index')
                 ->with('success', 'Personal de finca eliminado exitosamente.');
         }
 
-        return redirect()->route('personal-finca.index')->with('error', $response['message']);
+        return redirect()->route('personal-finca.index')->with('error', $response['message'] ?? 'Error al eliminar el personal');
     }
 }
