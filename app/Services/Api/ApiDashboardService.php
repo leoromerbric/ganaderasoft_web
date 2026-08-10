@@ -7,44 +7,44 @@ use App\Services\Contracts\DashboardServiceInterface;
 class ApiDashboardService extends BaseApiService implements DashboardServiceInterface
 {
     /**
-     * Get farm statistics from API
+     * Versión de API V2 para el módulo de Dashboard (Patrón Estrangulador)
+     */
+    protected string $apiVersion = '2';
+
+    /**
+     * Get farm statistics from API V2
      */
     public function getFarmStatistics(?int $fincaId = null): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
         $endpoint = '/reportes/fincas';
         if ($fincaId) {
-            $endpoint .= '?id_finca=' . $fincaId;
+            $endpoint .= '?finca_id=' . $fincaId;
         }
 
-        $response = $this->get($endpoint, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
-
-        return $response;
+        return $this->get($endpoint);
     }
 
     /**
-     * Get list of farms for filtering
+     * Get list of farms for filtering (V2 normalized)
      */
     public function getFarms(): array
     {
         $stats = $this->getFarmStatistics();
         
-        if (!$stats['success'] || !isset($stats['data']['fincas'])) {
+        if (!isset($stats['success']) || !$stats['success'] || !isset($stats['data']['fincas'])) {
             return [];
         }
 
-        return $stats['data']['fincas'];
+        // Mapeo seguro V2 para asegurar atributos id y nombre
+        return array_map(function ($finca) {
+            return [
+                'id' => $finca['finca_id'] ?? $finca['id'] ?? $finca['id_Finca'] ?? null,
+                'nombre' => $finca['nombre'] ?? $finca['Nombre'] ?? 'Sin Nombre',
+                'cantidad_rebanos' => $finca['cantidad_rebanos'] ?? 0,
+                'cantidad_animales' => $finca['cantidad_animales'] ?? 0,
+                'cantidad_personal' => $finca['cantidad_personal'] ?? 0,
+            ];
+        }, $stats['data']['fincas']);
     }
 
     /**
@@ -54,7 +54,7 @@ class ApiDashboardService extends BaseApiService implements DashboardServiceInte
     {
         $stats = $this->getFarmStatistics($fincaId);
         
-        if (!$stats['success'] || !isset($stats['data']['resumen'])) {
+        if (!isset($stats['success']) || !$stats['success'] || !isset($stats['data']['resumen'])) {
             return $this->getDefaultKPIs();
         }
 
@@ -63,25 +63,25 @@ class ApiDashboardService extends BaseApiService implements DashboardServiceInte
         return [
             [
                 'title' => 'Total Animales',
-                'value' => number_format($resumen['total_animales'], 0, ',', '.'),
+                'value' => number_format($resumen['total_animales'] ?? 0, 0, ',', '.'),
                 'icon' => '🐄',
                 'color' => 'celeste',
             ],
             [
                 'title' => 'Total Fincas',
-                'value' => number_format($resumen['total_fincas'], 0, ',', '.'),
+                'value' => number_format($resumen['total_fincas'] ?? 0, 0, ',', '.'),
                 'icon' => '🏡',
                 'color' => 'verde',
             ],
             [
                 'title' => 'Total Rebaños',
-                'value' => number_format($resumen['total_rebanos'], 0, ',', '.'),
+                'value' => number_format($resumen['total_rebanos'] ?? 0, 0, ',', '.'),
                 'icon' => '🐑',
                 'color' => 'azul',
             ],
             [
                 'title' => 'Total Personal',
-                'value' => number_format($resumen['total_personal'], 0, ',', '.'),
+                'value' => number_format($resumen['total_personal'] ?? 0, 0, ',', '.'),
                 'icon' => '👥',
                 'color' => 'negro',
             ],
@@ -95,7 +95,7 @@ class ApiDashboardService extends BaseApiService implements DashboardServiceInte
     {
         $stats = $this->getFarmStatistics($fincaId);
         
-        if (!$stats['success'] || !isset($stats['data'])) {
+        if (!isset($stats['success']) || !$stats['success'] || !isset($stats['data'])) {
             return $this->getDefaultChartData();
         }
 
@@ -114,12 +114,12 @@ class ApiDashboardService extends BaseApiService implements DashboardServiceInte
                             $sexos['F'] ?? 0
                         ],
                         'backgroundColor' => [
-                            'rgba(59, 130, 246, 0.85)',   // Vivid blue
-                            'rgba(236, 72, 153, 0.85)'    // Vivid pink
+                            'rgba(0, 123, 146, 0.85)',   // ganaderasoft-azul
+                            'rgba(110, 193, 228, 0.85)'   // ganaderasoft-celeste
                         ],
                         'borderColor' => [
-                            'rgb(37, 99, 235)',           // Darker blue border
-                            'rgb(219, 39, 119)'           // Darker pink border
+                            'rgb(0, 123, 146)',
+                            'rgb(110, 193, 228)'
                         ],
                         'borderWidth' => 2,
                     ],
@@ -139,7 +139,7 @@ class ApiDashboardService extends BaseApiService implements DashboardServiceInte
             [
                 'fecha' => date('d/m/Y H:i'),
                 'nivel' => 'media',
-                'mensaje' => 'Sistema conectado con el servidor de API',
+                'mensaje' => 'Conectado a la API Moderna V2 de GanaderaSoft',
             ],
         ];
     }
