@@ -10,7 +10,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
     <!-- Header/Navbar -->
-    <nav class="bg-white shadow-md border-b-4 border-ganaderasoft-celeste">
+    <nav class="bg-white shadow-md border-b-4 border-ganaderasoft-celeste sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo and Title -->
@@ -23,6 +23,18 @@
                         <p class="text-xs text-gray-500">Sistema de Gestión</p>
                     </div>
                 </a>
+
+                <!-- Selected Finca Context Badge (if active in session) -->
+                @if(session('selected_finca'))
+                    @php
+                        $selectedFinca = session('selected_finca');
+                        $fincaNombre = $selectedFinca['nombre'] ?? $selectedFinca['Nombre'] ?? 'Finca Activa';
+                    @endphp
+                    <div class="hidden md:flex items-center space-x-2 px-3.5 py-1.5 bg-ganaderasoft-celeste/10 border border-ganaderasoft-celeste/30 rounded-full text-xs font-semibold text-ganaderasoft-azul">
+                        <span>🏡</span>
+                        <span>Finca Activa: {{ $fincaNombre }}</span>
+                    </div>
+                @endif
 
                 <!-- User Info and Logout -->
                 <div class="flex items-center space-x-4">
@@ -47,10 +59,10 @@
     <!-- Sidebar and Main Content -->
     <div class="flex">
         <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="w-64 bg-white shadow-md min-h-screen">
+        <aside id="sidebar" class="w-64 bg-white shadow-md min-h-screen transition-all duration-300">
             <!-- Toggle Button -->
-            <div class="p-4 border-b border-gray-200">
-                <button id="sidebar-toggle" class="w-full flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                <button id="sidebar-toggle" title="Colapsar / Expandir menú" class="w-full flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -216,6 +228,26 @@
             @yield('content')
         </main>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleBtn = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener('click', function () {
+                    sidebar.classList.toggle('w-64');
+                    sidebar.classList.toggle('w-20');
+
+                    const menuTexts = sidebar.querySelectorAll('.menu-text');
+                    const menuTitles = sidebar.querySelectorAll('.menu-title');
+
+                    menuTexts.forEach(el => el.classList.toggle('hidden'));
+                    menuTitles.forEach(el => el.classList.toggle('hidden'));
+                });
+            }
+        });
+    </script>
 
     @stack('scripts')
 </body>

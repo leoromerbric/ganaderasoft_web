@@ -26,21 +26,25 @@
 
                 <!-- Breadcrumb / Current Finca -->
                 @if(session('selected_finca'))
-                <div class="flex items-center space-x-2 text-sm">
-                    <a href="{{ route('fincas.index') }}" class="text-ganaderasoft-celeste hover:text-blue-600 font-medium">
-                        Lista de Fincas
-                    </a>
-                    <span class="text-gray-400">/</span>
-                    <span class="text-gray-700 font-semibold">{{ session('selected_finca')['Nombre'] }}</span>
-                </div>
+                    @php
+                        $selectedFinca = session('selected_finca');
+                        $fincaNombre = $selectedFinca['nombre'] ?? $selectedFinca['Nombre'] ?? 'Finca';
+                    @endphp
+                    <div class="flex items-center space-x-2 text-sm">
+                        <a href="{{ route('fincas.index') }}" class="text-ganaderasoft-azul hover:text-ganaderasoft-celeste font-medium transition-colors">
+                            Lista de Fincas
+                        </a>
+                        <span class="text-gray-400">/</span>
+                        <span class="text-gray-700 font-semibold">{{ $fincaNombre }}</span>
+                    </div>
                 @endif
 
                 <!-- User Info and Logout -->
                 <div class="flex items-center space-x-4">
-                    <div class="text-right hidden sm:block">
+                    <a href="{{ route('profile') }}" class="text-right hidden sm:block hover:opacity-80 transition-opacity">
                         <p class="text-sm font-semibold text-ganaderasoft-negro">{{ session('user')['name'] ?? 'Usuario' }}</p>
                         <p class="text-xs text-gray-500">{{ session('user')['type_user'] ?? 'Propietario' }}</p>
-                    </div>
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2">
