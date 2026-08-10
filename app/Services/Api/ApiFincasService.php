@@ -7,25 +7,16 @@ use App\Services\Contracts\FincasServiceInterface;
 class ApiFincasService extends BaseApiService implements FincasServiceInterface
 {
     /**
+     * Versión de API V2 para el módulo de Fincas (Patrón Estrangulador)
+     */
+    protected string $apiVersion = '2';
+
+    /**
      * Get list of fincas for authenticated user
      */
     public function getFincas(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->get('/fincas', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
-
-        return $response;
+        return $this->get('/fincas');
     }
 
     /**
@@ -33,21 +24,7 @@ class ApiFincasService extends BaseApiService implements FincasServiceInterface
      */
     public function getFinca(int $id): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->get("/fincas/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
-
-        return $response;
+        return $this->get("/fincas/{$id}");
     }
 
     /**
@@ -55,22 +32,7 @@ class ApiFincasService extends BaseApiService implements FincasServiceInterface
      */
     public function createFinca(array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->post('/fincas', $data, [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
-
-        return $response;
+        return $this->post('/fincas', $data);
     }
 
     /**
@@ -78,21 +40,6 @@ class ApiFincasService extends BaseApiService implements FincasServiceInterface
      */
     public function updateFinca(int $id, array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->put("/fincas/{$id}", $data, [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
-
-        return $response;
+        return $this->put("/fincas/{$id}", $data);
     }
 }

@@ -3,112 +3,169 @@
 @section('title', 'Gestión de Fincas')
 
 @section('content')
-<div>
-    <!-- Cabecera -->
-    <div class="mb-8 flex items-center justify-between">
+<div class="space-y-8">
+    <!-- Header section -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Fincas</h2>
-            <p class="text-gray-600 mt-1">Administra las fincas del sistema</p>
+            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Fincas</h1>
+            <p class="text-gray-500 text-sm mt-1">Administración de fincas y unidades de producción ganadera (API V2)</p>
         </div>
         <a href="{{ route('fincas.create') }}"
-           class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-            + Nueva Finca
+           class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-ganaderasoft-celeste to-ganaderasoft-azul text-white font-semibold rounded-xl hover:from-ganaderasoft-azul hover:to-ganaderasoft-celeste transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Nueva Finca
         </a>
     </div>
 
+    <!-- Alert Messages -->
     @if(session('success'))
-        <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-lg">
-            <p class="font-medium">{{ session('success') }}</p>
+        <div class="p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">✅</span>
+                <p class="text-sm font-medium">{{ session('success') }}</p>
+            </div>
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-lg">
-            <p class="font-medium">{{ session('error') }}</p>
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm font-medium">{{ session('error') }}</p>
+            </div>
         </div>
     @endif
 
-    <!-- Filtros -->
-    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-        <div class="flex flex-nowrap gap-4 items-end">
-            <div class="flex-1 min-w-0">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-                <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Buscar por nombre..."
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+    <!-- Filters Bar -->
+    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar por Nombre</label>
+                <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Ej: Finca San José..."
+                       class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
-            <div class="flex-1 min-w-0">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Explotación</label>
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Tipo de Explotación</label>
                 <select id="filtroTipo"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todos los tipos</option>
                     @foreach($tipos as $tipo)
                         <option value="{{ $tipo }}" {{ $tipoFiltro === $tipo ? 'selected' : '' }}>{{ $tipo }}</option>
                     @endforeach
                 </select>
             </div>
-            <div class="flex-none">
+            <div class="flex space-x-2">
                 <button onclick="limpiarFiltros()"
-                        class="px-6 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">
-                    Limpiar
+                        class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                    Limpiar Filtros
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Estadísticas -->
-    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
-            <div class="text-center">
-                <div id="statTotal" class="text-2xl font-bold text-ganaderasoft-azul">{{ count($fincas) }}</div>
-                <div class="text-sm text-gray-600">Total Fincas</div>
+    <!-- Summary KPIs -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total de Fincas</p>
+                <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ count($fincas) }}</p>
             </div>
-            <div class="text-center">
-                <div id="statSuperficie" class="text-2xl font-bold text-ganaderasoft-verde">
-                    {{ number_format(array_sum(array_map(fn($f) => (float)($f['terreno']['Superficie'] ?? 0), $fincas)), 1) }}
-                </div>
-                <div class="text-sm text-gray-600">Superficie Total (ha)</div>
+            <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
+                🏡
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Superficie Total Registrada</p>
+                <p id="statSuperficie" class="text-3xl font-extrabold text-ganaderasoft-verde-oscuro">
+                    @php
+                        $totalSuperficie = array_sum(array_map(function($f) {
+                            return (float)($f['terreno']['superficie'] ?? $f['terreno']['Superficie'] ?? 0);
+                        }, $fincas));
+                    @endphp
+                    {{ number_format($totalSuperficie, 1, ',', '.') }} ha
+                </p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-ganaderasoft-verde/20 flex items-center justify-center text-2xl">
+                📐
             </div>
         </div>
     </div>
 
-    <!-- Tabla -->
-    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <!-- Fincas List Table -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
         @if(count($fincas) > 0)
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Propietario</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Superficie</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Finca</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tipo Explotación</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Propietario / Persona</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Superficie</th>
+                            <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200" id="tablaFincas">
+                    <tbody class="bg-white divide-y divide-gray-100 text-sm" id="tablaFincas">
                         @foreach($fincas as $finca)
-                            <tr class="hover:bg-gray-50 transition-colors fila-finca"
-                                data-nombre="{{ strtolower($finca['Nombre'] ?? '') }}"
-                                data-tipo="{{ $finca['Explotacion_Tipo'] ?? '' }}"
-                                data-superficie="{{ (float)($finca['terreno']['Superficie'] ?? 0) }}">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                    {{ $finca['Nombre'] }}
+                            @php
+                                $fincaId = $finca['id'] ?? $finca['id_Finca'] ?? null;
+                                $nombreFinca = $finca['nombre'] ?? $finca['Nombre'] ?? 'Sin Nombre';
+                                $tipoExp = $finca['explotacion_tipo'] ?? $finca['Explotacion_Tipo'] ?? '-';
+                                $superficie = (float)($finca['terreno']['superficie'] ?? $finca['terreno']['Superficie'] ?? 0);
+                                
+                                // Formateo de propietario V2
+                                $propObj = $finca['propietario'] ?? null;
+                                $persona = $propObj['persona'] ?? null;
+                                $nombreProp = '-';
+                                $telefonoProp = '-';
+
+                                if ($persona) {
+                                    $nombreProp = trim(($persona['nombre'] ?? '').' '.($persona['apellido'] ?? ''));
+                                    $telefonoProp = $persona['telefono'] ?? '-';
+                                } elseif ($propObj) {
+                                    $nombreProp = trim(($propObj['Nombre'] ?? '').' '.($propObj['Apellido'] ?? ''));
+                                    $telefonoProp = $propObj['Telefono'] ?? '-';
+                                }
+                            @endphp
+                            <tr class="hover:bg-gray-50/80 transition-colors fila-finca"
+                                data-nombre="{{ strtolower($nombreFinca) }}"
+                                data-tipo="{{ $tipoExp }}"
+                                data-superficie="{{ $superficie }}">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-9 h-9 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-ganaderasoft-azul font-bold text-sm">
+                                            🏡
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-gray-900">{{ $nombreFinca }}</p>
+                                            <p class="text-xs text-gray-400">ID: #{{ $fincaId }}</p>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                    {{ $finca['Explotacion_Tipo'] ?? '-' }}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-ganaderasoft-celeste/15 text-ganaderasoft-azul border border-ganaderasoft-celeste/30">
+                                        {{ $tipoExp }}
+                                    </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ trim(($finca['propietario']['Nombre'] ?? '').' '.($finca['propietario']['Apellido'] ?? '')) ?: '-' }}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <p class="font-medium text-gray-900">{{ $nombreProp ?: '-' }}</p>
+                                    <p class="text-xs text-gray-500">📞 {{ $telefonoProp }}</p>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                    {{ $finca['propietario']['Telefono'] ?? '-' }}
+                                <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-800">
+                                    {{ $superficie > 0 ? number_format($superficie, 1, ',', '.').' ha' : '-' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                    {{ isset($finca['terreno']['Superficie']) ? $finca['terreno']['Superficie'].' ha' : '-' }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="{{ route('fincas.edit', $finca['id_Finca']) }}"
-                                       class="text-ganaderasoft-verde hover:text-ganaderasoft-verde-oscuro">Editar</a>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                                    <div class="flex items-center justify-center space-x-3">
+                                        <a href="{{ route('fincas.edit', $fincaId) }}"
+                                           class="text-ganaderasoft-azul hover:text-ganaderasoft-celeste font-semibold transition-colors flex items-center">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                            </svg>
+                                            Editar
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -117,12 +174,14 @@
             </div>
         @else
             <div class="p-12 text-center">
-                <div class="text-6xl mb-4">🏡</div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No hay fincas registradas</h3>
-                <p class="text-gray-500 mb-4">Comienza agregando tu primera finca al sistema</p>
+                <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-ganaderasoft-celeste/10 flex items-center justify-center text-4xl">
+                    🏡
+                </div>
+                <h3 class="text-lg font-bold text-ganaderasoft-negro mb-1">No hay fincas registradas</h3>
+                <p class="text-gray-500 text-sm mb-6">Comienza registrando la primera finca de tu propiedad en la API V2</p>
                 <a href="{{ route('fincas.create') }}"
-                   class="inline-flex items-center px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md">
-                    + Nueva Finca
+                   class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-ganaderasoft-celeste to-ganaderasoft-azul text-white font-semibold rounded-xl hover:from-ganaderasoft-azul hover:to-ganaderasoft-celeste transition-all duration-200 shadow-md">
+                    + Crear Nueva Finca
                 </a>
             </div>
         @endif
@@ -150,7 +209,7 @@
         });
 
         document.getElementById('statTotal').textContent      = total;
-        document.getElementById('statSuperficie').textContent = superficie.toLocaleString('es', {minimumFractionDigits:1, maximumFractionDigits:1});
+        document.getElementById('statSuperficie').textContent = superficie.toLocaleString('es', {minimumFractionDigits:1, maximumFractionDigits:1}) + ' ha';
     }
 
     function limpiarFiltros() {
