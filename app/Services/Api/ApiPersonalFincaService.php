@@ -7,36 +7,21 @@ use App\Services\Contracts\PersonalFincaServiceInterface;
 class ApiPersonalFincaService extends BaseApiService implements PersonalFincaServiceInterface
 {
     /**
+     * Versión de API V2 para el módulo de Personal de Finca (Patrón Estrangulador)
+     */
+    protected string $apiVersion = '2';
+
+    /**
      * Get list of personal de finca
      */
     public function getPersonalFinca(?int $fincaId = null): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
         $endpoint = '/personal-finca';
-        $params = [];
-        
         if ($fincaId) {
-            $params['id_finca'] = $fincaId;
+            $endpoint .= '?finca_id=' . $fincaId;
         }
 
-        if (!empty($params)) {
-            $endpoint .= '?' . http_build_query($params);
-        }
-
-        $response = $this->get($endpoint, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
-
-        return $response;
+        return $this->get($endpoint);
     }
 
     /**
@@ -44,21 +29,7 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
      */
     public function getPersonalFincaById(int $id): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->get("/personal-finca/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
-
-        return $response;
+        return $this->get("/personal-finca/{$id}");
     }
 
     /**
@@ -66,22 +37,7 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
      */
     public function createPersonalFinca(array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->post('/personal-finca', $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
-
-        return $response;
+        return $this->post('/personal-finca', $data);
     }
 
     /**
@@ -89,22 +45,7 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
      */
     public function updatePersonalFinca(int $id, array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->put("/personal-finca/{$id}", $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
-
-        return $response;
+        return $this->put("/personal-finca/{$id}", $data);
     }
 
     /**
@@ -112,20 +53,6 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
      */
     public function deletePersonalFinca(int $id): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->delete("/personal-finca/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
-
-        return $response;
+        return $this->delete("/personal-finca/{$id}");
     }
 }
