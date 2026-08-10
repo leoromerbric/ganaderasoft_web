@@ -20,4 +20,9 @@ interface AuthServiceInterface
      * Get the currently authenticated user
      */
     public function user(): ?array;
+
+    /**
+     * Get user profile details from API V2
+     */
+    public function getProfile(): ?array;
 }

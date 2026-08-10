@@ -50,6 +50,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Protected routes
 Route::middleware(['mock.auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/perfil', [AuthController::class, 'profile'])->name('profile');
     
     // Fincas routes
     Route::get('/fincas', [FincasController::class, 'index'])->name('fincas.index');

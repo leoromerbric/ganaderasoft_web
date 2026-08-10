@@ -26,10 +26,10 @@
 
                 <!-- User Info and Logout -->
                 <div class="flex items-center space-x-4">
-                    <div class="text-right hidden sm:block">
+                    <a href="{{ route('profile') }}" class="text-right hidden sm:block hover:opacity-80 transition-opacity">
                         <p class="text-sm font-semibold text-ganaderasoft-negro">{{ session('user')['name'] ?? 'Usuario' }}</p>
                         <p class="text-xs text-gray-500">{{ session('user')['type_user'] ?? 'Propietario' }}</p>
-                    </div>
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2">
@@ -193,10 +193,14 @@
                     <span class="menu-text ml-auto text-xs bg-gray-200 px-2 py-1 rounded">Próximamente</span>
                 </a>
 
-                <!-- Cerrar Sesión -->
+                <!-- Cuenta -->
                 <div class="mt-6 px-4 mb-2">
                     <h3 class="menu-title text-xs font-semibold text-gray-500 uppercase tracking-wider">Cuenta</h3>
                 </div>
+                <a href="{{ route('profile') }}" class="menu-item flex items-center px-6 py-3 text-gray-700 hover:bg-ganaderasoft-celeste hover:text-white transition-colors duration-200 {{ request()->routeIs('profile') ? 'bg-ganaderasoft-azul text-white border-l-4 border-ganaderasoft-verde' : '' }}">
+                    <span class="menu-icon text-xl mr-3">👤</span>
+                    <span class="menu-text font-medium">Mi Perfil</span>
+                </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="menu-item w-full flex items-center px-6 py-3 text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-200">

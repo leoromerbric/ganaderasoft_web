@@ -94,6 +94,20 @@ class AuthController extends Controller
     }
 
     /**
+     * Show user profile card
+     */
+    public function profile()
+    {
+        $user = $this->authService->getProfile();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Debe iniciar sesión para ver su perfil.');
+        }
+
+        return view('auth.profile', compact('user'));
+    }
+
+    /**
      * API Logout endpoint
      */
     public function apiLogout()

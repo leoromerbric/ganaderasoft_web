@@ -8,6 +8,33 @@ use Illuminate\Support\Facades\Log;
 class BaseApiService
 {
     protected string $baseUrl;
+    protected string $apiVersion = '1';
+
+    public function __construct()
+    {
+        $this->baseUrl = env('API_BASE_URL', 'http://ec2-54-219-108-54.us-west-1.compute.amazonaws.com:9000/api');
+    }
+
+    /**
+     * Construye las cabeceras HTTP incluyendo la versión de la API y token Bearer si existe.
+     */
+    protected function resolveHeaders(array $customHeaders = []): array
+    {
+        $headers = array_merge([
+            'Accept' => 'application/json',
+        ], $customHeaders);
+
+        if (!empty($this->apiVersion) && !isset($headers['X-API-VERSION'])) {
+            $headers['X-API-VERSION'] = $this->apiVersion;
+        }
+
+        $user = session('user');
+        if ($user && !empty($user['token']) && !isset($headers['Authorization'])) {
+            $headers['Authorization'] = 'Bearer ' . $user['token'];
+        }
+
+        return $headers;
+    }
 
     private function formatApiFailure($response, string $defaultMessage): array
     {
@@ -38,18 +65,13 @@ class BaseApiService
         ];
     }
 
-    public function __construct()
-    {
-        $this->baseUrl = env('API_BASE_URL', 'http://ec2-54-219-108-54.us-west-1.compute.amazonaws.com:9000/api');
-    }
-
     /**
      * Make a GET request to the API
      */
     protected function get(string $endpoint, array $headers = []): array
     {
         try {
-            $response = Http::withHeaders($headers)
+            $response = Http::withHeaders($this->resolveHeaders($headers))
                 ->timeout(10)
                 ->get($this->baseUrl . $endpoint);
 
@@ -83,7 +105,7 @@ class BaseApiService
     protected function post(string $endpoint, array $data = [], array $headers = []): array
     {
         try {
-            $response = Http::withHeaders($headers)
+            $response = Http::withHeaders($this->resolveHeaders($headers))
                 ->timeout(10)
                 ->post($this->baseUrl . $endpoint, $data);
 
@@ -117,7 +139,7 @@ class BaseApiService
     protected function put(string $endpoint, array $data = [], array $headers = []): array
     {
         try {
-            $response = Http::withHeaders($headers)
+            $response = Http::withHeaders($this->resolveHeaders($headers))
                 ->timeout(10)
                 ->put($this->baseUrl . $endpoint, $data);
 
@@ -151,7 +173,7 @@ class BaseApiService
     protected function delete(string $endpoint, array $headers = []): array
     {
         try {
-            $response = Http::withHeaders($headers)
+            $response = Http::withHeaders($this->resolveHeaders($headers))
                 ->timeout(10)
                 ->delete($this->baseUrl . $endpoint);
 

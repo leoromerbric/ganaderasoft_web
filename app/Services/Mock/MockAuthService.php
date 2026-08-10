@@ -60,4 +60,12 @@ class MockAuthService implements AuthServiceInterface
 
         return null;
     }
+
+    /**
+     * Get user profile details
+     */
+    public function getProfile(): ?array
+    {
+        return $this->user();
+    }
 }
