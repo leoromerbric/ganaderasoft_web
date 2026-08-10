@@ -7,25 +7,16 @@ use App\Services\Contracts\RebanosServiceInterface;
 class ApiRebanosService extends BaseApiService implements RebanosServiceInterface
 {
     /**
+     * Versión de API V2 para el módulo de Rebaños (Patrón Estrangulador)
+     */
+    protected string $apiVersion = '2';
+
+    /**
      * Get list of rebaños for authenticated user
      */
     public function getRebanos(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->get('/rebanos', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
-
-        return $response;
+        return $this->get('/rebanos');
     }
 
     /**
@@ -33,22 +24,7 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
      */
     public function createRebano(array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->post('/rebanos', $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
-
-        return $response;
+        return $this->post('/rebanos', $data);
     }
 
     /**
@@ -56,21 +32,6 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
      */
     public function updateRebano(int $id, array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->put('/rebanos/' . $id, $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
-
-        return $response;
+        return $this->put("/rebanos/{$id}", $data);
     }
 }

@@ -22,16 +22,23 @@ class RebanosController extends Controller
         $nombre  = $request->query('nombre', '');
 
         $response = $this->rebanosService->getRebanos();
-        $allRebanos = ($response['success'] ?? false) ? ($response['data']['data'] ?? []) : [];
+        
+        $allRebanos = [];
+        if (isset($response['success']) && $response['success']) {
+            $allRebanos = $response['data']['data'] ?? $response['data'] ?? [];
+        }
 
         // Cargar fincas para el filtro
         $fincasResponse = $this->fincasService->getFincas();
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-        // Filtrar por finca y nombre
+        // Filtrar por finca y nombre (V2 finca_id / nombre)
         $rebanos = array_values(array_filter($allRebanos, function ($rebano) use ($idFinca, $nombre) {
-            if ($idFinca && ($rebano['id_Finca'] ?? null) != $idFinca) return false;
-            if ($nombre && stripos($rebano['Nombre'] ?? '', $nombre) === false) return false;
+            $rebanoFincaId = $rebano['finca_id'] ?? $rebano['id_Finca'] ?? null;
+            $rebanoNombre  = $rebano['nombre'] ?? $rebano['Nombre'] ?? '';
+
+            if ($idFinca && $rebanoFincaId != $idFinca) return false;
+            if ($nombre && stripos($rebanoNombre, $nombre) === false) return false;
             return true;
         }));
 
@@ -60,7 +67,7 @@ class RebanosController extends Controller
     }
 
     /**
-     * Store a new rebaño
+     * Store a new rebaño (API V2 payload format)
      */
     public function store(Request $request)
     {
@@ -70,9 +77,11 @@ class RebanosController extends Controller
             return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
         }
 
+        $fincaId = $selectedFinca['id'] ?? $selectedFinca['id_Finca'] ?? null;
+
         $data = [
-            'id_Finca' => $selectedFinca['id_Finca'],
-            'Nombre' => $request->input('Nombre'),
+            'finca_id' => $fincaId,
+            'nombre' => $request->input('Nombre') ?? $request->input('nombre'),
         ];
 
         $response = $this->rebanosService->createRebano($data);
@@ -101,10 +110,13 @@ class RebanosController extends Controller
         $response = $this->rebanosService->getRebanos();
 
         if (isset($response['success']) && $response['success']) {
-            $allRebanos = $response['data']['data'] ?? [];
+            $allRebanos = $response['data']['data'] ?? $response['data'] ?? [];
             
-            // Find the rebano by ID
-            $rebano = collect($allRebanos)->firstWhere('id_Rebano', (int)$id);
+            // Find the rebano by ID (V2 id vs V1 id_Rebano)
+            $rebano = collect($allRebanos)->first(function ($r) use ($id) {
+                $rId = $r['id'] ?? $r['id_Rebano'] ?? null;
+                return $rId == $id;
+            });
 
             if ($rebano) {
                 return view('rebanos.edit', compact('rebano', 'selectedFinca'));
@@ -117,12 +129,12 @@ class RebanosController extends Controller
     }
 
     /**
-     * Update an existing rebaño
+     * Update an existing rebaño (API V2 payload format)
      */
     public function update(Request $request, $id)
     {
         $data = [
-            'Nombre' => $request->input('Nombre'),
+            'nombre' => $request->input('Nombre') ?? $request->input('nombre'),
         ];
 
         $response = $this->rebanosService->updateRebano($id, $data);
