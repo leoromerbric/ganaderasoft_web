@@ -43,13 +43,28 @@ class BaseApiService
         $this->baseUrl = env('API_BASE_URL', 'http://ec2-54-219-108-54.us-west-1.compute.amazonaws.com:9000/api');
     }
 
+    protected function defaultHeaders(array $customHeaders = []): array
+    {
+        $headers = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'X-API-VERSION' => '2',
+        ];
+
+        if (session()->has('user.token')) {
+            $headers['Authorization'] = 'Bearer ' . session('user.token');
+        }
+
+        return array_merge($headers, $customHeaders);
+    }
+
     /**
      * Make a GET request to the API
      */
     protected function get(string $endpoint, array $headers = []): array
     {
         try {
-            $response = Http::withHeaders($headers)
+            $response = Http::withHeaders($this->defaultHeaders($headers))
                 ->timeout(10)
                 ->get($this->baseUrl . $endpoint);
 
@@ -83,7 +98,7 @@ class BaseApiService
     protected function post(string $endpoint, array $data = [], array $headers = []): array
     {
         try {
-            $response = Http::withHeaders($headers)
+            $response = Http::withHeaders($this->defaultHeaders($headers))
                 ->timeout(10)
                 ->post($this->baseUrl . $endpoint, $data);
 
@@ -117,7 +132,7 @@ class BaseApiService
     protected function put(string $endpoint, array $data = [], array $headers = []): array
     {
         try {
-            $response = Http::withHeaders($headers)
+            $response = Http::withHeaders($this->defaultHeaders($headers))
                 ->timeout(10)
                 ->put($this->baseUrl . $endpoint, $data);
 
@@ -151,7 +166,7 @@ class BaseApiService
     protected function delete(string $endpoint, array $headers = []): array
     {
         try {
-            $response = Http::withHeaders($headers)
+            $response = Http::withHeaders($this->defaultHeaders($headers))
                 ->timeout(10)
                 ->delete($this->baseUrl . $endpoint);
 

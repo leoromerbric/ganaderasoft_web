@@ -25,10 +25,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
             $endpoint .= '?rebano_id=' . $rebanoId;
         }
 
-        $response = $this->get($endpoint, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get($endpoint);
 
         return $response;
     }
@@ -47,10 +44,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
             ];
         }
 
-        $response = $this->get("/animales/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get("/animales/{$id}");
 
         return $response;
     }
@@ -69,11 +63,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
             ];
         }
 
-        $response = $this->post('/animales', $data, [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->post('/animales', $data);
 
         return $response;
     }
@@ -92,11 +82,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
             ];
         }
 
-        $response = $this->put("/animales/{$id}", $data, [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->put("/animales/{$id}", $data);
 
         return $response;
     }
@@ -115,10 +101,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
             ];
         }
 
-        $response = $this->get('/composicion-raza', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/composicion-raza');
 
         return $response;
     }
@@ -137,10 +120,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
             ];
         }
 
-        $response = $this->get('/estados-salud', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/estados-salud');
 
         return $response;
     }
@@ -159,10 +139,7 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
             ];
         }
 
-        $response = $this->get('/etapas', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/etapas');
 
         return $response;
     }

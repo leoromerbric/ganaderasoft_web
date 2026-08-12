@@ -25,10 +25,7 @@ class ApiDashboardService extends BaseApiService implements DashboardServiceInte
             $endpoint .= '?id_finca=' . $fincaId;
         }
 
-        $response = $this->get($endpoint, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get($endpoint);
 
         return $response;
     }

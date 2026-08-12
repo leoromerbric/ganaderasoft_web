@@ -6,52 +6,29 @@ use App\Services\Contracts\TratamientoServiceInterface;
 
 class ApiTratamientoService extends BaseApiService implements TratamientoServiceInterface
 {
-    private function authHeaders(): array
-    {
-        return [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
-            'X-Api-Version' => '2',
-        ];
-    }
-
     public function getList(?int $diagnosticoId = null, ?string $fechaInicio = null, ?string $fechaFin = null): array
     {
         if (!session('user.token')) return ['success' => false, 'data' => []];
         $params = array_filter(['diagnostico_id' => $diagnosticoId, 'fecha_inicio' => $fechaInicio, 'fecha_fin' => $fechaFin]);
         $endpoint = '/tratamiento?nopaginate=true' . (!empty($params) ? '&' . http_build_query($params) : '');
-        return $this->get($endpoint, $this->authHeaders());
+        return $this->get($endpoint);
     }
 
     public function getById(int $id): array
     {
         if (!session('user.token')) return ['success' => false, 'data' => []];
-        return $this->get("/tratamiento/{$id}", $this->authHeaders());
+        return $this->get("/tratamiento/{$id}");
     }
 
     public function create(array $data): array
     {
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->post('/tratamiento', $data, $this->authHeaders() + ['Content-Type' => 'application/json']);
+        return $this->post('/tratamiento', $data);
     }
 
     public function update(int $id, array $data): array
     {
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->put("/tratamiento/{$id}", $data, $this->authHeaders() + ['Content-Type' => 'application/json']);
-    }
-
-    public function eliminar(int $id): array
-    {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->delete("/tratamiento/{$id}", $this->authHeaders());
-    }
-
-    public function getDiagnosticos(): array
-    {
-        if (!session('user.token')) return [];
-        $r = $this->get('/diagnostico?nopaginate=true', $this->authHeaders());
-        $data = ($r['success'] ?? false) ? ($r['data'] ?? []) : [];
-        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
+        return $this->put("/tratamiento/{$id}", $data)) ? $data['data'] : $data;
     }
 }

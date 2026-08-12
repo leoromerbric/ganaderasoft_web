@@ -14,9 +14,6 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
         $response = $this->post('/auth/login', [
             'email' => $email,
             'password' => $password,
-        ], [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
         ]);
 
         if (isset($response['success']) && $response['success'] === true && isset($response['data'])) {
@@ -51,10 +48,7 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
         
         if ($user && isset($user['token'])) {
             // Call the logout API endpoint
-            $this->post('/auth/logout', [], [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $user['token'],
-            ]);
+            $this->post('/auth/logout', []);
         }
 
         session()->forget('authenticated');

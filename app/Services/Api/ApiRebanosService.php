@@ -20,10 +20,7 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
             ];
         }
 
-        $response = $this->get('/rebanos', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/rebanos');
 
         return $response;
     }
@@ -42,11 +39,7 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
             ];
         }
 
-        $response = $this->post('/rebanos', $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->post('/rebanos', $data);
 
         return $response;
     }
@@ -65,11 +58,7 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
             ];
         }
 
-        $response = $this->put('/rebanos/' . $id, $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->put('/rebanos/' . $id, $data);
 
         return $response;
     }

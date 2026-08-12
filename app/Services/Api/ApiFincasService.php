@@ -20,10 +20,7 @@ class ApiFincasService extends BaseApiService implements FincasServiceInterface
             ];
         }
 
-        $response = $this->get('/fincas', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/fincas');
 
         return $response;
     }
@@ -42,10 +39,7 @@ class ApiFincasService extends BaseApiService implements FincasServiceInterface
             ];
         }
 
-        $response = $this->get("/fincas/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get("/fincas/{$id}");
 
         return $response;
     }
@@ -64,11 +58,7 @@ class ApiFincasService extends BaseApiService implements FincasServiceInterface
             ];
         }
 
-        $response = $this->post('/fincas', $data, [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->post('/fincas', $data);
 
         return $response;
     }
@@ -87,11 +77,7 @@ class ApiFincasService extends BaseApiService implements FincasServiceInterface
             ];
         }
 
-        $response = $this->put("/fincas/{$id}", $data, [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->put("/fincas/{$id}", $data);
 
         return $response;
     }

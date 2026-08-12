@@ -35,10 +35,7 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
             $endpoint .= '?' . http_build_query($params);
         }
 
-        $response = $this->get($endpoint, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get($endpoint);
 
         return $response;
     }
@@ -57,10 +54,7 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
             ];
         }
 
-        $response = $this->get("/medidas-corporales/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get("/medidas-corporales/{$id}");
 
         return $response;
     }
@@ -79,11 +73,7 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
             ];
         }
 
-        $response = $this->post('/medidas-corporales', $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->post('/medidas-corporales', $data);
 
         return $response;
     }
@@ -102,11 +92,7 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
             ];
         }
 
-        $response = $this->put("/medidas-corporales/{$id}", $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->put("/medidas-corporales/{$id}", $data);
 
         return $response;
     }
@@ -125,10 +111,7 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
             ];
         }
 
-        $response = $this->delete("/medidas-corporales/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->delete("/medidas-corporales/{$id}");
 
         return $response;
     }

@@ -43,10 +43,7 @@ class ApiLactanciaService extends BaseApiService implements LactanciaServiceInte
             $endpoint .= '?' . http_build_query($params);
         }
 
-        $response = $this->get($endpoint, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get($endpoint);
 
         return $response;
     }
@@ -65,10 +62,7 @@ class ApiLactanciaService extends BaseApiService implements LactanciaServiceInte
             ];
         }
 
-        $response = $this->get("/lactancia/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get("/lactancia/{$id}");
 
         return $response;
     }
@@ -87,11 +81,7 @@ class ApiLactanciaService extends BaseApiService implements LactanciaServiceInte
             ];
         }
 
-        $response = $this->post('/lactancia', $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->post('/lactancia', $data);
 
         return $response;
     }
@@ -110,11 +100,7 @@ class ApiLactanciaService extends BaseApiService implements LactanciaServiceInte
             ];
         }
 
-        $response = $this->put("/lactancia/{$id}", $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->put("/lactancia/{$id}", $data);
 
         return $response;
     }
@@ -133,10 +119,7 @@ class ApiLactanciaService extends BaseApiService implements LactanciaServiceInte
             ];
         }
 
-        $response = $this->delete("/lactancia/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->delete("/lactancia/{$id}");
 
         return $response;
     }

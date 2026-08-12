@@ -31,10 +31,7 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
             $endpoint .= '?' . http_build_query($params);
         }
 
-        $response = $this->get($endpoint, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get($endpoint);
 
         return $response;
     }
@@ -53,10 +50,7 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
             ];
         }
 
-        $response = $this->get("/personal-finca/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get("/personal-finca/{$id}");
 
         return $response;
     }
@@ -75,11 +69,7 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
             ];
         }
 
-        $response = $this->post('/personal-finca', $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->post('/personal-finca', $data);
 
         return $response;
     }
@@ -98,11 +88,7 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
             ];
         }
 
-        $response = $this->put("/personal-finca/{$id}", $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->put("/personal-finca/{$id}", $data);
 
         return $response;
     }
@@ -121,10 +107,7 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
             ];
         }
 
-        $response = $this->delete("/personal-finca/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->delete("/personal-finca/{$id}");
 
         return $response;
     }

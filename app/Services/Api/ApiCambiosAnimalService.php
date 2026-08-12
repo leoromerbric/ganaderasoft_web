@@ -40,10 +40,7 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
             
             \Log::info('ApiCambiosAnimalService@getList - Endpoint construido', ['endpoint' => $endpoint]);
 
-            $response = $this->get($endpoint, [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $user['token'],
-            ]);
+            $response = $this->get($endpoint);
             
             \Log::info('ApiCambiosAnimalService@getList - Respuesta recibida', ['response_structure' => [
                 'success' => $response['success'] ?? null,
@@ -85,76 +82,7 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
                 ];
             }
 
-            $response = $this->post('/cambios-animal', $data, [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $user['token'],
-                'Content-Type' => 'application/json'
-            ]);
-            
-            return $response;
-        } catch (Exception $e) {
-            \Log::error('Error creando cambio de animal: ' . $e->getMessage());
-            return [
-                'success' => false,
-                'message' => 'Error interno del servidor: ' . $e->getMessage()
-            ];
-        }
-    }
-
-    /**
-     * Obtiene los detalles de un cambio específico
-     * 
-     * @param int $id ID del cambio
-     * @return array Detalles del cambio
-     */
-    public function getById(int $id): array
-    {
-        try {
-            $user = session('user');
-            
-            if (!$user || !isset($user['token'])) {
-                return [];
-            }
-
-            $response = $this->get("/cambios-animal/{$id}", [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $user['token'],
-            ]);
-            
-            if (isset($response['success']) && $response['success']) {
-                return $response['data'] ?? [];
-            }
-            
-            return [];
-        } catch (Exception $e) {
-            \Log::error('Error obteniendo cambio de animal: ' . $e->getMessage());
-            return [];
-        }
-    }
-
-    /**
-     * Obtiene la lista de animales para selects
-     * 
-     * @return array Lista de animales
-     */
-    public function getAnimales(): array
-    {
-        try {
-            \Log::info('ApiCambiosAnimalService@getAnimales - Iniciando obtención de animales');
-            
-            $user = session('user');
-
-            if (!$user || !isset($user['token'])) {
-                \Log::warning('ApiCambiosAnimalService@getAnimales - Usuario no autenticado o token no encontrado');
-                return [];
-            }
-
-            $response = $this->get('/animales', [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $user['token'],
-            ]);
-            
-            if (isset($response['success']) && $response['success']) {
+            $response = $this->post('/cambios-animal', $data) {
                 // Los datos vienen en formato paginado: response.data.data[]
                 $paginatedData = $response['data'] ?? [];
                 $actualData = $paginatedData['data'] ?? [];
@@ -188,10 +116,7 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
                 return [];
             }
 
-            $response = $this->get('/fincas', [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $user['token'],
-            ]);
+            $response = $this->get('/fincas');
             
             if (isset($response['success']) && $response['success']) {
                 // Los datos vienen en formato paginado: response.data.data[]
@@ -215,10 +140,7 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
         try {
             $user = session('user');
             if (!$user || !isset($user['token'])) return [];
-            $response = $this->get('/rebanos', [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $user['token'],
-            ]);
+            $response = $this->get('/rebanos');
             if (isset($response['success']) && $response['success']) {
                 $paginatedData = $response['data'] ?? [];
                 return $paginatedData['data'] ?? [];
@@ -308,10 +230,7 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
                 return [];
             }
 
-            $response = $this->get("/animales/{$id}", [
-                'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $user['token'],
-            ]);
+            $response = $this->get("/animales/{$id}");
             
             \Log::info('ApiCambiosAnimalService@getAnimalById - Response obtenido', [
                 'animal_id' => $id,

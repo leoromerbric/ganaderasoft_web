@@ -20,10 +20,7 @@ class ApiPersonalService extends BaseApiService implements PersonalServiceInterf
             ];
         }
 
-        $response = $this->get('/personal-finca?id_finca=' . $idFinca, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/personal-finca?id_finca=' . $idFinca);
 
         return $response;
     }
@@ -42,11 +39,7 @@ class ApiPersonalService extends BaseApiService implements PersonalServiceInterf
             ];
         }
 
-        $response = $this->post('/personal-finca', $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->post('/personal-finca', $data);
 
         return $response;
     }
@@ -65,11 +58,7 @@ class ApiPersonalService extends BaseApiService implements PersonalServiceInterf
             ];
         }
 
-        $response = $this->put('/personal-finca/' . $id, $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->put('/personal-finca/' . $id, $data);
 
         return $response;
     }
