@@ -2,73 +2,66 @@
 
 GanaderaSoft es un sistema de gestión ganadera desarrollado en Laravel 10 con PHP 8.1. Funciona como un gateway API que se conecta a servicios externos para el manejo integral de datos ganaderos incluyendo animales, fincas, rebaños, lactancia, producción lechera y más.
 
-## Tecnologías
+## 1. ⚒️ Stack tecnológico
 
-- **Backend**: Laravel 10, PHP 8.1
-- **Frontend**: Blade Templates, Tailwind CSS, JavaScript
-- **Arquitectura**: Service Layer Pattern con Dependency Injection
-- **Autenticación**: Sistema personalizado basado en sesiones
+| Componente | Tecnología | Versión | Propósito |
+| :--- | :--- | :--- | :--- |
+| **Frontend framework** | Laravel | 10.x | Lógica de presentación y rutas. |
+| **Lenguaje servidor** | PHP | 8.1+ | Motor de ejecución del frontend. |
+| **Gestor del servidor** | Composer | 2.x | Gestor de dependencias para PHP. |
+| **Frontend UI** | Blade | - | Motor de plantillas de Laravel. |
+| **Estilos UI** | Tailwind CSS | 3.4 | Framework CSS de utilidades. |
+| **Scripting UI** | JavaScript | - | Interactividad del cliente. |
+| **Bundler** | Vite | 5.0 | Compilador de assets. |
+| **Servidor web** | Nginx | 1.18+ | Servidor web y proxy inverso (Producción). |
+| **Entorno local** | Docker | - | Virtualización de servicios. |
+| **CI/CD** | GitHub Actions | - | Automatización del despliegue a VPS. |
 
-## Estructura de directorios
+## 2. 📂 Infraestructura y arquitectura
 
-### `/app`
-**Propósito**: Lógica principal de la aplicación Laravel
+### 2.1 Arquitectura de software
+El proyecto del frontend sigue una arquitectura orientada a la presentación, conectándose a servicios externos de API:
 
-- **`/Console`**: Comandos de consola Artisan
-- **`/Exceptions`**: Manejo de excepciones personalizadas
-- **`/Http`**: Controladores, middleware y requests HTTP
-  - **`/Controllers`**: Controladores de la aplicación (Dashboard, Animales, Lactancia, Leche, etc.)
-  - **`/Middleware`**: Middleware personalizado (`CheckMockAuth` para autenticación)
-- **`/Providers`**: Service Providers de Laravel (bindings, configuraciones)
-- **`/Services`**: Capa de servicios con patrón de arquitectura limpia
-  - **`/Api`**: Implementaciones que se conectan a APIs externas
-  - **`/Contracts`**: Interfaces que definen contratos de servicios
-  - **`/Mock`**: Implementaciones mock para desarrollo y testing
+```text
+/frontend
+├── app/                    # Lógica del servidor frontend
+│   ├── Console/            # Comandos de consola
+│   ├── Exceptions/         # Manejo de excepciones
+│   ├── Http/               # Controladores y middleware
+│   │   ├── Controllers/    # Controladores web (Dashboard, Animales, etc.)
+│   │   └── Middleware/     # Filtros de peticiones HTTP
+│   ├── Providers/          # Proveedores de servicios
+│   └── Services/           # Servicios y conexión a la API externa
+│       ├── Api/            # Consumo de API REST real
+│       ├── Contracts/      # Interfaces de servicios
+│       └── Mock/           # Datos simulados para testing
+├── bootstrap/              # Arranque del framework
+├── config/                 # Configuraciones
+├── database/               # Migraciones locales (si aplica)
+├── docs/                   # Documentación de endpoints externos
+├── public/                 # Archivos públicos y assets compilados
+├── resources/              # Código fuente del frontend
+│   ├── css/                # Estilos base de Tailwind
+│   ├── js/                 # Código fuente JavaScript
+│   └── views/              # Plantillas Blade por módulos
+├── routes/                 # Rutas de la aplicación (web.php)
+├── scripts/                # Scripts utilitarios
+├── storage/                # Almacenamiento temporal y logs
+└── tests/                  # Pruebas automatizadas
+```
 
-### `/bootstrap`
-**Propósito**: Archivos de arranque de Laravel
-- Configuración inicial del framework
+### 2.2 Infraestructura de servidores
 
-### `/config`
-**Propósito**: Archivos de configuración de Laravel
-- Configuraciones de base de datos, servicios, autenticación, etc.
+El proyecto maneja dos entornos con comportamientos diferentes:
 
-### `/database`
-**Propósito**: Esquema y migraciones de base de datos
-- `bd_ganadera_soft.sql`: Esquema SQL de referencia para producción
-
-### `/docs`
-**Propósito**: Documentación técnica del proyecto
-- **`/apis_docs`**: Documentación detallada de endpoints de APIs externas (41 archivos)
-
-### `/public`
-**Propósito**: Archivos públicos accesibles por el navegador
-- Punto de entrada principal (`index.php`)
-- Assets estáticos (imágenes, CSS, JS compilados)
-
-### `/resources`
-**Propósito**: Recursos de frontend no compilados
-- **`/css`**: Stylesheets CSS fuente
-- **`/js`**: JavaScript fuente
-- **`/views`**: Templates Blade organizados por módulo (dashboard, animales, lactancia, etc.)
-
-### `/routes`
-**Propósito**: Definición de rutas de la aplicación
-- `web.php`: Rutas web principales
-- `api.php`: Rutas de API
-
-### `/scripts`
-**Propósito**: Scripts de utilidades y despliegue
-- `ganaderasoft-update.sh`: Script principal de actualización
-- `setup-gs-command.sh`: Configuración de comandos de sistema
-
-### `/storage`
-**Propósito**: Almacenamiento de archivos temporales y logs
-- Logs de aplicación, cache, sesiones, uploads
-
-### `/tests`
-**Propósito**: Tests automatizados
-- Configuración base para PHPUnit
+1. Entorno local (Dockerizado)
+   - Usa docker compose.
+   - Servidor web: Servidor local de Artisan o Nginx interno.
+   - Base de datos: Contenedor **MySQL**.
+2. Entorno producción
+   - Servidor web: **Nginx** (Reverse Proxy).
+   - Procesador PHP: **PHP-FPM 8.2** (Nativo en el servidor VPS).
+   - Base de datos: **MySQL** (Nativa en el servidor VPS).
 
 ## Arquitectura de servicios
 
