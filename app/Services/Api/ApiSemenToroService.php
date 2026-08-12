@@ -33,6 +33,6 @@ class ApiSemenToroService extends BaseApiService implements SemenToroServiceInte
     public function update(int $id, array $data): array
     {
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->put("/semen-toro/{$id}", $data) : [];
+        return $this->put("/semen-toro/{$id}", $data);
     }
 }

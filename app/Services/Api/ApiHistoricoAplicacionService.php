@@ -43,6 +43,6 @@ class ApiHistoricoAplicacionService extends BaseApiService implements HistoricoA
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->post('/historico-aplicacion/preview-campana', [
             'ha_dosis_id' => $dosisId,
-        ]) : [];
+        ]);
     }
 }

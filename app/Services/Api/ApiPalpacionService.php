@@ -29,6 +29,6 @@ class ApiPalpacionService extends BaseApiService implements PalpacionServiceInte
     public function update(int $id, array $data): array
     {
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->put("/palpacion/{$id}", $data)) ? $data['data'] : $data;
+        return $this->put("/palpacion/{$id}", $data);
     }
 }

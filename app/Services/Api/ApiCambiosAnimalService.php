@@ -72,31 +72,8 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
      */
     public function create(array $data): array
     {
-        try {
-            $user = session('user');
-            
-            if (!$user || !isset($user['token'])) {
-                return [
-                    'success' => false,
-                    'message' => 'Usuario no autenticado'
-                ];
-            }
-
-            $response = $this->post('/cambios-animal', $data) {
-                // Los datos vienen en formato paginado: response.data.data[]
-                $paginatedData = $response['data'] ?? [];
-                $actualData = $paginatedData['data'] ?? [];
-                \Log::info('ApiCambiosAnimalService@getAnimales - Animales encontrados: ' . count($actualData));
-                return $actualData;
-            }
-            
-            \Log::warning('ApiCambiosAnimalService@getAnimales - Respuesta no exitosa', ['response' => $response]);
-            return [];
-        } catch (Exception $e) {
-            \Log::error('Error obteniendo animales: ' . $e->getMessage());
-            \Log::error('Stack trace animales: ' . $e->getTraceAsString());
-            return [];
-        }
+        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
+        return $this->post('/cambios-animal', $data);
     }
 
     /**

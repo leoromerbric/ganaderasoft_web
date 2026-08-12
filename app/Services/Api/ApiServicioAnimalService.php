@@ -29,6 +29,6 @@ class ApiServicioAnimalService extends BaseApiService implements ServicioAnimalS
     public function update(int $id, array $data): array
     {
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->put("/servicio-animal/{$id}", $data)) ? $data['data'] : $data;
+        return $this->put("/servicio-animal/{$id}", $data);
     }
 }
