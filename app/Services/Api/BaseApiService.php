@@ -105,12 +105,21 @@ class BaseApiService
                 return $response->json();
             }
 
-            // Registrar el error en los logs para facilitar la depuración
-            Log::error("API " . strtoupper($method) . " request failed", [
-                'endpoint' => $endpoint,
-                'status' => $response->status(),
-                'body' => $response->body()
-            ]);
+            // Registrar errores en los logs de forma inteligente para no ensuciarlos con validaciones fallidas
+            if ($response->serverError()) {
+                // Solo logueamos como error crítico cuando el backend falla (5xx)
+                Log::error("API " . strtoupper($method) . " request failed (Server Error)", [
+                    'endpoint' => $endpoint,
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+            } elseif ($response->clientError() && !in_array($response->status(), [401, 422])) {
+                // Advertencias para otros errores (ej. 403, 404)
+                Log::warning("API " . strtoupper($method) . " request failed (Client Error)", [
+                    'endpoint' => $endpoint,
+                    'status' => $response->status()
+                ]);
+            }
 
             return $this->formatApiFailure($response, 'Error al conectar con el servidor');
             
