@@ -3,11 +3,19 @@
 namespace App\Services\Api;
 
 use App\Services\Contracts\AuthServiceInterface;
+use Illuminate\Support\Facades\Session;
 
+/**
+ * Servicio encargado de la autenticación con la API V2.
+ */
 class ApiAuthService extends BaseApiService implements AuthServiceInterface
 {
     /**
-     * Attempt to authenticate a user with the API
+     * Intenta autenticar un usuario contra la API.
+     *
+     * @param string $email Correo electrónico del usuario.
+     * @param string $password Contraseña del usuario.
+     * @return array|null Datos del usuario y token si es exitoso, null en caso contrario.
      */
     public function attempt(string $email, string $password): ?array
     {
@@ -16,56 +24,79 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
             'password' => $password,
         ]);
 
-        if (isset($response['success']) && $response['success'] === true && isset($response['data'])) {
-            $userData = [
-                'id' => $response['data']['user']['id'],
-                'name' => $response['data']['user']['name'],
-                'email' => $response['data']['user']['email'],
-                'type_user' => $response['data']['user']['type_user'],
-                'image' => $response['data']['user']['image'] ?? 'user.png',
-                'token' => $response['data']['token'],
-                'token_type' => $response['data']['token_type'] ?? 'Bearer',
-            ];
-
-            // Store in session
-            session([
-                'authenticated' => true,
-                'user' => $userData,
-            ]);
-
-            return $userData;
+        if (empty($response['success']) || empty($response['data']['user'])) {
+            return null;
         }
 
-        return null;
+        $userData = $this->formatUserData($response['data']);
+        $this->storeSession($userData);
+
+        return $userData;
     }
 
     /**
-     * Logout the current user
+     * Cierra la sesión del usuario actual tanto en la API como localmente.
+     *
+     * @return void
      */
     public function logout(): void
     {
         $user = $this->user();
         
-        if ($user && isset($user['token'])) {
-            // Call the logout API endpoint
-            $this->post('/auth/logout', []);
+        // Solo llamamos al endpoint de logout si tenemos un token válido
+        if (!empty($user['token'])) {
+            $this->post('/auth/logout');
         }
 
-        session()->forget('authenticated');
-        session()->forget('user');
-        session()->invalidate();
-        session()->regenerateToken();
+        // Limpiar completamente la sesión de Laravel
+        Session::flush();
+        Session::invalidate();
+        Session::regenerateToken();
     }
 
     /**
-     * Get the currently authenticated user
+     * Obtiene los datos del usuario actualmente autenticado desde la sesión.
+     *
+     * @return array|null
      */
     public function user(): ?array
     {
-        if (session('authenticated')) {
-            return session('user');
-        }
+        return Session::get('authenticated') ? Session::get('user') : null;
+    }
 
-        return null;
+    /**
+     * Formatea y extrae los datos relevantes de la respuesta de la API.
+     *
+     * @param array $apiData Los datos 'data' retornados por el login de la API V2.
+     * @return array
+     */
+    private function formatUserData(array $apiData): array
+    {
+        $apiUser = $apiData['user'];
+
+        return [
+            'id'          => $apiUser['id'] ?? null,
+            'name'        => $apiUser['name'] ?? '',
+            'email'       => $apiUser['email'] ?? '',
+            'roles'       => $apiUser['roles'] ?? [],
+            'status'      => $apiUser['status'] ?? 'active',
+            'image'       => $apiUser['image'] ?? 'user.png',
+            'token'       => $apiData['token'] ?? '',
+            'token_type'  => $apiData['token_type'] ?? 'Bearer',
+        ];
+    }
+
+    /**
+     * Almacena los datos de autenticación en la sesión.
+     *
+     * @param array $userData
+     * @return void
+     */
+    private function storeSession(array $userData): void
+    {
+        Session::put([
+            'authenticated' => true,
+            'user'          => $userData,
+        ]);
     }
 }

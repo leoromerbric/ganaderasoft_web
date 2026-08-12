@@ -27,7 +27,7 @@
             <div class="flex items-center space-x-4">
                 <div class="text-right hidden sm:block">
                     <p class="text-sm font-semibold text-ganaderasoft-negro">{{ session('user')['name'] ?? 'Usuario' }}</p>
-                    <p class="text-xs text-gray-500">{{ session('user')['type_user'] ?? 'Propietario' }}</p>
+                    <p class="text-xs text-gray-500">{{ !empty(session('user')['roles']) ? implode(', ', array_map('ucfirst', session('user')['roles'])) : 'Usuario' }}</p>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
