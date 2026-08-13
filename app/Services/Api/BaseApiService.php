@@ -37,8 +37,6 @@ class BaseApiService
 
         if (session()->has('user.token')) {
             $headers['Authorization'] = 'Bearer ' . session('user.token');
-        } elseif (session()->has('user') && isset(session('user')['token'])) {
-            $headers['Authorization'] = 'Bearer ' . session('user')['token'];
         }
 
         return array_merge($headers, $customHeaders);
@@ -97,6 +95,8 @@ class BaseApiService
         try {
             $request = Http::withHeaders($this->defaultHeaders($headers))->timeout(10);
             
+            // Los métodos GET y DELETE no envían el cuerpo ($data) de la misma forma en Laravel Http,
+            // pero para simplificar, si hay data la pasamos (aunque para GET/DELETE suele estar vacía).
             $response = empty($data) 
                 ? $request->{$method}($this->baseUrl . $endpoint)
                 : $request->{$method}($this->baseUrl . $endpoint, $data);
@@ -105,13 +105,16 @@ class BaseApiService
                 return $response->json();
             }
 
+            // Registrar errores en los logs de forma inteligente para no ensuciarlos con validaciones fallidas
             if ($response->serverError()) {
+                // Solo logueamos como error crítico cuando el backend falla (5xx)
                 Log::error("API " . strtoupper($method) . " request failed (Server Error)", [
                     'endpoint' => $endpoint,
                     'status' => $response->status(),
                     'body' => $response->body()
                 ]);
             } elseif ($response->clientError() && !in_array($response->status(), [401, 422])) {
+                // Advertencias para otros errores (ej. 403, 404)
                 Log::warning("API " . strtoupper($method) . " request failed (Client Error)", [
                     'endpoint' => $endpoint,
                     'status' => $response->status()
