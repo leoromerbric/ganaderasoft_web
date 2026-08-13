@@ -39,10 +39,7 @@ class ApiPesoCorporalService extends BaseApiService implements PesoCorporalServi
             $endpoint .= '?' . http_build_query($params);
         }
 
-        $response = $this->get($endpoint, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get($endpoint);
 
         return $response;
     }
@@ -61,10 +58,7 @@ class ApiPesoCorporalService extends BaseApiService implements PesoCorporalServi
             ];
         }
 
-        $response = $this->get("/peso-corporal/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get("/peso-corporal/{$id}");
 
         return $response;
     }
@@ -83,11 +77,7 @@ class ApiPesoCorporalService extends BaseApiService implements PesoCorporalServi
             ];
         }
 
-        $response = $this->post('/peso-corporal', $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->post('/peso-corporal', $data);
 
         return $response;
     }
@@ -106,11 +96,7 @@ class ApiPesoCorporalService extends BaseApiService implements PesoCorporalServi
             ];
         }
 
-        $response = $this->put("/peso-corporal/{$id}", $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->put("/peso-corporal/{$id}", $data);
 
         return $response;
     }
@@ -129,10 +115,7 @@ class ApiPesoCorporalService extends BaseApiService implements PesoCorporalServi
             ];
         }
 
-        $response = $this->delete("/peso-corporal/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->delete("/peso-corporal/{$id}");
 
         return $response;
     }

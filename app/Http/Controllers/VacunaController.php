@@ -13,7 +13,8 @@ class VacunaController extends Controller
     {
         $nombre   = $request->query('nombre');
         $response = $this->service->getList($nombre);
-        $vacunas  = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $data     = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $vacunas  = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
 
         return view('vacuna.index', compact('vacunas', 'nombre'));
     }
@@ -26,12 +27,12 @@ class VacunaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'vacuna_nombre' => 'required|string|max:80',
-            'vacuna_descripcion' => 'nullable|string',
+            'nombre' => 'required|string|max:80',
+            'descripcion' => 'nullable|string',
             'activa' => 'nullable|boolean',
         ]);
 
-        $response = $this->service->create($request->only(['vacuna_nombre', 'vacuna_descripcion', 'activa']));
+        $response = $this->service->create($request->only(['nombre', 'descripcion', 'activa']));
 
         if ($response['success'] ?? false) {
             return redirect()->route('vacuna.index')->with('success', 'Vacuna registrada exitosamente.');
@@ -62,12 +63,12 @@ class VacunaController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'vacuna_nombre' => 'required|string|max:80',
-            'vacuna_descripcion' => 'nullable|string',
+            'nombre' => 'required|string|max:80',
+            'descripcion' => 'nullable|string',
             'activa' => 'nullable|boolean',
         ]);
 
-        $response = $this->service->update($id, $request->only(['vacuna_nombre', 'vacuna_descripcion', 'activa']));
+        $response = $this->service->update($id, $request->only(['nombre', 'descripcion', 'activa']));
 
         if ($response['success'] ?? false) {
             return redirect()->route('vacuna.index')->with('success', 'Vacuna actualizada exitosamente.');

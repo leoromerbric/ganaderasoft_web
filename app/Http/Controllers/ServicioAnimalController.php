@@ -27,7 +27,11 @@ class ServicioAnimalController extends Controller
 
     private function isVetOrTech(array $persona): bool
     {
-        $tipo = strtolower(trim((string) (data_get($persona, 'Tipo_Trabajador') ?? data_get($persona, 'tipo_trabajador') ?? data_get($persona, 'personal.Tipo_Trabajador') ?? '')));
+        $tipoVal = data_get($persona, 'Tipo_Trabajador') ?? data_get($persona, 'tipo_trabajador') ?? data_get($persona, 'personal.Tipo_Trabajador') ?? '';
+        if (is_array($tipoVal)) {
+            $tipoVal = $tipoVal['nombre'] ?? $tipoVal['Nombre'] ?? '';
+        }
+        $tipo = strtolower(trim((string) $tipoVal));
 
         if ($tipo === '') {
             return true;
@@ -65,7 +69,8 @@ class ServicioAnimalController extends Controller
         $fechaFin    = $request->query('fecha_fin');
 
         $response  = $this->service->getList($animalId, $tipo, $fechaInicio, $fechaFin);
-        $servicios = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $data      = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $servicios = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $animales  = $this->filterFemaleAnimals($this->service->getAnimales());
 
         return view('servicio-animal.index', compact('servicios', 'animales', 'animalId', 'tipo', 'fechaInicio', 'fechaFin'));
@@ -83,22 +88,23 @@ class ServicioAnimalController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'servicio_id_Animal'   => 'required|integer',
-            'servicio_tipo'        => 'nullable|string|max:11',
-            'servicio_fecha'       => 'nullable|date',
-            'servicio_observacion' => 'nullable|string|max:100',
+            'animal_id'   => 'required|integer',
+            'tipo'        => 'nullable|string|max:11',
+            'fecha'       => 'nullable|date',
+            'observacion' => 'nullable|string|max:100',
         ], [
-            'servicio_id_Animal.required' => 'El animal es requerido.',
+            'animal_id.required' => 'El animal es requerido.',
         ]);
 
-        $data = $request->only([
-            'servicio_id_Animal', 'servicio_semen_id', 'servicio_id_Tecnico',
-            'servicio_tipo', 'servicio_fecha', 'servicio_observacion', 'servicio_celo_id',
-        ]);
-        // Convert empty strings to null for nullable foreign keys
-        foreach (['servicio_semen_id', 'servicio_id_Tecnico', 'servicio_celo_id'] as $k) {
-            if (isset($data[$k]) && $data[$k] === '') $data[$k] = null;
-        }
+        $data = [
+            'animal_id'         => $request->input('animal_id'),
+            'semen_toro_id'     => $request->input('semen_id') !== '' ? $request->input('semen_id') : null,
+            'personal_finca_id' => $request->input('tecnico_id') !== '' ? $request->input('tecnico_id') : null,
+            'registro_celo_id'  => $request->input('celo_id') !== '' ? $request->input('celo_id') : null,
+            'tipo'              => $request->input('tipo'),
+            'fecha'             => $request->input('fecha'),
+            'observacion'       => $request->input('observacion'),
+        ];
 
         $response = $this->service->create($data);
 
@@ -134,15 +140,19 @@ class ServicioAnimalController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'servicio_tipo'        => 'nullable|string|max:11',
-            'servicio_fecha'       => 'nullable|date',
-            'servicio_observacion' => 'nullable|string|max:100',
+            'tipo'        => 'nullable|string|max:11',
+            'fecha'       => 'nullable|date',
+            'observacion' => 'nullable|string|max:100',
         ]);
 
-        $data = $request->only(['servicio_semen_id', 'servicio_id_Tecnico', 'servicio_tipo', 'servicio_fecha', 'servicio_observacion', 'servicio_celo_id']);
-        foreach (['servicio_semen_id', 'servicio_id_Tecnico', 'servicio_celo_id'] as $k) {
-            if (isset($data[$k]) && $data[$k] === '') $data[$k] = null;
-        }
+        $data = [
+            'semen_toro_id'     => $request->input('semen_id') !== '' ? $request->input('semen_id') : null,
+            'personal_finca_id' => $request->input('tecnico_id') !== '' ? $request->input('tecnico_id') : null,
+            'registro_celo_id'  => $request->input('celo_id') !== '' ? $request->input('celo_id') : null,
+            'tipo'              => $request->input('tipo'),
+            'fecha'             => $request->input('fecha'),
+            'observacion'       => $request->input('observacion'),
+        ];
 
         $response = $this->service->update($id, $data);
         if ($response['success'] ?? false) {

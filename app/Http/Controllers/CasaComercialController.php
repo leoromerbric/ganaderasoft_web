@@ -13,7 +13,8 @@ class CasaComercialController extends Controller
     {
         $laboratorio = $request->query('laboratorio');
         $response    = $this->service->getList($laboratorio);
-        $casas       = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $data        = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $casas       = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
 
         return view('casa-comercial.index', compact('casas', 'laboratorio'));
     }

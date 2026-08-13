@@ -3,6 +3,13 @@
 @section('title', 'Editar Tratamiento')
 
 @section('content')
+@php
+    $id = $tratamiento['id'] ?? $tratamiento['tratamiento_id'] ?? null;
+    $diagId = $tratamiento['diagnostico_id'] ?? $tratamiento['tratamiento_diagnostico_id'] ?? null;
+    $fechaIni = $tratamiento['fecha_ini'] ?? $tratamiento['tratamiento_fecha_ini'] ?? null;
+    $fechaFin = $tratamiento['fecha_fin'] ?? $tratamiento['tratamiento_fecha_fin'] ?? null;
+    $plan = $tratamiento['plan'] ?? $tratamiento['tratamiento_plan'] ?? '';
+@endphp
 <div>
     <div class="mb-6 flex items-center">
         <a href="{{ route('tratamiento.index') }}" class="mr-4 text-ganaderasoft-celeste hover:text-ganaderasoft-celeste/80">
@@ -10,14 +17,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">💊 Editar Tratamiento #{{ $tratamiento['tratamiento_id'] }}</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">💊 Editar Tratamiento #{{ $id }}</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
             <h3 class="text-lg font-semibold">Modificar Datos</h3>
         </div>
-        <form action="{{ route('tratamiento.update', $tratamiento['tratamiento_id']) }}" method="POST" class="p-6">
+        <form action="{{ route('tratamiento.update', $id) }}" method="POST" class="p-6">
             @csrf @method('PUT')
             @if($errors->any())
                 <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
@@ -30,42 +37,48 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Diagnóstico</label>
-                    <select name="tratamiento_diagnostico_id"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('tratamiento_diagnostico_id') border-red-500 @enderror">
+                    <select name="diagnostico_id"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('diagnostico_id') border-red-500 @enderror">
                         <option value="">-- Sin diagnóstico --</option>
                         @foreach($diagnosticos as $diagnostico)
-                            <option value="{{ $diagnostico['diagnostico_id'] }}" {{ old('tratamiento_diagnostico_id', $tratamiento['tratamiento_diagnostico_id'] ?? '') == $diagnostico['diagnostico_id'] ? 'selected' : '' }}>
-                                {{ $diagnostico['animal']['Nombre'] ?? '' }} - {{ $diagnostico['diagnostico_tipo'] ?? '' }}
-                                ({{ isset($diagnostico['diagnostico_fecha']) ? date('d/m/Y', strtotime($diagnostico['diagnostico_fecha'])) : '' }})
-                                #{{ $diagnostico['diagnostico_id'] }}
+                            @php
+                                $dId = $diagnostico['id'] ?? $diagnostico['diagnostico_id'] ?? '';
+                                $dTipo = $diagnostico['tipo'] ?? $diagnostico['diagnostico_tipo'] ?? '';
+                                $dFecha = $diagnostico['fecha'] ?? $diagnostico['diagnostico_fecha'] ?? null;
+                                $aNombre = data_get($diagnostico, 'animal.Nombre') ?? '';
+                            @endphp
+                            <option value="{{ $dId }}" {{ old('diagnostico_id', $diagId) == $dId ? 'selected' : '' }}>
+                                {{ $aNombre }} - {{ $dTipo }}
+                                ({{ $dFecha ? date('d/m/Y', strtotime($dFecha)) : '' }})
+                                #{{ $dId }}
                             </option>
                         @endforeach
                     </select>
-                    @error('tratamiento_diagnostico_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('diagnostico_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Plan de Tratamiento</label>
-                    <input type="text" name="tratamiento_plan" maxlength="255"
-                           value="{{ old('tratamiento_plan', $tratamiento['tratamiento_plan'] ?? '') }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('tratamiento_plan') border-red-500 @enderror">
-                    @error('tratamiento_plan')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="text" name="plan" maxlength="255"
+                           value="{{ old('plan', $plan) }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('plan') border-red-500 @enderror">
+                    @error('plan')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Inicio <span class="text-red-500">*</span></label>
-                    <input type="date" name="tratamiento_fecha_ini" required
-                           value="{{ old('tratamiento_fecha_ini', $tratamiento['tratamiento_fecha_ini'] ?? date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('tratamiento_fecha_ini') border-red-500 @enderror">
-                    @error('tratamiento_fecha_ini')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="date" name="fecha_ini" required
+                           value="{{ old('fecha_ini', $fechaIni ? \Carbon\Carbon::parse($fechaIni)->format('Y-m-d') : date('Y-m-d')) }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha_ini') border-red-500 @enderror">
+                    @error('fecha_ini')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Fin <span class="text-red-500">*</span></label>
-                    <input type="date" name="tratamiento_fecha_fin" required
-                           value="{{ old('tratamiento_fecha_fin', $tratamiento['tratamiento_fecha_fin'] ?? '') }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('tratamiento_fecha_fin') border-red-500 @enderror">
-                    @error('tratamiento_fecha_fin')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="date" name="fecha_fin" required
+                           value="{{ old('fecha_fin', $fechaFin ? \Carbon\Carbon::parse($fechaFin)->format('Y-m-d') : '') }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha_fin') border-red-500 @enderror">
+                    @error('fecha_fin')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 

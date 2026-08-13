@@ -3,6 +3,24 @@
 @section('title', 'Editar Diagnóstico')
 
 @section('content')
+@php
+    $id = $diagnostico['id'] ?? $diagnostico['diagnostico_id'] ?? null;
+    $animalId = $diagnostico['animal_id'] ?? $diagnostico['fk_etapa_animal_anid'] ?? data_get($diagnostico, 'etapa_animal.animal_id');
+    $animalNombre = data_get($diagnostico, 'animal.Nombre') ?? ('Animal #'.$animalId);
+    $etapaId = $diagnostico['etapa_id'] ?? $diagnostico['fk_etapa_animal_etid'] ?? data_get($diagnostico, 'etapa_animal.etapa_id');
+    $etapaNombre = data_get($diagnostico, 'etapa_animal.etapa.nombre') ?? data_get($diagnostico, 'etapa_animal.etapa.etapa_nombre') ?? data_get($diagnostico, 'etapa.nombre') ?? data_get($diagnostico, 'etapa.etapa_nombre') ?? ('Etapa #'.$etapaId);
+    $tipo = $diagnostico['tipo'] ?? $diagnostico['diagnostico_tipo'] ?? '';
+    $fechaRaw = old('fecha', $diagnostico['fecha'] ?? $diagnostico['diagnostico_fecha'] ?? null);
+    $fechaValue = '';
+    if (!empty($fechaRaw)) {
+        try {
+            $fechaValue = \Carbon\Carbon::parse($fechaRaw)->format('Y-m-d');
+        } catch (\Exception $e) {
+            $fechaValue = '';
+        }
+    }
+    $descripcion = $diagnostico['descripcion'] ?? $diagnostico['diagnostico_descripcion'] ?? '';
+@endphp
 <div>
     <div class="mb-6 flex items-center">
         <a href="{{ route('diagnostico.index') }}" class="mr-4 text-ganaderasoft-celeste hover:text-ganaderasoft-celeste/80">
@@ -10,14 +28,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🏥 Editar Diagnóstico #{{ $diagnostico['diagnostico_id'] }}</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🏥 Editar Diagnóstico #{{ $id }}</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
             <h3 class="text-lg font-semibold">Modificar Datos</h3>
         </div>
-        <form action="{{ route('diagnostico.update', $diagnostico['diagnostico_id']) }}" method="POST" class="p-6">
+        <form action="{{ route('diagnostico.update', $id) }}" method="POST" class="p-6">
             @csrf @method('PUT')
             @if($errors->any())
                 <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
@@ -31,50 +49,38 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
                     <input type="text" readonly
-                           value="{{ $diagnostico['animal']['Nombre'] ?? ('Animal #'.($diagnostico['fk_etapa_animal_anid'] ?? '')) }}"
+                           value="{{ $animalNombre }}"
                            class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Etapa actual</label>
                     <input type="text" readonly
-                           value="{{ $diagnostico['etapa']['Nombre'] ?? $diagnostico['etapa']['descripcion'] ?? ('Etapa #'.($diagnostico['fk_etapa_animal_etid'] ?? '')) }}"
+                           value="{{ $etapaNombre }}"
                            class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Diagnóstico</label>
-                    <input type="text" name="diagnostico_tipo" maxlength="30"
-                           value="{{ old('diagnostico_tipo', $diagnostico['diagnostico_tipo'] ?? '') }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('diagnostico_tipo') border-red-500 @enderror">
-                    @error('diagnostico_tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="text" name="tipo" maxlength="30"
+                           value="{{ old('tipo', $tipo) }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('tipo') border-red-500 @enderror">
+                    @error('tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del Diagnóstico</label>
-                    @php
-                        $diagnosticoFechaRaw = old('diagnostico_fecha', $diagnostico['diagnostico_fecha'] ?? null);
-                        $diagnosticoFechaValue = '';
-
-                        if (!empty($diagnosticoFechaRaw)) {
-                            try {
-                                $diagnosticoFechaValue = \Carbon\Carbon::parse($diagnosticoFechaRaw)->format('Y-m-d');
-                            } catch (\Exception $e) {
-                                $diagnosticoFechaValue = '';
-                            }
-                        }
-                    @endphp
-                    <input type="date" name="diagnostico_fecha"
-                           value="{{ $diagnosticoFechaValue }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('diagnostico_fecha') border-red-500 @enderror">
-                    @error('diagnostico_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="date" name="fecha"
+                           value="{{ $fechaValue }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha') border-red-500 @enderror">
+                    @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-                    <textarea name="diagnostico_descripcion" rows="4"
-                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('diagnostico_descripcion') border-red-500 @enderror">{{ old('diagnostico_descripcion', $diagnostico['diagnostico_descripcion'] ?? '') }}</textarea>
-                    @error('diagnostico_descripcion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <textarea name="descripcion" rows="4"
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('descripcion') border-red-500 @enderror">{{ old('descripcion', $descripcion) }}</textarea>
+                    @error('descripcion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 

@@ -47,13 +47,16 @@
                     <select name="animal_id" id="filtroAnimal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Todos</option>
                         @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}"
+                            @php
+                                $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
+                            @endphp
+                            <option value="{{ $aId }}"
                                     data-rebano-id="{{ $animal['rebano']['id_Rebano'] ?? ($animal['id_Rebano'] ?? '') }}"
                                     data-rebano-nombre="{{ $animal['rebano']['Nombre'] ?? '' }}"
                                     data-finca-id="{{ $animal['rebano']['id_Finca'] ?? '' }}"
                                     data-finca-nombre="{{ $animal['rebano']['finca']['Nombre'] ?? ('Finca #'.($animal['rebano']['id_Finca'] ?? '')) }}"
-                                    {{ $animalId == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}
+                                    {{ $animalId == $aId ? 'selected' : '' }}>
+                                {{ $animal['Nombre'] ?? 'Animal #'.$aId }}
                             </option>
                         @endforeach
                     </select>
@@ -95,25 +98,34 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($reproducciones as $reproduccion)
-                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $reproduccion['animal']['id_Animal'] ?? $reproduccion['repro_etapa_anid'] ?? '' }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $reproduccion['repro_id'] ?? 'N/A' }}</td>
+                        @php
+                            $rId = $reproduccion['id'] ?? $reproduccion['repro_id'] ?? null;
+                            $animalId = $reproduccion['animal_id'] ?? $reproduccion['repro_etapa_anid'] ?? data_get($reproduccion, 'etapa_animal.animal_id') ?? '';
+                            $animalRefId = data_get($reproduccion, 'animal.id') ?? data_get($reproduccion, 'animal.id_Animal') ?? $animalId;
+                            $animalNombre = data_get($reproduccion, 'animal.Nombre') ?? ('Animal #'.$animalId);
+                            $tipo = $reproduccion['tipo'] ?? $reproduccion['repro_tipo_reproduccion'] ?? '-';
+                            $fecha = $reproduccion['fecha'] ?? $reproduccion['repro_fecha_reproduccion'] ?? null;
+                            $observacion = $reproduccion['observacion'] ?? $reproduccion['repro_observacion'] ?? '-';
+                        @endphp
+                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $animalRefId }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $rId ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $reproduccion['animal']['Nombre'] ?? ('Animal #'.($reproduccion['repro_etapa_anid'] ?? 'N/A')) }}
+                                {{ $animalNombre }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $reproduccion['repro_tipo_reproduccion'] ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $tipo }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ isset($reproduccion['repro_fecha_reproduccion']) ? date('d/m/Y', strtotime($reproduccion['repro_fecha_reproduccion'])) : 'N/A' }}
+                                {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500">{{ $reproduccion['repro_observacion'] ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ $observacion }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('reproduccion-animal.show', $reproduccion['repro_id']) }}"
+                                    <a href="{{ route('reproduccion-animal.show', $rId) }}"
                                        class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
                                     <span class="text-gray-300">|</span>
-                                    <a href="{{ route('reproduccion-animal.edit', $reproduccion['repro_id']) }}"
+                                    <a href="{{ route('reproduccion-animal.edit', $rId) }}"
                                        class="text-ganaderasoft-verde hover:text-green-700">Editar</a>
                                     <span class="text-gray-300">|</span>
-                                    <form method="POST" action="{{ route('reproduccion-animal.destroy', $reproduccion['repro_id']) }}" class="inline"
+                                    <form method="POST" action="{{ route('reproduccion-animal.destroy', $rId) }}" class="inline"
                                           onsubmit="return confirm('¿Está seguro de que desea eliminar este registro?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">Eliminar</button>

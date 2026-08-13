@@ -17,7 +17,8 @@ class DiagnosticoController extends Controller
         $fechaFin    = $request->query('fecha_fin');
 
         $response     = $this->service->getList($animalId, $tipo, $fechaInicio, $fechaFin);
-        $diagnosticos = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $data         = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $diagnosticos = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $animales     = $this->service->getAnimales();
 
         return view('diagnostico.index', compact('diagnosticos', 'animales', 'animalId', 'tipo', 'fechaInicio', 'fechaFin'));
@@ -32,19 +33,18 @@ class DiagnosticoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'diagnostico_descripcion' => 'nullable|string',
-            'diagnostico_tipo'        => 'nullable|string|max:30',
-            'diagnostico_fecha'       => 'nullable|date',
-            'fk_etapa_animal_anid'    => 'required|integer',
-            'fk_etapa_animal_etid'    => 'required|integer',
+            'descripcion' => 'nullable|string',
+            'tipo'        => 'nullable|string|max:30',
+            'fecha'       => 'nullable|date',
+            'animal_id'   => 'required|integer',
+            'etapa_id'    => 'required|integer',
         ], [
-            'fk_etapa_animal_anid.required' => 'El animal es requerido.',
-            'fk_etapa_animal_etid.required' => 'La etapa del animal es requerida.',
+            'animal_id.required' => 'El animal es requerido.',
+            'etapa_id.required'  => 'La etapa del animal es requerida.',
         ]);
 
         $response = $this->service->create($request->only([
-            'diagnostico_descripcion', 'diagnostico_tipo', 'diagnostico_fecha',
-            'fk_etapa_animal_anid', 'fk_etapa_animal_etid',
+            'descripcion', 'tipo', 'fecha', 'animal_id', 'etapa_id',
         ]));
 
         if ($response['success'] ?? false) {
@@ -77,13 +77,13 @@ class DiagnosticoController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'diagnostico_descripcion' => 'nullable|string',
-            'diagnostico_tipo'        => 'nullable|string|max:30',
-            'diagnostico_fecha'       => 'nullable|date',
+            'descripcion' => 'nullable|string',
+            'tipo'        => 'nullable|string|max:30',
+            'fecha'       => 'nullable|date',
         ]);
 
         $response = $this->service->update($id, $request->only([
-            'diagnostico_descripcion', 'diagnostico_tipo', 'diagnostico_fecha',
+            'descripcion', 'tipo', 'fecha',
         ]));
 
         if ($response['success'] ?? false) {

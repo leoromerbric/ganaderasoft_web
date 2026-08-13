@@ -17,10 +17,7 @@ class ApiConfiguracionService extends BaseApiService implements ConfiguracionSer
             return [];
         }
 
-        $response = $this->get('/etapas', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/etapas');
 
         if (isset($response['success']) && $response['success']) {
             return $response['data'] ?? [];
@@ -43,10 +40,7 @@ class ApiConfiguracionService extends BaseApiService implements ConfiguracionSer
             ];
         }
 
-        $response = $this->get('/configuracion/fuente-agua', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/configuracion/fuente-agua');
 
         return $response;
     }
@@ -65,10 +59,7 @@ class ApiConfiguracionService extends BaseApiService implements ConfiguracionSer
             ];
         }
 
-        $response = $this->get('/configuracion/tipo-explotacion', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/configuracion/tipo-explotacion');
 
         return $response;
     }
@@ -87,10 +78,7 @@ class ApiConfiguracionService extends BaseApiService implements ConfiguracionSer
             ];
         }
 
-        $response = $this->get('/configuracion/tipo-relieve', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/configuracion/tipo-relieve');
 
         return $response;
     }
@@ -109,10 +97,7 @@ class ApiConfiguracionService extends BaseApiService implements ConfiguracionSer
             ];
         }
 
-        $response = $this->get('/configuracion/textura-suelo', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/configuracion/textura-suelo');
 
         return $response;
     }
@@ -131,10 +116,7 @@ class ApiConfiguracionService extends BaseApiService implements ConfiguracionSer
             ];
         }
 
-        $response = $this->get('/configuracion/ph-suelo', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/configuracion/ph-suelo');
 
         return $response;
     }
@@ -153,10 +135,7 @@ class ApiConfiguracionService extends BaseApiService implements ConfiguracionSer
             ];
         }
 
-        $response = $this->get('/configuracion/metodo-riego', [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get('/configuracion/metodo-riego');
 
         return $response;
     }

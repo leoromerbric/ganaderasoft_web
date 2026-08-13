@@ -91,15 +91,24 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
                     @foreach($vacunaciones as $item)
-                        @php $id = $item['vacunacion_id'] ?? null; @endphp
-                        <tr class="hover:bg-gray-50 transition-colors" data-rebano-id="{{ data_get($item, 'vacunacion_rebano_id', '') }}">
+                        @php
+                            $id = $item['id'] ?? $item['vacunacion_id'] ?? null;
+                            $rebanoId = $item['rebano_id'] ?? $item['vacunacion_rebano_id'] ?? '';
+                            $vacunaId = $item['vacuna_id'] ?? $item['vacunacion_vacuna_id'] ?? '';
+                            $fecha = $item['fecha'] ?? $item['vacunacion_fecha'] ?? null;
+                            $totalAnimales = $item['total_animales'] ?? $item['vacunacion_total_animales'] ?? 0;
+                            $costoDosis = $item['costo_dosis'] ?? $item['vacunacion_costo_dosis'] ?? 0;
+                            $montoTotal = $item['monto_total'] ?? $item['vacunacion_monto_total'] ?? 0;
+                            $vacunaNombre = data_get($item, 'vacuna.nombre') ?? data_get($item, 'vacuna.vacuna_nombre') ?? ('Vacuna #'.$vacunaId);
+                        @endphp
+                        <tr class="hover:bg-gray-50 transition-colors" data-rebano-id="{{ $rebanoId }}">
                             <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">{{ $id }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'vacuna.vacuna_nombre') ?? ('Vacuna #'.data_get($item, 'vacunacion_vacuna_id')) }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'rebano.Nombre') ?? ('Rebaño #'.data_get($item, 'vacunacion_rebano_id')) }}</td>
-                            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'vacunacion_fecha') ? \Carbon\Carbon::parse(data_get($item, 'vacunacion_fecha'))->format('d/m/Y') : '-' }}</td>
-                            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'animales_count', data_get($item, 'vacunacion_total_animales', 0)) }}</td>
-                            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">{{ number_format((float) data_get($item, 'vacunacion_costo_dosis', 0), 2, ',', '.') }}</td>
-                            <td class="whitespace-nowrap px-6 py-4 text-sm font-semibold text-gray-900">{{ number_format((float) data_get($item, 'vacunacion_monto_total', 0), 2, ',', '.') }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ $vacunaNombre }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'rebano.Nombre') ?? ('Rebaño #'.$rebanoId) }}</td>
+                            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">{{ $fecha ? \Carbon\Carbon::parse($fecha)->format('d/m/Y') : '-' }}</td>
+                            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">{{ data_get($item, 'animales_count', $totalAnimales) }}</td>
+                            <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900">{{ number_format((float) $costoDosis, 2, ',', '.') }}</td>
+                            <td class="whitespace-nowrap px-6 py-4 text-sm font-semibold text-gray-900">{{ number_format((float) $montoTotal, 2, ',', '.') }}</td>
                             <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                                 @if($id)
                                     <div class="flex items-center justify-end space-x-2">

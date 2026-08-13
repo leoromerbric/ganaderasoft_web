@@ -30,18 +30,23 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal <span class="text-red-500">*</span></label>
-                    <select name="celo_etapa_anid" id="celo_etapa_anid" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('celo_etapa_anid') border-red-500 @enderror">
+                    <select name="animal_id" id="celo_etapa_anid" required
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('animal_id') border-red-500 @enderror">
                         <option value="">Seleccione un animal</option>
                         @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}" {{ old('celo_etapa_anid') == $animal['id_Animal'] ? 'selected' : '' }}
-                                    data-etapa="{{ $animal['etapa_actual']['etapa_id'] ?? '' }}">
-                                {{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}
+                            @php
+                                $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
+                                $aNombre = $animal['Nombre'] ?? ('Animal #'.$aId);
+                                $etapaId = data_get($animal, 'etapa_actual.etapa_id') ?? data_get($animal, 'etapa_actual.id') ?? '';
+                            @endphp
+                            <option value="{{ $aId }}" {{ old('animal_id') == $aId ? 'selected' : '' }}
+                                    data-etapa="{{ $etapaId }}">
+                                {{ $aNombre }}
                                 @if(isset($animal['Sexo'])) ({{ $animal['Sexo'] === 'F' ? 'Hembra' : 'Macho' }}) @endif
                             </option>
                         @endforeach
                     </select>
-                    @error('celo_etapa_anid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('animal_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
@@ -49,23 +54,23 @@
                     <input type="text" id="celo_etapa_texto" readonly
                            class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600"
                            placeholder="Se completará al seleccionar el animal">
-                    <input type="hidden" name="celo_etapa_etid" id="celo_etapa_etid" value="{{ old('celo_etapa_etid') }}">
-                    @error('celo_etapa_etid')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="hidden" name="etapa_id" id="celo_etapa_etid" value="{{ old('etapa_id') }}">
+                    @error('etapa_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Celo <span class="text-red-500">*</span></label>
-                    <input type="date" name="celo_fecha" required value="{{ old('celo_fecha', date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('celo_fecha') border-red-500 @enderror">
-                    @error('celo_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha') border-red-500 @enderror">
+                    @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-                    <input type="text" name="celo_observacon" value="{{ old('celo_observacon') }}" maxlength="100"
+                    <input type="text" name="observacion" value="{{ old('observacion') }}" maxlength="100"
                            placeholder="Observaciones del celo..."
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('celo_observacon') border-red-500 @enderror">
-                    @error('celo_observacon')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('observacion') border-red-500 @enderror">
+                    @error('observacion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 
@@ -89,10 +94,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderStage(option, fetchedStage) {
         const etapaNode = fetchedStage?.etapa || fetchedStage;
-        const etapaId = etapaNode?.etapa_id || fetchedStage?.etan_etapa_id || option?.dataset.etapa || '';
-        const etapaNombre = etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.nombre || etapaNode?.descripcion || '';
+        const etapaId = etapaNode?.id || etapaNode?.etapa_id || fetchedStage?.etan_etapa_id || option?.dataset.etapa || '';
+        const etapaNombre = etapaNode?.nombre || etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.descripcion || '';
         etapaInput.value = etapaId;
-        etapaTexto.value = etapaId ? (etapaNombre || 'Etapa actual') : 'Animal sin etapa activa';
+        etapaTexto.value = etapaId ? (etapaNombre || ('Etapa #' + etapaId)) : 'Animal sin etapa activa';
     }
 
     async function updateStage() {
@@ -109,7 +114,9 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
             const payload = await response.json();
-            renderStage(option, payload?.data?.etapa_actual || payload?.data?.etapaActual || null);
+            const animal = payload?.data?.animal || payload?.data || {};
+            const etapaActual = payload?.data?.etapa_actual || payload?.data?.etapaActual || animal?.etapa_actual || animal?.etapaActual || null;
+            renderStage(option, etapaActual);
         } catch (error) {
             etapaTexto.value = 'No se pudo obtener la etapa actual';
         }

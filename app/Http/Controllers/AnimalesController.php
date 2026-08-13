@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 
 class AnimalesController extends Controller
 {
+    /**
+     * Inyecta los servicios necesarios para el controlador de animales.
+     */
     public function __construct(
         protected AnimalesServiceInterface $animalesService,
         protected RebanosServiceInterface  $rebanosService,
@@ -16,33 +19,39 @@ class AnimalesController extends Controller
     ) {}
 
     /**
-     * Display a listing of animals
+     * Muestra el listado principal de animales.
+     * Carga rebaños y fincas para los filtros y aplica mapeo de datos.
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
-        $idFinca  = $request->query('id_finca')  ? (int) $request->query('id_finca')  : null;
-        $idRebano = $request->query('id_rebano') ? (int) $request->query('id_rebano') : null;
+        $idFinca  = $request->query('finca_id')  ? (int) $request->query('finca_id')  : null;
+        $idRebano = $request->query('rebano_id') ? (int) $request->query('rebano_id') : null;
         $sexo     = $request->query('sexo', '');
         $nombre   = $request->query('nombre', '');
 
-        // Load all animales (client-side filtering for finca/sexo/nombre)
+        // Obtener todos los animales del rebaño si está especificado
         $response = $this->animalesService->getAnimales($idRebano);
-        $animales = ($response['success'] ?? false) ? ($response['data']['data'] ?? []) : [];
+        $animales = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
 
+        // Cargar catálogos auxiliares (rebaños y fincas)
         $rebanosResponse = $this->rebanosService->getRebanos();
-        $rebanos = ($rebanosResponse['success'] ?? false) ? ($rebanosResponse['data']['data'] ?? []) : [];
+        $rebanos = ($rebanosResponse['success'] ?? false) ? ($rebanosResponse['data'] ?? []) : [];
 
         $fincasResponse = $this->fincasService->getFincas();
-        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
+        // Fallback por si acaso la API responde con un formato anidado, pero por defecto se asume V2 ['data']
+        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data'] ?? []) : [];
 
-        // Build rebano→finca map for JS
-        $mapaRebanoFinca = collect($rebanos)->keyBy('id_Rebano')->map(fn($r) => $r['id_Finca'] ?? null)->all();
+        // Construir mapa de Rebaño a Finca para validaciones y filtros en Javascript (UI)
+        $mapaRebanoFinca = collect($rebanos)->keyBy('rebano_id')->map(fn($r) => $r['finca_id'] ?? null)->all();
 
-        // Estadísticas sobre los animales cargados
+        // Calcular estadísticas básicas en memoria
         $estadisticas = [
             'total'     => count($animales),
-            'machos'    => count(array_filter($animales, fn($a) => ($a['Sexo'] ?? '') === 'M')),
-            'hembras'   => count(array_filter($animales, fn($a) => ($a['Sexo'] ?? '') === 'F')),
+            'machos'    => count(array_filter($animales, fn($a) => ($a['sexo'] ?? '') === 'M')),
+            'hembras'   => count(array_filter($animales, fn($a) => ($a['sexo'] ?? '') === 'H')), // Actualizado de 'F' a 'H' según la V2
             'activos'   => count(array_filter($animales, fn($a) => !($a['archivado'] ?? false))),
         ];
 
@@ -54,55 +63,59 @@ class AnimalesController extends Controller
     }
 
     /**
-     * Show the form for creating a new animal
+     * Muestra el formulario para registrar un nuevo animal.
+     * Carga todos los catálogos requeridos (rebaños, razas, estados y etapas iniciales).
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
         $rebanosResponse = $this->rebanosService->getRebanos();
-        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data']['data'] ?? []) : [];
+        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data'] ?? []) : [];
 
         $razasResponse = $this->animalesService->getRazas();
         $razas = $razasResponse['success'] ? ($razasResponse['data'] ?? []) : [];
 
         $estadosResponse = $this->animalesService->getEstadosSalud();
         $estadosData = $estadosResponse['success'] ? ($estadosResponse['data'] ?? []) : [];
-        // Ensure $estados is always an array of arrays, filtering out non-array elements
         $estados = is_array($estadosData) ? array_filter($estadosData['data'], 'is_array') : [];
 
         $etapasResponse = $this->animalesService->getEtapas();
         $etapasData = $etapasResponse['success'] ? ($etapasResponse['data'] ?? []) : [];
-        // Ensure $etapas is always an array of arrays, filtering out non-array elements
         $etapas = is_array($etapasData) ? array_filter($etapasData, 'is_array') : [];
 
         return view('animales.create', compact('rebanos', 'razas', 'estados', 'etapas'));
     }
 
     /**
-     * Store a newly created animal in storage
+     * Procesa la solicitud para crear un nuevo animal en el sistema.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'id_Rebano' => 'required|integer',
-            'Nombre' => 'required|string|max:255',
+            'rebano_id' => 'required|integer',
+            'nombre' => 'required|string|max:255',
             'codigo_animal' => 'required|string|max:50',
-            'Sexo' => 'required|in:M,F',
+            'sexo' => 'required|in:M,H',
             'fecha_nacimiento' => 'required|date',
-            'Procedencia' => 'required|string|max:255',
-            'fk_composicion_raza' => 'required|integer',
-            'estado_inicial.estado_id' => 'required|integer',
+            'procedencia' => 'required|string|max:255',
+            'composicion_raza_id' => 'required|integer',
+            'estado_inicial.estado_salud_id' => 'required|integer',
             'estado_inicial.fecha_ini' => 'required|date',
             'etapa_inicial.etapa_id' => 'required|integer',
             'etapa_inicial.fecha_ini' => 'required|date',
         ], [
-            'id_Rebano.required' => 'Debe seleccionar un rebaño',
-            'Nombre.required' => 'El nombre del animal es requerido',
+            'rebano_id.required' => 'Debe seleccionar un rebaño',
+            'nombre.required' => 'El nombre del animal es requerido',
             'codigo_animal.required' => 'El código del animal es requerido',
-            'Sexo.required' => 'El sexo del animal es requerido',
+            'sexo.required' => 'El sexo del animal es requerido',
             'fecha_nacimiento.required' => 'La fecha de nacimiento es requerida',
-            'Procedencia.required' => 'La procedencia es requerida',
-            'fk_composicion_raza.required' => 'Debe seleccionar una raza',
-            'estado_inicial.estado_id.required' => 'Debe seleccionar un estado de salud inicial',
+            'procedencia.required' => 'La procedencia es requerida',
+            'composicion_raza_id.required' => 'Debe seleccionar una raza',
+            'estado_inicial.estado_salud_id.required' => 'Debe seleccionar un estado de salud inicial',
             'etapa_inicial.etapa_id.required' => 'Debe seleccionar una etapa inicial',
         ]);
 
@@ -119,7 +132,10 @@ class AnimalesController extends Controller
     }
 
     /**
-     * Display the specified animal
+     * Muestra los detalles biográficos específicos de un animal.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function show(int $id)
     {
@@ -135,7 +151,11 @@ class AnimalesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified animal
+     * Muestra el formulario para editar el perfil biográfico base del animal.
+     * NOTA: No incluye estados ni etapas, ya que son recursos independientes.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function edit(int $id)
     {
@@ -148,55 +168,43 @@ class AnimalesController extends Controller
         $animal = $response['data'] ?? null;
 
         $rebanosResponse = $this->rebanosService->getRebanos();
-        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data']['data'] ?? []) : [];
+        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data'] ?? []) : [];
 
         $razasResponse = $this->animalesService->getRazas();
         $razas = $razasResponse['success'] ? ($razasResponse['data'] ?? []) : [];
 
-        $estadosResponse = $this->animalesService->getEstadosSalud();
-        $estadosData = $estadosResponse['success'] ? ($estadosResponse['data'] ?? []) : [];
-        // Ensure $estados is always an array of arrays, filtering out non-array elements
-        $estados = is_array($estadosData) ? array_filter($estadosData['data'], 'is_array') : [];
-
-        $etapasResponse = $this->animalesService->getEtapas();
-        $etapasData = $etapasResponse['success'] ? ($etapasResponse['data'] ?? []) : [];
-        // Ensure $etapas is always an array of arrays, filtering out non-array elements
-        $etapas = is_array($etapasData) ? array_filter($etapasData, 'is_array') : [];
-
-        return view('animales.edit', compact('animal', 'rebanos', 'razas', 'estados', 'etapas'));
+        return view('animales.edit', compact('animal', 'rebanos', 'razas'));
     }
 
     /**
-     * Update the specified animal in storage
+     * Procesa la actualización del perfil del animal en el sistema.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, int $id)
     {
         $validatedData = $request->validate([
-            'id_Rebano' => 'required|integer',
-            'Nombre' => 'required|string|max:255',
+            'rebano_id' => 'required|integer',
+            'nombre' => 'required|string|max:255',
             'codigo_animal' => 'required|string|max:50',
-            'Sexo' => 'required|in:M,F',
+            'sexo' => 'required|in:M,H',
             'fecha_nacimiento' => 'required|date',
-            'Procedencia' => 'required|string|max:255',
-            'fk_composicion_raza' => 'required|integer',
+            'procedencia' => 'required|string|max:255',
+            'composicion_raza_id' => 'required|integer',
             'archivado' => 'boolean',
-            'estado_inicial.estado_id' => 'required|integer',
-            'estado_inicial.fecha_ini' => 'required|date',
-            'etapa_inicial.etapa_id' => 'required|integer',
-            'etapa_inicial.fecha_ini' => 'required|date',
         ], [
-            'id_Rebano.required' => 'Debe seleccionar un rebaño',
-            'Nombre.required' => 'El nombre del animal es requerido',
+            'rebano_id.required' => 'Debe seleccionar un rebaño',
+            'nombre.required' => 'El nombre del animal es requerido',
             'codigo_animal.required' => 'El código del animal es requerido',
-            'Sexo.required' => 'El sexo del animal es requerido',
+            'sexo.required' => 'El sexo del animal es requerido',
             'fecha_nacimiento.required' => 'La fecha de nacimiento es requerida',
-            'Procedencia.required' => 'La procedencia es requerida',
-            'fk_composicion_raza.required' => 'Debe seleccionar una raza',
-            'estado_inicial.estado_id.required' => 'Debe seleccionar un estado de salud',
-            'etapa_inicial.etapa_id.required' => 'Debe seleccionar una etapa',
+            'procedencia.required' => 'La procedencia es requerida',
+            'composicion_raza_id.required' => 'Debe seleccionar una raza',
         ]);
 
-        // Ensure archivado is set
+        // Asegurarse de que el campo archivado se envíe correctamente (V2)
         $validatedData['archivado'] = $request->has('archivado') ? true : false;
 
         $response = $this->animalesService->updateAnimal($id, $validatedData);

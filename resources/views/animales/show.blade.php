@@ -11,11 +11,11 @@
                 <p class="text-gray-600 mt-1">Información completa del animal</p>
             </div>
             <div class="flex space-x-3">
-                <a href="{{ route('arbol-gen.show', $animal['id_Animal']) }}"
+                <a href="{{ route('arbol-gen.show', $animal['id']) }}"
                    class="px-6 py-3 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-all duration-200">
                     🌳 Árbol Genealógico
                 </a>
-                <a href="{{ route('animales.edit', $animal['id_Animal']) }}" 
+                <a href="{{ route('animales.edit', $animal['id']) }}" 
                    class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
                     Editar
                 </a>
@@ -35,7 +35,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <p class="text-sm text-gray-500 mb-1">Nombre</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ $animal['Nombre'] }}</p>
+                        <p class="text-lg font-semibold text-gray-900">{{ $animal['nombre'] }}</p>
                     </div>
                     
                     <div>
@@ -46,8 +46,8 @@
                     <div>
                         <p class="text-sm text-gray-500 mb-1">Sexo</p>
                         <p class="text-lg font-semibold">
-                            <span class="px-3 py-1 rounded {{ $animal['Sexo'] === 'M' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' }}">
-                                {{ $animal['Sexo'] === 'M' ? 'Macho' : 'Hembra' }}
+                            <span class="px-3 py-1 rounded {{ $animal['sexo'] === 'M' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' }}">
+                                {{ $animal['sexo'] === 'M' ? 'Macho' : 'Hembra' }}
                             </span>
                         </p>
                     </div>
@@ -59,7 +59,7 @@
                     
                     <div>
                         <p class="text-sm text-gray-500 mb-1">Procedencia</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ $animal['Procedencia'] }}</p>
+                        <p class="text-lg font-semibold text-gray-900">{{ $animal['procedencia'] }}</p>
                     </div>
                     
                     <div>
@@ -81,7 +81,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p class="text-sm text-gray-500 mb-1">Nombre</p>
-                            <p class="font-semibold text-gray-900">{{ $animal['composicion_raza']['Nombre'] }}</p>
+                            <p class="font-semibold text-gray-900">{{ $animal['composicion_raza']['nombre'] }}</p>
                         </div>
                         <div>
                             <p class="text-sm text-gray-500 mb-1">Siglas</p>
@@ -106,12 +106,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p class="text-sm text-gray-500 mb-1">Rebaño</p>
-                            <p class="font-semibold text-gray-900">{{ $animal['rebano']['Nombre'] }}</p>
+                            <p class="font-semibold text-gray-900">{{ $animal['rebano']['nombre'] }}</p>
                         </div>
                         @if(isset($animal['rebano']['finca']))
                         <div>
                             <p class="text-sm text-gray-500 mb-1">Finca</p>
-                            <p class="font-semibold text-gray-900">{{ $animal['rebano']['finca']['Nombre'] }}</p>
+                            <p class="font-semibold text-gray-900">{{ $animal['rebano']['finca']['nombre'] }}</p>
                         </div>
                         @endif
                     </div>

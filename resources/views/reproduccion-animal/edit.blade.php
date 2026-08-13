@@ -3,6 +3,24 @@
 @section('title', 'Editar Reproducción Animal')
 
 @section('content')
+@php
+    $id = $reproduccion['id'] ?? $reproduccion['repro_id'] ?? null;
+    $animalId = $reproduccion['animal_id'] ?? $reproduccion['repro_etapa_anid'] ?? data_get($reproduccion, 'etapa_animal.animal_id');
+    $animalNombre = data_get($reproduccion, 'animal.Nombre') ?? ('Animal #'.$animalId);
+    $etapaId = $reproduccion['etapa_id'] ?? $reproduccion['repro_etapa_etid'] ?? data_get($reproduccion, 'etapa_animal.etapa_id');
+    $etapaNombre = data_get($reproduccion, 'etapa_animal.etapa.nombre') ?? data_get($reproduccion, 'etapa_animal.etapa.etapa_nombre') ?? data_get($reproduccion, 'etapa.nombre') ?? data_get($reproduccion, 'etapa.etapa_nombre') ?? ('Etapa #'.$etapaId);
+    $tipo = $reproduccion['tipo'] ?? $reproduccion['repro_tipo_reproduccion'] ?? '';
+    $fechaRaw = old('fecha', $reproduccion['fecha'] ?? $reproduccion['repro_fecha_reproduccion'] ?? null);
+    $fechaValue = '';
+    if (!empty($fechaRaw)) {
+        try {
+            $fechaValue = \Carbon\Carbon::parse($fechaRaw)->format('Y-m-d');
+        } catch (\Exception $e) {
+            $fechaValue = '';
+        }
+    }
+    $observacion = $reproduccion['observacion'] ?? $reproduccion['repro_observacion'] ?? '';
+@endphp
 <div>
     <div class="mb-6 flex items-center">
         <a href="{{ route('reproduccion-animal.index') }}" class="mr-4 text-ganaderasoft-celeste hover:text-ganaderasoft-celeste/80">
@@ -10,14 +28,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🔬 Editar Reproducción #{{ $reproduccion['repro_id'] }}</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🔬 Editar Reproducción #{{ $id }}</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
             <h3 class="text-lg font-semibold">Modificar Datos</h3>
         </div>
-        <form action="{{ route('reproduccion-animal.update', $reproduccion['repro_id']) }}" method="POST" class="p-6">
+        <form action="{{ route('reproduccion-animal.update', $id) }}" method="POST" class="p-6">
             @csrf @method('PUT')
             @if($errors->any())
                 <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
@@ -31,40 +49,40 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
                     <input type="text" readonly
-                           value="{{ $reproduccion['animal']['Nombre'] ?? ('Animal #'.($reproduccion['repro_etapa_anid'] ?? '')) }}"
+                           value="{{ $animalNombre }}"
                            class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Etapa actual</label>
                     <input type="text" readonly
-                           value="{{ $reproduccion['etapa']['Nombre'] ?? $reproduccion['etapa']['descripcion'] ?? ('Etapa #'.($reproduccion['repro_etapa_etid'] ?? '')) }}"
+                           value="{{ $etapaNombre }}"
                            class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Reproducción</label>
-                    <select name="repro_tipo_reproduccion"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('repro_tipo_reproduccion') border-red-500 @enderror">
+                    <select name="tipo"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('tipo') border-red-500 @enderror">
                         <option value="">Seleccione un tipo</option>
-                        <option value="Natural" {{ old('repro_tipo_reproduccion', $reproduccion['repro_tipo_reproduccion'] ?? '') == 'Natural' ? 'selected' : '' }}>Natural</option>
-                        <option value="IA" {{ old('repro_tipo_reproduccion', $reproduccion['repro_tipo_reproduccion'] ?? '') == 'IA' ? 'selected' : '' }}>IA</option>
+                        <option value="Natural" {{ old('tipo', $tipo) == 'Natural' ? 'selected' : '' }}>Natural</option>
+                        <option value="IA" {{ old('tipo', $tipo) == 'IA' ? 'selected' : '' }}>IA</option>
                     </select>
-                    @error('repro_tipo_reproduccion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Reproducción <span class="text-red-500">*</span></label>
-                    <input type="date" name="repro_fecha_reproduccion" required
-                           value="{{ old('repro_fecha_reproduccion', !empty($reproduccion['repro_fecha_reproduccion']) ? date('Y-m-d', strtotime($reproduccion['repro_fecha_reproduccion'])) : date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('repro_fecha_reproduccion') border-red-500 @enderror">
-                    @error('repro_fecha_reproduccion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="date" name="fecha" required
+                           value="{{ $fechaValue }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha') border-red-500 @enderror">
+                    @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-                    <input type="text" name="repro_observacion" maxlength="60"
-                           value="{{ old('repro_observacion', $reproduccion['repro_observacion'] ?? '') }}"
+                    <input type="text" name="observacion" maxlength="60"
+                           value="{{ old('observacion', $observacion) }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
                 </div>
             </div>

@@ -60,8 +60,8 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($vacunas as $vacuna)
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $vacuna['vacuna_id'] ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $vacuna['vacuna_nombre'] ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $vacuna['id'] ?? $vacuna['vacuna_id'] ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $vacuna['nombre'] ?? $vacuna['vacuna_nombre'] ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 @if((int)($vacuna['activa'] ?? 1) === 1)
                                     <span class="inline-flex rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">Activa</span>
@@ -70,20 +70,20 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ isset($vacuna['casasComerciales']) ? count($vacuna['casasComerciales']) : 0 }}
+                                {{ isset($vacuna['casas_comerciales']) ? count($vacuna['casas_comerciales']) : (isset($vacuna['casasComerciales']) ? count($vacuna['casasComerciales']) : 0) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 {{ isset($vacuna['dosis']) ? count($vacuna['dosis']) : 0 }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('vacuna.show', $vacuna['vacuna_id']) }}"
+                                    <a href="{{ route('vacuna.show', $vacuna['id'] ?? $vacuna['vacuna_id']) }}"
                                        class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
                                     <span class="text-gray-300">|</span>
-                                    <a href="{{ route('vacuna.edit', $vacuna['vacuna_id']) }}"
+                                    <a href="{{ route('vacuna.edit', $vacuna['id'] ?? $vacuna['vacuna_id']) }}"
                                        class="text-ganaderasoft-verde hover:text-green-700">Editar</a>
                                     <span class="text-gray-300">|</span>
-                                    <form method="POST" action="{{ route('vacuna.destroy', $vacuna['vacuna_id']) }}" class="inline"
+                                    <form method="POST" action="{{ route('vacuna.destroy', $vacuna['id'] ?? $vacuna['vacuna_id']) }}" class="inline"
                                           onsubmit="return confirm('¿Está seguro de que desea eliminar este registro?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">Eliminar</button>

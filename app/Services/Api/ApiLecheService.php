@@ -39,10 +39,7 @@ class ApiLecheService extends BaseApiService implements LecheServiceInterface
             $endpoint .= '?' . http_build_query($params);
         }
 
-        $response = $this->get($endpoint, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get($endpoint);
 
         return $response;
     }
@@ -61,10 +58,7 @@ class ApiLecheService extends BaseApiService implements LecheServiceInterface
             ];
         }
 
-        $response = $this->get("/leche/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->get("/leche/{$id}");
 
         return $response;
     }
@@ -83,11 +77,7 @@ class ApiLecheService extends BaseApiService implements LecheServiceInterface
             ];
         }
 
-        $response = $this->post('/leche', $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->post('/leche', $data);
 
         return $response;
     }
@@ -106,11 +96,7 @@ class ApiLecheService extends BaseApiService implements LecheServiceInterface
             ];
         }
 
-        $response = $this->put("/leche/{$id}", $data, [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-            'Content-Type' => 'application/json',
-        ]);
+        $response = $this->put("/leche/{$id}", $data);
 
         return $response;
     }
@@ -129,10 +115,7 @@ class ApiLecheService extends BaseApiService implements LecheServiceInterface
             ];
         }
 
-        $response = $this->delete("/leche/{$id}", [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ]);
+        $response = $this->delete("/leche/{$id}");
 
         return $response;
     }

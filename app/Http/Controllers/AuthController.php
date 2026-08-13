@@ -4,23 +4,41 @@ namespace App\Http\Controllers;
 
 use App\Services\Contracts\AuthServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Session;
 
+/**
+ * Controlador para manejar la autenticación en el frontend (web y API proxy).
+ */
 class AuthController extends Controller
 {
+    /**
+     * @var AuthServiceInterface
+     */
     protected AuthServiceInterface $authService;
 
+    /**
+     * Inyecta el servicio de autenticación.
+     *
+     * @param AuthServiceInterface $authService
+     */
     public function __construct(AuthServiceInterface $authService)
     {
         $this->authService = $authService;
     }
 
     /**
-     * Show the login form
+     * Muestra el formulario de inicio de sesión.
+     *
+     * @return View|RedirectResponse
      */
     public function showLoginForm()
     {
-        // Redirect to dashboard if already authenticated
-        if (session('authenticated')) {
+        // Redirigir al dashboard si ya existe una sesión activa
+        if (Session::has('authenticated')) {
             return redirect()->route('dashboard');
         }
 
@@ -28,18 +46,21 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle login attempt
+     * Procesa el intento de inicio de sesión desde la web.
+     *
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function login(Request $request)
+    public function login(Request $request): RedirectResponse
     {
         $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required|min:6',
         ], [
-            'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'El correo electrónico debe ser válido.',
+            'email.required'    => 'El correo electrónico es obligatorio.',
+            'email.email'       => 'El correo electrónico debe ser válido.',
             'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+            'password.min'      => 'La contraseña debe tener al menos 6 caracteres.',
         ]);
 
         $user = $this->authService->attempt($request->email, $request->password);
@@ -54,9 +75,11 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle logout
+     * Cierra la sesión del usuario en la web.
+     *
+     * @return RedirectResponse
      */
-    public function logout()
+    public function logout(): RedirectResponse
     {
         $this->authService->logout();
 
@@ -64,33 +87,41 @@ class AuthController extends Controller
     }
 
     /**
-     * API Login endpoint
+     * Endpoint API para iniciar sesión (usado como proxy por clientes externos si aplica).
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function apiLogin(Request $request)
+    public function apiLogin(Request $request): JsonResponse
     {
         $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required|min:6',
         ]);
 
         $user = $this->authService->attempt($request->email, $request->password);
 
         if ($user) {
+            $userProfile = $user;
+            
+            // Remover tokens del perfil del usuario para no duplicarlos en la respuesta JSON
+            unset($userProfile['token'], $userProfile['token_type']);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Login exitoso',
-                'data' => [
-                    'user' => $user,
-                    'token' => $user['token'] ?? null,
+                'data'    => [
+                    'user'       => $userProfile,
+                    'token'      => $user['token'] ?? null,
                     'token_type' => $user['token_type'] ?? 'Bearer',
                 ]
-            ]);
+            ], Response::HTTP_OK);
         }
 
         return response()->json([
             'success' => false,
             'message' => 'Las credenciales proporcionadas no son correctas.'
-        ], 401);
+        ], Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -108,15 +139,17 @@ class AuthController extends Controller
     }
 
     /**
-     * API Logout endpoint
+     * Endpoint API para cerrar sesión.
+     *
+     * @return JsonResponse
      */
-    public function apiLogout()
+    public function apiLogout(): JsonResponse
     {
         $this->authService->logout();
 
         return response()->json([
             'success' => true,
             'message' => 'Sesión cerrada exitosamente.'
-        ]);
+        ], Response::HTTP_OK);
     }
 }

@@ -6,14 +6,6 @@ use App\Services\Contracts\VacunacionServiceInterface;
 
 class ApiVacunacionService extends BaseApiService implements VacunacionServiceInterface
 {
-    private function authHeaders(): array
-    {
-        return [
-            'Accept' => 'application/json',
-            'Authorization' => 'Bearer ' . (session('user')['token'] ?? ''),
-        ];
-    }
-
     public function getList(array $filters = []): array
     {
         if (!session('user.token')) {
@@ -27,8 +19,8 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             'fecha_fin' => $filters['fecha_fin'] ?? null,
         ]);
 
-        $endpoint = '/vacunaciones' . (!empty($query) ? '?' . http_build_query($query) : '');
-        return $this->get($endpoint, $this->authHeaders());
+        $endpoint = '/vacunaciones?nopaginate=true' . (!empty($query) ? '&' . http_build_query($query) : '');
+        return $this->get($endpoint);
     }
 
     public function getById(int $id): array
@@ -37,7 +29,7 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             return ['success' => false, 'data' => []];
         }
 
-        return $this->get("/vacunaciones/{$id}", $this->authHeaders());
+        return $this->get("/vacunaciones/{$id}");
     }
 
     public function create(array $data): array
@@ -46,7 +38,7 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        return $this->post('/vacunaciones', $data, $this->authHeaders() + ['Content-Type' => 'application/json']);
+        return $this->post('/vacunaciones', $data);
     }
 
     public function update(int $id, array $data): array
@@ -55,7 +47,7 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        return $this->put("/vacunaciones/{$id}", $data, $this->authHeaders() + ['Content-Type' => 'application/json']);
+        return $this->put("/vacunaciones/{$id}", $data);
     }
 
     public function eliminar(int $id): array
@@ -64,7 +56,7 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        return $this->delete("/vacunaciones/{$id}", $this->authHeaders());
+        return $this->delete("/vacunaciones/{$id}");
     }
 
     public function getAnimalesElegibles(array $filters): array
@@ -80,7 +72,7 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
         ]);
 
         $endpoint = '/vacunaciones/animales-elegibles' . (!empty($query) ? '?' . http_build_query($query) : '');
-        return $this->get($endpoint, $this->authHeaders());
+        return $this->get($endpoint);
     }
 
     public function getVacunas(): array
@@ -89,8 +81,9 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             return [];
         }
 
-        $response = $this->get('/vacunas', $this->authHeaders());
-        return ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $response = $this->get('/vacunas?nopaginate=true');
+        $data = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 
     public function getEtapas(): array
@@ -99,8 +92,9 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             return [];
         }
 
-        $response = $this->get('/etapas', $this->authHeaders());
-        return ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
+        $response = $this->get('/etapas?nopaginate=true');
+        $data = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 
     public function getRebanos(): array
@@ -109,7 +103,8 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
             return [];
         }
 
-        $response = $this->get('/rebanos', $this->authHeaders());
-        return ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
+        $response = $this->get('/rebanos?nopaginate=true');
+        $data = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        return (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
     }
 }

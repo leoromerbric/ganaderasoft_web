@@ -3,6 +3,19 @@
 @section('title', 'Detalle Servicio Animal')
 
 @section('content')
+@php
+    $id = $servicio['id'] ?? $servicio['servicio_id'] ?? null;
+    $animalId = $servicio['animal_id'] ?? $servicio['servicio_id_Animal'] ?? data_get($servicio, 'etapa_animal.animal_id');
+    $animalNombre = data_get($servicio, 'animal.Nombre') ?? ('Animal #'.$animalId);
+    $tipo = $servicio['tipo'] ?? $servicio['servicio_tipo'] ?? '-';
+    $fecha = $servicio['fecha'] ?? $servicio['servicio_fecha'] ?? null;
+    $semenId = $servicio['semen_id'] ?? $servicio['servicio_semen_id'] ?? null;
+    $semenNombre = data_get($servicio, 'semen.toro.Nombre') ?? data_get($servicio, 'semen.descripcion') ?? data_get($servicio, 'semen.codigo') ?? ($semenId ? 'Semen #'.$semenId : '-');
+    $tecnicoId = $servicio['tecnico_id'] ?? $servicio['servicio_id_Tecnico'] ?? null;
+    $tecnicoNombre = data_get($servicio, 'tecnico.Nombre') ?? data_get($servicio, 'tecnico.Nombre_Completo') ?? data_get($servicio, 'tecnico.nombre') ?? ($tecnicoId ? 'Personal #'.$tecnicoId : '-');
+    $celoId = $servicio['celo_id'] ?? $servicio['servicio_celo_id'] ?? null;
+    $observacion = $servicio['observacion'] ?? $servicio['servicio_observacion'] ?? '-';
+@endphp
 <div>
     <div class="mb-6 flex items-center justify-between">
         <div class="flex items-center">
@@ -11,9 +24,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🐂 Servicio Animal #{{ $servicio['servicio_id'] }}</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🐂 Servicio Animal #{{ $id }}</h2>
         </div>
-        <a href="{{ route('servicio-animal.edit', $servicio['servicio_id']) }}"
+        <a href="{{ route('servicio-animal.edit', $id) }}"
            class="px-4 py-2 bg-ganaderasoft-verde text-white rounded-lg hover:bg-ganaderasoft-verde/80 transition-colors">
             Editar
         </a>
@@ -24,40 +37,40 @@
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Animal</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ $servicio['animal']['Nombre'] ?? ('Animal #'.($servicio['servicio_id_Animal'] ?? 'N/A')) }}
+                    {{ $animalNombre }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Tipo de Servicio</p>
-                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $servicio['servicio_tipo'] ?? '-' }}</p>
+                <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $tipo }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha del Servicio</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ isset($servicio['servicio_fecha']) ? date('d/m/Y', strtotime($servicio['servicio_fecha'])) : 'N/A' }}
+                    {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Semen / Toro</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ $servicio['semen']['toro']['Nombre'] ?? (isset($servicio['servicio_semen_id']) ? 'Semen #'.$servicio['servicio_semen_id'] : '-') }}
+                    {{ $semenNombre }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Técnico</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ $servicio['tecnico']['Nombre'] ?? (isset($servicio['servicio_id_Tecnico']) ? 'Personal #'.$servicio['servicio_id_Tecnico'] : '-') }}
+                    {{ $tecnicoNombre }}
                 </p>
             </div>
             <div>
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Registro de Celo</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
-                    {{ isset($servicio['servicio_celo_id']) ? ('Celo #'.$servicio['servicio_celo_id']) : '-' }}
+                    {{ $celoId ? ('Celo #'.$celoId) : '-' }}
                 </p>
             </div>
             <div class="md:col-span-2">
                 <p class="text-sm text-gray-500 uppercase tracking-wider">Observación</p>
-                <p class="text-lg text-ganaderasoft-negro mt-1">{{ $servicio['servicio_observacion'] ?? '-' }}</p>
+                <p class="text-lg text-ganaderasoft-negro mt-1">{{ $observacion }}</p>
             </div>
         </div>
     </div>

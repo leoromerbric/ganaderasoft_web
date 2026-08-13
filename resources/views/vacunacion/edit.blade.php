@@ -5,9 +5,10 @@
 @section('content')
 @php
     $selectedAnimales = collect(data_get($vacunacion, 'animales', []));
-    $fechaValor = data_get($vacunacion, 'vacunacion_fecha');
+    $fechaValor = data_get($vacunacion, 'fecha') ?? data_get($vacunacion, 'vacunacion_fecha');
     $fechaValor = $fechaValor ? \Illuminate\Support\Carbon::parse($fechaValor)->format('Y-m-d') : date('Y-m-d');
-    $filtros = old('vacunacion_filtros', data_get($vacunacion, 'vacunacion_filtros', []));
+    $filtros = old('vacunacion_filtros', data_get($vacunacion, 'filtros') ?? data_get($vacunacion, 'vacunacion_filtros', []));
+    $vacId = data_get($vacunacion, 'id') ?? data_get($vacunacion, 'vacunacion_id');
 @endphp
 
 <div class="mb-8 flex items-center">
@@ -15,13 +16,13 @@
         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
     </a>
     <div>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">💉 Editar Vacunación #{{ data_get($vacunacion, 'vacunacion_id') }}</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">💉 Editar Vacunación #{{ $vacId }}</h2>
     </div>
 </div>
 
 <div class="overflow-hidden rounded-xl bg-white shadow-md">
     <div class="rounded-t-xl bg-ganaderasoft-celeste px-6 py-4 text-white"><h3 class="text-lg font-semibold">Actualizar registro de vacunación</h3></div>
-    <form action="{{ route('vacunacion.update', data_get($vacunacion, 'vacunacion_id')) }}" method="POST" class="space-y-6 p-6" id="vacunacionForm">
+    <form action="{{ route('vacunacion.update', $vacId) }}" method="POST" class="space-y-6 p-6" id="vacunacionForm">
         @csrf
         @method('PUT')
 
@@ -30,7 +31,12 @@
                 <label class="mb-1 block text-sm font-medium text-gray-700">Vacuna utilizada *</label>
                 <select name="vacunacion_vacuna_id" class="w-full rounded-lg border border-gray-300 px-4 py-2">
                     @foreach($vacunas as $vacuna)
-                        <option value="{{ $vacuna['vacuna_id'] ?? '' }}" {{ old('vacunacion_vacuna_id', data_get($vacunacion, 'vacunacion_vacuna_id')) == ($vacuna['vacuna_id'] ?? '') ? 'selected' : '' }}>{{ $vacuna['vacuna_nombre'] ?? 'Vacuna' }}</option>
+                        @php
+                            $vacunaId = $vacuna['id'] ?? $vacuna['vacuna_id'] ?? '';
+                            $vacunaNombre = $vacuna['nombre'] ?? $vacuna['vacuna_nombre'] ?? 'Vacuna';
+                            $currentVacunaId = data_get($vacunacion, 'vacuna_id') ?? data_get($vacunacion, 'vacunacion_vacuna_id');
+                        @endphp
+                        <option value="{{ $vacunaId }}" {{ old('vacunacion_vacuna_id', $currentVacunaId) == $vacunaId ? 'selected' : '' }}>{{ $vacunaNombre }}</option>
                     @endforeach
                 </select>
             </div>
@@ -40,7 +46,7 @@
             </div>
             <div>
                 <label class="mb-1 block text-sm font-medium text-gray-700">Costo individual de la dosis *</label>
-                <input type="number" step="0.01" min="0" name="vacunacion_costo_dosis" id="vacunacion_costo_dosis" value="{{ old('vacunacion_costo_dosis', data_get($vacunacion, 'vacunacion_costo_dosis')) }}" class="w-full rounded-lg border border-gray-300 px-4 py-2">
+                <input type="number" step="0.01" min="0" name="vacunacion_costo_dosis" id="vacunacion_costo_dosis" value="{{ old('vacunacion_costo_dosis', data_get($vacunacion, 'costo_dosis') ?? data_get($vacunacion, 'vacunacion_costo_dosis')) }}" class="w-full rounded-lg border border-gray-300 px-4 py-2">
             </div>
             <div class="rounded-lg border border-ganaderasoft-celeste/40 bg-ganaderasoft-celeste/10 p-4">
                 <p class="text-sm text-gray-600">Total estimado</p>
@@ -56,7 +62,12 @@
                     <label class="mb-1 block text-xs font-medium text-gray-600">Rebaño *</label>
                     <select name="vacunacion_rebano_id" id="filtro_rebano" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
                         @foreach($rebanos as $rebano)
-                            <option value="{{ $rebano['id_Rebano'] ?? '' }}" {{ old('vacunacion_rebano_id', data_get($vacunacion, 'vacunacion_rebano_id')) == ($rebano['id_Rebano'] ?? '') ? 'selected' : '' }}>{{ $rebano['Nombre'] ?? ('Rebaño #'.($rebano['id_Rebano'] ?? '')) }}</option>
+                            @php
+                                $rebId = $rebano['id'] ?? $rebano['id_Rebano'] ?? '';
+                                $rebNombre = $rebano['Nombre'] ?? $rebano['nombre'] ?? ('Rebaño #'.$rebId);
+                                $currentRebanoId = data_get($vacunacion, 'rebano_id') ?? data_get($vacunacion, 'vacunacion_rebano_id');
+                            @endphp
+                            <option value="{{ $rebId }}" {{ old('vacunacion_rebano_id', $currentRebanoId) == $rebId ? 'selected' : '' }}>{{ $rebNombre }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -73,7 +84,11 @@
                     <select name="vacunacion_filtros[etapa_id]" id="filtro_etapa" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
                         <option value="">Todas</option>
                         @foreach($etapas as $etapa)
-                            <option value="{{ $etapa['etapa_id'] ?? '' }}" {{ data_get($filtros, 'etapa_id') == ($etapa['etapa_id'] ?? '') ? 'selected' : '' }}>{{ $etapa['etapa_nombre'] ?? ('Etapa #'.($etapa['etapa_id'] ?? '')) }}</option>
+                            @php
+                                $etId = $etapa['id'] ?? $etapa['etapa_id'] ?? '';
+                                $etNombre = $etapa['nombre'] ?? $etapa['etapa_nombre'] ?? ('Etapa #'.$etId);
+                            @endphp
+                            <option value="{{ $etId }}" {{ data_get($filtros, 'etapa_id') == $etId ? 'selected' : '' }}>{{ $etNombre }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -99,11 +114,11 @@
                         <tbody id="animales-lista" class="divide-y divide-gray-200 bg-white">
                             @forelse($selectedAnimales as $item)
                                 @php
-                                    $animalId = data_get($item, 'va_animal_id');
+                                    $animalId = data_get($item, 'animal_id') ?? data_get($item, 'va_animal_id');
                                     $animalData = data_get($item, 'animal', []);
                                     $nombre = data_get($animalData, 'Nombre', 'Animal #'.$animalId);
                                     $codigo = data_get($animalData, 'codigo_animal');
-                                    $sx = data_get($animalData, 'Sexo');
+                                    $sx = data_get($animalData, 'Sexo') ?? data_get($animalData, 'sexo');
                                     $sxLabel = $sx === 'M' ? 'Macho' : ($sx === 'H' ? 'Hembra' : $sx);
                                 @endphp
                                 <tr class="hover:bg-gray-50">
@@ -123,7 +138,7 @@
 
         <div>
             <label class="mb-1 block text-sm font-medium text-gray-700">Observaciones</label>
-            <textarea name="vacunacion_observacion" rows="3" class="w-full rounded-lg border border-gray-300 px-4 py-2">{{ old('vacunacion_observacion', data_get($vacunacion, 'vacunacion_observacion')) }}</textarea>
+            <textarea name="vacunacion_observacion" rows="3" class="w-full rounded-lg border border-gray-300 px-4 py-2">{{ old('vacunacion_observacion', data_get($vacunacion, 'observacion') ?? data_get($vacunacion, 'vacunacion_observacion')) }}</textarea>
         </div>
 
         <div class="mt-8 flex justify-end space-x-4 border-t border-gray-200 pt-6">
@@ -202,7 +217,7 @@
             }
 
             lista.innerHTML = animales.map((a) => {
-                const id = a.id_Animal;
+                const id = a.id || a.id_Animal;
                 const nombre = a.Nombre || ('Animal #' + id);
                 const codigo = a.codigo_animal || '—';
                 const sx = sexoLabel[a.Sexo] || a.Sexo || '';

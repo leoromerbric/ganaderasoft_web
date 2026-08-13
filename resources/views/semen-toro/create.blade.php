@@ -30,34 +30,35 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Toro <span class="text-red-500">*</span></label>
-                    <select name="id_Toro" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('id_Toro') border-red-500 @enderror">
+                    <select name="animal_id" required
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('animal_id') border-red-500 @enderror">
                         <option value="">Seleccione un toro</option>
                         @foreach($toros as $toro)
-                            <option value="{{ $toro['id_Animal'] }}" {{ old('id_Toro') == $toro['id_Animal'] ? 'selected' : '' }}>
-                                {{ $toro['Nombre'] ?? 'Animal #'.$toro['id_Animal'] }}
+                            @php $tId = $toro['id'] ?? $toro['id_Animal'] ?? ''; @endphp
+                            <option value="{{ $tId }}" {{ old('animal_id') == $tId ? 'selected' : '' }}>
+                                {{ $toro['nombre'] ?? $toro['Nombre'] ?? 'Animal #'.$tId }}
                             </option>
                         @endforeach
                     </select>
-                    @error('id_Toro')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('animal_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-                    <select name="semen_estado"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('semen_estado') border-red-500 @enderror">
+                    <select name="estado"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('estado') border-red-500 @enderror">
                         <option value="">Seleccione estado</option>
-                        <option value="1" {{ old('semen_estado') === '1' ? 'selected' : '' }}>Activo</option>
-                        <option value="0" {{ old('semen_estado') === '0' ? 'selected' : '' }}>Inactivo</option>
+                        <option value="1" {{ old('estado') === '1' ? 'selected' : '' }}>Activo</option>
+                        <option value="0" {{ old('estado') === '0' ? 'selected' : '' }}>Inactivo</option>
                     </select>
-                    @error('semen_estado')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('estado')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
-                    <input type="date" name="semen_fecha" value="{{ old('semen_fecha', date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('semen_fecha') border-red-500 @enderror">
-                    @error('semen_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="date" name="fecha" value="{{ old('fecha', date('Y-m-d')) }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha') border-red-500 @enderror">
+                    @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 

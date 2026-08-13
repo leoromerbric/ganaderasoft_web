@@ -32,7 +32,8 @@ class VacunacionController extends Controller
         $filters = $request->only(['vacuna_id', 'rebano_id', 'fecha_inicio', 'fecha_fin']);
         $response = $this->service->getList($filters);
 
-        $vacunaciones = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $data = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $vacunaciones = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $vacunas = $this->service->getVacunas();
         $rebanos = $this->service->getRebanos();
 

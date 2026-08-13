@@ -20,7 +20,10 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
     }
 
     /**
-     * Create a new rebaño
+     * Crea un nuevo registro de rebaño.
+     *
+     * @param array $data Datos del rebaño a crear.
+     * @return array Respuesta de la API indicando el resultado de la creación.
      */
     public function createRebano(array $data): array
     {
@@ -28,7 +31,11 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
     }
 
     /**
-     * Update an existing rebaño
+     * Actualiza la información de un rebaño existente.
+     *
+     * @param int $id Identificador único del rebaño a actualizar.
+     * @param array $data Datos actualizados del rebaño.
+     * @return array Respuesta de la API indicando el resultado de la actualización.
      */
     public function updateRebano(int $id, array $data): array
     {

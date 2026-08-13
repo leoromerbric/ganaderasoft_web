@@ -47,13 +47,16 @@
                     <select name="animal_id" id="filtroAnimal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Todos</option>
                         @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}"
+                            @php
+                                $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
+                            @endphp
+                            <option value="{{ $aId }}"
                                     data-rebano-id="{{ $animal['rebano']['id_Rebano'] ?? ($animal['id_Rebano'] ?? '') }}"
                                     data-rebano-nombre="{{ $animal['rebano']['Nombre'] ?? '' }}"
                                     data-finca-id="{{ $animal['rebano']['id_Finca'] ?? '' }}"
                                     data-finca-nombre="{{ $animal['rebano']['finca']['Nombre'] ?? ('Finca #'.($animal['rebano']['id_Finca'] ?? '')) }}"
-                                    {{ $animalId == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}
+                                    {{ $animalId == $aId ? 'selected' : '' }}>
+                                {{ $animal['Nombre'] ?? 'Animal #'.$aId }}
                             </option>
                         @endforeach
                     </select>
@@ -95,25 +98,34 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($diagnosticos as $diagnostico)
-                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $diagnostico['animal']['id_Animal'] ?? $diagnostico['fk_etapa_animal_anid'] ?? '' }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $diagnostico['diagnostico_id'] ?? 'N/A' }}</td>
+                        @php
+                            $id = $diagnostico['id'] ?? $diagnostico['diagnostico_id'] ?? null;
+                            $animalId = $diagnostico['animal_id'] ?? $diagnostico['fk_etapa_animal_anid'] ?? data_get($diagnostico, 'etapa_animal.animal_id') ?? '';
+                            $animalRefId = data_get($diagnostico, 'animal.id') ?? data_get($diagnostico, 'animal.id_Animal') ?? $animalId;
+                            $animalNombre = data_get($diagnostico, 'animal.Nombre') ?? ('Animal #'.$animalId);
+                            $tipo = $diagnostico['tipo'] ?? $diagnostico['diagnostico_tipo'] ?? '-';
+                            $fecha = $diagnostico['fecha'] ?? $diagnostico['diagnostico_fecha'] ?? null;
+                            $descripcion = $diagnostico['descripcion'] ?? $diagnostico['diagnostico_descripcion'] ?? '-';
+                        @endphp
+                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $animalRefId }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $id ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $diagnostico['animal']['Nombre'] ?? ('Animal #'.($diagnostico['fk_etapa_animal_anid'] ?? 'N/A')) }}
+                                {{ $animalNombre }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $diagnostico['diagnostico_tipo'] ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $tipo }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ isset($diagnostico['diagnostico_fecha']) ? date('d/m/Y', strtotime($diagnostico['diagnostico_fecha'])) : 'N/A' }}
+                                {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{{ $diagnostico['diagnostico_descripcion'] ?? '-' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{{ $descripcion }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('diagnostico.show', $diagnostico['diagnostico_id']) }}"
+                                    <a href="{{ route('diagnostico.show', $id) }}"
                                        class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
                                     <span class="text-gray-300">|</span>
-                                    <a href="{{ route('diagnostico.edit', $diagnostico['diagnostico_id']) }}"
+                                    <a href="{{ route('diagnostico.edit', $id) }}"
                                        class="text-ganaderasoft-verde hover:text-green-700">Editar</a>
                                     <span class="text-gray-300">|</span>
-                                    <form method="POST" action="{{ route('diagnostico.destroy', $diagnostico['diagnostico_id']) }}" class="inline"
+                                    <form method="POST" action="{{ route('diagnostico.destroy', $id) }}" class="inline"
                                           onsubmit="return confirm('¿Está seguro de que desea eliminar este registro?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">Eliminar</button>

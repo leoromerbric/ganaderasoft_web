@@ -47,13 +47,16 @@
                     <select name="animal_id" id="filtroAnimal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Todos</option>
                         @foreach($animales as $animal)
-                            <option value="{{ $animal['id_Animal'] }}"
+                            @php
+                                $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
+                            @endphp
+                            <option value="{{ $aId }}"
                                     data-rebano-id="{{ $animal['rebano']['id_Rebano'] ?? ($animal['id_Rebano'] ?? '') }}"
                                     data-rebano-nombre="{{ $animal['rebano']['Nombre'] ?? '' }}"
                                     data-finca-id="{{ $animal['rebano']['id_Finca'] ?? '' }}"
                                     data-finca-nombre="{{ $animal['rebano']['finca']['Nombre'] ?? ('Finca #'.($animal['rebano']['id_Finca'] ?? '')) }}"
-                                    {{ $animalId == $animal['id_Animal'] ? 'selected' : '' }}>
-                                {{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}
+                                    {{ $animalId == $aId ? 'selected' : '' }}>
+                                {{ $animal['Nombre'] ?? 'Animal #'.$aId }}
                             </option>
                         @endforeach
                     </select>
@@ -95,27 +98,37 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($palpaciones as $palpacion)
-                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $palpacion['animal']['id_Animal'] ?? $palpacion['palpacion_etapa_anid'] ?? '' }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $palpacion['palpacion_id'] ?? 'N/A' }}</td>
+                        @php
+                            $pId = $palpacion['id'] ?? $palpacion['palpacion_id'] ?? null;
+                            $animalId = $palpacion['animal_id'] ?? $palpacion['palpacion_etapa_anid'] ?? data_get($palpacion, 'etapa_animal.animal_id') ?? '';
+                            $animalRefId = data_get($palpacion, 'animal.id') ?? data_get($palpacion, 'animal.id_Animal') ?? $animalId;
+                            $animalNombre = data_get($palpacion, 'animal.Nombre') ?? ('Animal #'.$animalId);
+                            $tipo = $palpacion['tipo'] ?? $palpacion['palpacion_tipo'] ?? '-';
+                            $fecha = $palpacion['fecha'] ?? $palpacion['palpacion_fecha'] ?? null;
+                            $tecnicoId = $palpacion['tecnico_id'] ?? $palpacion['id_Tecnico'] ?? null;
+                            $tecnicoNombre = data_get($palpacion, 'tecnico.Nombre') ?? data_get($palpacion, 'tecnico.Nombre_Completo') ?? data_get($palpacion, 'tecnico.nombre') ?? ($tecnicoId ? 'Téc. #'.$tecnicoId : '-');
+                        @endphp
+                        <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $animalRefId }}">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $pId ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $palpacion['animal']['Nombre'] ?? ('Animal #'.($palpacion['palpacion_etapa_anid'] ?? 'N/A')) }}
+                                {{ $animalNombre }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $palpacion['palpacion_tipo'] ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $tipo }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ isset($palpacion['palpacion_fecha']) ? date('d/m/Y', strtotime($palpacion['palpacion_fecha'])) : 'N/A' }}
+                                {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $palpacion['tecnico']['Nombre'] ?? (isset($palpacion['id_Tecnico']) ? 'Téc. #'.$palpacion['id_Tecnico'] : '-') }}
+                                {{ $tecnicoNombre }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('palpacion.show', $palpacion['palpacion_id']) }}"
+                                    <a href="{{ route('palpacion.show', $pId) }}"
                                        class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
                                     <span class="text-gray-300">|</span>
-                                    <a href="{{ route('palpacion.edit', $palpacion['palpacion_id']) }}"
+                                    <a href="{{ route('palpacion.edit', $pId) }}"
                                        class="text-ganaderasoft-verde hover:text-green-700">Editar</a>
                                     <span class="text-gray-300">|</span>
-                                    <form method="POST" action="{{ route('palpacion.destroy', $palpacion['palpacion_id']) }}" class="inline"
+                                    <form method="POST" action="{{ route('palpacion.destroy', $pId) }}" class="inline"
                                           onsubmit="return confirm('¿Está seguro de que desea eliminar este registro?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">Eliminar</button>

@@ -12,14 +12,6 @@ class ApiArbolGenService extends BaseApiService implements ArbolGenServiceInterf
         return ($user && isset($user['token'])) ? $user : null;
     }
 
-    private function authHeaders(array $user): array
-    {
-        return [
-            'Accept'        => 'application/json',
-            'Authorization' => 'Bearer ' . $user['token'],
-        ];
-    }
-
     public function getArbol(int $animalId): array
     {
         $user = $this->getUser();
@@ -27,7 +19,7 @@ class ApiArbolGenService extends BaseApiService implements ArbolGenServiceInterf
             return ['success' => false, 'data' => []];
         }
 
-        return $this->get("/animales/{$animalId}/arbol", $this->authHeaders($user));
+        return $this->get("/animales/{$animalId}/arbol");
     }
 
     public function setProgenitor(int $animalId, array $data): array
@@ -39,9 +31,7 @@ class ApiArbolGenService extends BaseApiService implements ArbolGenServiceInterf
 
         return $this->post(
             "/animales/{$animalId}/progenitor",
-            $data,
-            $this->authHeaders($user) + ['Content-Type' => 'application/json']
-        );
+            $data);
     }
 
     public function removeProgenitor(int $animalId, string $tipo): array
@@ -51,7 +41,7 @@ class ApiArbolGenService extends BaseApiService implements ArbolGenServiceInterf
             return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        return $this->delete("/animales/{$animalId}/progenitor/{$tipo}", $this->authHeaders($user));
+        return $this->delete("/animales/{$animalId}/progenitor/{$tipo}");
     }
 
     public function getDisponibles(int $animalId, string $tipo): array
@@ -61,6 +51,6 @@ class ApiArbolGenService extends BaseApiService implements ArbolGenServiceInterf
             return ['success' => false, 'data' => []];
         }
 
-        return $this->get("/animales/{$animalId}/progenitores-disponibles?tipo={$tipo}", $this->authHeaders($user));
+        return $this->get("/animales/{$animalId}/progenitores-disponibles?tipo={$tipo}");
     }
 }

@@ -7,35 +7,51 @@ use Illuminate\Support\Facades\Log;
 
 class BaseApiService
 {
+    /**
+     * URL base de la API, obtenida de las variables de entorno.
+     */
     protected string $baseUrl;
-    protected string $apiVersion = '1';
 
+    /**
+     * Inicializa el servicio configurando la URL base.
+     */
     public function __construct()
     {
         $this->baseUrl = env('API_BASE_URL', 'http://ec2-54-219-108-54.us-west-1.compute.amazonaws.com:9000/api');
     }
 
     /**
-     * Construye las cabeceras HTTP incluyendo la versión de la API y token Bearer si existe.
+     * Genera las cabeceras por defecto para todas las peticiones a la API.
+     * Inyecta automáticamente el token de autorización si el usuario tiene sesión.
+     *
+     * @param array $customHeaders Cabeceras adicionales que sobrescribirán las por defecto.
+     * @return array Arreglo final de cabeceras.
      */
-    protected function resolveHeaders(array $customHeaders = []): array
+    protected function defaultHeaders(array $customHeaders = []): array
     {
-        $headers = array_merge([
+        $headers = [
             'Accept' => 'application/json',
-        ], $customHeaders);
+            'Content-Type' => 'application/json',
+            'X-API-VERSION' => '2',
+        ];
 
-        if (!empty($this->apiVersion) && !isset($headers['X-API-VERSION'])) {
-            $headers['X-API-VERSION'] = $this->apiVersion;
+        if (session()->has('user.token')) {
+            $headers['Authorization'] = 'Bearer ' . session('user.token');
+        } elseif (session()->has('user') && isset(session('user')['token'])) {
+            $headers['Authorization'] = 'Bearer ' . session('user')['token'];
         }
 
-        $user = session('user');
-        if ($user && !empty($user['token']) && !isset($headers['Authorization'])) {
-            $headers['Authorization'] = 'Bearer ' . $user['token'];
-        }
-
-        return $headers;
+        return array_merge($headers, $customHeaders);
     }
 
+    /**
+     * Estandariza el formato de respuesta cuando la API devuelve un error (ej: 400, 422, 500).
+     * Extrae el primer mensaje de validación si existe, o devuelve un mensaje por defecto.
+     *
+     * @param \Illuminate\Http\Client\Response $response Respuesta de la API.
+     * @param string $defaultMessage Mensaje de error genérico.
+     * @return array Arreglo estructurado indicando el fallo.
+     */
     private function formatApiFailure($response, string $defaultMessage): array
     {
         $json = $response->json();
@@ -43,6 +59,7 @@ class BaseApiService
         if (is_array($json)) {
             $message = $json['message'] ?? $defaultMessage;
 
+            // Extraer el primer error de validación si existe un arreglo de errores
             if (!empty($json['errors']) && is_array($json['errors'])) {
                 $first = collect($json['errors'])->flatten()->first();
                 if (is_string($first) && $first !== '') {
@@ -66,138 +83,103 @@ class BaseApiService
     }
 
     /**
-     * Make a GET request to the API
+     * Método centralizado para ejecutar las peticiones HTTP y manejar sus excepciones.
+     * Reduce la duplicación de código en los métodos GET, POST, PUT y DELETE.
+     *
+     * @param string $method Método HTTP (get, post, put, delete).
+     * @param string $endpoint Ruta relativa del endpoint.
+     * @param array $data Cuerpo de la petición (opcional).
+     * @param array $headers Cabeceras personalizadas (opcional).
+     * @return array Respuesta estructurada.
+     */
+    private function sendRequest(string $method, string $endpoint, array $data = [], array $headers = []): array
+    {
+        try {
+            $request = Http::withHeaders($this->defaultHeaders($headers))->timeout(10);
+            
+            $response = empty($data) 
+                ? $request->{$method}($this->baseUrl . $endpoint)
+                : $request->{$method}($this->baseUrl . $endpoint, $data);
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            if ($response->serverError()) {
+                Log::error("API " . strtoupper($method) . " request failed (Server Error)", [
+                    'endpoint' => $endpoint,
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+            } elseif ($response->clientError() && !in_array($response->status(), [401, 422])) {
+                Log::warning("API " . strtoupper($method) . " request failed (Client Error)", [
+                    'endpoint' => $endpoint,
+                    'status' => $response->status()
+                ]);
+            }
+
+            return $this->formatApiFailure($response, 'Error al conectar con el servidor');
+            
+        } catch (\Exception $e) {
+            Log::error("API " . strtoupper($method) . " request exception", [
+                'endpoint' => $endpoint,
+                'error' => $e->getMessage()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error de conexión: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Realiza una petición GET a la API.
+     *
+     * @param string $endpoint Ruta del endpoint.
+     * @param array $headers Cabeceras adicionales.
+     * @return array
      */
     protected function get(string $endpoint, array $headers = []): array
     {
-        try {
-            $response = Http::withHeaders($this->resolveHeaders($headers))
-                ->timeout(10)
-                ->get($this->baseUrl . $endpoint);
-
-            if ($response->successful()) {
-                return $response->json();
-            }
-
-            Log::error('API GET request failed', [
-                'endpoint' => $endpoint,
-                'status' => $response->status(),
-                'body' => $response->body()
-            ]);
-
-            return $this->formatApiFailure($response, 'Error al conectar con el servidor');
-        } catch (\Exception $e) {
-            Log::error('API GET request exception', [
-                'endpoint' => $endpoint,
-                'error' => $e->getMessage()
-            ]);
-
-            return [
-                'success' => false,
-                'message' => 'Error de conexión: ' . $e->getMessage()
-            ];
-        }
+        return $this->sendRequest('get', $endpoint, [], $headers);
     }
 
     /**
-     * Make a POST request to the API
+     * Realiza una petición POST a la API.
+     *
+     * @param string $endpoint Ruta del endpoint.
+     * @param array $data Datos a enviar en el cuerpo de la petición.
+     * @param array $headers Cabeceras adicionales.
+     * @return array
      */
     protected function post(string $endpoint, array $data = [], array $headers = []): array
     {
-        try {
-            $response = Http::withHeaders($this->resolveHeaders($headers))
-                ->timeout(10)
-                ->post($this->baseUrl . $endpoint, $data);
-
-            if ($response->successful()) {
-                return $response->json();
-            }
-
-            Log::error('API POST request failed', [
-                'endpoint' => $endpoint,
-                'status' => $response->status(),
-                'body' => $response->body()
-            ]);
-
-            return $this->formatApiFailure($response, 'Error al conectar con el servidor');
-        } catch (\Exception $e) {
-            Log::error('API POST request exception', [
-                'endpoint' => $endpoint,
-                'error' => $e->getMessage()
-            ]);
-
-            return [
-                'success' => false,
-                'message' => 'Error de conexión: ' . $e->getMessage()
-            ];
-        }
+        return $this->sendRequest('post', $endpoint, $data, $headers);
     }
 
     /**
-     * Make a PUT request to the API
+     * Realiza una petición PUT a la API.
+     *
+     * @param string $endpoint Ruta del endpoint.
+     * @param array $data Datos a enviar en el cuerpo de la petición.
+     * @param array $headers Cabeceras adicionales.
+     * @return array
      */
     protected function put(string $endpoint, array $data = [], array $headers = []): array
     {
-        try {
-            $response = Http::withHeaders($this->resolveHeaders($headers))
-                ->timeout(10)
-                ->put($this->baseUrl . $endpoint, $data);
-
-            if ($response->successful()) {
-                return $response->json();
-            }
-
-            Log::error('API PUT request failed', [
-                'endpoint' => $endpoint,
-                'status' => $response->status(),
-                'body' => $response->body()
-            ]);
-
-            return $this->formatApiFailure($response, 'Error al conectar con el servidor');
-        } catch (\Exception $e) {
-            Log::error('API PUT request exception', [
-                'endpoint' => $endpoint,
-                'error' => $e->getMessage()
-            ]);
-
-            return [
-                'success' => false,
-                'message' => 'Error de conexión: ' . $e->getMessage()
-            ];
-        }
+        return $this->sendRequest('put', $endpoint, $data, $headers);
     }
 
     /**
-     * Make DELETE request to API
+     * Realiza una petición DELETE a la API.
+     *
+     * @param string $endpoint Ruta del endpoint.
+     * @param array $headers Cabeceras adicionales.
+     * @return array
      */
     protected function delete(string $endpoint, array $headers = []): array
     {
-        try {
-            $response = Http::withHeaders($this->resolveHeaders($headers))
-                ->timeout(10)
-                ->delete($this->baseUrl . $endpoint);
-
-            if ($response->successful()) {
-                return $response->json();
-            }
-
-            Log::error('API DELETE request failed', [
-                'endpoint' => $endpoint,
-                'status' => $response->status(),
-                'body' => $response->body()
-            ]);
-
-            return $this->formatApiFailure($response, 'Error al conectar con el servidor');
-        } catch (\Exception $e) {
-            Log::error('API DELETE request exception', [
-                'endpoint' => $endpoint,
-                'error' => $e->getMessage()
-            ]);
-
-            return [
-                'success' => false,
-                'message' => 'Error de conexión: ' . $e->getMessage()
-            ];
-        }
+        return $this->sendRequest('delete', $endpoint, [], $headers);
     }
 }

@@ -10,14 +10,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🧪 Editar Semen #{{ $semen['semen_id'] }}</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🧪 Editar Semen #{{ $semen['id'] }}</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
             <h3 class="text-lg font-semibold">Modificar Datos</h3>
         </div>
-        <form action="{{ route('semen-toro.update', $semen['semen_id']) }}" method="POST" class="p-6">
+        <form action="{{ route('semen-toro.update', $semen['id']) }}" method="POST" class="p-6">
             @csrf @method('PUT')
             @if($errors->any())
                 <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
@@ -33,35 +33,36 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Toro <span class="text-red-500">*</span></label>
-                    <select name="id_Toro" required
-                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('id_Toro') }}">
+                    <select name="animal_id" required
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('animal_id') }}">
                         <option value="">Seleccione un toro</option>
                         @foreach($toros as $toro)
-                            <option value="{{ $toro['id_Animal'] ?? $toro['id'] ?? '' }}" {{ old('id_Toro', $semen['animal_id'] ?? $semen['id_Toro'] ?? '') == ($toro['id_Animal'] ?? $toro['id'] ?? '') ? 'selected' : '' }}>
-                                {{ $toro['nombre'] ?? $toro['Nombre'] ?? 'Animal #'.($toro['id_Animal'] ?? $toro['id'] ?? '') }}
+                            @php $tId = $toro['id'] ?? $toro['id_Animal'] ?? ''; @endphp
+                            <option value="{{ $tId }}" {{ old('animal_id', $semen['animal_id'] ?? '') == $tId ? 'selected' : '' }}>
+                                {{ $toro['nombre'] ?? $toro['Nombre'] ?? 'Animal #'.$tId }}
                             </option>
                         @endforeach
                     </select>
-                    @error('id_Toro')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('animal_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-                    <select name="semen_estado"
-                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('semen_estado') }}">
+                    <select name="estado"
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('estado') }}">
                         <option value="">Seleccione estado</option>
-                        <option value="1" {{ old('semen_estado', $semen['semen_estado'] ?? '') == '1' ? 'selected' : '' }}>Activo</option>
-                        <option value="0" {{ old('semen_estado', isset($semen['semen_estado']) && !$semen['semen_estado'] ? '0' : '') == '0' ? 'selected' : '' }}>Inactivo</option>
+                        <option value="1" {{ old('estado', $semen['estado'] ?? '') == '1' ? 'selected' : '' }}>Activo</option>
+                        <option value="0" {{ old('estado', isset($semen['estado']) && !$semen['estado'] ? '0' : '') == '0' ? 'selected' : '' }}>Inactivo</option>
                     </select>
-                    @error('semen_estado')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('estado')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
-                    <input type="date" name="semen_fecha"
-                           value="{{ old('semen_fecha', !empty($semen['semen_fecha']) ? date('Y-m-d', strtotime($semen['semen_fecha'])) : date('Y-m-d')) }}"
-                           class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('semen_fecha') }}">
-                    @error('semen_fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <input type="date" name="fecha"
+                           value="{{ old('fecha', !empty($semen['fecha']) ? date('Y-m-d', strtotime($semen['fecha'])) : date('Y-m-d')) }}"
+                           class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('fecha') }}">
+                    @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 
