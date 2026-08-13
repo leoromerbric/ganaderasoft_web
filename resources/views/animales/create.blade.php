@@ -36,32 +36,32 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Rebaño -->
                     <div>
-                        <label for="id_Rebano" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="id" class="block text-sm font-medium text-gray-700 mb-2">
                             Rebaño <span class="text-red-500">*</span>
                         </label>
-                        <select id="id_Rebano" name="id_Rebano" required
+                        <select id="id" name="id" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
                             <option value="">Seleccione un rebaño</option>
                             @foreach($rebanos as $rebano)
-                                <option value="{{ $rebano['id_Rebano'] }}" {{ old('id_Rebano') == $rebano['id_Rebano'] ? 'selected' : '' }}>
-                                    {{ $rebano['Nombre'] }} - {{ $rebano['finca']['Nombre'] ?? '' }}
+                                <option value="{{ $rebano['id'] }}" {{ old('id') == $rebano['id'] ? 'selected' : '' }}>
+                                    {{ $rebano['nombre'] }} - {{ $rebano['finca']['nombre'] ?? '' }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('id_Rebano')
+                        @error('id')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <!-- Nombre -->
+                    <!-- nombre -->
                     <div>
-                        <label for="Nombre" class="block text-sm font-medium text-gray-700 mb-2">
-                            Nombre <span class="text-red-500">*</span>
+                        <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">
+                            nombre <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="Nombre" name="Nombre" value="{{ old('Nombre') }}" required
+                        <input type="text" id="nombre" name="nombre" value="{{ old('nombre') }}" required
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent"
                                placeholder="Ej: Vaca Lechera #1">
-                        @error('Nombre')
+                        @error('nombre')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -79,18 +79,18 @@
                         @enderror
                     </div>
 
-                    <!-- Sexo -->
+                    <!-- sexo -->
                     <div>
-                        <label for="Sexo" class="block text-sm font-medium text-gray-700 mb-2">
-                            Sexo <span class="text-red-500">*</span>
+                        <label for="sexo" class="block text-sm font-medium text-gray-700 mb-2">
+                            sexo <span class="text-red-500">*</span>
                         </label>
-                        <select id="Sexo" name="Sexo" required
+                        <select id="sexo" name="sexo" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
                             <option value="">Seleccione el sexo</option>
-                            <option value="M" {{ old('Sexo') == 'M' ? 'selected' : '' }}>Macho</option>
-                            <option value="F" {{ old('Sexo') == 'F' ? 'selected' : '' }}>Hembra</option>
+                            <option value="M" {{ old('sexo') == 'M' ? 'selected' : '' }}>Macho</option>
+                            <option value="F" {{ old('sexo') == 'F' ? 'selected' : '' }}>Hembra</option>
                         </select>
-                        @error('Sexo')
+                        @error('sexo')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -107,34 +107,34 @@
                         @enderror
                     </div>
 
-                    <!-- Procedencia -->
+                    <!-- procedencia -->
                     <div>
-                        <label for="Procedencia" class="block text-sm font-medium text-gray-700 mb-2">
-                            Procedencia <span class="text-red-500">*</span>
+                        <label for="procedencia" class="block text-sm font-medium text-gray-700 mb-2">
+                            procedencia <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="Procedencia" name="Procedencia" value="{{ old('Procedencia') }}" required
+                        <input type="text" id="procedencia" name="procedencia" value="{{ old('procedencia') }}" required
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent"
                                placeholder="Ej: Local, Importado">
-                        @error('Procedencia')
+                        @error('procedencia')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Raza -->
                     <div>
-                        <label for="fk_composicion_raza" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="composicion_raza_id" class="block text-sm font-medium text-gray-700 mb-2">
                             Raza <span class="text-red-500">*</span>
                         </label>
-                        <select id="fk_composicion_raza" name="fk_composicion_raza" required
+                        <select id="composicion_raza_id" name="composicion_raza_id" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
                             <option value="">Seleccione una raza</option>
                             @foreach($razas as $raza)
-                                <option value="{{ $raza['id_Composicion'] }}" {{ old('fk_composicion_raza') == $raza['id_Composicion'] ? 'selected' : '' }}>
-                                    {{ $raza['Nombre'] }} ({{ $raza['Siglas'] ?? '' }})
+                                <option value="{{ $raza['id'] }}" {{ old('composicion_raza_id') == $raza['id'] ? 'selected' : '' }}>
+                                    {{ $raza['nombre'] }} ({{ $raza['Siglas'] ?? '' }})
                                 </option>
                             @endforeach
                         </select>
-                        @error('fk_composicion_raza')
+                        @error('composicion_raza_id')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -144,16 +144,16 @@
                         <label for="estado_inicial_estado_id" class="block text-sm font-medium text-gray-700 mb-2">
                             Estado de Salud Inicial <span class="text-red-500">*</span>
                         </label>
-                        <select id="estado_inicial_estado_id" name="estado_inicial[estado_id]" required
+                        <select id="estado_inicial_estado_id" name="estado_inicial[estado_salud_id]" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
                             <option value="">Seleccione un estado</option>
                             @foreach($estados as $estado)
-                                <option value="{{ $estado['estado_id'] }}" {{ old('estado_inicial.estado_id') == $estado['estado_id'] ? 'selected' : '' }}>
+                                <option value="{{ $estado['estado_id'] }}" {{ old('estado_inicial.estado_salud_id') == $estado['estado_id'] ? 'selected' : '' }}>
                                     {{ $estado['estado_nombre'] }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('estado_inicial.estado_id')
+                        @error('estado_inicial.estado_salud_id')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

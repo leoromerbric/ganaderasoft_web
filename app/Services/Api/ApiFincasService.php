@@ -7,78 +7,62 @@ use App\Services\Contracts\FincasServiceInterface;
 class ApiFincasService extends BaseApiService implements FincasServiceInterface
 {
     /**
-     * Get list of fincas for authenticated user
+     * Obtiene la lista de fincas del usuario autenticado.
+     * 
+     * @return array Respuesta de la API con la colección de fincas.
      */
     public function getFincas(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->get('/fincas');
-
-        return $response;
+        return $this->get('/fincas', ['nopaginate' => 'true']);
     }
 
     /**
-     * Get a single finca by ID
+     * Obtiene los datos de una finca en específico por su ID.
+     *
+     * @param int $id Identificador único de la finca.
+     * @return array Respuesta de la API con los datos de la finca.
      */
     public function getFinca(int $id): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->get("/fincas/{$id}");
-
-        return $response;
+        return $this->get("/fincas/{$id}");
     }
 
     /**
-     * Create a new finca
+     * Crea un nuevo registro de finca.
+     *
+     * @param array $data Datos de la finca a crear.
+     * @return array Respuesta de la API indicando el resultado de la creación.
      */
     public function createFinca(array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->post('/fincas', $data);
-
-        return $response;
+        return $this->post('/fincas', $data);
     }
 
     /**
-     * Update an existing finca
+     * Actualiza la información de una finca existente.
+     *
+     * @param int $id Identificador único de la finca a actualizar.
+     * @param array $data Datos actualizados de la finca.
+     * @return array Respuesta de la API indicando el resultado de la actualización.
      */
     public function updateFinca(int $id, array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->put("/fincas/{$id}", $data);
-
-        return $response;
+        return $this->put("/fincas/{$id}", $data);
     }
 }

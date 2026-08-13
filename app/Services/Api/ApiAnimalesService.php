@@ -7,140 +7,114 @@ use App\Services\Contracts\AnimalesServiceInterface;
 class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterface
 {
     /**
-     * Get list of animals for authenticated user
+     * Obtiene la lista de animales para el usuario autenticado.
+     * Permite filtrar por rebaño y solicita resultados sin paginar.
+     *
+     * @param int|null $rebanoId ID del rebaño para filtrar (opcional).
+     * @return array Respuesta de la API con el listado de animales.
      */
     public function getAnimales(?int $rebanoId = null): array
     {
-        $user = session('user');
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
+        }
+
+        $params = ['nopaginate' => 'true'];
         
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $endpoint = '/animales';
         if ($rebanoId) {
-            $endpoint .= '?rebano_id=' . $rebanoId;
+            $params['rebano_id'] = $rebanoId;
         }
 
-        $response = $this->get($endpoint);
+        $endpoint = '/animales?' . http_build_query($params);
 
-        return $response;
+        return $this->get($endpoint);
     }
 
     /**
-     * Get a single animal by ID
+     * Obtiene el detalle de un animal específico mediante su ID.
+     *
+     * @param int $id Identificador del animal.
+     * @return array Respuesta de la API con los datos del animal.
      */
     public function getAnimal(int $id): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->get("/animales/{$id}");
-
-        return $response;
+        return $this->get("/animales/{$id}");
     }
 
     /**
-     * Create a new animal
+     * Crea un nuevo registro de animal.
+     *
+     * @param array $data Datos del animal a crear.
+     * @return array Respuesta de la API indicando el resultado de la creación.
      */
     public function createAnimal(array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->post('/animales', $data);
-
-        return $response;
+        return $this->post('/animales', $data);
     }
 
     /**
-     * Update an existing animal
+     * Actualiza la información de un animal existente.
+     *
+     * @param int $id Identificador del animal a actualizar.
+     * @param array $data Nuevos datos para el animal.
+     * @return array Respuesta de la API indicando el resultado de la actualización.
      */
     public function updateAnimal(int $id, array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->put("/animales/{$id}", $data);
-
-        return $response;
+        return $this->put("/animales/{$id}", $data);
     }
 
     /**
-     * Get list of available breeds (composicion_raza)
+     * Obtiene el catálogo de composiciones de razas disponibles.
+     *
+     * @return array Respuesta de la API con el listado de razas.
      */
     public function getRazas(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->get('/composicion-raza');
-
-        return $response;
+        return $this->get('/composicion-raza');
     }
 
     /**
-     * Get list of available health states
+     * Obtiene el catálogo de estados de salud disponibles.
+     *
+     * @return array Respuesta de la API con el listado de estados de salud.
      */
     public function getEstadosSalud(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->get('/estados-salud');
-
-        return $response;
+        return $this->get('/estados-salud');
     }
 
     /**
-     * Get list of available animal stages
+     * Obtiene el catálogo de etapas de crecimiento/producción disponibles.
+     *
+     * @return array Respuesta de la API con el listado de etapas.
      */
     public function getEtapas(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->get('/etapas');
-
-        return $response;
+        return $this->get('/etapas');
     }
 }

@@ -7,59 +7,47 @@ use App\Services\Contracts\RebanosServiceInterface;
 class ApiRebanosService extends BaseApiService implements RebanosServiceInterface
 {
     /**
-     * Get list of rebaños for authenticated user
+     * Obtiene la lista de rebaños del usuario autenticado.
+     *
+     * @return array Respuesta de la API con la colección de rebaños.
      */
     public function getRebanos(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->get('/rebanos');
-
-        return $response;
+        return $this->get('/rebanos', ['nopaginate' => 'true']);
     }
 
     /**
-     * Create a new rebaño
+     * Crea un nuevo registro de rebaño.
+     *
+     * @param array $data Datos del rebaño a crear.
+     * @return array Respuesta de la API indicando el resultado de la creación.
      */
     public function createRebano(array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->post('/rebanos', $data);
-
-        return $response;
+        return $this->post('/rebanos', $data);
     }
 
     /**
-     * Update an existing rebaño
+     * Actualiza la información de un rebaño existente.
+     *
+     * @param int $id Identificador único del rebaño a actualizar.
+     * @param array $data Datos actualizados del rebaño.
+     * @return array Respuesta de la API indicando el resultado de la actualización.
      */
     public function updateRebano(int $id, array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->put('/rebanos/' . $id, $data);
-
-        return $response;
+        return $this->put('/rebanos/' . $id, $data);
     }
 }

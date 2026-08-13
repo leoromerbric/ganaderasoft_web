@@ -1,4 +1,4 @@
-﻿@extends('layouts.authenticated')
+@extends('layouts.authenticated')
 
 @section('title', 'Gestión de Animales')
 
@@ -36,8 +36,8 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Todas las fincas</option>
                         @foreach($fincas as $finca)
-                            <option value="{{ $finca['id_Finca'] }}" {{ $idFinca == $finca['id_Finca'] ? 'selected' : '' }}>
-                                {{ $finca['Nombre'] ?? 'Finca #'.$finca['id_Finca'] }}
+                            <option value="{{ $finca['id'] }}" {{ $idFinca == $finca['id'] ? 'selected' : '' }}>
+                                {{ $finca['nombre'] ?? 'Finca #'.$finca['id'] }}
                             </option>
                         @endforeach
                     </select>
@@ -48,10 +48,10 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Todos los rebaños</option>
                         @foreach($rebanos as $rebano)
-                            <option value="{{ $rebano['id_Rebano'] }}"
-                                    data-finca="{{ $rebano['id_Finca'] ?? '' }}"
-                                    {{ $idRebano == $rebano['id_Rebano'] ? 'selected' : '' }}>
-                                {{ $rebano['Nombre'] ?? 'Rebaño #'.$rebano['id_Rebano'] }}
+                            <option value="{{ $rebano['id'] }}"
+                                    data-finca="{{ $rebano['finca_id'] ?? '' }}"
+                                    {{ $idRebano == $rebano['id'] ? 'selected' : '' }}>
+                                {{ $rebano['nombre'] ?? 'Rebaño #'.$rebano['id'] }}
                             </option>
                         @endforeach
                     </select>
@@ -62,7 +62,7 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Todos</option>
                         <option value="M" {{ $sexo === 'M' ? 'selected' : '' }}>Macho</option>
-                        <option value="F" {{ $sexo === 'F' ? 'selected' : '' }}>Hembra</option>
+                        <option value="H" {{ $sexo === 'H' ? 'selected' : '' }}>Hembra</option>
                     </select>
                 </div>
                 <div class="flex-1 min-w-0">
@@ -120,28 +120,28 @@
                         <tbody class="bg-white divide-y divide-gray-200" id="tablaAnimales">
                             @foreach($animales as $animal)
                                 @php
-                                    $rebanoId   = $animal['rebano']['id_Rebano'] ?? ($animal['id_Rebano'] ?? '');
-                                    $fincaId    = $animal['rebano']['id_Finca']  ?? ($mapaRebanoFinca[$rebanoId] ?? '');
+                                    $rebanoId   = $animal['rebano']['id'] ?? ($animal['rebano_id'] ?? '');
+                                    $fincaId    = $animal['rebano']['finca_id']  ?? ($mapaRebanoFinca[$rebanoId] ?? '');
                                 @endphp
                                 <tr class="hover:bg-gray-50 transition-colors fila-animal"
                                     data-rebano="{{ $rebanoId }}"
                                     data-finca="{{ $fincaId }}"
-                                    data-sexo="{{ $animal['Sexo'] ?? '' }}"
-                                    data-nombre="{{ strtolower(($animal['Nombre'] ?? '').' '.($animal['codigo_animal'] ?? '')) }}">
+                                    data-sexo="{{ $animal['sexo'] ?? '' }}"
+                                    data-nombre="{{ strtolower(($animal['nombre'] ?? '').' '.($animal['codigo_animal'] ?? '')) }}">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         {{ $animal['codigo_animal'] ?? 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $animal['Nombre'] ?? 'N/A' }}
+                                        {{ $animal['nombre'] ?? 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full
-                                            {{ ($animal['Sexo'] ?? '') === 'M' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' }}">
-                                            {{ ($animal['Sexo'] ?? '') === 'M' ? 'Macho' : 'Hembra' }}
+                                            {{ ($animal['sexo'] ?? '') === 'M' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' }}">
+                                            {{ ($animal['sexo'] ?? '') === 'M' ? 'Macho' : 'Hembra' }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $animal['rebano']['Nombre'] ?? 'N/A' }}
+                                        {{ $animal['rebano']['nombre'] ?? 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ isset($animal['fecha_nacimiento']) ? date('d/m/Y', strtotime($animal['fecha_nacimiento'])) : 'N/A' }}
@@ -155,9 +155,9 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex space-x-3">
-                                            <a href="{{ route('animales.show', $animal['id_Animal']) }}"
+                                            <a href="{{ route('animales.show', $animal['id']) }}"
                                                class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
-                                            <a href="{{ route('animales.edit', $animal['id_Animal']) }}"
+                                            <a href="{{ route('animales.edit', $animal['id']) }}"
                                                class="text-ganaderasoft-verde hover:text-ganaderasoft-verde-oscuro">Editar</a>
                                         </div>
                                     </td>
