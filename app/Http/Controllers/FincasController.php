@@ -34,8 +34,8 @@ class FincasController extends Controller
             $fincas = $response['data']['data'] ?? $response['data'] ?? [];
         }
 
-        // Tipos únicos para el filtro (V2 explotacion_tipo y V1 Explotacion_Tipo)
-        $tiposList = array_map(fn($f) => $f['explotacion_tipo'] ?? $f['Explotacion_Tipo'] ?? null, $fincas);
+        // Tipos únicos para el filtro (V2 explotacion_tipo)
+        $tiposList = array_map(fn($f) => $f['explotacion_tipo'] ?? null, $fincas);
         $tipos = array_values(array_unique(array_filter($tiposList)));
         sort($tipos);
 
@@ -55,7 +55,6 @@ class FincasController extends Controller
      */
     public function create()
     {
-        // Load all configuration options
         $fuenteAgua = $this->configuracionService->getFuenteAgua();
         $tipoExplotacion = $this->configuracionService->getTipoExplotacion();
         $tipoRelieve = $this->configuracionService->getTipoRelieve();
@@ -78,7 +77,6 @@ class FincasController extends Controller
      */
     public function store(Request $request)
     {
-        // Get the current user
         $user = session('user');
         
         if (!$user || !isset($user['id'])) {
@@ -87,25 +85,24 @@ class FincasController extends Controller
 
         $propietarioId = $user['propietario']['id'] ?? $user['id'];
 
-        // Prepare data for API V2
         $data = [
-            'nombre' => $request->input('Nombre') ?? $request->input('nombre'),
-            'explotacion_tipo' => $request->input('Explotacion_Tipo') ?? $request->input('explotacion_tipo'),
+            'nombre' => $request->input('nombre') ?? $request->input('Nombre'),
+            'explotacion_tipo' => $request->input('explotacion_tipo') ?? $request->input('Explotacion_Tipo'),
             'propietario_id' => $propietarioId,
             'terreno' => [
-                'superficie' => (float)($request->input('Superficie') ?? $request->input('superficie', 0)),
-                'relieve' => $request->input('Relieve') ?? $request->input('relieve'),
-                'suelo_textura' => $request->input('Suelo_Textura') ?? $request->input('suelo_textura'),
-                'ph_suelo' => $request->input('ph_Suelo') ?? $request->input('ph_suelo'),
-                'precipitacion' => (float)($request->input('Precipitacion') ?? $request->input('precipitacion', 0)),
-                'velocidad_viento' => (float)($request->input('Velocidad_Viento') ?? $request->input('velocidad_viento', 0)),
-                'temp_anual' => (string)($request->input('Temp_Anual') ?? $request->input('temp_anual', '')),
-                'temp_min' => (string)($request->input('Temp_Min') ?? $request->input('temp_min', '')),
-                'temp_max' => (string)($request->input('Temp_Max') ?? $request->input('temp_max', '')),
-                'radiacion' => (float)($request->input('Radiacion') ?? $request->input('radiacion', 0)),
-                'fuente_agua' => $request->input('Fuente_Agua') ?? $request->input('fuente_agua'),
-                'caudal_disponible' => (int)($request->input('Caudal_Disponible') ?? $request->input('caudal_disponible', 0)),
-                'riego_metodo' => $request->input('Riego_Metodo') ?? $request->input('riego_metodo'),
+                'superficie' => (float)($request->input('superficie') ?? $request->input('Superficie', 0)),
+                'relieve' => $request->input('relieve') ?? $request->input('Relieve'),
+                'suelo_textura' => $request->input('suelo_textura') ?? $request->input('Suelo_Textura'),
+                'ph_suelo' => $request->input('ph_suelo') ?? $request->input('ph_Suelo'),
+                'precipitacion' => (float)($request->input('precipitacion') ?? $request->input('Precipitacion', 0)),
+                'velocidad_viento' => (float)($request->input('velocidad_viento') ?? $request->input('Velocidad_Viento', 0)),
+                'temp_anual' => (string)($request->input('temp_anual') ?? $request->input('Temp_Anual', '')),
+                'temp_min' => (string)($request->input('temp_min') ?? $request->input('Temp_Min', '')),
+                'temp_max' => (string)($request->input('temp_max') ?? $request->input('Temp_Max', '')),
+                'radiacion' => (float)($request->input('radiacion') ?? $request->input('Radiacion', 0)),
+                'fuente_agua' => $request->input('fuente_agua') ?? $request->input('Fuente_Agua'),
+                'caudal_disponible' => (int)($request->input('caudal_disponible') ?? $request->input('Caudal_Disponible', 0)),
+                'riego_metodo' => $request->input('riego_metodo') ?? $request->input('Riego_Metodo'),
             ]
         ];
 
@@ -125,8 +122,7 @@ class FincasController extends Controller
      */
     public function edit($id)
     {
-        // Get the finca details
-        $fincaResponse = $this->fincasService->getFinca($id);
+        $fincaResponse = $this->fincasService->getFinca((int)$id);
 
         if (!isset($fincaResponse['success']) || !$fincaResponse['success']) {
             return redirect()->route('fincas.index')->with('error', 'Finca no encontrada');
@@ -138,7 +134,6 @@ class FincasController extends Controller
             return redirect()->route('fincas.index')->with('error', 'Finca no encontrada');
         }
 
-        // Load all configuration options
         $fuenteAgua = $this->configuracionService->getFuenteAgua();
         $tipoExplotacion = $this->configuracionService->getTipoExplotacion();
         $tipoRelieve = $this->configuracionService->getTipoRelieve();
@@ -162,7 +157,6 @@ class FincasController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Get the current user
         $user = session('user');
         
         if (!$user || !isset($user['id'])) {
@@ -171,29 +165,28 @@ class FincasController extends Controller
 
         $propietarioId = $user['propietario']['id'] ?? $user['id'];
 
-        // Prepare data for API V2
         $data = [
-            'nombre' => $request->input('Nombre') ?? $request->input('nombre'),
-            'explotacion_tipo' => $request->input('Explotacion_Tipo') ?? $request->input('explotacion_tipo'),
+            'nombre' => $request->input('nombre') ?? $request->input('Nombre'),
+            'explotacion_tipo' => $request->input('explotacion_tipo') ?? $request->input('Explotacion_Tipo'),
             'propietario_id' => $propietarioId,
             'terreno' => [
-                'superficie' => (float)($request->input('Superficie') ?? $request->input('superficie', 0)),
-                'relieve' => $request->input('Relieve') ?? $request->input('relieve'),
-                'suelo_textura' => $request->input('Suelo_Textura') ?? $request->input('suelo_textura'),
-                'ph_suelo' => $request->input('ph_Suelo') ?? $request->input('ph_suelo'),
-                'precipitacion' => (float)($request->input('Precipitacion') ?? $request->input('precipitacion', 0)),
-                'velocidad_viento' => (float)($request->input('Velocidad_Viento') ?? $request->input('velocidad_viento', 0)),
-                'temp_anual' => (string)($request->input('Temp_Anual') ?? $request->input('temp_anual', '')),
-                'temp_min' => (string)($request->input('Temp_Min') ?? $request->input('temp_min', '')),
-                'temp_max' => (string)($request->input('Temp_Max') ?? $request->input('temp_max', '')),
-                'radiacion' => (float)($request->input('Radiacion') ?? $request->input('radiacion', 0)),
-                'fuente_agua' => $request->input('Fuente_Agua') ?? $request->input('fuente_agua'),
-                'caudal_disponible' => (int)($request->input('Caudal_Disponible') ?? $request->input('caudal_disponible', 0)),
-                'riego_metodo' => $request->input('Riego_Metodo') ?? $request->input('riego_metodo'),
+                'superficie' => (float)($request->input('superficie') ?? $request->input('Superficie', 0)),
+                'relieve' => $request->input('relieve') ?? $request->input('Relieve'),
+                'suelo_textura' => $request->input('suelo_textura') ?? $request->input('Suelo_Textura'),
+                'ph_suelo' => $request->input('ph_suelo') ?? $request->input('ph_Suelo'),
+                'precipitacion' => (float)($request->input('precipitacion') ?? $request->input('Precipitacion', 0)),
+                'velocidad_viento' => (float)($request->input('velocidad_viento') ?? $request->input('Velocidad_Viento', 0)),
+                'temp_anual' => (string)($request->input('temp_anual') ?? $request->input('Temp_Anual', '')),
+                'temp_min' => (string)($request->input('temp_min') ?? $request->input('Temp_Min', '')),
+                'temp_max' => (string)($request->input('temp_max') ?? $request->input('Temp_Max', '')),
+                'radiacion' => (float)($request->input('radiacion') ?? $request->input('Radiacion', 0)),
+                'fuente_agua' => $request->input('fuente_agua') ?? $request->input('Fuente_Agua'),
+                'caudal_disponible' => (int)($request->input('caudal_disponible') ?? $request->input('Caudal_Disponible', 0)),
+                'riego_metodo' => $request->input('riego_metodo') ?? $request->input('Riego_Metodo'),
             ]
         ];
 
-        $response = $this->fincasService->updateFinca($id, $data);
+        $response = $this->fincasService->updateFinca((int)$id, $data);
 
         if (isset($response['success']) && $response['success']) {
             return redirect()->route('fincas.index')->with('success', 'Finca actualizada exitosamente');

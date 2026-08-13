@@ -4,8 +4,8 @@
 
 @section('content')
 @php
-    $fincaNombre = $selectedFinca['nombre'] ?? $selectedFinca['Nombre'] ?? 'Finca';
-    $fincaId = $selectedFinca['id'] ?? $selectedFinca['id_Finca'] ?? null;
+    $fincaNombre = $selectedFinca['nombre'] ?? 'Finca';
+    $fincaId = $selectedFinca['id'] ?? null;
 @endphp
 <div class="max-w-3xl mx-auto space-y-6">
     <!-- Header & Breadcrumb -->
@@ -59,25 +59,25 @@
 
             <!-- Cedula -->
             <div>
-                <label for="Cedula" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="cedula" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Cédula / Identificación <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Cedula" id="Cedula" required
-                       value="{{ old('Cedula') }}"
+                <input type="text" name="cedula" id="cedula" required
+                       value="{{ old('cedula') }}"
                        placeholder="Ej: V12345678"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Tipo de Trabajador -->
             <div>
-                <label for="Tipo_Trabajador" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="tipo_trabajador" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Tipo de Trabajador <span class="text-red-500">*</span>
                 </label>
-                <select name="Tipo_Trabajador" id="Tipo_Trabajador" required
+                <select name="tipo_trabajador" id="tipo_trabajador" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Seleccione cargo...</option>
                     @foreach($tiposTrabajador as $tipo)
-                        <option value="{{ $tipo }}" {{ old('Tipo_Trabajador') == $tipo ? 'selected' : '' }}>
+                        <option value="{{ $tipo }}" {{ old('tipo_trabajador') == $tipo ? 'selected' : '' }}>
                             {{ $tipo }}
                         </option>
                     @endforeach
@@ -86,44 +86,44 @@
 
             <!-- Nombre -->
             <div>
-                <label for="Nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Nombre <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Nombre" id="Nombre" required
-                       value="{{ old('Nombre') }}"
+                <input type="text" name="nombre" id="nombre" required
+                       value="{{ old('nombre') }}"
                        placeholder="Ej: Carlos"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Apellido -->
             <div>
-                <label for="Apellido" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="apellido" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Apellido <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Apellido" id="Apellido" required
-                       value="{{ old('Apellido') }}"
+                <input type="text" name="apellido" id="apellido" required
+                       value="{{ old('apellido') }}"
                        placeholder="Ej: Rodríguez"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Telefono -->
             <div>
-                <label for="Telefono" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="telefono" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Teléfono de Contacto <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Telefono" id="Telefono" required
-                       value="{{ old('Telefono') }}"
+                <input type="text" name="telefono" id="telefono" required
+                       value="{{ old('telefono') }}"
                        placeholder="Ej: 04141234567"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Correo -->
             <div>
-                <label for="Correo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="correo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Correo Electrónico <span class="text-red-500">*</span>
                 </label>
-                <input type="email" name="Correo" id="Correo" required
-                       value="{{ old('Correo') }}"
+                <input type="email" name="correo" id="correo" required
+                       value="{{ old('correo') }}"
                        placeholder="Ej: carlos.rodriguez@email.com"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>

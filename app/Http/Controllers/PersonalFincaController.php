@@ -24,7 +24,7 @@ class PersonalFincaController extends Controller
      */
     public function index(Request $request)
     {
-        $fincaId = $request->query('id_finca') ?? $request->query('finca_id');
+        $fincaId = $request->query('finca_id') ?? $request->query('id_finca');
         
         $response = $this->personalFincaService->getPersonalFinca($fincaId ? (int)$fincaId : null);
         
@@ -46,7 +46,7 @@ class PersonalFincaController extends Controller
 
         // Count by tipo
         foreach ($personalFinca as $persona) {
-            $tipo = $persona['tipo_trabajador']['nombre'] ?? $persona['Tipo_Trabajador'] ?? 'Sin especificar';
+            $tipo = $persona['tipo_trabajador']['nombre'] ?? 'Sin especificar';
             if (!isset($estadisticas['por_tipo'][$tipo])) {
                 $estadisticas['por_tipo'][$tipo] = 0;
             }
@@ -73,26 +73,23 @@ class PersonalFincaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_Finca' => 'nullable|integer',
-            'finca_id' => 'nullable|integer',
-            'Cedula' => 'required|string|max:15',
-            'Nombre' => 'required|string|max:100',
-            'Apellido' => 'required|string|max:100',
-            'Telefono' => 'required|string|max:20',
-            'Correo' => 'required|string|email|max:255',
-            'Tipo_Trabajador' => 'required|string',
+            'finca_id' => 'required|integer',
+            'cedula' => 'required|string|max:15',
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
+            'telefono' => 'required|string|max:20',
+            'correo' => 'required|string|email|max:255',
+            'tipo_trabajador' => 'required|string',
         ]);
 
-        $fincaId = $request->input('id_Finca') ?? $request->input('finca_id');
-
         $data = [
-            'finca_id' => (int)$fincaId,
-            'cedula' => (string)($request->input('Cedula') ?? $request->input('cedula')),
-            'nombre' => $request->input('Nombre') ?? $request->input('nombre'),
-            'apellido' => $request->input('Apellido') ?? $request->input('apellido'),
-            'telefono' => $request->input('Telefono') ?? $request->input('telefono'),
-            'correo' => $request->input('Correo') ?? $request->input('correo'),
-            'Tipo_Trabajador' => $request->input('Tipo_Trabajador') ?? $request->input('tipo_trabajador'),
+            'finca_id' => (int)$request->input('finca_id'),
+            'cedula' => (string)$request->input('cedula'),
+            'nombre' => (string)$request->input('nombre'),
+            'apellido' => (string)$request->input('apellido'),
+            'telefono' => (string)$request->input('telefono'),
+            'correo' => (string)$request->input('correo'),
+            'tipo_trabajador' => (string)$request->input('tipo_trabajador'),
         ];
 
         $response = $this->personalFincaService->createPersonalFinca($data);
@@ -148,26 +145,23 @@ class PersonalFincaController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'id_Finca' => 'nullable|integer',
-            'finca_id' => 'nullable|integer',
-            'Cedula' => 'required|string|max:15',
-            'Nombre' => 'required|string|max:100',
-            'Apellido' => 'required|string|max:100',
-            'Telefono' => 'required|string|max:20',
-            'Correo' => 'required|string|email|max:255',
-            'Tipo_Trabajador' => 'required|string',
+            'finca_id' => 'required|integer',
+            'cedula' => 'required|string|max:15',
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
+            'telefono' => 'required|string|max:20',
+            'correo' => 'required|string|email|max:255',
+            'tipo_trabajador' => 'required|string',
         ]);
 
-        $fincaId = $request->input('id_Finca') ?? $request->input('finca_id');
-
         $data = [
-            'finca_id' => (int)$fincaId,
-            'cedula' => (string)($request->input('Cedula') ?? $request->input('cedula')),
-            'nombre' => $request->input('Nombre') ?? $request->input('nombre'),
-            'apellido' => $request->input('Apellido') ?? $request->input('apellido'),
-            'telefono' => $request->input('Telefono') ?? $request->input('telefono'),
-            'correo' => $request->input('Correo') ?? $request->input('correo'),
-            'Tipo_Trabajador' => $request->input('Tipo_Trabajador') ?? $request->input('tipo_trabajador'),
+            'finca_id' => (int)$request->input('finca_id'),
+            'cedula' => (string)$request->input('cedula'),
+            'nombre' => (string)$request->input('nombre'),
+            'apellido' => (string)$request->input('apellido'),
+            'telefono' => (string)$request->input('telefono'),
+            'correo' => (string)$request->input('correo'),
+            'tipo_trabajador' => (string)$request->input('tipo_trabajador'),
         ];
 
         $response = $this->personalFincaService->updatePersonalFinca((int)$id, $data);

@@ -4,10 +4,10 @@
 
 @section('content')
 @php
-    $rebanoId = $rebano['id'] ?? $rebano['id_Rebano'] ?? null;
-    $rebanoNombre = $rebano['nombre'] ?? $rebano['Nombre'] ?? '';
+    $rebanoId = $rebano['id'] ?? null;
+    $rebanoNombre = $rebano['nombre'] ?? '';
     $fincaObj = $rebano['finca'] ?? null;
-    $fincaNombre = $fincaObj['nombre'] ?? $fincaObj['Nombre'] ?? ($selectedFinca['nombre'] ?? $selectedFinca['Nombre'] ?? 'Finca');
+    $fincaNombre = $fincaObj['nombre'] ?? ($selectedFinca['nombre'] ?? 'Finca');
     $animalesCount = count($rebano['animales'] ?? []);
 @endphp
 <div class="max-w-2xl mx-auto space-y-6">
@@ -69,11 +69,11 @@
 
             <!-- Nombre -->
             <div>
-                <label for="Nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Nombre del Rebaño <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Nombre" id="Nombre" required
-                       value="{{ old('Nombre', $rebanoNombre) }}"
+                <input type="text" name="nombre" id="nombre" required
+                       value="{{ old('nombre', $rebanoNombre) }}"
                        placeholder="Ej: Rebaño Vacas Lecheras"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 <p class="text-xs text-gray-500 mt-1">Ingrese el nombre actualizado para este rebaño</p>
@@ -85,7 +85,7 @@
                     <p class="font-bold text-ganaderasoft-azul flex items-center">
                         <span class="mr-1.5">📋</span> Animales asignados: {{ $animalesCount }}
                     </p>
-                    <a href="{{ route('animales.index', ['id_rebano' => $rebanoId]) }}" class="inline-block text-ganaderasoft-celeste hover:underline font-semibold">
+                    <a href="{{ route('animales.index', ['rebano_id' => $rebanoId]) }}" class="inline-block text-ganaderasoft-celeste hover:underline font-semibold">
                         Ver listado completo de animales →
                     </a>
                 </div>

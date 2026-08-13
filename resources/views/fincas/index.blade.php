@@ -81,7 +81,7 @@
                 <p id="statSuperficie" class="text-3xl font-extrabold text-ganaderasoft-verde-oscuro">
                     @php
                         $totalSuperficie = array_sum(array_map(function($f) {
-                            return (float)($f['terreno']['superficie'] ?? $f['terreno']['Superficie'] ?? 0);
+                            return (float)($f['terreno']['superficie'] ?? 0);
                         }, $fincas));
                     @endphp
                     {{ number_format($totalSuperficie, 1, ',', '.') }} ha
@@ -110,24 +110,16 @@
                     <tbody class="bg-white divide-y divide-gray-100 text-sm" id="tablaFincas">
                         @foreach($fincas as $finca)
                             @php
-                                $fincaId = $finca['id'] ?? $finca['id_Finca'] ?? null;
-                                $nombreFinca = $finca['nombre'] ?? $finca['Nombre'] ?? 'Sin Nombre';
-                                $tipoExp = $finca['explotacion_tipo'] ?? $finca['Explotacion_Tipo'] ?? '-';
-                                $superficie = (float)($finca['terreno']['superficie'] ?? $finca['terreno']['Superficie'] ?? 0);
+                                $fincaId = $finca['id'] ?? null;
+                                $nombreFinca = $finca['nombre'] ?? 'Sin Nombre';
+                                $tipoExp = $finca['explotacion_tipo'] ?? '-';
+                                $superficie = (float)($finca['terreno']['superficie'] ?? 0);
                                 
                                 // Formateo de propietario V2
                                 $propObj = $finca['propietario'] ?? null;
                                 $persona = $propObj['persona'] ?? null;
-                                $nombreProp = '-';
-                                $telefonoProp = '-';
-
-                                if ($persona) {
-                                    $nombreProp = trim(($persona['nombre'] ?? '').' '.($persona['apellido'] ?? ''));
-                                    $telefonoProp = $persona['telefono'] ?? '-';
-                                } elseif ($propObj) {
-                                    $nombreProp = trim(($propObj['Nombre'] ?? '').' '.($propObj['Apellido'] ?? ''));
-                                    $telefonoProp = $propObj['Telefono'] ?? '-';
-                                }
+                                $nombreProp = $persona ? trim(($persona['nombre'] ?? '').' '.($persona['apellido'] ?? '')) : '-';
+                                $telefonoProp = $persona['telefono'] ?? '-';
                             @endphp
                             <tr class="hover:bg-gray-50/80 transition-colors fila-finca"
                                 data-nombre="{{ strtolower($nombreFinca) }}"

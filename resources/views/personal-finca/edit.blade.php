@@ -4,17 +4,17 @@
 
 @section('content')
 @php
-    $pId = $personalFinca['id'] ?? $personalFinca['id_Tecnico'] ?? null;
+    $pId = $personalFinca['id'] ?? null;
     $personaSub = $personalFinca['persona'] ?? null;
-    $nombreEmp = $personaSub['nombre'] ?? $personalFinca['Nombre'] ?? '';
-    $apellidoEmp = $personaSub['apellido'] ?? $personalFinca['Apellido'] ?? '';
-    $cedulaEmp = $personaSub['cedula'] ?? $personalFinca['Cedula'] ?? '';
-    $telefonoEmp = $personaSub['telefono'] ?? $personalFinca['Telefono'] ?? '';
-    $correoEmp = $personaSub['correo'] ?? $personalFinca['Correo'] ?? '';
+    $nombreEmp = $personaSub['nombre'] ?? '';
+    $apellidoEmp = $personaSub['apellido'] ?? '';
+    $cedulaEmp = $personaSub['cedula'] ?? '';
+    $telefonoEmp = $personaSub['telefono'] ?? '';
+    $correoEmp = $personaSub['correo'] ?? '';
 
     $tipoObj = $personalFinca['tipo_trabajador'] ?? null;
-    $tipoNombre = $tipoObj['nombre'] ?? $personalFinca['Tipo_Trabajador'] ?? '';
-    $currFincaId = $personalFinca['finca_id'] ?? $personalFinca['id_Finca'] ?? null;
+    $tipoNombre = $tipoObj['nombre'] ?? '';
+    $currFincaId = $personalFinca['finca_id'] ?? null;
 @endphp
 <div class="max-w-3xl mx-auto space-y-6">
     <!-- Header & Breadcrumb -->
@@ -59,18 +59,18 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Selección de Finca -->
             <div class="md:col-span-2">
-                <label for="id_Finca" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="finca_id" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Finca Asignada <span class="text-red-500">*</span>
                 </label>
-                <select name="id_Finca" id="id_Finca" required
+                <select name="finca_id" id="finca_id" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Seleccione una finca...</option>
                     @foreach($fincas as $finca)
                         @php
-                            $fId = $finca['id'] ?? $finca['id_Finca'] ?? null;
-                            $fNombre = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
+                            $fId = $finca['id'] ?? null;
+                            $fNombre = $finca['nombre'] ?? ('Finca #'.$fId);
                         @endphp
-                        <option value="{{ $fId }}" {{ old('id_Finca', $currFincaId) == $fId ? 'selected' : '' }}>
+                        <option value="{{ $fId }}" {{ old('finca_id', $currFincaId) == $fId ? 'selected' : '' }}>
                             {{ $fNombre }} (ID: #{{ $fId }})
                         </option>
                     @endforeach
@@ -79,25 +79,25 @@
 
             <!-- Cedula -->
             <div>
-                <label for="Cedula" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="cedula" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Cédula / Identificación <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Cedula" id="Cedula" required
-                       value="{{ old('Cedula', $cedulaEmp) }}"
+                <input type="text" name="cedula" id="cedula" required
+                       value="{{ old('cedula', $cedulaEmp) }}"
                        placeholder="Ej: V12345678"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Tipo de Trabajador -->
             <div>
-                <label for="Tipo_Trabajador" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="tipo_trabajador" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Cargo / Tipo de Trabajador <span class="text-red-500">*</span>
                 </label>
-                <select name="Tipo_Trabajador" id="Tipo_Trabajador" required
+                <select name="tipo_trabajador" id="tipo_trabajador" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Seleccione tipo...</option>
                     @foreach(['Técnico', 'Veterinario', 'Operario', 'Vigilante', 'Supervisor', 'Administrador'] as $t)
-                        <option value="{{ $t }}" {{ old('Tipo_Trabajador', $tipoNombre) == $t ? 'selected' : '' }}>
+                        <option value="{{ $t }}" {{ old('tipo_trabajador', $tipoNombre) == $t ? 'selected' : '' }}>
                             {{ $t }}
                         </option>
                     @endforeach
@@ -106,44 +106,44 @@
 
             <!-- Nombre -->
             <div>
-                <label for="Nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Nombre <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Nombre" id="Nombre" required
-                       value="{{ old('Nombre', $nombreEmp) }}"
+                <input type="text" name="nombre" id="nombre" required
+                       value="{{ old('nombre', $nombreEmp) }}"
                        placeholder="Ej: Juan"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Apellido -->
             <div>
-                <label for="Apellido" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="apellido" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Apellido <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Apellido" id="Apellido" required
-                       value="{{ old('Apellido', $apellidoEmp) }}"
+                <input type="text" name="apellido" id="apellido" required
+                       value="{{ old('apellido', $apellidoEmp) }}"
                        placeholder="Ej: Pérez"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Telefono -->
             <div>
-                <label for="Telefono" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="telefono" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Teléfono <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Telefono" id="Telefono" required
-                       value="{{ old('Telefono', $telefonoEmp) }}"
+                <input type="text" name="telefono" id="telefono" required
+                       value="{{ old('telefono', $telefonoEmp) }}"
                        placeholder="Ej: 04121234567"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Correo -->
             <div>
-                <label for="Correo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="correo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Correo Electrónico <span class="text-red-500">*</span>
                 </label>
-                <input type="email" name="Correo" id="Correo" required
-                       value="{{ old('Correo', $correoEmp) }}"
+                <input type="email" name="correo" id="correo" required
+                       value="{{ old('correo', $correoEmp) }}"
                        placeholder="Ej: juan.perez@email.com"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>

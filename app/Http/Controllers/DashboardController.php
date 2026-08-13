@@ -25,7 +25,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user = $this->authService->user();
-        $fincaId = request()->query('id_finca');
+        $fincaId = request()->query('finca_id') ? (int)request()->query('finca_id') : null;
         
         $farms = $this->dashboardService->getFarms();
         $kpis = $this->dashboardService->getKPIs($fincaId);

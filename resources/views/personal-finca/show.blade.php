@@ -4,19 +4,19 @@
 
 @section('content')
 @php
-    $pId = $personalFinca['id'] ?? $personalFinca['id_Tecnico'] ?? null;
+    $pId = $personalFinca['id'] ?? null;
     $personaSub = $personalFinca['persona'] ?? null;
-    $nombreEmp = $personaSub ? trim(($personaSub['nombre'] ?? '').' '.($personaSub['apellido'] ?? '')) : trim(($personalFinca['Nombre'] ?? '').' '.($personalFinca['Apellido'] ?? ''));
-    $cedulaEmp = $personaSub['cedula'] ?? $personalFinca['Cedula'] ?? '-';
-    $telefonoEmp = $personaSub['telefono'] ?? $personalFinca['Telefono'] ?? '-';
-    $correoEmp = $personaSub['correo'] ?? $personalFinca['Correo'] ?? '-';
+    $nombreEmp = $personaSub ? trim(($personaSub['nombre'] ?? '').' '.($personaSub['apellido'] ?? '')) : 'Personal';
+    $cedulaEmp = $personaSub['cedula'] ?? '-';
+    $telefonoEmp = $personaSub['telefono'] ?? '-';
+    $correoEmp = $personaSub['correo'] ?? '-';
 
     $tipoObj = $personalFinca['tipo_trabajador'] ?? null;
-    $tipoNombre = $tipoObj['nombre'] ?? $personalFinca['Tipo_Trabajador'] ?? 'Trabajador';
+    $tipoNombre = $tipoObj['nombre'] ?? 'Trabajador';
 
     $fincaObj = $personalFinca['finca'] ?? null;
-    $fincaNombre = $fincaObj['nombre'] ?? $fincaObj['Nombre'] ?? ('Finca #'.($personalFinca['finca_id'] ?? $personalFinca['id_Finca'] ?? 'N/A'));
-    $fincaTipo = $fincaObj['explotacion_tipo'] ?? $fincaObj['Explotacion_Tipo'] ?? '-';
+    $fincaNombre = $fincaObj['nombre'] ?? ('Finca #'.($personalFinca['finca_id'] ?? 'N/A'));
+    $fincaTipo = $fincaObj['explotacion_tipo'] ?? '-';
 @endphp
 <div class="max-w-4xl mx-auto space-y-6">
     <!-- Header -->

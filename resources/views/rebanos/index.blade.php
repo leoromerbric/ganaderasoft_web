@@ -47,8 +47,8 @@
                     <option value="">Todas las fincas</option>
                     @foreach($fincas as $finca)
                         @php
-                            $fId = $finca['id'] ?? $finca['id_Finca'] ?? null;
-                            $fNombre = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
+                            $fId = $finca['id'] ?? null;
+                            $fNombre = $finca['nombre'] ?? ('Finca #'.$fId);
                         @endphp
                         <option value="{{ $fId }}" {{ $idFinca == $fId ? 'selected' : '' }}>
                             {{ $fNombre }}
@@ -98,12 +98,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gridRebanos">
                 @foreach($rebanos as $rebano)
                     @php
-                        $rebanoId = $rebano['id'] ?? $rebano['id_Rebano'] ?? null;
-                        $rebanoNombre = $rebano['nombre'] ?? $rebano['Nombre'] ?? 'Rebaño';
+                        $rebanoId = $rebano['id'] ?? null;
+                        $rebanoNombre = $rebano['nombre'] ?? 'Rebaño';
                         $fincaObj = $rebano['finca'] ?? null;
-                        $fincaNombre = $fincaObj['nombre'] ?? $fincaObj['Nombre'] ?? ('Finca #'.($rebano['finca_id'] ?? $rebano['id_Finca'] ?? 'N/A'));
-                        $fincaTipo = $fincaObj['explotacion_tipo'] ?? $fincaObj['Explotacion_Tipo'] ?? '-';
-                        $fincaIdAttr = $rebano['finca_id'] ?? $rebano['id_Finca'] ?? '';
+                        $fincaNombre = $fincaObj['nombre'] ?? ('Finca #'.($rebano['finca_id'] ?? 'N/A'));
+                        $fincaTipo = $fincaObj['explotacion_tipo'] ?? '-';
+                        $fincaIdAttr = $rebano['finca_id'] ?? '';
                         $animalesCount = count($rebano['animales'] ?? []);
                     @endphp
                     <div class="group border border-gray-200 hover:border-ganaderasoft-celeste rounded-2xl p-6 hover:shadow-lg transition-all duration-200 flex flex-col justify-between fila-rebano"
@@ -148,7 +148,7 @@
 
                         <!-- Actions -->
                         <div class="flex items-center space-x-2 mt-6 pt-2">
-                            <a href="{{ route('animales.index', ['id_rebano' => $rebanoId]) }}"
+                            <a href="{{ route('animales.index', ['rebano_id' => $rebanoId]) }}"
                                class="flex-1 px-4 py-2.5 bg-ganaderasoft-celeste/15 hover:bg-ganaderasoft-celeste text-ganaderasoft-azul hover:text-white rounded-xl text-xs font-bold text-center transition-all duration-200">
                                 Ver Animales
                             </a>

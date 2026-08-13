@@ -25,8 +25,8 @@
                 <option value="">Todas las Fincas</option>
                 @foreach($farms as $farm)
                     @php
-                        $farmId = $farm['id'] ?? $farm['finca_id'] ?? $farm['id_Finca'] ?? null;
-                        $farmNombre = $farm['nombre'] ?? $farm['Nombre'] ?? 'Finca';
+                        $farmId = $farm['id'] ?? $farm['finca_id'] ?? null;
+                        $farmNombre = $farm['nombre'] ?? 'Finca';
                     @endphp
                     <option value="{{ $farmId }}" {{ (string)$fincaId === (string)$farmId ? 'selected' : '' }}>
                         {{ $farmNombre }}
@@ -118,7 +118,7 @@
                     <tbody class="bg-white divide-y divide-gray-100 text-sm">
                         @foreach($statistics['data']['fincas'] as $finca)
                             @php
-                                $fincaNombre = $finca['nombre'] ?? $finca['Nombre'] ?? 'Sin Nombre';
+                                $fincaNombre = $finca['nombre'] ?? 'Sin Nombre';
                             @endphp
                             <tr class="hover:bg-gray-50/80 transition-colors">
                                 <td class="px-4 py-3.5 font-medium text-gray-900 flex items-center space-x-2">
@@ -156,8 +156,8 @@
                     <tbody class="bg-white divide-y divide-gray-100 text-sm">
                         @foreach($statistics['data']['rebanos'] as $rebano)
                             @php
-                                $rebanoNombre = $rebano['nombre'] ?? $rebano['Nombre'] ?? 'Rebaño';
-                                $rebanoFincaId = $rebano['finca_id'] ?? $rebano['id_Finca'] ?? '-';
+                                $rebanoNombre = $rebano['nombre'] ?? 'Rebaño';
+                                $rebanoFincaId = $rebano['finca_id'] ?? '-';
                             @endphp
                             <tr class="hover:bg-gray-50/80 transition-colors">
                                 <td class="px-4 py-3.5 font-medium text-gray-900 flex items-center space-x-2">
@@ -218,9 +218,9 @@
     function filterByFinca(fincaId) {
         const url = new URL(window.location.href);
         if (fincaId) {
-            url.searchParams.set('id_finca', fincaId);
+            url.searchParams.set('finca_id', fincaId);
         } else {
-            url.searchParams.delete('id_finca');
+            url.searchParams.delete('finca_id');
         }
         window.location.href = url.toString();
     }

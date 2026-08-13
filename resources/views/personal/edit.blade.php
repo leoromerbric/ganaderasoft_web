@@ -4,19 +4,19 @@
 
 @section('content')
 @php
-    $pId = $persona['id'] ?? $persona['id_Tecnico'] ?? null;
+    $pId = $persona['id'] ?? null;
     $personaSub = $persona['persona'] ?? null;
-    $nombreEmp = $personaSub['nombre'] ?? $persona['Nombre'] ?? '';
-    $apellidoEmp = $personaSub['apellido'] ?? $persona['Apellido'] ?? '';
-    $cedulaEmp = $personaSub['cedula'] ?? $persona['Cedula'] ?? '';
-    $telefonoEmp = $personaSub['telefono'] ?? $persona['Telefono'] ?? '';
-    $correoEmp = $personaSub['correo'] ?? $persona['Correo'] ?? '';
+    $nombreEmp = $personaSub['nombre'] ?? '';
+    $apellidoEmp = $personaSub['apellido'] ?? '';
+    $cedulaEmp = $personaSub['cedula'] ?? '';
+    $telefonoEmp = $personaSub['telefono'] ?? '';
+    $correoEmp = $personaSub['correo'] ?? '';
 
     $tipoObj = $persona['tipo_trabajador'] ?? null;
-    $tipoNombre = $tipoObj['nombre'] ?? $persona['Tipo_Trabajador'] ?? '';
+    $tipoNombre = $tipoObj['nombre'] ?? '';
     
     $fincaObj = $persona['finca'] ?? null;
-    $fincaNombre = $fincaObj['nombre'] ?? $fincaObj['Nombre'] ?? ($selectedFinca['nombre'] ?? $selectedFinca['Nombre'] ?? 'Finca');
+    $fincaNombre = $fincaObj['nombre'] ?? ($selectedFinca['nombre'] ?? 'Finca');
 @endphp
 <div class="max-w-3xl mx-auto space-y-6">
     <!-- Header & Breadcrumb -->
@@ -75,25 +75,25 @@
 
             <!-- Cedula -->
             <div>
-                <label for="Cedula" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="cedula" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Cédula / Identificación <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Cedula" id="Cedula" required
-                       value="{{ old('Cedula', $cedulaEmp) }}"
+                <input type="text" name="cedula" id="cedula" required
+                       value="{{ old('cedula', $cedulaEmp) }}"
                        placeholder="Ej: V12345678"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Tipo de Trabajador -->
             <div>
-                <label for="Tipo_Trabajador" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="tipo_trabajador" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Tipo de Trabajador <span class="text-red-500">*</span>
                 </label>
-                <select name="Tipo_Trabajador" id="Tipo_Trabajador" required
+                <select name="tipo_trabajador" id="tipo_trabajador" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Seleccione cargo...</option>
                     @foreach($tiposTrabajador as $tipo)
-                        <option value="{{ $tipo }}" {{ old('Tipo_Trabajador', $tipoNombre) == $tipo ? 'selected' : '' }}>
+                        <option value="{{ $tipo }}" {{ old('tipo_trabajador', $tipoNombre) == $tipo ? 'selected' : '' }}>
                             {{ $tipo }}
                         </option>
                     @endforeach
@@ -102,44 +102,44 @@
 
             <!-- Nombre -->
             <div>
-                <label for="Nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Nombre <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Nombre" id="Nombre" required
-                       value="{{ old('Nombre', $nombreEmp) }}"
+                <input type="text" name="nombre" id="nombre" required
+                       value="{{ old('nombre', $nombreEmp) }}"
                        placeholder="Ej: Carlos"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Apellido -->
             <div>
-                <label for="Apellido" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="apellido" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Apellido <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Apellido" id="Apellido" required
-                       value="{{ old('Apellido', $apellidoEmp) }}"
+                <input type="text" name="apellido" id="apellido" required
+                       value="{{ old('apellido', $apellidoEmp) }}"
                        placeholder="Ej: Rodríguez"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Telefono -->
             <div>
-                <label for="Telefono" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="telefono" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Teléfono de Contacto <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Telefono" id="Telefono" required
-                       value="{{ old('Telefono', $telefonoEmp) }}"
+                <input type="text" name="telefono" id="telefono" required
+                       value="{{ old('telefono', $telefonoEmp) }}"
                        placeholder="Ej: 04141234567"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Correo -->
             <div>
-                <label for="Correo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="correo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Correo Electrónico <span class="text-red-500">*</span>
                 </label>
-                <input type="email" name="Correo" id="Correo" required
-                       value="{{ old('Correo', $correoEmp) }}"
+                <input type="email" name="correo" id="correo" required
+                       value="{{ old('correo', $correoEmp) }}"
                        placeholder="Ej: carlos.rodriguez@email.com"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>

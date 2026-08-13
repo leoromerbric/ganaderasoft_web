@@ -4,8 +4,8 @@
 
 @section('content')
 @php
-    $fincaNombre = $selectedFinca['nombre'] ?? $selectedFinca['Nombre'] ?? 'Finca';
-    $fincaId = $selectedFinca['id'] ?? $selectedFinca['id_Finca'] ?? null;
+    $fincaNombre = $selectedFinca['nombre'] ?? 'Finca';
+    $fincaId = $selectedFinca['id'] ?? null;
 @endphp
 <div class="max-w-2xl mx-auto space-y-6">
     <!-- Header & Breadcrumb -->
@@ -59,11 +59,11 @@
 
             <!-- Nombre -->
             <div>
-                <label for="Nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Nombre del Rebaño <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Nombre" id="Nombre" required
-                       value="{{ old('Nombre') }}"
+                <input type="text" name="nombre" id="nombre" required
+                       value="{{ old('nombre') }}"
                        placeholder="Ej: Rebaño Vacas Lecheras, Rebaño Norte"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 <p class="text-xs text-gray-500 mt-1">Nombre distintivo para agrupar los animales</p>

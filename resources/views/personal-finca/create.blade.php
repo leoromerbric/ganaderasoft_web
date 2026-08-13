@@ -45,17 +45,17 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Selección de Finca -->
             <div class="md:col-span-2">
-                <label for="id_Finca" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="finca_id" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Finca Destino <span class="text-red-500">*</span>
                 </label>
-                <select name="id_Finca" id="id_Finca" required
+                <select name="finca_id" id="finca_id" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Seleccione una finca...</option>
                     @foreach($fincas as $finca)
                         @php
-                            $fId = $finca['id'] ?? $finca['id_Finca'] ?? null;
-                            $fNombre = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
-                            $selected = old('id_Finca') == $fId || session('selected_finca')['id_Finca'] ?? session('selected_finca')['id'] ?? null == $fId;
+                            $fId = $finca['id'] ?? null;
+                            $fNombre = $finca['nombre'] ?? ('Finca #'.$fId);
+                            $selected = old('finca_id') == $fId || session('selected_finca')['id'] ?? null == $fId;
                         @endphp
                         <option value="{{ $fId }}" {{ $selected ? 'selected' : '' }}>
                             {{ $fNombre }} (ID: #{{ $fId }})
@@ -66,72 +66,72 @@
 
             <!-- Cedula -->
             <div>
-                <label for="Cedula" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="cedula" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Cédula / Identificación <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Cedula" id="Cedula" required
-                       value="{{ old('Cedula') }}"
+                <input type="text" name="cedula" id="cedula" required
+                       value="{{ old('cedula') }}"
                        placeholder="Ej: V12345678"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Tipo de Trabajador -->
             <div>
-                <label for="Tipo_Trabajador" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="tipo_trabajador" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Cargo / Tipo de Trabajador <span class="text-red-500">*</span>
                 </label>
-                <select name="Tipo_Trabajador" id="Tipo_Trabajador" required
+                <select name="tipo_trabajador" id="tipo_trabajador" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Seleccione tipo...</option>
-                    <option value="Técnico" {{ old('Tipo_Trabajador') == 'Técnico' ? 'selected' : '' }}>Técnico</option>
-                    <option value="Veterinario" {{ old('Tipo_Trabajador') == 'Veterinario' ? 'selected' : '' }}>Veterinario</option>
-                    <option value="Operario" {{ old('Tipo_Trabajador') == 'Operario' ? 'selected' : '' }}>Operario</option>
-                    <option value="Vigilante" {{ old('Tipo_Trabajador') == 'Vigilante' ? 'selected' : '' }}>Vigilante</option>
-                    <option value="Supervisor" {{ old('Tipo_Trabajador') == 'Supervisor' ? 'selected' : '' }}>Supervisor</option>
-                    <option value="Administrador" {{ old('Tipo_Trabajador') == 'Administrador' ? 'selected' : '' }}>Administrador</option>
+                    <option value="Técnico" {{ old('tipo_trabajador') == 'Técnico' ? 'selected' : '' }}>Técnico</option>
+                    <option value="Veterinario" {{ old('tipo_trabajador') == 'Veterinario' ? 'selected' : '' }}>Veterinario</option>
+                    <option value="Operario" {{ old('tipo_trabajador') == 'Operario' ? 'selected' : '' }}>Operario</option>
+                    <option value="Vigilante" {{ old('tipo_trabajador') == 'Vigilante' ? 'selected' : '' }}>Vigilante</option>
+                    <option value="Supervisor" {{ old('tipo_trabajador') == 'Supervisor' ? 'selected' : '' }}>Supervisor</option>
+                    <option value="Administrador" {{ old('tipo_trabajador') == 'Administrador' ? 'selected' : '' }}>Administrador</option>
                 </select>
             </div>
 
             <!-- Nombre -->
             <div>
-                <label for="Nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Nombre <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Nombre" id="Nombre" required
-                       value="{{ old('Nombre') }}"
+                <input type="text" name="nombre" id="nombre" required
+                       value="{{ old('nombre') }}"
                        placeholder="Ej: Juan"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Apellido -->
             <div>
-                <label for="Apellido" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="apellido" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Apellido <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Apellido" id="Apellido" required
-                       value="{{ old('Apellido') }}"
+                <input type="text" name="apellido" id="apellido" required
+                       value="{{ old('apellido') }}"
                        placeholder="Ej: Pérez"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Telefono -->
             <div>
-                <label for="Telefono" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="telefono" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Teléfono <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Telefono" id="Telefono" required
-                       value="{{ old('Telefono') }}"
+                <input type="text" name="telefono" id="telefono" required
+                       value="{{ old('telefono') }}"
                        placeholder="Ej: 04121234567"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
             <!-- Correo -->
             <div>
-                <label for="Correo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                <label for="correo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                     Correo Electrónico <span class="text-red-500">*</span>
                 </label>
-                <input type="email" name="Correo" id="Correo" required
-                       value="{{ old('Correo') }}"
+                <input type="email" name="correo" id="correo" required
+                       value="{{ old('correo') }}"
                        placeholder="Ej: juan.perez@email.com"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>

@@ -28,7 +28,7 @@ class PersonalController extends Controller
 
         // Check if there's a selected finca in session
         $selectedFinca = session('selected_finca');
-        $idFinca = $request->query('id_finca') ?? ($selectedFinca['id'] ?? $selectedFinca['id_Finca'] ?? null);
+        $idFinca = $request->query('finca_id') ?? $request->query('id_finca') ?? ($selectedFinca['id'] ?? null);
 
         if (!$idFinca) {
             return view('personal.index', [
@@ -97,16 +97,16 @@ class PersonalController extends Controller
             return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
         }
 
-        $fincaId = $selectedFinca['id'] ?? $selectedFinca['id_Finca'] ?? null;
+        $fincaId = $selectedFinca['id'] ?? null;
 
         $data = [
             'finca_id' => $fincaId,
-            'cedula' => (string)($request->input('Cedula') ?? $request->input('cedula')),
-            'nombre' => $request->input('Nombre') ?? $request->input('nombre'),
-            'apellido' => $request->input('Apellido') ?? $request->input('apellido'),
-            'telefono' => $request->input('Telefono') ?? $request->input('telefono'),
-            'correo' => $request->input('Correo') ?? $request->input('correo'),
-            'Tipo_Trabajador' => $request->input('Tipo_Trabajador') ?? $request->input('tipo_trabajador'),
+            'cedula' => (string)($request->input('cedula') ?? $request->input('Cedula')),
+            'nombre' => $request->input('nombre') ?? $request->input('Nombre'),
+            'apellido' => $request->input('apellido') ?? $request->input('Apellido'),
+            'telefono' => $request->input('telefono') ?? $request->input('Telefono'),
+            'correo' => $request->input('correo') ?? $request->input('Correo'),
+            'tipo_trabajador' => $request->input('tipo_trabajador') ?? $request->input('Tipo_Trabajador'),
         ];
 
         $response = $this->personalService->createPersonal($data);
@@ -131,7 +131,7 @@ class PersonalController extends Controller
             return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
         }
 
-        $fincaId = $selectedFinca['id'] ?? $selectedFinca['id_Finca'] ?? null;
+        $fincaId = $selectedFinca['id'] ?? null;
 
         // Get all personal for current finca
         $response = $this->personalService->getPersonal((int)$fincaId);
@@ -139,10 +139,9 @@ class PersonalController extends Controller
         if (isset($response['success']) && $response['success']) {
             $allPersonal = $response['data']['data'] ?? $response['data'] ?? [];
             
-            // Find persona by ID (V2 id vs V1 id_Tecnico)
+            // Find persona by ID (V2 id)
             $persona = collect($allPersonal)->first(function ($p) use ($id) {
-                $pId = $p['id'] ?? $p['id_Tecnico'] ?? null;
-                return $pId == $id;
+                return ($p['id'] ?? null) == $id;
             });
 
             if ($persona) {
@@ -170,15 +169,15 @@ class PersonalController extends Controller
     public function update(Request $request, $id)
     {
         $data = [
-            'cedula' => (string)($request->input('Cedula') ?? $request->input('cedula')),
-            'nombre' => $request->input('Nombre') ?? $request->input('nombre'),
-            'apellido' => $request->input('Apellido') ?? $request->input('apellido'),
-            'telefono' => $request->input('Telefono') ?? $request->input('telefono'),
-            'correo' => $request->input('Correo') ?? $request->input('correo'),
-            'Tipo_Trabajador' => $request->input('Tipo_Trabajador') ?? $request->input('tipo_trabajador'),
+            'cedula' => (string)($request->input('cedula') ?? $request->input('Cedula')),
+            'nombre' => $request->input('nombre') ?? $request->input('Nombre'),
+            'apellido' => $request->input('apellido') ?? $request->input('Apellido'),
+            'telefono' => $request->input('telefono') ?? $request->input('Telefono'),
+            'correo' => $request->input('correo') ?? $request->input('Correo'),
+            'tipo_trabajador' => $request->input('tipo_trabajador') ?? $request->input('Tipo_Trabajador'),
         ];
 
-        $response = $this->personalService->updatePersonal($id, $data);
+        $response = $this->personalService->updatePersonal((int)$id, $data);
 
         if (isset($response['success']) && $response['success']) {
             return redirect()->route('personal.index')->with('success', 'Personal actualizado exitosamente');
@@ -194,16 +193,16 @@ class PersonalController extends Controller
      */
     public function apiPersonal(Request $request)
     {
-        $idFinca = $request->query('id_finca');
+        $idFinca = $request->query('finca_id') ?? $request->query('id_finca');
 
         if (!$idFinca) {
             return response()->json([
                 'success' => false,
-                'message' => 'Debe proporcionar el id_finca'
+                'message' => 'Debe proporcionar el finca_id'
             ], 400);
         }
 
-        $response = $this->personalService->getPersonal($idFinca);
+        $response = $this->personalService->getPersonal((int)$idFinca);
 
         if (isset($response['success']) && $response['success']) {
             return response()->json($response);

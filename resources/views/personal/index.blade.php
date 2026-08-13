@@ -50,8 +50,8 @@
                 <option value="">Seleccione una finca...</option>
                 @foreach($fincas as $finca)
                     @php
-                        $fId = $finca['id'] ?? $finca['id_Finca'] ?? null;
-                        $fNombre = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
+                        $fId = $finca['id'] ?? null;
+                        $fNombre = $finca['nombre'] ?? ('Finca #'.$fId);
                     @endphp
                     <option value="{{ $fId }}" {{ $idFinca == $fId ? 'selected' : '' }}>
                         {{ $fNombre }}
@@ -79,20 +79,20 @@
                     <tbody class="bg-white divide-y divide-gray-100 text-sm">
                         @foreach($personal as $persona)
                             @php
-                                $pId = $persona['id'] ?? $persona['id_Tecnico'] ?? null;
+                                $pId = $persona['id'] ?? null;
                                 
                                 // Data extraida V2
                                 $personaSub = $persona['persona'] ?? null;
-                                $nombreEmp = $personaSub ? trim(($personaSub['nombre'] ?? '').' '.($personaSub['apellido'] ?? '')) : trim(($persona['Nombre'] ?? '').' '.($persona['Apellido'] ?? ''));
-                                $cedulaEmp = $personaSub['cedula'] ?? $persona['Cedula'] ?? '-';
-                                $telefonoEmp = $personaSub['telefono'] ?? $persona['Telefono'] ?? '-';
-                                $correoEmp = $personaSub['correo'] ?? $persona['Correo'] ?? '-';
+                                $nombreEmp = $personaSub ? trim(($personaSub['nombre'] ?? '').' '.($personaSub['apellido'] ?? '')) : 'Personal';
+                                $cedulaEmp = $personaSub['cedula'] ?? '-';
+                                $telefonoEmp = $personaSub['telefono'] ?? '-';
+                                $correoEmp = $personaSub['correo'] ?? '-';
 
                                 $tipoObj = $persona['tipo_trabajador'] ?? null;
-                                $tipoNombre = $tipoObj['nombre'] ?? $persona['Tipo_Trabajador'] ?? 'Trabajador';
+                                $tipoNombre = $tipoObj['nombre'] ?? 'Trabajador';
                                 
                                 $fincaObj = $persona['finca'] ?? null;
-                                $fincaNombre = $fincaObj['nombre'] ?? $fincaObj['Nombre'] ?? ('Finca #'.($persona['finca_id'] ?? $persona['id_Finca'] ?? 'N/A'));
+                                $fincaNombre = $fincaObj['nombre'] ?? ('Finca #'.($persona['finca_id'] ?? 'N/A'));
                             @endphp
                             <tr class="hover:bg-gray-50/80 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -164,9 +164,9 @@
     function filterByFinca(fincaId) {
         const url = new URL(window.location.href);
         if (fincaId) {
-            url.searchParams.set('id_finca', fincaId);
+            url.searchParams.set('finca_id', fincaId);
         } else {
-            url.searchParams.delete('id_finca');
+            url.searchParams.delete('finca_id');
         }
         window.location.href = url.toString();
     }
