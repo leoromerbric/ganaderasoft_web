@@ -37,9 +37,8 @@ if [ "$APP_ENV" = "production" ]; then
     php artisan route:cache || true
     php artisan view:cache || true
 else
-    # Limpiar cachés en desarrollo
-    php artisan config:clear || true
-    php artisan cache:clear || true
+    # Limpiar todas las cachés en desarrollo (rutas, vistas, config, cache)
+    php artisan optimize:clear || true
     
     # Iniciar Vite en segundo plano para HMR (Hot Module Replacement) en desarrollo
     echo "Iniciando Vite para desarrollo..."
