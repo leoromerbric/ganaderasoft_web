@@ -78,10 +78,7 @@ class AnimalesController extends Controller
         $estadosResponse = $this->animalesService->getEstadosSalud();
         $estados = ($estadosResponse['success'] ?? false) ? ($estadosResponse['data']['data'] ?? $estadosResponse['data'] ?? []) : [];
 
-        $etapasResponse = $this->animalesService->getEtapas();
-        $etapas = ($etapasResponse['success'] ?? false) ? ($etapasResponse['data']['data'] ?? $etapasResponse['data'] ?? []) : [];
-
-        return view('animales.create', compact('rebanos', 'razas', 'estados', 'etapas'));
+        return view('animales.create', compact('rebanos', 'razas', 'estados'));
     }
 
     /**
@@ -101,9 +98,6 @@ class AnimalesController extends Controller
             'procedencia' => 'required|string|max:255',
             'composicion_raza_id' => 'required|integer',
             'estado_inicial.estado_salud_id' => 'required|integer',
-            'estado_inicial.fecha_ini' => 'required|date',
-            'etapa_inicial.etapa_id' => 'required|integer',
-            'etapa_inicial.fecha_ini' => 'required|date',
         ], [
             'rebano_id.required' => 'Debe seleccionar un rebaño',
             'nombre.required' => 'El nombre del animal es requerido',
@@ -113,10 +107,23 @@ class AnimalesController extends Controller
             'procedencia.required' => 'La procedencia es requerida',
             'composicion_raza_id.required' => 'Debe seleccionar una raza',
             'estado_inicial.estado_salud_id.required' => 'Debe seleccionar un estado de salud inicial',
-            'etapa_inicial.etapa_id.required' => 'Debe seleccionar una etapa inicial',
         ]);
 
-        $response = $this->animalesService->createAnimal($validatedData);
+        $payload = [
+            'rebano_id' => (int) $validatedData['rebano_id'],
+            'nombre' => $validatedData['nombre'],
+            'codigo_animal' => $validatedData['codigo_animal'],
+            'sexo' => $validatedData['sexo'],
+            'fecha_nacimiento' => $validatedData['fecha_nacimiento'],
+            'procedencia' => $validatedData['procedencia'],
+            'composicion_raza_id' => (int) $validatedData['composicion_raza_id'],
+            'estado_inicial' => [
+                'estado_salud_id' => (int) $validatedData['estado_inicial']['estado_salud_id'],
+                'fecha_ini' => $validatedData['fecha_nacimiento'],
+            ],
+        ];
+
+        $response = $this->animalesService->createAnimal($payload);
 
         if (!$response['success']) {
             return redirect()->back()

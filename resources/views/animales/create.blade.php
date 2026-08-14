@@ -130,7 +130,7 @@
                             <option value="">Seleccione una raza</option>
                             @foreach($razas as $raza)
                                 <option value="{{ $raza['id'] }}" {{ old('composicion_raza_id') == $raza['id'] ? 'selected' : '' }}>
-                                    {{ $raza['nombre'] }} ({{ $raza['Siglas'] ?? '' }})
+                                    {{ $raza['nombre'] }} ({{ $raza['siglas'] ?? '' }})
                                 </option>
                             @endforeach
                         </select>
@@ -158,53 +158,6 @@
                             @endforeach
                         </select>
                         @error('estado_inicial.estado_salud_id')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Fecha Estado Inicial -->
-                    <div>
-                        <label for="estado_inicial_fecha_ini" class="block text-sm font-medium text-gray-700 mb-2">
-                            Fecha Estado Inicial <span class="text-red-500">*</span>
-                        </label>
-                        <input type="date" id="estado_inicial_fecha_ini" name="estado_inicial[fecha_ini]" value="{{ old('estado_inicial.fecha_ini') }}" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
-                        @error('estado_inicial.fecha_ini')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Etapa Inicial -->
-                    <div>
-                        <label for="etapa_inicial_etapa_id" class="block text-sm font-medium text-gray-700 mb-2">
-                            Etapa Inicial <span class="text-red-500">*</span>
-                        </label>
-                        <select id="etapa_inicial_etapa_id" name="etapa_inicial[etapa_id]" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
-                            <option value="">Seleccione una etapa</option>
-                            @foreach($etapas as $etapa)
-                                @php
-                                    $etId = $etapa['id'] ?? $etapa['etapa_id'] ?? null;
-                                    $etNombre = $etapa['nombre'] ?? $etapa['etapa_nombre'] ?? '';
-                                @endphp
-                                <option value="{{ $etId }}" {{ old('etapa_inicial.etapa_id') == $etId ? 'selected' : '' }}>
-                                    {{ $etNombre }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('etapa_inicial.etapa_id')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Fecha Etapa Inicial -->
-                    <div>
-                        <label for="etapa_inicial_fecha_ini" class="block text-sm font-medium text-gray-700 mb-2">
-                            Fecha Etapa Inicial <span class="text-red-500">*</span>
-                        </label>
-                        <input type="date" id="etapa_inicial_fecha_ini" name="etapa_inicial[fecha_ini]" value="{{ old('etapa_inicial.fecha_ini') }}" required
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
-                        @error('etapa_inicial.fecha_ini')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>

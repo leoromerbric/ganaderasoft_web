@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Árbol Genealógico — ' . ($arbol['animal']['Nombre'] ?? 'Animal'))
+@section('title', 'Árbol Genealógico — ' . ($arbol['animal']['nombre'] ?? 'Animal'))
 
 @section('content')
 {{-- ── Encabezado ──────────────────────────────────────────────────────────── --}}
@@ -13,7 +13,7 @@
         </a>
         <div>
             <h2 class="text-3xl font-bold text-ganaderasoft-negro">🌳 Árbol Genealógico</h2>
-            <p class="mt-1 text-gray-600">{{ $arbol['animal']['Nombre'] }} — {{ $arbol['animal']['codigo_animal'] ?? '' }}</p>
+            <p class="mt-1 text-gray-600">{{ $arbol['animal']['nombre'] ?? '' }} — {{ $arbol['animal']['codigo_animal'] ?? '' }}</p>
         </div>
     </div>
     <div class="flex gap-2">
@@ -46,7 +46,7 @@
         $abuelaM  = $arbol['madre']['abuela_materna']  ?? null;
         $padre    = $arbol['padre'] ?? null;
         $madre    = $arbol['madre'] ?? null;
-        $animal   = $arbol['animal'];
+        $animal   = $arbol['animal'] ?? [];
         $hijos    = $arbol['hijos'] ?? [];
         $idArbolPadre = $arbol['relaciones']['id_arbol_padre'] ?? null;
         $idArbolMadre = $arbol['relaciones']['id_arbol_madre'] ?? null;
@@ -60,8 +60,8 @@
                 @if($abueloP)
                     <div class="tree-card-parent blue relative">
                         <div class="tree-card-badge blue">Abuelo paterno</div>
-                        <a href="{{ route('animales.show', $abueloP['id_Animal']) }}" class="block hover:opacity-80 transition-opacity">
-                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abueloP['Nombre'] }}</p>
+                        <a href="{{ route('animales.show', $abueloP['id']) }}" class="block hover:opacity-80 transition-opacity">
+                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abueloP['nombre'] }}</p>
                             @if($abueloP['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abueloP['codigo_animal'] }}</p>@endif
                         </a>
                     </div>
@@ -73,8 +73,8 @@
                 @if($abuelaP)
                     <div class="tree-card-parent pink relative">
                         <div class="tree-card-badge pink">Abuela paterna</div>
-                        <a href="{{ route('animales.show', $abuelaP['id_Animal']) }}" class="block hover:opacity-80 transition-opacity">
-                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abuelaP['Nombre'] }}</p>
+                        <a href="{{ route('animales.show', $abuelaP['id']) }}" class="block hover:opacity-80 transition-opacity">
+                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abuelaP['nombre'] }}</p>
                             @if($abuelaP['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abuelaP['codigo_animal'] }}</p>@endif
                         </a>
                     </div>
@@ -86,8 +86,8 @@
                 @if($abueloM)
                     <div class="tree-card-parent blue relative">
                         <div class="tree-card-badge blue">Abuelo materno</div>
-                        <a href="{{ route('animales.show', $abueloM['id_Animal']) }}" class="block hover:opacity-80 transition-opacity">
-                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abueloM['Nombre'] }}</p>
+                        <a href="{{ route('animales.show', $abueloM['id']) }}" class="block hover:opacity-80 transition-opacity">
+                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abueloM['nombre'] }}</p>
                             @if($abueloM['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abueloM['codigo_animal'] }}</p>@endif
                         </a>
                     </div>
@@ -99,8 +99,8 @@
                 @if($abuelaM)
                     <div class="tree-card-parent pink relative">
                         <div class="tree-card-badge pink">Abuela materna</div>
-                        <a href="{{ route('animales.show', $abuelaM['id_Animal']) }}" class="block hover:opacity-80 transition-opacity">
-                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abuelaM['Nombre'] }}</p>
+                        <a href="{{ route('animales.show', $abuelaM['id']) }}" class="block hover:opacity-80 transition-opacity">
+                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $abuelaM['nombre'] }}</p>
                             @if($abuelaM['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abuelaM['codigo_animal'] }}</p>@endif
                         </a>
                     </div>
@@ -122,8 +122,8 @@
                 @if($padre)
                     <div class="tree-card-parent blue relative">
                         <div class="tree-card-badge blue">Padre</div>
-                        <a href="{{ route('animales.show', $padre['id_Animal']) }}" class="block hover:opacity-80 transition-opacity">
-                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $padre['Nombre'] }}</p>
+                        <a href="{{ route('animales.show', $padre['id']) }}" class="block hover:opacity-80 transition-opacity">
+                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $padre['nombre'] }}</p>
                             @if($padre['codigo_animal'] ?? null)
                                 <p class="text-xs text-gray-500 mt-0.5">{{ $padre['codigo_animal'] }}</p>
                             @endif
@@ -150,8 +150,8 @@
                 @if($madre)
                     <div class="tree-card-parent pink relative">
                         <div class="tree-card-badge pink">Madre</div>
-                        <a href="{{ route('animales.show', $madre['id_Animal']) }}" class="block hover:opacity-80 transition-opacity">
-                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $madre['Nombre'] }}</p>
+                        <a href="{{ route('animales.show', $madre['id']) }}" class="block hover:opacity-80 transition-opacity">
+                            <p class="font-bold text-gray-900 text-base leading-tight">{{ $madre['nombre'] }}</p>
                             @if($madre['codigo_animal'] ?? null)
                                 <p class="text-xs text-gray-500 mt-0.5">{{ $madre['codigo_animal'] }}</p>
                             @endif
@@ -184,13 +184,13 @@
             <div class="tree-col-main">
                 <div class="tree-card-main">
                     <div class="tree-card-badge main">Animal</div>
-                    <p class="font-extrabold text-xl text-ganaderasoft-negro leading-tight">{{ $animal['Nombre'] }}</p>
+                    <p class="font-extrabold text-xl text-ganaderasoft-negro leading-tight">{{ $animal['nombre'] ?? 'Animal' }}</p>
                     @if($animal['codigo_animal'] ?? null)
                         <p class="text-sm text-gray-500 mt-0.5">{{ $animal['codigo_animal'] }}</p>
                     @endif
                     <div class="mt-2 flex items-center justify-center gap-2">
-                        <span class="px-2 py-0.5 rounded-full text-xs font-medium {{ ($animal['Sexo'] ?? '') === 'M' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700' }}">
-                            {{ ($animal['Sexo'] ?? '') === 'M' ? '♂ Macho' : '♀ Hembra' }}
+                        <span class="px-2 py-0.5 rounded-full text-xs font-medium {{ ($animal['sexo'] ?? '') === 'M' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700' }}">
+                            {{ ($animal['sexo'] ?? '') === 'M' ? '♂ Macho' : '♀ Hembra' }}
                         </span>
                         @if($animal['fecha_nacimiento'] ?? null)
                             <span class="text-xs text-gray-400">Nac. {{ \Carbon\Carbon::parse($animal['fecha_nacimiento'])->format('d/m/Y') }}</span>
@@ -210,14 +210,14 @@
                 <div style="min-width:140px; max-width:180px;">
                     <div class="tree-card-child">
                         <div class="tree-card-badge child">Hijo/a</div>
-                        <a href="{{ route('animales.show', $hijo['id_Animal']) }}" class="block hover:opacity-80">
-                            <p class="font-semibold text-gray-900 text-sm leading-tight">{{ $hijo['Nombre'] }}</p>
+                        <a href="{{ route('animales.show', $hijo['id']) }}" class="block hover:opacity-80">
+                            <p class="font-semibold text-gray-900 text-sm leading-tight">{{ $hijo['nombre'] }}</p>
                             @if($hijo['codigo_animal'] ?? null)
                                 <p class="text-xs text-gray-400">{{ $hijo['codigo_animal'] }}</p>
                             @endif
                         </a>
-                        <span class="mt-1 inline-block px-1.5 py-0.5 rounded text-xs {{ ($hijo['Sexo'] ?? '') === 'M' ? 'bg-blue-100 text-blue-600' : 'bg-pink-100 text-pink-600' }}">
-                            {{ ($hijo['Sexo'] ?? '') === 'M' ? '♂' : '♀' }}
+                        <span class="mt-1 inline-block px-1.5 py-0.5 rounded text-xs {{ ($hijo['sexo'] ?? '') === 'M' ? 'bg-blue-100 text-blue-600' : 'bg-pink-100 text-pink-600' }}">
+                            {{ ($hijo['sexo'] ?? '') === 'M' ? '♂' : '♀' }}
                         </span>
                     </div>
                 </div>
@@ -253,7 +253,7 @@
                 <p class="p-4 text-center text-sm text-gray-400">Cargando...</p>
             </div>
 
-            <input type="hidden" name="id_padre" id="input-id-padre" value="">
+            <input type="hidden" name="padre_id" id="input-padre-id" value="">
             <div id="selected-animal" class="mb-4 hidden rounded-lg bg-ganaderasoft-celeste/10 border border-ganaderasoft-celeste/30 p-3 text-sm text-ganaderasoft-azul"></div>
 
             <div class="flex justify-end gap-3">
@@ -362,7 +362,7 @@
     const modal      = document.getElementById('modal-progenitor');
     const modalTitle = document.getElementById('modal-title');
     const inputTipo  = document.getElementById('input-tipo');
-    const inputId    = document.getElementById('input-id-padre');
+    const inputId    = document.getElementById('input-padre-id');
     const lista      = document.getElementById('lista-disponibles');
     const selected   = document.getElementById('selected-animal');
     const btnGuardar = document.getElementById('btn-guardar-prog');
@@ -370,6 +370,12 @@
     const endpoint   = '{{ route('arbol-gen.disponibles', $id) }}';
 
     let allAnimales = [];
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return String(text).replace(/[&<>"']/g, m => map[m]);
+    }
 
     window.openModal = function (tipo) {
         inputTipo.value  = tipo;
@@ -395,7 +401,7 @@
         try {
             const res  = await fetch(`${endpoint}?tipo=${tipo}`, { headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' } });
             const json = await res.json();
-            allAnimales = (json.success && json.data) ? json.data : [];
+            allAnimales = (json.success && Array.isArray(json.data)) ? json.data : [];
             renderLista(allAnimales);
         } catch (e) {
             lista.innerHTML = '<p class="p-4 text-center text-sm text-red-500">Error al cargar.</p>';
@@ -407,18 +413,26 @@
             lista.innerHTML = '<p class="p-4 text-center text-sm text-gray-400">No hay animales disponibles.</p>';
             return;
         }
-        lista.innerHTML = animales.map(a => `
+        lista.innerHTML = animales.map(a => {
+            const id = a.id;
+            const nombre = a.nombre || 'Sin nombre';
+            const codigo = a.codigo_animal || '';
+            const sexo = a.sexo || '';
+            const isMacho = sexo === 'M';
+
+            return `
             <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-ganaderasoft-celeste/10 border-b border-gray-100 last:border-0 transition-colors"
-                 data-id="${a.id_Animal}" data-nombre="${a.Nombre}" data-codigo="${a.codigo_animal || ''}"
-                 onclick="selectAnimal(${a.id_Animal}, '${a.Nombre}', '${a.codigo_animal || ''}')">
-                <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${a.Sexo === 'M' ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}">
-                    ${a.Sexo === 'M' ? '♂' : '♀'}
+                 data-id="${id}"
+                 onclick="selectAnimal(${id}, '${escapeHtml(nombre)}', '${escapeHtml(codigo)}')">
+                <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isMacho ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}">
+                    ${isMacho ? '♂' : '♀'}
                 </span>
                 <div>
-                    <p class="text-sm font-semibold text-gray-900">${a.Nombre}</p>
-                    ${a.codigo_animal ? `<p class="text-xs text-gray-400">${a.codigo_animal}</p>` : ''}
+                    <p class="text-sm font-semibold text-gray-900">${escapeHtml(nombre)}</p>
+                    ${codigo ? `<p class="text-xs text-gray-400">${escapeHtml(codigo)}</p>` : ''}
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
     }
 
     window.selectAnimal = function (id, nombre, codigo) {
@@ -435,7 +449,7 @@
     search.addEventListener('input', function () {
         const q = this.value.toLowerCase();
         renderLista(allAnimales.filter(a =>
-            a.Nombre.toLowerCase().includes(q) || (a.codigo_animal || '').toLowerCase().includes(q)
+            (a.nombre || '').toLowerCase().includes(q) || (a.codigo_animal || '').toLowerCase().includes(q)
         ));
     });
 })();
