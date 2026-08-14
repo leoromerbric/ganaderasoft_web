@@ -19,6 +19,34 @@
         </a>
     </div>
 
+    <!-- Active Finca Context Banner -->
+    @if(session('selected_finca'))
+        @php
+            $activeFinca = session('selected_finca');
+            $activeFincaNombre = $activeFinca['nombre'] ?? 'Finca Activa';
+            $activeFincaId = $activeFinca['id'] ?? null;
+        @endphp
+        <div class="p-4 bg-gradient-to-r from-ganaderasoft-celeste/15 to-ganaderasoft-azul/10 border border-ganaderasoft-celeste/30 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl">🏡</span>
+                <div>
+                    <p class="text-xs font-semibold text-ganaderasoft-azul uppercase tracking-wider">Finca Activa en Sesión</p>
+                    <p class="text-base font-bold text-ganaderasoft-negro">{{ $activeFincaNombre }} (ID: #{{ $activeFincaId }})</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <a href="{{ route('fincas.dashboard', $activeFincaId) }}" 
+                   class="px-4 py-2 bg-ganaderasoft-azul text-white text-xs font-semibold rounded-xl hover:bg-ganaderasoft-celeste transition-colors shadow-sm">
+                    Ir al Panel de Finca
+                </a>
+                <a href="{{ route('fincas.clear-selection') }}" 
+                   class="px-3 py-2 border border-gray-300 bg-white text-gray-700 text-xs font-medium rounded-xl hover:bg-gray-50 transition-colors">
+                    Liberar
+                </a>
+            </div>
+        </div>
+    @endif
+
     <!-- Alert Messages -->
     @if(session('success'))
         <div class="p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-sm flex items-center justify-between">
@@ -114,6 +142,7 @@
                                 $nombreFinca = $finca['nombre'] ?? 'Sin Nombre';
                                 $tipoExp = $finca['explotacion_tipo'] ?? '-';
                                 $superficie = (float)($finca['terreno']['superficie'] ?? 0);
+                                $isSelected = (session('selected_finca')['id'] ?? null) == $fincaId;
                                 
                                 // Formateo de propietario V2
                                 $propObj = $finca['propietario'] ?? null;
@@ -121,17 +150,26 @@
                                 $nombreProp = $persona ? trim(($persona['nombre'] ?? '').' '.($persona['apellido'] ?? '')) : '-';
                                 $telefonoProp = $persona['telefono'] ?? '-';
                             @endphp
-                            <tr class="hover:bg-gray-50/80 transition-colors fila-finca"
+                            <tr class="hover:bg-gray-50/80 transition-colors fila-finca {{ $isSelected ? 'bg-ganaderasoft-celeste/5' : '' }}"
                                 data-nombre="{{ strtolower($nombreFinca) }}"
                                 data-tipo="{{ $tipoExp }}"
                                 data-superficie="{{ $superficie }}">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-9 h-9 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-ganaderasoft-azul font-bold text-sm">
+                                        <div class="w-10 h-10 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-ganaderasoft-azul font-bold text-lg">
                                             🏡
                                         </div>
                                         <div>
-                                            <p class="font-bold text-gray-900">{{ $nombreFinca }}</p>
+                                            <div class="flex items-center space-x-2">
+                                                <a href="{{ route('fincas.dashboard', $fincaId) }}" class="font-bold text-gray-900 hover:text-ganaderasoft-azul transition-colors">
+                                                    {{ $nombreFinca }}
+                                                </a>
+                                                @if($isSelected)
+                                                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-green-100 text-green-800 border border-green-200">
+                                                        Activa
+                                                    </span>
+                                                @endif
+                                            </div>
                                             <p class="text-xs text-gray-400">ID: #{{ $fincaId }}</p>
                                         </div>
                                     </div>
@@ -149,10 +187,18 @@
                                     {{ $superficie > 0 ? number_format($superficie, 1, ',', '.').' ha' : '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                    <div class="flex items-center justify-center space-x-3">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <a href="{{ route('fincas.dashboard', $fincaId) }}"
+                                           class="px-3 py-1.5 bg-gradient-to-r from-ganaderasoft-celeste to-ganaderasoft-azul text-white text-xs font-semibold rounded-lg hover:from-ganaderasoft-azul hover:to-ganaderasoft-celeste transition-all duration-200 shadow-sm flex items-center">
+                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                            </svg>
+                                            Gestionar
+                                        </a>
                                         <a href="{{ route('fincas.edit', $fincaId) }}"
-                                           class="text-ganaderasoft-azul hover:text-ganaderasoft-celeste font-semibold transition-colors flex items-center">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                           class="px-3 py-1.5 border border-gray-300 text-gray-700 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors flex items-center">
+                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                             </svg>
                                             Editar

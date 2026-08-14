@@ -43,11 +43,47 @@ class FincasController extends Controller
     }
 
     /**
-     * Redirect legacy dashboard URL to fincas index
+     * Display the finca management dashboard and set as active finca in session
      */
     public function dashboard($id)
     {
-        return redirect()->route('fincas.index');
+        $response = $this->fincasService->getFinca((int)$id);
+
+        if (!isset($response['success']) || !$response['success'] || empty($response['data'])) {
+            return redirect()->route('fincas.index')->with('error', 'Finca no encontrada');
+        }
+
+        $finca = $response['data'];
+        
+        // Guardar finca activa en sesión
+        session(['selected_finca' => $finca]);
+
+        return view('fincas.dashboard', compact('finca'));
+    }
+
+    /**
+     * Select finca into session and redirect back
+     */
+    public function select($id)
+    {
+        $response = $this->fincasService->getFinca((int)$id);
+
+        if (isset($response['success']) && $response['success'] && !empty($response['data'])) {
+            session(['selected_finca' => $response['data']]);
+            $nombreFinca = $response['data']['nombre'] ?? 'Finca';
+            return redirect()->back()->with('success', "Finca \"{$nombreFinca}\" seleccionada como activa");
+        }
+
+        return redirect()->route('fincas.index')->with('error', 'Finca no encontrada');
+    }
+
+    /**
+     * Clear the active finca from session
+     */
+    public function clearSelection()
+    {
+        session()->forget('selected_finca');
+        return redirect()->route('fincas.index')->with('success', 'Contexto de finca liberado');
     }
 
     /**

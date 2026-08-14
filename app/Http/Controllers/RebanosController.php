@@ -59,12 +59,10 @@ class RebanosController extends Controller
     public function create()
     {
         $selectedFinca = session('selected_finca');
-        
-        if (!$selectedFinca) {
-            return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
-        }
+        $fincasResponse = $this->fincasService->getFincas();
+        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-        return view('rebanos.create', compact('selectedFinca'));
+        return view('rebanos.create', compact('selectedFinca', 'fincas'));
     }
 
     /**
@@ -72,23 +70,24 @@ class RebanosController extends Controller
      */
     public function store(Request $request)
     {
-        $selectedFinca = session('selected_finca');
-        
-        if (!$selectedFinca) {
-            return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
-        }
-
-        $fincaId = $selectedFinca['id'] ?? null;
+        $request->validate([
+            'nombre' => 'required|string|max:100',
+            'finca_id' => 'required|integer',
+        ], [
+            'nombre.required' => 'El nombre del rebaño es obligatorio',
+            'finca_id.required' => 'Debe seleccionar una finca para el rebaño',
+        ]);
 
         $data = [
-            'finca_id' => $fincaId,
-            'nombre' => $request->input('nombre') ?? $request->input('Nombre'),
+            'finca_id' => (int)$request->input('finca_id'),
+            'nombre' => (string)$request->input('nombre'),
         ];
 
         $response = $this->rebanosService->createRebano($data);
 
         if (isset($response['success']) && $response['success']) {
-            return redirect()->route('rebanos.index')->with('success', 'Rebaño creado exitosamente');
+            return redirect()->route('rebanos.index', ['finca_id' => $data['finca_id']])
+                ->with('success', 'Rebaño creado exitosamente');
         }
 
         return redirect()->back()
@@ -102,10 +101,6 @@ class RebanosController extends Controller
     public function edit($id)
     {
         $selectedFinca = session('selected_finca');
-        
-        if (!$selectedFinca) {
-            return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
-        }
 
         // Get all rebanos and find the one we need
         $response = $this->rebanosService->getRebanos();
@@ -119,6 +114,9 @@ class RebanosController extends Controller
             });
 
             if ($rebano) {
+                if (!$selectedFinca && !empty($rebano['finca'])) {
+                    $selectedFinca = $rebano['finca'];
+                }
                 return view('rebanos.edit', compact('rebano', 'selectedFinca'));
             }
 
@@ -133,8 +131,12 @@ class RebanosController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'nombre' => 'required|string|max:100',
+        ]);
+
         $data = [
-            'nombre' => $request->input('nombre') ?? $request->input('Nombre'),
+            'nombre' => (string)$request->input('nombre'),
         ];
 
         $response = $this->rebanosService->updateRebano((int)$id, $data);

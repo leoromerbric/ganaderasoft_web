@@ -4,8 +4,7 @@
 
 @section('content')
 @php
-    $fincaNombre = $selectedFinca['nombre'] ?? 'Finca';
-    $fincaId = $selectedFinca['id'] ?? null;
+    $activeFincaId = old('finca_id', $selectedFinca['id'] ?? request()->query('finca_id'));
 @endphp
 <div class="max-w-2xl mx-auto space-y-6">
     <!-- Header & Breadcrumb -->
@@ -31,6 +30,15 @@
             </div>
         </div>
     @endif
+    @if($errors->any())
+        <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-xl shadow-sm">
+            <ul class="list-disc ml-5 text-sm">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <!-- Form Card -->
     <div class="bg-white rounded-2xl shadow-sm p-8 border border-gray-100 space-y-6">
@@ -40,21 +48,39 @@
             </div>
             <div>
                 <h3 class="text-lg font-bold text-ganaderasoft-negro">Información del Rebaño</h3>
-                <p class="text-xs text-gray-500">Asignado a la finca en sesión</p>
+                <p class="text-xs text-gray-500">Asigne el rebaño a una de sus fincas</p>
             </div>
         </div>
 
         <form method="POST" action="{{ route('rebanos.store') }}" class="space-y-6">
             @csrf
 
-            <!-- Finca Read-Only -->
+            <!-- Selector de Finca -->
             <div>
-                <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">Finca Destino</label>
-                <div class="flex items-center px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-800 space-x-2">
-                    <span>🏡</span>
-                    <span>{{ $fincaNombre }}</span>
-                    <span class="text-xs text-gray-400">(ID: #{{ $fincaId }})</span>
-                </div>
+                <label for="finca_id" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                    Finca Destino <span class="text-red-500">*</span>
+                </label>
+                <select name="finca_id" id="finca_id" required
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                    <option value="">Seleccione una finca...</option>
+                    @foreach($fincas as $finca)
+                        @php
+                            $fId = $finca['id'] ?? null;
+                            $fNombre = $finca['nombre'] ?? ('Finca #'.$fId);
+                            $isSelected = (string)$activeFincaId === (string)$fId;
+                        @endphp
+                        <option value="{{ $fId }}" {{ $isSelected ? 'selected' : '' }}>
+                            🏡 {{ $fNombre }} (ID: #{{ $fId }})
+                        </option>
+                    @endforeach
+                </select>
+                @if(!empty($selectedFinca))
+                    <p class="text-xs text-green-700 mt-1 flex items-center">
+                        <span class="mr-1">✓</span> Preseleccionada según tu finca activa en sesión ({{ $selectedFinca['nombre'] ?? 'Finca' }})
+                    </p>
+                @else
+                    <p class="text-xs text-gray-500 mt-1">Selecciona la finca a la cual pertenecerá este rebaño</p>
+                @endif
             </div>
 
             <!-- Nombre -->
@@ -64,9 +90,9 @@
                 </label>
                 <input type="text" name="nombre" id="nombre" required
                        value="{{ old('nombre') }}"
-                       placeholder="Ej: Rebaño Vacas Lecheras, Rebaño Norte"
+                       placeholder="Ej: Rebaño Vacas Lecheras, Rebaño Norte, Lote Engorde"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                <p class="text-xs text-gray-500 mt-1">Nombre distintivo para agrupar los animales</p>
+                <p class="text-xs text-gray-500 mt-1">Nombre distintivo para identificar y agrupar los animales</p>
             </div>
 
             <!-- Actions -->

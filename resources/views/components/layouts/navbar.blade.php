@@ -1,4 +1,4 @@
-<nav class="bg-white shadow-md border-b-4 border-ganaderasoft-celeste">
+<nav class="bg-white shadow-md border-b-4 border-ganaderasoft-celeste sticky top-0 z-30">
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
             <!-- Logo and Title -->
@@ -12,23 +12,31 @@
                 </div>
             </a>
 
-            <!-- Breadcrumb / Current Finca -->
+            <!-- Active Finca Context Badge (if set in session) -->
             @if(session('selected_finca'))
-            <div class="flex items-center space-x-2 text-sm">
-                <a href="{{ route('fincas.index') }}" class="text-ganaderasoft-celeste hover:text-blue-600 font-medium">
-                    Lista de Fincas
-                </a>
-                <span class="text-gray-400">/</span>
-                <span class="text-gray-700 font-semibold">{{ session('selected_finca')['Nombre'] }}</span>
-            </div>
+                @php
+                    $activeFinca = session('selected_finca');
+                    $activeFincaName = $activeFinca['nombre'] ?? $activeFinca['Nombre'] ?? 'Finca';
+                    $activeFincaId = $activeFinca['id'] ?? null;
+                @endphp
+                <div class="hidden sm:flex items-center space-x-2 px-3.5 py-1.5 bg-ganaderasoft-celeste/10 border border-ganaderasoft-celeste/30 rounded-full text-xs">
+                    <span class="text-sm">🏡</span>
+                    <a href="{{ route('fincas.dashboard', $activeFincaId) }}" class="font-bold text-ganaderasoft-azul hover:text-ganaderasoft-celeste transition-colors">
+                        Finca: {{ $activeFincaName }}
+                    </a>
+                    <span class="text-gray-300">|</span>
+                    <a href="{{ route('fincas.index') }}" class="text-gray-500 hover:text-ganaderasoft-azul font-medium transition-colors">
+                        Cambiar
+                    </a>
+                </div>
             @endif
 
             <!-- User Info and Logout -->
             <div class="flex items-center space-x-4">
-                <div class="text-right hidden sm:block">
+                <a href="{{ route('profile') }}" class="text-right hidden sm:block hover:opacity-80 transition-opacity">
                     <p class="text-sm font-semibold text-ganaderasoft-negro">{{ session('user')['name'] ?? 'Usuario' }}</p>
                     <p class="text-xs text-gray-500">{{ !empty(session('user')['roles']) ? implode(', ', array_map('ucfirst', session('user')['roles'])) : 'Usuario' }}</p>
-                </div>
+                </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2">
