@@ -49,7 +49,8 @@ class RebanosController extends Controller
             'totalAnimales'  => $totalAnimales,
         ];
 
-        return view('rebanos.index', compact('rebanos', 'fincas', 'fincaId', 'nombre', 'estadisticas'));
+        $idFinca = $fincaId;
+        return view('rebanos.index', compact('rebanos', 'fincas', 'fincaId', 'idFinca', 'nombre', 'estadisticas'));
     }
 
     /**

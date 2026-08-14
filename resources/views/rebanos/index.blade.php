@@ -50,7 +50,7 @@
                             $fId = $finca['id'] ?? null;
                             $fNombre = $finca['nombre'] ?? ('Finca #'.$fId);
                         @endphp
-                        <option value="{{ $fId }}" {{ $idFinca == $fId ? 'selected' : '' }}>
+                        <option value="{{ $fId }}" {{ (string)$fincaId === (string)$fId ? 'selected' : '' }}>
                             {{ $fNombre }}
                         </option>
                     @endforeach
