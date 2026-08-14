@@ -14,9 +14,9 @@ class MockAuthService implements AuthServiceInterface
     ];
 
     /**
-     * Attempt to authenticate a user with mock credentials
+     * Authenticate a user with mock credentials
      */
-    public function attempt(string $email, string $password): ?array
+    public function login(string $email, string $password): ?array
     {
         if ($email === self::MOCK_USER['email'] && $password === self::MOCK_USER['password']) {
             $userData = [

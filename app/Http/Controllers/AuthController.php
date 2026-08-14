@@ -63,7 +63,7 @@ class AuthController extends Controller
             'password.min'      => 'La contraseña debe tener al menos 6 caracteres.',
         ]);
 
-        $user = $this->authService->attempt($request->email, $request->password);
+        $user = $this->authService->login($request->email, $request->password);
 
         if ($user) {
             return redirect()->route('dashboard');
@@ -99,7 +99,7 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        $user = $this->authService->attempt($request->email, $request->password);
+        $user = $this->authService->login($request->email, $request->password);
 
         if ($user) {
             $userProfile = $user;

@@ -5,11 +5,11 @@ namespace App\Services\Contracts;
 interface AuthServiceInterface
 {
     /**
-     * Attempt to authenticate a user
+     * Authenticate a user and create a session
      *
      * @return array|null Returns user data if successful, null otherwise
      */
-    public function attempt(string $email, string $password): ?array;
+    public function login(string $email, string $password): ?array;
 
     /**
      * Logout the current user
