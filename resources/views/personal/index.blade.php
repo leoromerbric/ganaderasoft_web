@@ -1,4 +1,4 @@
-@extends(session('selected_finca') ? 'layouts.finca' : 'layouts.authenticated')
+@extends('layouts.authenticated')
 
 @section('title', 'Gestión de Personal')
 

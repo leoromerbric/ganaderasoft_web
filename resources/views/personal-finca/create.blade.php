@@ -57,7 +57,7 @@
                             @php
                                 $fId = $finca['id'] ?? null;
                                 $fNombre = $finca['nombre'] ?? ('Finca #' . $fId);
-                                $selected = old('finca_id') == $fId || session('selected_finca')['id'] ?? null == $fId;
+                                $selected = (string) old('finca_id') === (string) $fId;
                             @endphp
                             <option value="{{ $fId }}" {{ $selected ? 'selected' : '' }}>
                                 {{ $fNombre }} (ID: #{{ $fId }})
