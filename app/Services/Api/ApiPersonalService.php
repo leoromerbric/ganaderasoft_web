@@ -34,4 +34,12 @@ class ApiPersonalService extends BaseApiService implements PersonalServiceInterf
     {
         return $this->put('/personal-finca/' . $id, $data);
     }
+
+    /**
+     * Get list of tipos de trabajador
+     */
+    public function getTiposTrabajador(): array
+    {
+        return $this->get('/tipos-trabajador?nopaginate=true');
+    }
 }

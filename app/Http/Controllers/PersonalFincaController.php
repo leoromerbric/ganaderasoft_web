@@ -64,7 +64,10 @@ class PersonalFincaController extends Controller
         $fincasResponse = $this->fincasService->getFincas();
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-        return view('personal-finca.create', compact('fincas'));
+        $tiposResponse = $this->personalFincaService->getTiposTrabajador();
+        $tiposTrabajador = ($tiposResponse['success'] ?? false) ? ($tiposResponse['data']['data'] ?? $tiposResponse['data'] ?? []) : [];
+
+        return view('personal-finca.create', compact('fincas', 'tiposTrabajador'));
     }
 
     /**
@@ -74,22 +77,25 @@ class PersonalFincaController extends Controller
     {
         $request->validate([
             'finca_id' => 'required|integer',
-            'cedula' => 'required|string|max:15',
-            'nombre' => 'required|string|max:100',
-            'apellido' => 'required|string|max:100',
-            'telefono' => 'required|string|max:20',
-            'correo' => 'required|string|email|max:255',
-            'tipo_trabajador' => 'required|string',
+            'cedula' => 'required|string|regex:/^[VEJPG][0-9]+$/',
+            'nombre' => 'required|string|max:25',
+            'apellido' => 'required|string|max:25',
+            'telefono' => 'required|string|max:15',
+            'correo' => 'required|string|email|max:40',
+            'tipo_trabajador_id' => 'required|integer',
+        ], [
+            'cedula.regex' => 'La cédula debe comenzar con V, E, J, P o G seguido de números (ej: V12345678).',
+            'tipo_trabajador_id.required' => 'Debe seleccionar un tipo de trabajador.',
         ]);
 
         $data = [
             'finca_id' => (int)$request->input('finca_id'),
-            'cedula' => (string)$request->input('cedula'),
-            'nombre' => (string)$request->input('nombre'),
-            'apellido' => (string)$request->input('apellido'),
-            'telefono' => (string)$request->input('telefono'),
-            'correo' => (string)$request->input('correo'),
-            'tipo_trabajador' => (string)$request->input('tipo_trabajador'),
+            'cedula' => strtoupper(trim((string)$request->input('cedula'))),
+            'nombre' => trim((string)$request->input('nombre')),
+            'apellido' => trim((string)$request->input('apellido')),
+            'telefono' => trim((string)$request->input('telefono')),
+            'correo' => trim((string)$request->input('correo')),
+            'tipo_trabajador_id' => (int)$request->input('tipo_trabajador_id'),
         ];
 
         $response = $this->personalFincaService->createPersonalFinca($data);
@@ -99,7 +105,14 @@ class PersonalFincaController extends Controller
                 ->with('success', 'Personal de finca registrado exitosamente.');
         }
 
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al crear el personal');
+        $errorMessage = $response['message'] ?? 'Error al crear el personal';
+        if (isset($response['errors']) && is_array($response['errors'])) {
+            $errorMessage = implode(' ', array_map(function ($err) {
+                return is_array($err) ? implode(' ', $err) : $err;
+            }, $response['errors']));
+        }
+
+        return back()->withInput()->with('error', $errorMessage);
     }
 
     /**
@@ -136,7 +149,10 @@ class PersonalFincaController extends Controller
         $fincasResponse = $this->fincasService->getFincas();
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-        return view('personal-finca.edit', compact('personalFinca', 'personal', 'fincas'));
+        $tiposResponse = $this->personalFincaService->getTiposTrabajador();
+        $tiposTrabajador = ($tiposResponse['success'] ?? false) ? ($tiposResponse['data']['data'] ?? $tiposResponse['data'] ?? []) : [];
+
+        return view('personal-finca.edit', compact('personalFinca', 'personal', 'fincas', 'tiposTrabajador'));
     }
 
     /**
@@ -146,22 +162,25 @@ class PersonalFincaController extends Controller
     {
         $request->validate([
             'finca_id' => 'required|integer',
-            'cedula' => 'required|string|max:15',
-            'nombre' => 'required|string|max:100',
-            'apellido' => 'required|string|max:100',
-            'telefono' => 'required|string|max:20',
-            'correo' => 'required|string|email|max:255',
-            'tipo_trabajador' => 'required|string',
+            'cedula' => 'required|string|regex:/^[VEJPG][0-9]+$/',
+            'nombre' => 'required|string|max:25',
+            'apellido' => 'required|string|max:25',
+            'telefono' => 'required|string|max:15',
+            'correo' => 'required|string|email|max:40',
+            'tipo_trabajador_id' => 'required|integer',
+        ], [
+            'cedula.regex' => 'La cédula debe comenzar con V, E, J, P o G seguido de números (ej: V12345678).',
+            'tipo_trabajador_id.required' => 'Debe seleccionar un tipo de trabajador.',
         ]);
 
         $data = [
             'finca_id' => (int)$request->input('finca_id'),
-            'cedula' => (string)$request->input('cedula'),
-            'nombre' => (string)$request->input('nombre'),
-            'apellido' => (string)$request->input('apellido'),
-            'telefono' => (string)$request->input('telefono'),
-            'correo' => (string)$request->input('correo'),
-            'tipo_trabajador' => (string)$request->input('tipo_trabajador'),
+            'cedula' => strtoupper(trim((string)$request->input('cedula'))),
+            'nombre' => trim((string)$request->input('nombre')),
+            'apellido' => trim((string)$request->input('apellido')),
+            'telefono' => trim((string)$request->input('telefono')),
+            'correo' => trim((string)$request->input('correo')),
+            'tipo_trabajador_id' => (int)$request->input('tipo_trabajador_id'),
         ];
 
         $response = $this->personalFincaService->updatePersonalFinca((int)$id, $data);
@@ -171,7 +190,14 @@ class PersonalFincaController extends Controller
                 ->with('success', 'Personal de finca actualizado exitosamente.');
         }
 
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al actualizar el personal');
+        $errorMessage = $response['message'] ?? 'Error al actualizar el personal';
+        if (isset($response['errors']) && is_array($response['errors'])) {
+            $errorMessage = implode(' ', array_map(function ($err) {
+                return is_array($err) ? implode(' ', $err) : $err;
+            }, $response['errors']));
+        }
+
+        return back()->withInput()->with('error', $errorMessage);
     }
 
     /**

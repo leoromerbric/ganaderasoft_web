@@ -28,4 +28,9 @@ interface PersonalFincaServiceInterface
      * Delete a personal de finca record
      */
     public function deletePersonalFinca(int $id): array;
+
+    /**
+     * Get list of tipos de trabajador
+     */
+    public function getTiposTrabajador(): array;
 }

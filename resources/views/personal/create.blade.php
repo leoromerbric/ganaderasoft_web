@@ -73,16 +73,20 @@
 
                 <!-- Tipo de Trabajador -->
                 <div>
-                    <label for="tipo_trabajador"
+                    <label for="tipo_trabajador_id"
                         class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                         Tipo de Trabajador <span class="text-red-500">*</span>
                     </label>
-                    <select name="tipo_trabajador" id="tipo_trabajador" required
+                    <select name="tipo_trabajador_id" id="tipo_trabajador_id" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                         <option value="">Seleccione cargo...</option>
                         @foreach($tiposTrabajador as $tipo)
-                            <option value="{{ $tipo }}" {{ old('tipo_trabajador') == $tipo ? 'selected' : '' }}>
-                                {{ $tipo }}
+                            @php
+                                $tId = $tipo['id'] ?? null;
+                                $tNombre = $tipo['nombre'] ?? '';
+                            @endphp
+                            <option value="{{ $tId }}" {{ (string) old('tipo_trabajador_id') === (string) $tId ? 'selected' : '' }}>
+                                {{ $tNombre }}
                             </option>
                         @endforeach
                     </select>

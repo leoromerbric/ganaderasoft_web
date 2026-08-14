@@ -73,15 +73,8 @@ class PersonalController extends Controller
             return redirect()->route('fincas.index')->with('error', 'Debe seleccionar una finca primero');
         }
 
-        // Define employee types
-        $tiposTrabajador = [
-            'Administrador',
-            'Tecnico',
-            'Guardia',
-            'Veterinario',
-            'Operario',
-            'Otro'
-        ];
+        $tiposResponse = $this->personalService->getTiposTrabajador();
+        $tiposTrabajador = ($tiposResponse['success'] ?? false) ? ($tiposResponse['data']['data'] ?? $tiposResponse['data'] ?? []) : [];
 
         return view('personal.create', compact('selectedFinca', 'tiposTrabajador'));
     }
@@ -99,14 +92,26 @@ class PersonalController extends Controller
 
         $fincaId = $selectedFinca['id'] ?? null;
 
+        $request->validate([
+            'cedula' => 'required|string|regex:/^[VEJPG][0-9]+$/',
+            'nombre' => 'required|string|max:25',
+            'apellido' => 'required|string|max:25',
+            'telefono' => 'required|string|max:15',
+            'correo' => 'required|string|email|max:40',
+            'tipo_trabajador_id' => 'required|integer',
+        ], [
+            'cedula.regex' => 'La cédula debe comenzar con V, E, J, P o G seguido de números (ej: V12345678).',
+            'tipo_trabajador_id.required' => 'Debe seleccionar un tipo de trabajador.',
+        ]);
+
         $data = [
             'finca_id' => $fincaId,
-            'cedula' => (string)($request->input('cedula') ?? $request->input('Cedula')),
-            'nombre' => $request->input('nombre') ?? $request->input('Nombre'),
-            'apellido' => $request->input('apellido') ?? $request->input('Apellido'),
-            'telefono' => $request->input('telefono') ?? $request->input('Telefono'),
-            'correo' => $request->input('correo') ?? $request->input('Correo'),
-            'tipo_trabajador' => $request->input('tipo_trabajador') ?? $request->input('Tipo_Trabajador'),
+            'cedula' => strtoupper(trim((string)$request->input('cedula'))),
+            'nombre' => trim((string)$request->input('nombre')),
+            'apellido' => trim((string)$request->input('apellido')),
+            'telefono' => trim((string)$request->input('telefono')),
+            'correo' => trim((string)$request->input('correo')),
+            'tipo_trabajador_id' => (int)$request->input('tipo_trabajador_id'),
         ];
 
         $response = $this->personalService->createPersonal($data);
@@ -115,9 +120,16 @@ class PersonalController extends Controller
             return redirect()->route('personal.index')->with('success', 'Personal creado exitosamente');
         }
 
+        $errorMessage = $response['message'] ?? 'Error al crear el personal';
+        if (isset($response['errors']) && is_array($response['errors'])) {
+            $errorMessage = implode(' ', array_map(function ($err) {
+                return is_array($err) ? implode(' ', $err) : $err;
+            }, $response['errors']));
+        }
+
         return redirect()->back()
             ->withInput()
-            ->with('error', $response['message'] ?? 'Error al crear el personal');
+            ->with('error', $errorMessage);
     }
 
     /**
@@ -145,14 +157,8 @@ class PersonalController extends Controller
             });
 
             if ($persona) {
-                $tiposTrabajador = [
-                    'Administrador',
-                    'Tecnico',
-                    'Guardia',
-                    'Veterinario',
-                    'Operario',
-                    'Otro'
-                ];
+                $tiposResponse = $this->personalService->getTiposTrabajador();
+                $tiposTrabajador = ($tiposResponse['success'] ?? false) ? ($tiposResponse['data']['data'] ?? $tiposResponse['data'] ?? []) : [];
 
                 return view('personal.edit', compact('persona', 'selectedFinca', 'tiposTrabajador'));
             }
@@ -168,13 +174,25 @@ class PersonalController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'cedula' => 'required|string|regex:/^[VEJPG][0-9]+$/',
+            'nombre' => 'required|string|max:25',
+            'apellido' => 'required|string|max:25',
+            'telefono' => 'required|string|max:15',
+            'correo' => 'required|string|email|max:40',
+            'tipo_trabajador_id' => 'required|integer',
+        ], [
+            'cedula.regex' => 'La cédula debe comenzar con V, E, J, P o G seguido de números (ej: V12345678).',
+            'tipo_trabajador_id.required' => 'Debe seleccionar un tipo de trabajador.',
+        ]);
+
         $data = [
-            'cedula' => (string)($request->input('cedula') ?? $request->input('Cedula')),
-            'nombre' => $request->input('nombre') ?? $request->input('Nombre'),
-            'apellido' => $request->input('apellido') ?? $request->input('Apellido'),
-            'telefono' => $request->input('telefono') ?? $request->input('Telefono'),
-            'correo' => $request->input('correo') ?? $request->input('Correo'),
-            'tipo_trabajador' => $request->input('tipo_trabajador') ?? $request->input('Tipo_Trabajador'),
+            'cedula' => strtoupper(trim((string)$request->input('cedula'))),
+            'nombre' => trim((string)$request->input('nombre')),
+            'apellido' => trim((string)$request->input('apellido')),
+            'telefono' => trim((string)$request->input('telefono')),
+            'correo' => trim((string)$request->input('correo')),
+            'tipo_trabajador_id' => (int)$request->input('tipo_trabajador_id'),
         ];
 
         $response = $this->personalService->updatePersonal((int)$id, $data);
@@ -183,9 +201,16 @@ class PersonalController extends Controller
             return redirect()->route('personal.index')->with('success', 'Personal actualizado exitosamente');
         }
 
+        $errorMessage = $response['message'] ?? 'Error al actualizar el personal';
+        if (isset($response['errors']) && is_array($response['errors'])) {
+            $errorMessage = implode(' ', array_map(function ($err) {
+                return is_array($err) ? implode(' ', $err) : $err;
+            }, $response['errors']));
+        }
+
         return redirect()->back()
             ->withInput()
-            ->with('error', $response['message'] ?? 'Error al actualizar el personal');
+            ->with('error', $errorMessage);
     }
 
     /**

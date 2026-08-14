@@ -55,4 +55,12 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
     {
         return $this->delete("/personal-finca/{$id}");
     }
+
+    /**
+     * Get list of tipos de trabajador
+     */
+    public function getTiposTrabajador(): array
+    {
+        return $this->get('/tipos-trabajador?nopaginate=true');
+    }
 }

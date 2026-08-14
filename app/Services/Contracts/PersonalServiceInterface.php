@@ -18,4 +18,9 @@ interface PersonalServiceInterface
      * Update existing personal
      */
     public function updatePersonal(int $id, array $data): array;
+
+    /**
+     * Get list of tipos de trabajador
+     */
+    public function getTiposTrabajador(): array;
 }

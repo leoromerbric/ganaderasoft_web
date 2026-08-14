@@ -78,24 +78,22 @@
 
                 <!-- Tipo de Trabajador -->
                 <div>
-                    <label for="tipo_trabajador"
+                    <label for="tipo_trabajador_id"
                         class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
                         Cargo / Tipo de Trabajador <span class="text-red-500">*</span>
                     </label>
-                    <select name="tipo_trabajador" id="tipo_trabajador" required
+                    <select name="tipo_trabajador_id" id="tipo_trabajador_id" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                         <option value="">Seleccione tipo...</option>
-                        <option value="Técnico" {{ old('tipo_trabajador') == 'Técnico' ? 'selected' : '' }}>Técnico</option>
-                        <option value="Veterinario" {{ old('tipo_trabajador') == 'Veterinario' ? 'selected' : '' }}>
-                            Veterinario</option>
-                        <option value="Operario" {{ old('tipo_trabajador') == 'Operario' ? 'selected' : '' }}>Operario
-                        </option>
-                        <option value="Vigilante" {{ old('tipo_trabajador') == 'Vigilante' ? 'selected' : '' }}>Vigilante
-                        </option>
-                        <option value="Supervisor" {{ old('tipo_trabajador') == 'Supervisor' ? 'selected' : '' }}>Supervisor
-                        </option>
-                        <option value="Administrador" {{ old('tipo_trabajador') == 'Administrador' ? 'selected' : '' }}>
-                            Administrador</option>
+                        @foreach($tiposTrabajador as $tipo)
+                            @php
+                                $tId = $tipo['id'] ?? null;
+                                $tNombre = $tipo['nombre'] ?? '';
+                            @endphp
+                            <option value="{{ $tId }}" {{ (string) old('tipo_trabajador_id') === (string) $tId ? 'selected' : '' }}>
+                                {{ $tNombre }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
 
