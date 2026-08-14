@@ -4,37 +4,10 @@
 
 @section('content')
 <div class="space-y-8">
-    <!-- Page Header & Farm Filter -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <div>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Dashboard</h1>
-            <p class="text-gray-500 text-sm mt-1">Resumen estadístico del sistema ganadero (API V2)</p>
-        </div>
-        
-        <!-- Farm Filter Dropdown -->
-        @if(count($farms) > 0)
-        <div class="flex items-center space-x-3 bg-gray-50 p-2.5 rounded-xl border border-gray-200">
-            <label for="finca-filter" class="text-xs font-semibold text-gray-600 uppercase tracking-wider pl-2 flex items-center">
-                <svg class="w-4 h-4 mr-1 text-ganaderasoft-azul" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 00-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                </svg>
-                Finca:
-            </label>
-            <select id="finca-filter" onchange="filterByFinca(this.value)" 
-                    class="bg-white px-3 py-1.5 text-sm font-medium border border-gray-300 rounded-lg text-gray-800 focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                <option value="">Todas las Fincas</option>
-                @foreach($farms as $farm)
-                    @php
-                        $farmId = $farm['id'] ?? $farm['finca_id'] ?? null;
-                        $farmNombre = $farm['nombre'] ?? 'Finca';
-                    @endphp
-                    <option value="{{ $farmId }}" {{ (string)$fincaId === (string)$farmId ? 'selected' : '' }}>
-                        {{ $farmNombre }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        @endif
+    <!-- Page Header -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <h1 class="text-3xl font-bold text-ganaderasoft-negro">Dashboard</h1>
+        <p class="text-gray-500 text-sm mt-1">Resumen estadístico general del sistema ganadero (API V2)</p>
     </div>
 
     <!-- KPI Cards Grid -->
@@ -215,16 +188,6 @@
 
 <!-- Chart.js Scripts -->
 <script>
-    function filterByFinca(fincaId) {
-        const url = new URL(window.location.href);
-        if (fincaId) {
-            url.searchParams.set('finca_id', fincaId);
-        } else {
-            url.searchParams.delete('finca_id');
-        }
-        window.location.href = url.toString();
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
         // Animals by Sex Chart
         const animalsBySexCtx = document.getElementById('animalsBySexChart');

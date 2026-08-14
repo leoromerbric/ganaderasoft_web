@@ -33,7 +33,7 @@
         
         <div class="flex items-center space-x-3">
             <a href="{{ route('personal-finca.edit', $pId) }}" 
-               class="px-4 py-2 bg-gradient-to-r from-ganaderasoft-celeste to-ganaderasoft-azul text-white text-sm font-semibold rounded-xl hover:from-ganaderasoft-azul hover:to-ganaderasoft-celeste transition-all duration-200 shadow-md">
+               class="px-4 py-2 bg-ganaderasoft-verde-oscuro text-white text-sm font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
                 ✏️ Editar
             </a>
             <a href="{{ route('personal-finca.index') }}" 
