@@ -8,7 +8,7 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
             <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Personal</h1>
-            <p class="text-gray-500 text-sm mt-1">Administración de trabajadores, encargados y técnicos (API V2)</p>
+            <p class="text-gray-500 text-sm mt-1">Administración de trabajadores, encargados y técnicos</p>
         </div>
         <a href="{{ route('personal.create') }}"
            class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
