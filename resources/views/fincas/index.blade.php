@@ -12,7 +12,7 @@
         </div>
         <a href="{{ route('fincas.create') }}"
            class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-            Nueva Finca
+            + Nueva Finca
         </a>
     </div>
 
@@ -168,7 +168,7 @@
                 <p class="text-gray-500 text-sm mb-6">Comienza registrando la primera finca de tu propiedad en la API V2</p>
                 <a href="{{ route('fincas.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                    Nueva Finca
+                    + Nueva Finca
                 </a>
             </div>
         @endif

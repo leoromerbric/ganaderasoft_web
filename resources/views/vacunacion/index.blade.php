@@ -8,7 +8,7 @@
         <h2 class="text-3xl font-bold text-ganaderasoft-negro">💉 Vacunación</h2>
         <p class="mt-1 text-gray-600">Registros de vacunación filtrados por rebaño, sexo o etapa</p>
     </div>
-    <a href="{{ route('vacunacion.create') }}" class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">Nueva vacunación</a>
+    <a href="{{ route('vacunacion.create') }}" class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">+ Nueva Vacunación</a>
 </div>
 
 @if(session('success'))
