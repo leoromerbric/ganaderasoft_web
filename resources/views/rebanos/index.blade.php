@@ -103,7 +103,7 @@
                         $fincaObj = $rebano['finca'] ?? null;
                         $fincaNombre = $fincaObj['nombre'] ?? ('Finca #'.($rebano['finca_id'] ?? 'N/A'));
                         $fincaTipo = $fincaObj['explotacion_tipo'] ?? '-';
-                        $fincaIdAttr = $rebano['finca_id'] ?? '';
+                        $fincaIdAttr = $rebano['finca_id'] ?? ($fincaObj['id'] ?? '');
                         $animalesCount = count($rebano['animales'] ?? []);
                     @endphp
                     <div class="group border border-gray-200 hover:border-ganaderasoft-celeste rounded-2xl p-6 hover:shadow-lg transition-all duration-200 flex flex-col justify-between fila-rebano"
