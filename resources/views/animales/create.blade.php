@@ -36,19 +36,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Rebaño -->
                     <div>
-                        <label for="id" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="rebano_id" class="block text-sm font-medium text-gray-700 mb-2">
                             Rebaño <span class="text-red-500">*</span>
                         </label>
-                        <select id="id" name="id" required
+                        <select id="rebano_id" name="rebano_id" required
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
                             <option value="">Seleccione un rebaño</option>
                             @foreach($rebanos as $rebano)
-                                <option value="{{ $rebano['id'] }}" {{ old('id') == $rebano['id'] ? 'selected' : '' }}>
+                                <option value="{{ $rebano['id'] }}" {{ old('rebano_id') == $rebano['id'] ? 'selected' : '' }}>
                                     {{ $rebano['nombre'] }} - {{ $rebano['finca']['nombre'] ?? '' }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('id')
+                        @error('rebano_id')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -88,7 +88,7 @@
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
                             <option value="">Seleccione el sexo</option>
                             <option value="M" {{ old('sexo') == 'M' ? 'selected' : '' }}>Macho</option>
-                            <option value="F" {{ old('sexo') == 'F' ? 'selected' : '' }}>Hembra</option>
+                            <option value="H" {{ old('sexo') == 'H' ? 'selected' : '' }}>Hembra</option>
                         </select>
                         @error('sexo')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -148,8 +148,12 @@
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
                             <option value="">Seleccione un estado</option>
                             @foreach($estados as $estado)
-                                <option value="{{ $estado['estado_id'] }}" {{ old('estado_inicial.estado_salud_id') == $estado['estado_id'] ? 'selected' : '' }}>
-                                    {{ $estado['estado_nombre'] }}
+                                @php
+                                    $estId = $estado['id'] ?? $estado['estado_id'] ?? null;
+                                    $estNombre = $estado['nombre'] ?? $estado['estado_nombre'] ?? '';
+                                @endphp
+                                <option value="{{ $estId }}" {{ old('estado_inicial.estado_salud_id') == $estId ? 'selected' : '' }}>
+                                    {{ $estNombre }}
                                 </option>
                             @endforeach
                         </select>
@@ -179,8 +183,12 @@
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
                             <option value="">Seleccione una etapa</option>
                             @foreach($etapas as $etapa)
-                                <option value="{{ $etapa['etapa_id'] }}" {{ old('etapa_inicial.etapa_id') == $etapa['etapa_id'] ? 'selected' : '' }}>
-                                    {{ $etapa['etapa_nombre'] }}
+                                @php
+                                    $etId = $etapa['id'] ?? $etapa['etapa_id'] ?? null;
+                                    $etNombre = $etapa['nombre'] ?? $etapa['etapa_nombre'] ?? '';
+                                @endphp
+                                <option value="{{ $etId }}" {{ old('etapa_inicial.etapa_id') == $etId ? 'selected' : '' }}>
+                                    {{ $etNombre }}
                                 </option>
                             @endforeach
                         </select>

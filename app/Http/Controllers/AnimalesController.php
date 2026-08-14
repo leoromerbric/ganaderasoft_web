@@ -34,24 +34,23 @@ class AnimalesController extends Controller
 
         // Obtener todos los animales del rebaño si está especificado
         $response = $this->animalesService->getAnimales($idRebano);
-        $animales = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $animales = ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
 
         // Cargar catálogos auxiliares (rebaños y fincas)
         $rebanosResponse = $this->rebanosService->getRebanos();
-        $rebanos = ($rebanosResponse['success'] ?? false) ? ($rebanosResponse['data'] ?? []) : [];
+        $rebanos = ($rebanosResponse['success'] ?? false) ? ($rebanosResponse['data']['data'] ?? $rebanosResponse['data'] ?? []) : [];
 
         $fincasResponse = $this->fincasService->getFincas();
-        // Fallback por si acaso la API responde con un formato anidado, pero por defecto se asume V2 ['data']
-        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data'] ?? []) : [];
+        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
         // Construir mapa de Rebaño a Finca para validaciones y filtros en Javascript (UI)
-        $mapaRebanoFinca = collect($rebanos)->keyBy('rebano_id')->map(fn($r) => $r['finca_id'] ?? null)->all();
+        $mapaRebanoFinca = collect($rebanos)->keyBy('id')->map(fn($r) => $r['finca_id'] ?? null)->all();
 
         // Calcular estadísticas básicas en memoria
         $estadisticas = [
             'total'     => count($animales),
             'machos'    => count(array_filter($animales, fn($a) => ($a['sexo'] ?? '') === 'M')),
-            'hembras'   => count(array_filter($animales, fn($a) => ($a['sexo'] ?? '') === 'H')), // Actualizado de 'F' a 'H' según la V2
+            'hembras'   => count(array_filter($animales, fn($a) => ($a['sexo'] ?? '') === 'H')),
             'activos'   => count(array_filter($animales, fn($a) => !($a['archivado'] ?? false))),
         ];
 
@@ -71,18 +70,16 @@ class AnimalesController extends Controller
     public function create()
     {
         $rebanosResponse = $this->rebanosService->getRebanos();
-        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data'] ?? []) : [];
+        $rebanos = ($rebanosResponse['success'] ?? false) ? ($rebanosResponse['data']['data'] ?? $rebanosResponse['data'] ?? []) : [];
 
         $razasResponse = $this->animalesService->getRazas();
-        $razas = $razasResponse['success'] ? ($razasResponse['data'] ?? []) : [];
+        $razas = ($razasResponse['success'] ?? false) ? ($razasResponse['data']['data'] ?? $razasResponse['data'] ?? []) : [];
 
         $estadosResponse = $this->animalesService->getEstadosSalud();
-        $estadosData = $estadosResponse['success'] ? ($estadosResponse['data'] ?? []) : [];
-        $estados = is_array($estadosData) ? array_filter($estadosData['data'], 'is_array') : [];
+        $estados = ($estadosResponse['success'] ?? false) ? ($estadosResponse['data']['data'] ?? $estadosResponse['data'] ?? []) : [];
 
         $etapasResponse = $this->animalesService->getEtapas();
-        $etapasData = $etapasResponse['success'] ? ($etapasResponse['data'] ?? []) : [];
-        $etapas = is_array($etapasData) ? array_filter($etapasData, 'is_array') : [];
+        $etapas = ($etapasResponse['success'] ?? false) ? ($etapasResponse['data']['data'] ?? $etapasResponse['data'] ?? []) : [];
 
         return view('animales.create', compact('rebanos', 'razas', 'estados', 'etapas'));
     }
@@ -168,10 +165,10 @@ class AnimalesController extends Controller
         $animal = $response['data'] ?? null;
 
         $rebanosResponse = $this->rebanosService->getRebanos();
-        $rebanos = $rebanosResponse['success'] ? ($rebanosResponse['data'] ?? []) : [];
+        $rebanos = ($rebanosResponse['success'] ?? false) ? ($rebanosResponse['data']['data'] ?? $rebanosResponse['data'] ?? []) : [];
 
         $razasResponse = $this->animalesService->getRazas();
-        $razas = $razasResponse['success'] ? ($razasResponse['data'] ?? []) : [];
+        $razas = ($razasResponse['success'] ?? false) ? ($razasResponse['data']['data'] ?? $razasResponse['data'] ?? []) : [];
 
         return view('animales.edit', compact('animal', 'rebanos', 'razas'));
     }
