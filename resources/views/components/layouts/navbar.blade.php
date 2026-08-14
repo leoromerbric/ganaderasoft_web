@@ -12,25 +12,6 @@
                 </div>
             </a>
 
-            <!-- Active Finca Context Badge (if set in session) -->
-            @if(session('selected_finca'))
-                @php
-                    $activeFinca = session('selected_finca');
-                    $activeFincaName = $activeFinca['nombre'] ?? $activeFinca['Nombre'] ?? 'Finca';
-                    $activeFincaId = $activeFinca['id'] ?? null;
-                @endphp
-                <div class="hidden sm:flex items-center space-x-2 px-3.5 py-1.5 bg-ganaderasoft-celeste/10 border border-ganaderasoft-celeste/30 rounded-full text-xs">
-                    <span class="text-sm">🏡</span>
-                    <a href="{{ route('fincas.dashboard', $activeFincaId) }}" class="font-bold text-ganaderasoft-azul hover:text-ganaderasoft-celeste transition-colors">
-                        Finca: {{ $activeFincaName }}
-                    </a>
-                    <span class="text-gray-300">|</span>
-                    <a href="{{ route('fincas.index') }}" class="text-gray-500 hover:text-ganaderasoft-azul font-medium transition-colors">
-                        Cambiar
-                    </a>
-                </div>
-            @endif
-
             <!-- User Info and Logout -->
             <div class="flex items-center space-x-4">
                 <a href="{{ route('profile') }}" class="text-right hidden sm:block hover:opacity-80 transition-opacity">

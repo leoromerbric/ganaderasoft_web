@@ -7,7 +7,7 @@
     $rebanoId = $rebano['id'] ?? null;
     $rebanoNombre = $rebano['nombre'] ?? '';
     $fincaObj = $rebano['finca'] ?? null;
-    $fincaNombre = $fincaObj['nombre'] ?? ($selectedFinca['nombre'] ?? 'Finca');
+    $fincaNombre = $fincaObj['nombre'] ?? 'Finca';
     $animalesCount = count($rebano['animales'] ?? []);
 @endphp
 <div class="max-w-2xl mx-auto space-y-6">

@@ -32,12 +32,12 @@ class RebanosController extends Controller
         $fincasResponse = $this->fincasService->getFincas();
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-        // Filtrar por finca y nombre (V2 finca_id / finca.id / nombre)
+        // Filtrar por finca y nombre (V2 finca_id / nombre)
         $rebanos = array_values(array_filter($allRebanos, function ($rebano) use ($fincaId, $nombre) {
-            $rebanoFincaId = $rebano['finca_id'] ?? ($rebano['finca']['id'] ?? null);
+            $rebanoFincaId = $rebano['finca_id'] ?? null;
             $rebanoNombre  = $rebano['nombre'] ?? '';
 
-            if ($fincaId && (string)$rebanoFincaId !== (string)$fincaId) return false;
+            if ($fincaId && $rebanoFincaId != $fincaId) return false;
             if ($nombre && stripos($rebanoNombre, $nombre) === false) return false;
             return true;
         }));
@@ -58,11 +58,10 @@ class RebanosController extends Controller
      */
     public function create()
     {
-        $selectedFinca = session('selected_finca');
         $fincasResponse = $this->fincasService->getFincas();
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-        return view('rebanos.create', compact('selectedFinca', 'fincas'));
+        return view('rebanos.create', compact('fincas'));
     }
 
     /**
@@ -100,9 +99,6 @@ class RebanosController extends Controller
      */
     public function edit($id)
     {
-        $selectedFinca = session('selected_finca');
-
-        // Get all rebanos and find the one we need
         $response = $this->rebanosService->getRebanos();
 
         if (isset($response['success']) && $response['success']) {
@@ -114,10 +110,7 @@ class RebanosController extends Controller
             });
 
             if ($rebano) {
-                if (!$selectedFinca && !empty($rebano['finca'])) {
-                    $selectedFinca = $rebano['finca'];
-                }
-                return view('rebanos.edit', compact('rebano', 'selectedFinca'));
+                return view('rebanos.edit', compact('rebano'));
             }
 
             return redirect()->route('rebanos.index')->with('error', 'Rebaño no encontrado');

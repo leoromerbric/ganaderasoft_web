@@ -3,9 +3,6 @@
 @section('title', 'Crear Rebaño')
 
 @section('content')
-@php
-    $activeFincaId = old('finca_id', $selectedFinca['id'] ?? request()->query('finca_id'));
-@endphp
 <div class="max-w-2xl mx-auto space-y-6">
     <!-- Header & Breadcrumb -->
     <div class="flex items-center justify-between">
@@ -48,7 +45,7 @@
             </div>
             <div>
                 <h3 class="text-lg font-bold text-ganaderasoft-negro">Información del Rebaño</h3>
-                <p class="text-xs text-gray-500">Asigne el rebaño a una de sus fincas</p>
+                <p class="text-xs text-gray-500">Seleccione la finca y nombre del rebaño</p>
             </div>
         </div>
 
@@ -67,20 +64,14 @@
                         @php
                             $fId = $finca['id'] ?? null;
                             $fNombre = $finca['nombre'] ?? ('Finca #'.$fId);
-                            $isSelected = (string)$activeFincaId === (string)$fId;
+                            $isSelected = (string)old('finca_id', request()->query('finca_id')) === (string)$fId;
                         @endphp
                         <option value="{{ $fId }}" {{ $isSelected ? 'selected' : '' }}>
-                            🏡 {{ $fNombre }} (ID: #{{ $fId }})
+                            {{ $fNombre }}
                         </option>
                     @endforeach
                 </select>
-                @if(!empty($selectedFinca))
-                    <p class="text-xs text-green-700 mt-1 flex items-center">
-                        <span class="mr-1">✓</span> Preseleccionada según tu finca activa en sesión ({{ $selectedFinca['nombre'] ?? 'Finca' }})
-                    </p>
-                @else
-                    <p class="text-xs text-gray-500 mt-1">Selecciona la finca a la cual pertenecerá este rebaño</p>
-                @endif
+                <p class="text-xs text-gray-500 mt-1">Selecciona la finca a la cual pertenecerá este rebaño</p>
             </div>
 
             <!-- Nombre -->
