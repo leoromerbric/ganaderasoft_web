@@ -3,19 +3,17 @@
 @section('title', 'Movimiento de Rebaño')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+<div class="space-y-8">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                🔄 Movimientos de Rebaño
-            </h1>
+            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Movimientos de Rebaño</h1>
             <p class="text-gray-500 text-sm mt-1">Gestión y registro de traslados de animales entre fincas y rebaños</p>
         </div>
         <div>
             <a href="{{ route('movimiento-rebano.create') }}"
-               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center text-sm gap-1.5">
-                <span class="text-base font-bold">+</span> Nuevo Movimiento
+               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium">
+                + Nuevo Movimiento
             </a>
         </div>
     </div>
@@ -38,23 +36,23 @@
         </div>
     @endif
 
-    <!-- Filtros Bar en Vivo -->
+    <!-- Filter Bar -->
     <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Finca Origen</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca Origen</label>
                 <select id="filtroFincaOrigen" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todas las fincas</option>
                     @foreach($fincas as $finca)
                         @php $fId = $finca['id'] ?? $finca['finca_id'] ?? ''; @endphp
-                        <option value="{{ $fId }}" {{ $fincaId == $fId ? 'selected' : '' }}>
+                        <option value="{{ $fId }}" {{ (string)$fincaId === (string)$fId ? 'selected' : '' }}>
                             {{ $finca['nombre'] ?? 'Finca #'.$fId }}
                         </option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Rebaño Origen</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño Origen</label>
                 <select id="filtroRebanoOrigen" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todos los rebaños</option>
                     @foreach($rebanos as $rebano)
@@ -62,26 +60,26 @@
                             $rId = $rebano['id'] ?? $rebano['rebano_id'] ?? '';
                             $fId = data_get($rebano, 'finca.id', $rebano['finca_id'] ?? '');
                         @endphp
-                        <option value="{{ $rId }}" {{ $rebanoId == $rId ? 'selected' : '' }} data-finca="{{ $fId }}">
+                        <option value="{{ $rId }}" {{ (string)$rebanoId === (string)$rId ? 'selected' : '' }} data-finca="{{ $fId }}">
                             {{ $rebano['nombre'] ?? 'Rebaño #'.$rId }}
                         </option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Finca Destino</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca Destino</label>
                 <select id="filtroFincaDestino" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todas las fincas</option>
                     @foreach($fincas as $finca)
                         @php $fId = $finca['id'] ?? $finca['finca_id'] ?? ''; @endphp
-                        <option value="{{ $fId }}" {{ $fincaDestinoId == $fId ? 'selected' : '' }}>
+                        <option value="{{ $fId }}" {{ (string)$fincaDestinoId === (string)$fId ? 'selected' : '' }}>
                             {{ $finca['nombre'] ?? 'Finca #'.$fId }}
                         </option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Rebaño Destino</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño Destino</label>
                 <select id="filtroRebanoDestino" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todos los rebaños</option>
                     @foreach($rebanos as $rebano)
@@ -89,115 +87,140 @@
                             $rId = $rebano['id'] ?? $rebano['rebano_id'] ?? '';
                             $fId = data_get($rebano, 'finca.id', $rebano['finca_id'] ?? '');
                         @endphp
-                        <option value="{{ $rId }}" {{ $rebanoDestinoId == $rId ? 'selected' : '' }} data-finca="{{ $fId }}">
+                        <option value="{{ $rId }}" {{ (string)$rebanoDestinoId === (string)$rId ? 'selected' : '' }} data-finca="{{ $fId }}">
                             {{ $rebano['nombre'] ?? 'Rebaño #'.$rId }}
                         </option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <a href="{{ route('movimiento-rebano.index') }}" onclick="limpiarFiltros(event)" class="w-full px-4 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                <button type="button" onclick="limpiarFiltros(event)" class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
                     Limpiar Filtros
-                </a>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Tabla de Movimientos -->
-    <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+    <!-- Summary KPIs -->
+    @php
+        $totalMovs = count($movimientos);
+        $totalAnimalesTrasladados = array_sum(array_map(function($m) {
+            return (int)($m['total_animales'] ?? (isset($m['animales']) && is_array($m['animales']) ? count($m['animales']) : ($m['animales_count'] ?? 0)));
+        }, $movimientos));
+    @endphp
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Movimientos</p>
+                <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $totalMovs }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
+                🔄
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Animales Trasladados</p>
+                <p id="statAnimales" class="text-3xl font-extrabold text-ganaderasoft-verde-oscuro">{{ $totalAnimalesTrasladados }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-ganaderasoft-verde/20 flex items-center justify-center text-2xl">
+                📋
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid / Cards List -->
+    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
         @if(count($movimientos) > 0)
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">ID Mov.</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Origen</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Destino</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Animales Movidos</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha</th>
-                            <th class="px-6 py-3.5 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-100 text-sm" id="tablaMovimientos">
-                        @foreach($movimientos as $movimiento)
-                        @php
-                            $idMov = $movimiento['id'] ?? $movimiento['id_Movimiento'] ?? 'N/A';
-                            $fincaOrigId = $movimiento['finca_id'] ?? data_get($movimiento, 'finca_origen.id');
-                            $rebanoOrigId = $movimiento['rebano_id'] ?? data_get($movimiento, 'rebano_origen.id');
-                            $fincaDestId = $movimiento['finca_destino_id'] ?? $movimiento['finca_id_Destino'] ?? data_get($movimiento, 'finca_destino.id');
-                            $rebanoDestId = $movimiento['rebano_destino_id'] ?? $movimiento['rebano_id_Destino'] ?? data_get($movimiento, 'rebano_destino_rel.id');
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gridMovimientos">
+                @foreach($movimientos as $movimiento)
+                    @php
+                        $idMov = $movimiento['id'] ?? $movimiento['id_Movimiento'] ?? 'N/A';
+                        $fincaOrigId = $movimiento['finca_id'] ?? data_get($movimiento, 'finca_origen.id');
+                        $rebanoOrigId = $movimiento['rebano_id'] ?? data_get($movimiento, 'rebano_origen.id');
+                        $fincaDestId = $movimiento['finca_destino_id'] ?? $movimiento['finca_id_Destino'] ?? data_get($movimiento, 'finca_destino.id');
+                        $rebanoDestId = $movimiento['rebano_destino_id'] ?? $movimiento['rebano_id_Destino'] ?? data_get($movimiento, 'rebano_destino_rel.id');
 
-                            $fincaOrigNombre = data_get($movimiento, 'finca_origen.nombre') ?? ($mapaFincas[$fincaOrigId] ?? '-');
-                            $rebanoOrigNombre = data_get($movimiento, 'rebano_origen.nombre') ?? ($mapaRebanos[$rebanoOrigId] ?? '-');
-                            $fincaDestNombre = data_get($movimiento, 'finca_destino.nombre') ?? ($mapaFincas[$fincaDestId] ?? '-');
-                            $rebanoDestNombre = data_get($movimiento, 'rebano_destino_rel.nombre') ?? ($mapaRebanos[$rebanoDestId] ?? ($movimiento['rebano_destino'] ?? '-'));
+                        $fincaOrigNombre = data_get($movimiento, 'finca_origen.nombre') ?? ($mapaFincas[$fincaOrigId] ?? 'N/A');
+                        $rebanoOrigNombre = data_get($movimiento, 'rebano_origen.nombre') ?? ($mapaRebanos[$rebanoOrigId] ?? 'Rebaño Origen');
+                        $fincaDestNombre = data_get($movimiento, 'finca_destino.nombre') ?? ($mapaFincas[$fincaDestId] ?? 'N/A');
+                        $rebanoDestNombre = data_get($movimiento, 'rebano_destino_rel.nombre') ?? ($mapaRebanos[$rebanoDestId] ?? ($movimiento['rebano_destino'] ?? 'Rebaño Destino'));
 
-                            $cantAnimales = (int) (
-                                $movimiento['total_animales']
-                                ?? (isset($movimiento['animales']) && is_array($movimiento['animales']) ? count($movimiento['animales']) : ($movimiento['animales_count'] ?? 0))
-                            );
-                        @endphp
-                        <tr class="hover:bg-gray-50/80 transition-colors fila-movimiento"
-                            data-finca-origen="{{ $fincaOrigId }}"
-                            data-rebano-origen="{{ $rebanoOrigId }}"
-                            data-finca-destino="{{ $fincaDestId }}"
-                            data-rebano-destino="{{ $rebanoDestId }}">
-                            <td class="px-6 py-4 whitespace-nowrap font-mono font-bold text-gray-900">
-                                #{{ $idMov }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div>
-                                    <p class="font-bold text-gray-900">{{ $rebanoOrigNombre }}</p>
-                                    <p class="text-xs text-gray-500">🏡 {{ $fincaOrigNombre }}</p>
+                        $cantAnimales = (int) (
+                            $movimiento['total_animales']
+                            ?? (isset($movimiento['animales']) && is_array($movimiento['animales']) ? count($movimiento['animales']) : ($movimiento['animales_count'] ?? 0))
+                        );
+                    @endphp
+                    <div class="group border border-gray-200 hover:border-ganaderasoft-celeste rounded-2xl p-6 hover:shadow-lg transition-all duration-200 flex flex-col justify-between fila-movimiento"
+                        data-finca-origen="{{ $fincaOrigId }}"
+                        data-rebano-origen="{{ $rebanoOrigId }}"
+                        data-finca-destino="{{ $fincaDestId }}"
+                        data-rebano-destino="{{ $rebanoDestId }}"
+                        data-cant-animales="{{ $cantAnimales }}">
+                        <div>
+                            <!-- Header with icon -->
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1 pr-2">
+                                    <div class="flex items-center space-x-2 text-xs font-mono font-bold text-gray-400 mb-1">
+                                        <span>#{{ $idMov }}</span>
+                                        <span>•</span>
+                                        <span class="font-sans font-medium text-gray-500">
+                                            {{ isset($movimiento['created_at']) ? date('d/m/Y', strtotime($movimiento['created_at'])) : '--/--/----' }}
+                                        </span>
+                                    </div>
+                                    <h3 class="text-base font-bold text-ganaderasoft-negro group-hover:text-ganaderasoft-azul transition-colors flex items-center gap-1.5 flex-wrap">
+                                        <span>{{ $rebanoOrigNombre }}</span>
+                                        <span class="text-gray-400">➔</span>
+                                        <span class="text-ganaderasoft-azul">{{ $rebanoDestNombre }}</span>
+                                    </h3>
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div>
-                                    <p class="font-bold text-ganaderasoft-azul">{{ $rebanoDestNombre }}</p>
-                                    <p class="text-xs text-gray-500">🏡 {{ $fincaDestNombre }}</p>
+                                <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shrink-0">
+                                    🔄
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                                    🐄 {{ $cantAnimales }} {{ $cantAnimales === 1 ? 'animal' : 'animales' }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-600 font-medium">
-                                {{ isset($movimiento['created_at']) ? date('d/m/Y', strtotime($movimiento['created_at'])) : '--/--/----' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                <div class="flex items-center justify-center space-x-3">
-                                    <a href="{{ route('movimiento-rebano.show', $idMov) }}" 
-                                       class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul font-semibold transition-colors inline-flex items-center gap-1">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                        </svg>
-                                        Ver
-                                    </a>
-                                    <a href="{{ route('movimiento-rebano.edit', $idMov) }}" 
-                                       class="text-amber-600 hover:text-amber-700 font-semibold transition-colors inline-flex items-center gap-1">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                        </svg>
-                                        Editar
-                                    </a>
-                                    <form method="POST" action="{{ route('movimiento-rebano.destroy', $idMov) }}" class="inline"
-                                          onsubmit="return confirm('¿Está seguro de que desea eliminar este registro?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-700 font-semibold transition-colors inline-flex items-center gap-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                            </svg>
-                                            Eliminar
-                                        </button>
-                                    </form>
+                            </div>
+
+                            <!-- Details -->
+                            <div class="space-y-2 py-3 border-t border-b border-gray-100 text-xs">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-500">Finca Origen:</span>
+                                    <span class="font-semibold text-gray-900 truncate max-w-[160px]">🏡 {{ $fincaOrigNombre }}</span>
                                 </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-500">Finca Destino:</span>
+                                    <span class="font-semibold text-ganaderasoft-azul truncate max-w-[160px]">🏡 {{ $fincaDestNombre }}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-500">Total Animales:</span>
+                                    <span class="px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 font-bold badge-animales">
+                                        {{ $cantAnimales }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center space-x-2 mt-6 pt-2">
+                            <a href="{{ route('movimiento-rebano.show', $idMov) }}"
+                                class="flex-1 px-4 py-2.5 bg-ganaderasoft-celeste/15 hover:bg-ganaderasoft-celeste text-ganaderasoft-azul hover:text-white rounded-xl text-xs font-bold text-center transition-all duration-200">
+                                Ver Detalle
+                            </a>
+                            <a href="{{ route('movimiento-rebano.edit', $idMov) }}"
+                                class="px-3 py-2.5 border border-gray-200 hover:border-gray-300 text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition-colors"
+                                title="Editar Movimiento">
+                                ✏️
+                            </a>
+                            <form method="POST" action="{{ route('movimiento-rebano.destroy', $idMov) }}" class="inline"
+                                onsubmit="return confirm('¿Está seguro de que desea eliminar este registro?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" 
+                                    class="px-3 py-2.5 border border-red-100 hover:border-red-200 text-red-600 rounded-xl text-xs font-semibold hover:bg-red-50 transition-colors"
+                                    title="Eliminar Movimiento">
+                                    🗑️
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         @else
             <div class="p-12 text-center">
@@ -207,7 +230,7 @@
                 <h3 class="text-lg font-bold text-ganaderasoft-negro mb-1">No hay movimientos registrados</h3>
                 <p class="text-gray-500 text-sm mb-6">Comienza registrando el primer movimiento de rebaño</p>
                 <a href="{{ route('movimiento-rebano.create') }}"
-                   class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg text-sm">
+                   class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
                     + Nuevo Movimiento
                 </a>
             </div>
@@ -239,6 +262,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const fDestino = filtroFincaDestino.value;
         const rDestino = filtroRebanoDestino.value;
 
+        let total = 0, totalAnimales = 0;
+
         document.querySelectorAll('.fila-movimiento').forEach(function (row) {
             const matchFOrigen  = !fOrigen  || row.dataset.fincaOrigen  === fOrigen;
             const matchROrigen  = !rOrigen  || row.dataset.rebanoOrigen  === rOrigen;
@@ -247,28 +272,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const visible = matchFOrigen && matchROrigen && matchFDestino && matchRDestino;
             row.style.display = visible ? '' : 'none';
+            if (visible) {
+                total++;
+                const cant = parseInt(row.dataset.cantAnimales) || 0;
+                totalAnimales += cant;
+            }
+        });
+
+        const statTotal = document.getElementById('statTotal');
+        const statAnimales = document.getElementById('statAnimales');
+        if (statTotal) statTotal.textContent = total;
+        if (statAnimales) statAnimales.textContent = totalAnimales;
+    }
+
+    if (filtroFincaOrigen) {
+        filtroFincaOrigen.addEventListener('change', function () {
+            filterSelectRebanos(filtroRebanoOrigen, this.value);
+            aplicarFiltros();
         });
     }
 
-    filtroFincaOrigen.addEventListener('change', function () {
-        filterSelectRebanos(filtroRebanoOrigen, this.value);
-        aplicarFiltros();
-    });
+    if (filtroFincaDestino) {
+        filtroFincaDestino.addEventListener('change', function () {
+            filterSelectRebanos(filtroRebanoDestino, this.value);
+            aplicarFiltros();
+        });
+    }
 
-    filtroFincaDestino.addEventListener('change', function () {
-        filterSelectRebanos(filtroRebanoDestino, this.value);
-        aplicarFiltros();
-    });
-
-    filtroRebanoOrigen.addEventListener('change', aplicarFiltros);
-    filtroRebanoDestino.addEventListener('change', aplicarFiltros);
+    if (filtroRebanoOrigen) filtroRebanoOrigen.addEventListener('change', aplicarFiltros);
+    if (filtroRebanoDestino) filtroRebanoDestino.addEventListener('change', aplicarFiltros);
 
     window.limpiarFiltros = function (e) {
         if (e && e.preventDefault) e.preventDefault();
-        filtroFincaOrigen.value  = '';
-        filtroRebanoOrigen.value = '';
-        filtroFincaDestino.value = '';
-        filtroRebanoDestino.value= '';
+        if (filtroFincaOrigen) filtroFincaOrigen.value  = '';
+        if (filtroRebanoOrigen) filtroRebanoOrigen.value = '';
+        if (filtroFincaDestino) filtroFincaDestino.value = '';
+        if (filtroRebanoDestino) filtroRebanoDestino.value= '';
 
         filterSelectRebanos(filtroRebanoOrigen, '');
         filterSelectRebanos(filtroRebanoDestino, '');
@@ -281,3 +320,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endsection
+
