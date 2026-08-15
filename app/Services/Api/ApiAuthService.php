@@ -27,6 +27,9 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
         ]);
 
         if (empty($response['success']) || empty($response['data']['user'])) {
+            if (!empty($response['message'])) {
+                session()->flash('auth_error', $response['message']);
+            }
             return null;
         }
 

@@ -69,8 +69,10 @@ class AuthController extends Controller
             return redirect()->route('dashboard');
         }
 
+        $errorMessage = session('auth_error', 'Las credenciales proporcionadas no son correctas.');
+
         return back()->withErrors([
-            'email' => 'Las credenciales proporcionadas no son correctas.',
+            'email' => $errorMessage,
         ])->withInput($request->only('email'));
     }
 

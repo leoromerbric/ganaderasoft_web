@@ -11,6 +11,39 @@
         <p class="text-gray-500 text-sm mt-1">Gestión de datos de usuario e información personal.</p>
     </div>
 
+    @if(session('warning'))
+        <div class="bg-amber-50 border border-amber-200 text-amber-800 px-5 py-4 rounded-2xl flex items-center space-x-3 shadow-sm" role="alert">
+            <svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+                <p class="text-sm font-bold">Acceso restringido</p>
+                <p class="text-xs text-amber-700 mt-0.5">{{ session('warning') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @php
+        $statusStr = strtolower($user['status'] ?? 'active');
+        $isSuspended = in_array($statusStr, ['suspended', 'inactive', 'suspendido', 'inactivo'], true);
+    @endphp
+
+    @if($isSuspended)
+        <div class="bg-rose-50 border border-rose-200 text-rose-800 p-5 rounded-2xl flex items-start space-x-4 shadow-sm">
+            <div class="p-2 rounded-xl bg-rose-100 text-rose-600 shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                </svg>
+            </div>
+            <div class="space-y-1">
+                <h3 class="text-base font-bold text-rose-900">Cuenta suspendida</h3>
+                <p class="text-xs text-rose-700 leading-relaxed">
+                    Tu cuenta de usuario se encuentra suspendida temporalmente. No tienes acceso a los módulos operativos de la plataforma (rebaños, fincas, producción, reportes). Contacta a la administración de la Facultad de Agronomía para reactivar tus accesos.
+                </p>
+            </div>
+        </div>
+    @endif
+
     <!-- Main Profile Hero Card -->
     <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
         <!-- Hero Gradient Banner -->
@@ -48,7 +81,7 @@
                             {{ strtoupper(substr($user['name'] ?? 'U', 0, 1)) }}
                         </div>
                     </div>
-                    <span class="absolute bottom-1 right-1 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full shadow-sm" title="Usuario Activo"></span>
+                    <span class="absolute bottom-1 right-1 w-5 h-5 {{ $isSuspended ? 'bg-rose-500' : 'bg-emerald-500' }} border-2 border-white rounded-full shadow-sm" title="{{ $isSuspended ? 'Cuenta suspendida' : 'Usuario activo' }}"></span>
                 </div>
             </div>
 
@@ -56,8 +89,8 @@
             <div class="space-y-1">
                 <div class="flex flex-wrap items-center gap-2">
                     <h2 class="text-2xl font-bold text-gray-900 tracking-tight">{{ $user['name'] ?? 'Usuario' }}</h2>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize {{ ($user['status'] ?? 'activo') === 'activo' ? 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20' : 'bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-600/20' }}">
-                        {{ ucfirst($user['status'] ?? 'activo') }}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize {{ $isSuspended ? 'bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-600/20' : 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20' }}">
+                        {{ $isSuspended ? 'Suspendido' : ucfirst($user['status'] ?? 'activo') }}
                     </span>
                 </div>
 
@@ -86,14 +119,14 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <!-- Stat 1: Account Status -->
         <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+            <div class="w-12 h-12 rounded-xl {{ $isSuspended ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600' }} flex items-center justify-center shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
             </div>
             <div>
                 <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Estado Cuenta</p>
-                <p class="text-lg font-bold text-emerald-600 capitalize">{{ $user['status'] ?? 'Activo' }}</p>
+                <p class="text-lg font-bold {{ $isSuspended ? 'text-rose-600' : 'text-emerald-600' }} capitalize">{{ $isSuspended ? 'Suspendido' : ucfirst($user['status'] ?? 'Activo') }}</p>
             </div>
         </div>
 

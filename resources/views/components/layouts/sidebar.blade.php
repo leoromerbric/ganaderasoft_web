@@ -102,12 +102,25 @@
         </div>
     </div>
     
+    @php
+        $authUser = session('user');
+        $userStatus = strtolower($authUser['status'] ?? 'active');
+        $isUserSuspended = in_array($userStatus, ['suspended', 'inactive', 'suspendido', 'inactivo'], true);
+    @endphp
+
     <nav class="p-3 space-y-1.5">
-        <!-- Dashboard -->
-        <a href="{{ route('dashboard') }}" class="menu-item flex items-center px-3 py-2.5 rounded-xl text-base font-semibold transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-ganaderasoft-azul text-white shadow-sm' : 'text-gray-700 hover:bg-ganaderasoft-celeste/10 hover:text-ganaderasoft-azul' }}">
-            <span class="menu-icon text-xl mr-3">🏠</span>
-            <span class="menu-text">Dashboard principal</span>
-        </a>
+        @if($isUserSuspended)
+            <!-- Enlace exclusivo de Perfil para usuarios suspendidos -->
+            <a href="{{ route('profile') }}" class="menu-item flex items-center px-3 py-2.5 rounded-xl text-base font-semibold transition-all duration-200 {{ request()->routeIs('profile') ? 'bg-ganaderasoft-azul text-white shadow-sm' : 'text-gray-700 hover:bg-ganaderasoft-celeste/10 hover:text-ganaderasoft-azul' }}">
+                <span class="menu-icon text-xl mr-3">👤</span>
+                <span class="menu-text">Mi perfil</span>
+            </a>
+        @else
+            <!-- Dashboard -->
+            <a href="{{ route('dashboard') }}" class="menu-item flex items-center px-3 py-2.5 rounded-xl text-base font-semibold transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-ganaderasoft-azul text-white shadow-sm' : 'text-gray-700 hover:bg-ganaderasoft-celeste/10 hover:text-ganaderasoft-azul' }}">
+                <span class="menu-icon text-xl mr-3">🏠</span>
+                <span class="menu-text">Dashboard principal</span>
+            </a>
 
         <!-- Fincas y personal -->
         @php
@@ -285,6 +298,7 @@
                 </a>
             </div>
         </div>
+        @endif
 
         <!-- Cerrar sesión -->
         <div class="pt-4 border-t border-gray-100 mt-4">
