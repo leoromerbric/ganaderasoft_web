@@ -24,6 +24,7 @@ use App\Http\Controllers\VacunacionController;
 use App\Http\Controllers\CasaComercialController;
 use App\Http\Controllers\ArbolGenController;
 use App\Http\Controllers\MovimientoRebanoController;
+use App\Http\Controllers\ReportesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -246,4 +247,9 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/movimiento-rebano/{id}/edit', [MovimientoRebanoController::class, 'edit'])->name('movimiento-rebano.edit');
     Route::put('/movimiento-rebano/{id}', [MovimientoRebanoController::class, 'update'])->name('movimiento-rebano.update');
     Route::delete('/movimiento-rebano/{id}', [MovimientoRebanoController::class, 'destroy'])->name('movimiento-rebano.destroy');
+
+    // ===================== MÓDULO DE REPORTES =====================
+    Route::get('/reportes/general', [ReportesController::class, 'indexGeneral'])->name('reportes.general');
+    Route::get('/reportes/reproductivo', [ReportesController::class, 'indexReproductivo'])->name('reportes.reproductivo');
+    Route::get('/reportes/pesaje-leche', [ReportesController::class, 'indexPesajeLeche'])->name('reportes.pesaje-leche');
 });

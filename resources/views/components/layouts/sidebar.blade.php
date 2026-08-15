@@ -259,6 +259,33 @@
             </div>
         </div>
 
+        <!-- Módulo de reportes -->
+        @php
+            $isReportesActive = request()->routeIs('reportes.*');
+        @endphp
+        <div>
+            <button type="button" onclick="toggleSubmenu('sub-reportes')" class="menu-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                <div class="flex items-center min-w-0 pr-1">
+                    <span class="menu-icon text-xl mr-3 shrink-0">📊</span>
+                    <span class="menu-text">Módulo de reportes</span>
+                </div>
+                <svg id="sub-reportes-arrow" class="w-4 h-4 text-gray-400 shrink-0 ml-2.5 transition-transform duration-200 menu-text {{ $isReportesActive ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+            <div id="sub-reportes" class="ml-4 pl-3 border-l-2 border-gray-100 my-1 space-y-1 menu-sublist {{ $isReportesActive ? '' : 'hidden' }}">
+                <a href="{{ route('reportes.general') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.general') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <span class="menu-text">Reporte general</span>
+                </a>
+                <a href="{{ route('reportes.reproductivo') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.reproductivo') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <span class="menu-text">Reporte reproductivo</span>
+                </a>
+                <a href="{{ route('reportes.pesaje-leche') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.pesaje-leche') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                    <span class="menu-text">Reporte de pesaje de leche</span>
+                </a>
+            </div>
+        </div>
+
         <!-- Cerrar sesión -->
         <div class="pt-4 border-t border-gray-100 mt-4">
             <form method="POST" action="{{ route('logout') }}">

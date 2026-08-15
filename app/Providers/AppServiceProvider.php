@@ -142,6 +142,12 @@ class AppServiceProvider extends ServiceProvider
             \App\Services\Contracts\ArbolGenServiceInterface::class,
             \App\Services\Api\ApiArbolGenService::class
         );
+
+        // Módulo de Reportes
+        $this->app->bind(
+            \App\Services\Contracts\ReportesServiceInterface::class,
+            \App\Services\Api\ApiReportesService::class
+        );
     }
 
     /**
