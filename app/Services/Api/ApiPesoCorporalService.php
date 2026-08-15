@@ -3,120 +3,104 @@
 namespace App\Services\Api;
 
 use App\Services\Contracts\PesoCorporalServiceInterface;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
+/**
+ * Servicio encargado de la gestión de registros de peso corporal
+ * a través de la API v2.
+ */
 class ApiPesoCorporalService extends BaseApiService implements PesoCorporalServiceInterface
 {
     /**
-     * Get list of weight records
+     * Extrae el array de datos de la respuesta de la API, soportando paginado y plano.
      */
-    public function getPesosCorporales(?int $animalId = null, ?string $fechaInicio = null, ?string $fechaFin = null): array
+    protected function extractDataCollection(array $response): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!($response['success'] ?? false) || empty($response['data'])) {
+            return [];
         }
 
-        $endpoint = '/peso-corporal';
-        $params = [];
-        
-        if ($animalId) {
-            $params['animal_id'] = $animalId;
-        }
-        
-        if ($fechaInicio) {
-            $params['fecha_inicio'] = $fechaInicio;
-        }
-        
-        if ($fechaFin) {
-            $params['fecha_fin'] = $fechaFin;
-        }
+        $data = $response['data'];
 
-        if (!empty($params)) {
-            $endpoint .= '?' . http_build_query($params);
-        }
-
-        $response = $this->get($endpoint);
-
-        return $response;
+        return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
     }
 
     /**
-     * Get a single weight record by ID
+     * Obtiene la lista de registros de peso corporal.
+     * Soporta nopaginate=true por defecto para retornar la lista completa.
+     */
+    public function getPesosCorporales(?int $animalId = null, ?string $fechaInicio = null, ?string $fechaFin = null, bool $nopaginate = true): array
+    {
+        if (!session('user.token')) {
+            return ['success' => false, 'data' => []];
+        }
+
+        $params = array_filter([
+            'animal_id'    => $animalId,
+            'fecha_inicio' => $fechaInicio,
+            'fecha_fin'    => $fechaFin,
+        ]);
+
+        if ($nopaginate) {
+            $params['nopaginate'] = 'true';
+        }
+
+        $endpoint = '/peso-corporal' . (!empty($params) ? '?' . http_build_query($params) : '');
+        $response = $this->get($endpoint);
+
+        if (!($response['success'] ?? false)) {
+            return ['success' => false, 'data' => []];
+        }
+
+        return ['success' => true, 'data' => $this->extractDataCollection($response)];
+    }
+
+    /**
+     * Obtiene un registro de peso corporal por ID.
      */
     public function getPesoCorporal(int $id): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->get("/peso-corporal/{$id}");
-
-        return $response;
+        return $this->get("/peso-corporal/{$id}");
     }
 
     /**
-     * Create a new weight record
+     * Crea un nuevo registro de peso corporal.
      */
     public function createPesoCorporal(array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->post('/peso-corporal', $data);
-
-        return $response;
+        return $this->post('/peso-corporal', $data);
     }
 
     /**
-     * Update an existing weight record
+     * Actualiza un registro de peso corporal existente.
      */
     public function updatePesoCorporal(int $id, array $data): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->put("/peso-corporal/{$id}", $data);
-
-        return $response;
+        return $this->put("/peso-corporal/{$id}", $data);
     }
 
     /**
-     * Delete a weight record
+     * Elimina un registro de peso corporal.
      */
     public function deletePesoCorporal(int $id): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $response = $this->delete("/peso-corporal/{$id}");
-
-        return $response;
+        return $this->delete("/peso-corporal/{$id}");
     }
 }

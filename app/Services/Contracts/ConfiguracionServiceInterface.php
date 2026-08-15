@@ -2,40 +2,57 @@
 
 namespace App\Services\Contracts;
 
+/**
+ * Interfaz para el servicio de configuración y catálogos globales del sistema.
+ */
 interface ConfiguracionServiceInterface
 {
     /**
-     * Get list of etapas options
+     * Obtiene el listado de etapas de desarrollo del sistema.
+     *
+     * @return array
      */
     public function getEtapas(): array;
 
     /**
-     * Get list of fuente agua options
+     * Obtiene las opciones del catálogo de fuentes de agua.
+     *
+     * @return array
      */
     public function getFuenteAgua(): array;
 
     /**
-     * Get list of tipo explotacion options
+     * Obtiene las opciones del catálogo de tipos de explotación.
+     *
+     * @return array
      */
     public function getTipoExplotacion(): array;
 
     /**
-     * Get list of tipo relieve options
+     * Obtiene las opciones del catálogo de tipos de relieve.
+     *
+     * @return array
      */
     public function getTipoRelieve(): array;
 
     /**
-     * Get list of textura suelo options
+     * Obtiene las opciones del catálogo de texturas de suelo.
+     *
+     * @return array
      */
     public function getTexturaSuelo(): array;
 
     /**
-     * Get list of ph suelo options
+     * Obtiene las opciones del catálogo de valores de pH de suelo.
+     *
+     * @return array
      */
     public function getPhSuelo(): array;
 
     /**
-     * Get list of metodo riego options
+     * Obtiene las opciones del catálogo de métodos de riego.
+     *
+     * @return array
      */
     public function getMetodoRiego(): array;
 }

@@ -2,24 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Contracts\LactanciaServiceInterface;
 use App\Services\Contracts\AnimalesServiceInterface;
+use App\Services\Contracts\LactanciaServiceInterface;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
+/**
+ * Controlador para la Gestión de Períodos de Lactancia.
+ * 
+ * Administra los ciclos de lactancia e interactúa exclusivamente
+ * con la API v2.
+ */
 class LactanciaController extends Controller
 {
-    protected LactanciaServiceInterface $lactanciaService;
-    protected AnimalesServiceInterface $animalesService;
-
     public function __construct(
-        LactanciaServiceInterface $lactanciaService,
-        AnimalesServiceInterface $animalesService
-    ) {
-        $this->lactanciaService = $lactanciaService;
-        $this->animalesService = $animalesService;
-    }
+        protected LactanciaServiceInterface $lactanciaService,
+        protected AnimalesServiceInterface $animalesService
+    ) {}
 
+    /**
+     * Extrae un mensaje legible de error desde la respuesta de la API v2.
+     *
+     * @param array<string, mixed> $response
+     * @param string $fallback
+     * @return string
+     */
     private function apiMessage(array $response, string $fallback): string
     {
         if (!empty($response['message']) && is_string($response['message'])) {
@@ -36,230 +46,272 @@ class LactanciaController extends Controller
         return $fallback;
     }
 
+    /**
+     * Evalúa si un registro de animal corresponde al sexo hembra.
+     *
+     * @param array<string, mixed> $animal
+     * @return bool
+     */
     private function isFemale(array $animal): bool
     {
-        $sexo = strtoupper((string)($animal['Sexo'] ?? $animal['sexo'] ?? ''));
-        if ($sexo !== '') {
-            return in_array($sexo, ['F', 'FEMENINO', 'HEMBRA'], true);
-        }
-
-        $label = strtolower((string)($animal['sexo_label'] ?? $animal['genero'] ?? ''));
-        return in_array($label, ['femenino', 'hembra'], true);
+        $sexo = strtoupper((string) ($animal['sexo'] ?? ''));
+        return in_array($sexo, ['F', 'H', 'FEMENINO', 'HEMBRA'], true);
     }
 
     /**
-     * Display a listing of lactation periods
+     * Extrae la lista de animales del catálogo de forma segura.
+     *
+     * @return array<int, array<string, mixed>>
      */
-    public function index(Request $request)
+    private function getAnimalesCatalogo(): array
     {
-        $animalId = $request->query('animal_id');
-        $activa = $request->query('activa');
-        
-        $response = $this->lactanciaService->getLactancias($animalId, $activa);
-        
-        if (!$response['success']) {
-            return redirect()->route('dashboard')->with('error', $response['message']);
-        }
-
-        // Get animals for filter dropdown
         $animalesResponse = $this->animalesService->getAnimales();
-        $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
-        $animalMap = collect($animales)
-            ->filter(fn ($animal) => isset($animal['id_Animal']))
-            ->mapWithKeys(fn ($animal) => [(int)$animal['id_Animal'] => ($animal['Nombre'] ?? ('Animal #'.$animal['id_Animal']))])
-            ->all();
+        $raw = $animalesResponse['data'] ?? [];
 
-        $lactancias = $response['data'] ?? [];
-        $lactancias = array_map(function ($lactancia) use ($animalMap) {
-            $animalId = $lactancia['lactancia_etapa_anid'] ?? null;
-            $animalNombre = $lactancia['animal']['Nombre']
-                ?? ($animalId !== null ? ($animalMap[(int)$animalId] ?? ('Animal #'.$animalId)) : 'Animal no disponible');
-            $lactancia['animal_nombre'] = $animalNombre;
-            return $lactancia;
-        }, $lactancias);
-
-        return view('lactancia.index', compact('lactancias', 'animales', 'animalId'));
+        return is_array($raw)
+            ? (isset($raw['data']) && is_array($raw['data']) ? $raw['data'] : array_values(array_filter($raw, 'is_array')))
+            : [];
     }
 
     /**
-     * Show the form for creating a new lactation period
+     * Muestra la lista de períodos de lactancia con filtros y estadísticas.
+     *
+     * @param Request $request
+     * @return View|RedirectResponse
      */
-    public function create()
+    public function index(Request $request): View|RedirectResponse
     {
-        $animalesResponse = $this->animalesService->getAnimales();
-        $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
-        $animales = array_values(array_filter($animales, fn ($animal) => $this->isFemale($animal)));
+        try {
+            $animalId = $request->query('animal_id') ? (int) $request->query('animal_id') : null;
+            $activa   = $request->query('activa') !== null ? (bool) $request->query('activa') : null;
+
+            $response = $this->lactanciaService->getLactancias($animalId, $activa);
+
+            if (!($response['success'] ?? false)) {
+                return redirect()->route('dashboard')->with('error', $this->apiMessage($response, 'Error al consultar lactancias.'));
+            }
+
+            $animales  = $this->getAnimalesCatalogo();
+            $animalMap = collect($animales)
+                ->filter(fn ($a) => isset($a['id']))
+                ->mapWithKeys(fn ($a) => [(int) $a['id'] => ($a['nombre'] ?? ('Animal #' . $a['id']))])
+                ->all();
+
+            $rawLactancias = $response['data'] ?? [];
+            $lactancias = collect(is_array($rawLactancias) ? array_values(array_filter($rawLactancias, 'is_array')) : [])
+                ->map(function ($lactancia) use ($animalMap) {
+                    $animalIdRegistro = data_get($lactancia, 'animal.id') ?? data_get($lactancia, 'etapa_animal.animal_id') ?? $lactancia['animal_id'] ?? null;
+                    $animalNombre = data_get($lactancia, 'animal.nombre')
+                        ?? ($animalIdRegistro !== null ? ($animalMap[(int) $animalIdRegistro] ?? ('Animal #' . $animalIdRegistro)) : 'Animal no disponible');
+                    $lactancia['animal_nombre'] = $animalNombre;
+                    $lactancia['animal_id']     = $animalIdRegistro;
+                    return $lactancia;
+                })->all();
+
+            return view('lactancia.index', compact('lactancias', 'animales', 'animalId'));
+        } catch (\Exception $e) {
+            Log::error('Error en LactanciaController@index: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error', 'Error al cargar los períodos de lactancia.');
+        }
+    }
+
+    /**
+     * Muestra el formulario para registrar un nuevo período de lactancia.
+     *
+     * @return View
+     */
+    public function create(): View
+    {
+        $animales = array_values(array_filter($this->getAnimalesCatalogo(), fn ($animal) => $this->isFemale($animal)));
 
         return view('lactancia.create', compact('animales'));
     }
 
     /**
-     * Store a newly created lactation period
+     * Almacena un nuevo período de lactancia.
+     *
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'lactancia_fecha_inicio' => 'required|date',
-            'lactancia_etapa_anid' => 'required|integer',
-            'lactancia_etapa_etid' => 'required|integer',
-            'Lactancia_fecha_fin' => 'nullable|date|after_or_equal:lactancia_fecha_inicio',
-            'lactancia_secado' => 'nullable|date',
+        $validatedData = $request->validate([
+            'fecha_inicio' => 'required|date',
+            'animal_id'    => 'required|integer|min:1',
+            'etapa_id'     => 'required|integer|min:1',
+            'fecha_fin'    => 'nullable|date|after_or_equal:fecha_inicio',
+            'secado'       => 'nullable|date',
         ], [
-            'lactancia_fecha_inicio.required' => 'La fecha de inicio es requerida.',
-            'lactancia_fecha_inicio.date' => 'La fecha de inicio debe ser una fecha válida.',
-            'lactancia_etapa_anid.required' => 'El animal es requerido.',
-            'lactancia_etapa_etid.required' => 'La etapa es requerida.',
-            'Lactancia_fecha_fin.after_or_equal' => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
-            'lactancia_secado.date' => 'La fecha de secado debe ser una fecha válida.',
+            'fecha_inicio.required'    => 'La fecha de inicio es requerida.',
+            'fecha_inicio.date'        => 'La fecha de inicio debe ser una fecha válida.',
+            'animal_id.required'       => 'El animal es requerido.',
+            'animal_id.integer'        => 'El animal seleccionado no es válido.',
+            'etapa_id.required'        => 'La etapa es requerida.',
+            'etapa_id.integer'         => 'La etapa seleccionada no es válida.',
+            'fecha_fin.after_or_equal' => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
+            'secado.date'              => 'La fecha de secado debe ser una fecha válida.',
         ]);
 
-        $data = $request->only([
-            'lactancia_fecha_inicio',
-            'Lactancia_fecha_fin',
-            'lactancia_secado',
-            'lactancia_etapa_anid',
-            'lactancia_etapa_etid'
-        ]);
+        try {
+            $response = $this->lactanciaService->createLactancia($validatedData);
 
-        $response = $this->lactanciaService->createLactancia($data);
+            if ($response['success'] ?? false) {
+                return redirect()->route('lactancia.index')
+                    ->with('success', 'Período de lactancia registrado exitosamente.');
+            }
 
-        if ($response['success']) {
-            return redirect()->route('lactancia.index')
-                ->with('success', 'Período de lactancia registrado exitosamente.');
+            return back()->withInput()->with('error', $this->apiMessage($response, 'No se pudo registrar la lactancia.'));
+        } catch (\Exception $e) {
+            Log::error('Error en LactanciaController@store: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Error inesperado al registrar el período de lactancia.');
         }
-
-        return back()->withInput()->with('error', $this->apiMessage($response, 'No se pudo registrar la lactancia.'));
     }
 
     /**
-     * Display the specified lactation period
+     * Muestra el detalle de un período de lactancia.
+     *
+     * @param int $id ID de la lactancia
+     * @return View|RedirectResponse
      */
-    public function show(string $id)
-    {
-        $response = $this->lactanciaService->getLactancia($id);
-
-        if (!$response['success']) {
-            return redirect()->route('lactancia.index')->with('error', $this->apiMessage($response, 'No se pudo cargar la lactancia.'));
-        }
-
-        $lactancia = $response['data'];
-        
-        return view('lactancia.show', compact('lactancia'));
-    }
-
-    /**
-     * Show the form for editing the specified lactation period
-     */
-    public function edit(string $id)
-    {
-        $response = $this->lactanciaService->getLactancia($id);
-
-        if (!$response['success']) {
-            return redirect()->route('lactancia.index')->with('error', $this->apiMessage($response, 'No se pudo cargar la lactancia.'));
-        }
-
-        $lactancia = $response['data'];
-
-        $animalesResponse = $this->animalesService->getAnimales();
-        $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
-        $animales = array_values(array_filter($animales, fn ($animal) => $this->isFemale($animal)));
-
-        return view('lactancia.edit', compact('lactancia', 'animales'));
-    }
-
-    /**
-     * Update the specified lactation period
-     */
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'lactancia_fecha_inicio' => 'required|date',
-            'lactancia_etapa_anid' => 'required|integer',
-            'lactancia_etapa_etid' => 'required|integer',
-            'Lactancia_fecha_fin' => 'nullable|date|after_or_equal:lactancia_fecha_inicio',
-            'lactancia_secado' => 'nullable|date',
-        ], [
-            'lactancia_fecha_inicio.required' => 'La fecha de inicio es requerida.',
-            'lactancia_fecha_inicio.date' => 'La fecha de inicio debe ser una fecha válida.',
-            'lactancia_etapa_anid.required' => 'El animal es requerido.',
-            'lactancia_etapa_etid.required' => 'La etapa es requerida.',
-            'Lactancia_fecha_fin.after_or_equal' => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
-            'lactancia_secado.date' => 'La fecha de secado debe ser una fecha válida.',
-        ]);
-
-        $data = $request->only([
-            'lactancia_fecha_inicio',
-            'Lactancia_fecha_fin',
-            'lactancia_secado',
-            'lactancia_etapa_anid',
-            'lactancia_etapa_etid'
-        ]);
-
-        $response = $this->lactanciaService->updateLactancia($id, $data);
-
-        if ($response['success']) {
-            return redirect()->route('lactancia.index')
-                ->with('success', 'Período de lactancia actualizado exitosamente.');
-        }
-
-        return back()->withInput()->with('error', $this->apiMessage($response, 'No se pudo actualizar la lactancia.'));
-    }
-
-    /**
-     * Remove the specified lactation period
-     */
-    public function destroy(string $id)
-    {
-        $response = $this->lactanciaService->deleteLactancia($id);
-
-        if ($response['success']) {
-            return redirect()->route('lactancia.index')
-                ->with('success', 'Período de lactancia eliminado exitosamente.');
-        }
-
-        return redirect()->route('lactancia.index')->with('error', $this->apiMessage($response, 'No se pudo eliminar la lactancia.'));
-    }
-
-    /**
-     * Get animal's current stage for AJAX request
-     */
-    public function getAnimalEtapa(Request $request, $id)
+    public function show(int $id): View|RedirectResponse
     {
         try {
-            Log::info('LactanciaController@getAnimalEtapa - Obteniendo etapa para animal: ' . $id);
-            
+            $response = $this->lactanciaService->getLactancia($id);
+
+            if (!($response['success'] ?? false) || empty($response['data'])) {
+                return redirect()->route('lactancia.index')->with('error', $this->apiMessage($response, 'No se pudo cargar la lactancia.'));
+            }
+
+            $lactancia = $response['data'];
+
+            return view('lactancia.show', compact('lactancia'));
+        } catch (\Exception $e) {
+            Log::error("Error en LactanciaController@show ID {$id}: " . $e->getMessage());
+            return redirect()->route('lactancia.index')->with('error', 'Error al consultar la lactancia.');
+        }
+    }
+
+    /**
+     * Muestra el formulario para editar un período de lactancia.
+     *
+     * @param int $id ID de la lactancia
+     * @return View|RedirectResponse
+     */
+    public function edit(int $id): View|RedirectResponse
+    {
+        try {
+            $response = $this->lactanciaService->getLactancia($id);
+
+            if (!($response['success'] ?? false) || empty($response['data'])) {
+                return redirect()->route('lactancia.index')->with('error', $this->apiMessage($response, 'No se pudo cargar la lactancia.'));
+            }
+
+            $lactancia = $response['data'];
+            $animales  = array_values(array_filter($this->getAnimalesCatalogo(), fn ($animal) => $this->isFemale($animal)));
+
+            return view('lactancia.edit', compact('lactancia', 'animales'));
+        } catch (\Exception $e) {
+            Log::error("Error en LactanciaController@edit ID {$id}: " . $e->getMessage());
+            return redirect()->route('lactancia.index')->with('error', 'Error al cargar la información para edición.');
+        }
+    }
+
+    /**
+     * Actualiza un período de lactancia existente.
+     *
+     * @param Request $request
+     * @param int $id ID de la lactancia
+     * @return RedirectResponse
+     */
+    public function update(Request $request, int $id): RedirectResponse
+    {
+        $validatedData = $request->validate([
+            'fecha_inicio' => 'required|date',
+            'animal_id'    => 'required|integer|min:1',
+            'etapa_id'     => 'required|integer|min:1',
+            'fecha_fin'    => 'nullable|date|after_or_equal:fecha_inicio',
+            'secado'       => 'nullable|date',
+        ], [
+            'fecha_inicio.required'    => 'La fecha de inicio es requerida.',
+            'fecha_inicio.date'        => 'La fecha de inicio debe ser una fecha válida.',
+            'animal_id.required'       => 'El animal es requerido.',
+            'animal_id.integer'        => 'El animal seleccionado no es válido.',
+            'etapa_id.required'        => 'La etapa es requerida.',
+            'etapa_id.integer'         => 'La etapa seleccionada no es válida.',
+            'fecha_fin.after_or_equal' => 'La fecha de fin debe ser posterior o igual a la fecha de inicio.',
+            'secado.date'              => 'La fecha de secado debe ser una fecha válida.',
+        ]);
+
+        try {
+            $response = $this->lactanciaService->updateLactancia($id, $validatedData);
+
+            if ($response['success'] ?? false) {
+                return redirect()->route('lactancia.index')
+                    ->with('success', 'Período de lactancia actualizado exitosamente.');
+            }
+
+            return back()->withInput()->with('error', $this->apiMessage($response, 'No se pudo actualizar la lactancia.'));
+        } catch (\Exception $e) {
+            Log::error("Error en LactanciaController@update ID {$id}: " . $e->getMessage());
+            return back()->withInput()->with('error', 'Error inesperado al actualizar la lactancia.');
+        }
+    }
+
+    /**
+     * Elimina un período de lactancia.
+     *
+     * @param int $id ID de la lactancia
+     * @return RedirectResponse
+     */
+    public function destroy(int $id): RedirectResponse
+    {
+        try {
+            $response = $this->lactanciaService->deleteLactancia($id);
+
+            if ($response['success'] ?? false) {
+                return redirect()->route('lactancia.index')
+                    ->with('success', 'Período de lactancia eliminado exitosamente.');
+            }
+
+            return redirect()->route('lactancia.index')->with('error', $this->apiMessage($response, 'No se pudo eliminar la lactancia.'));
+        } catch (\Exception $e) {
+            Log::error("Error en LactanciaController@destroy ID {$id}: " . $e->getMessage());
+            return redirect()->route('lactancia.index')->with('error', 'Error al procesar la eliminación.');
+        }
+    }
+
+    /**
+     * Endpoint AJAX para obtener la etapa actual del animal seleccionado.
+     *
+     * @param Request $request
+     * @param int $id ID del animal
+     * @return JsonResponse
+     */
+    public function getAnimalEtapa(Request $request, int $id): JsonResponse
+    {
+        try {
             $animalResponse = $this->animalesService->getAnimal($id);
-            
-            if (!$animalResponse['success']) {
-                Log::warning('LactanciaController@getAnimalEtapa - Error en respuesta de API', $animalResponse);
+
+            if (!($animalResponse['success'] ?? false) || empty($animalResponse['data'])) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Animal no encontrado'
                 ], 404);
             }
-            
-            $animal = $animalResponse['data'];
-            $etapaActual = data_get($animal, 'etapa_actual')
-                ?? data_get($animal, 'etapaActual')
-                ?? data_get($animal, 'etapa_actual.0')
-                ?? data_get($animal, 'etapaActual.0');
-            
-            Log::info('LactanciaController@getAnimalEtapa - Animal obtenido', [
-                'animal_id' => $id,
-                'has_etapa_actual' => isset($animal['etapa_actual']),
-                'etapa_actual_structure' => $animal['etapa_actual'] ?? 'null'
-            ]);
-            
+
+            $animal      = $animalResponse['data'];
+            $etapaActual = data_get($animal, 'etapa_actual') ?? data_get($animal, 'etapaActual');
+
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'animal' => $animal,
+                'data'    => [
+                    'animal'       => $animal,
                     'etapa_actual' => $etapaActual
                 ]
             ]);
         } catch (\Exception $e) {
-            Log::error('Error en getAnimalEtapa: ' . $e->getMessage(), ['animal_id' => $id]);
-            
+            Log::error("Error en getAnimalEtapa para el animal ID {$id}: " . $e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al obtener etapa del animal'

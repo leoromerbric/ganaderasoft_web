@@ -3,148 +3,300 @@
 @section('title', 'Nuevo Movimiento de Rebaño')
 
 @section('content')
-<div>
-    <div class="mb-6 flex items-center">
-        <a href="{{ route('movimiento-rebano.index') }}" class="mr-4 text-ganaderasoft-celeste hover:text-ganaderasoft-celeste/80">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-        </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🔄 Nuevo Movimiento de Rebaño</h2>
-    </div>
-
-    <div class="bg-white rounded-xl shadow-md">
-        <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Datos del Movimiento</h3>
+<div class="space-y-6">
+    <!-- Header Card -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
+                🔄
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                    Nuevo Movimiento de Rebaño
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">Registra y transfiere animales de forma masiva entre rebaños y fincas</p>
+            </div>
         </div>
-        <form action="{{ route('movimiento-rebano.store') }}" method="POST" class="p-6" id="movimiento-form">
-            @csrf
-            @if($errors->any())
-                <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
-                    <ul class="list-disc ml-4">
-                        @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Finca Origen <span class="text-red-500">*</span></label>
-                            <select name="id_Finca" id="id_Finca" required
-                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('id_Finca') ? 'border-red-500' : 'border-gray-300' }}">
-                        <option value="">Seleccione finca de origen</option>
-                        @foreach($fincas as $finca)
-                            <option value="{{ $finca['id_Finca'] }}" {{ old('id_Finca') == $finca['id_Finca'] ? 'selected' : '' }}>
-                                {{ $finca['Nombre'] ?? 'Finca #'.$finca['id_Finca'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('id_Finca')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Rebaño Origen <span class="text-red-500">*</span></label>
-                            <select name="id_Rebano" id="id_Rebano" required
-                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('id_Rebano') ? 'border-red-500' : 'border-gray-300' }}">
-                        <option value="">Seleccione rebaño de origen</option>
-                        @foreach($rebanos as $rebano)
-                            <option value="{{ $rebano['id_Rebano'] }}" {{ old('id_Rebano') == $rebano['id_Rebano'] ? 'selected' : '' }}
-                                    data-finca="{{ $rebano['id_Finca'] ?? '' }}">
-                                {{ $rebano['Nombre'] ?? 'Rebaño #'.$rebano['id_Rebano'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('id_Rebano')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Finca Destino <span class="text-red-500">*</span></label>
-                            <select name="id_Finca_Destino" id="id_Finca_Destino" required
-                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('id_Finca_Destino') ? 'border-red-500' : 'border-gray-300' }}">
-                        <option value="">Seleccione finca de destino</option>
-                        @foreach($fincas as $finca)
-                            <option value="{{ $finca['id_Finca'] }}" {{ old('id_Finca_Destino') == $finca['id_Finca'] ? 'selected' : '' }}>
-                                {{ $finca['Nombre'] ?? 'Finca #'.$finca['id_Finca'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('id_Finca_Destino')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Rebaño Destino <span class="text-red-500">*</span></label>
-                            <select name="id_Rebano_Destino" id="id_Rebano_Destino" required
-                                class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('id_Rebano_Destino') ? 'border-red-500' : 'border-gray-300' }}">
-                        <option value="">Seleccione rebaño de destino</option>
-                        @foreach($rebanos as $rebano)
-                            <option value="{{ $rebano['id_Rebano'] }}" {{ old('id_Rebano_Destino') == $rebano['id_Rebano'] ? 'selected' : '' }}
-                                    data-finca="{{ $rebano['id_Finca'] ?? '' }}">
-                                {{ $rebano['Nombre'] ?? 'Rebaño #'.$rebano['id_Rebano'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('id_Rebano_Destino')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Rebaño Destino</label>
-                              <input type="text" name="Rebano_Destino" id="Rebano_Destino" value="{{ old('Rebano_Destino') }}" maxlength="30" readonly
-                           placeholder="Nombre del rebaño destino..."
-                                  class="w-full border rounded-lg px-4 py-2 bg-gray-50 text-gray-600 {{ $errors->has('Rebano_Destino') ? 'border-red-500' : 'border-gray-200' }}">
-                    @error('Rebano_Destino')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
-                          <input type="text" name="Comentario" value="{{ old('Comentario') }}" maxlength="40"
-                           placeholder="Comentario sobre el movimiento..."
-                              class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('Comentario') ? 'border-red-500' : 'border-gray-300' }}">
-                    @error('Comentario')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-            </div>
-
-            <!-- Selección de animales -->
-            <div class="border border-gray-200 rounded-lg p-4">
-                <h4 class="text-base font-semibold text-ganaderasoft-negro mb-3">Animales a Mover</h4>
-                @if(count($animales) > 0)
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-64 overflow-y-auto">
-                        @foreach($animales as $animal)
-                           <label class="animal-item flex items-center space-x-2 p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
-                               data-rebano="{{ data_get($animal, 'id_Rebano') ?? data_get($animal, 'rebano.id_Rebano') }}"
-                               data-finca="{{ data_get($animal, 'rebano.id_Finca') ?? data_get($animal, 'rebano.finca.id_Finca') }}">
-                            <input type="checkbox" name="animales[]" value="{{ $animal['id_Animal'] }}"
-                                   {{ in_array($animal['id_Animal'], old('animales', [])) ? 'checked' : '' }}
-                                   class="rounded border-gray-300 text-ganaderasoft-celeste focus:ring-ganaderasoft-celeste">
-                            <span class="text-sm text-gray-700">{{ $animal['Nombre'] ?? 'Animal #'.$animal['id_Animal'] }}</span>
-                        </label>
-                        @endforeach
-                    </div>
-                @else
-                    <p class="text-gray-500 text-sm">No hay animales disponibles</p>
-                @endif
-                @error('animales')<p class="text-red-500 text-sm mt-2">{{ $message }}</p>@enderror
-                @error('animales.*')<p class="text-red-500 text-sm mt-2">{{ $message }}</p>@enderror
-            </div>
-
-            <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
-                <a href="{{ route('movimiento-rebano.index') }}"
-                   class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</a>
-                <button type="submit" id="btn-guardar-movimiento"
-                        class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed">
-                    Guardar
-                </button>
-            </div>
-        </form>
+        <div>
+            <a href="{{ route('movimiento-rebano.index') }}" 
+               class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver
+            </a>
+        </div>
     </div>
+
+    <!-- Error Messages -->
+    @if(session('error'))
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm font-medium">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm">
+            <p class="text-sm font-bold mb-1">Por favor corrige los siguientes errores:</p>
+            <ul class="list-disc list-inside text-sm pl-2 space-y-0.5">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('movimiento-rebano.store') }}" method="POST" id="movimiento-form">
+        @csrf
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Columna Izquierda: Configuración del Movimiento y Selección de Animales (2 Tercios) -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Card 1: Origen y Destino -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                        <span>🚚</span> Configuración del Traslado
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Box Origen -->
+                        <div class="p-5 bg-amber-50/60 border border-amber-100 rounded-2xl space-y-4">
+                            <div class="flex items-center gap-2 border-b border-amber-200/60 pb-2">
+                                <span class="text-lg">🏡</span>
+                                <h4 class="text-sm font-bold text-amber-900 uppercase tracking-wider">Ubicación de Origen</h4>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Finca Origen <span class="text-red-500">*</span></label>
+                                <select name="finca_id" id="finca_id" required
+                                        class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all">
+                                    <option value="">Seleccione finca origen</option>
+                                    @foreach($fincas as $finca)
+                                        <option value="{{ $finca['id'] }}" {{ old('finca_id') == $finca['id'] ? 'selected' : '' }}>
+                                            {{ $finca['nombre'] ?? 'Finca #'.$finca['id'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('finca_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Rebaño Origen <span class="text-red-500">*</span></label>
+                                <select name="rebano_id" id="rebano_id" required
+                                        class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all">
+                                    <option value="">Seleccione rebaño origen</option>
+                                    @foreach($rebanos as $rebano)
+                                        @php
+                                            $fId = data_get($rebano, 'finca.id', $rebano['finca_id'] ?? '');
+                                        @endphp
+                                        <option value="{{ $rebano['id'] }}" {{ old('rebano_id') == $rebano['id'] ? 'selected' : '' }}
+                                                data-finca="{{ $fId }}">
+                                            {{ $rebano['nombre'] ?? 'Rebaño #'.$rebano['id'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('rebano_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+
+                        <!-- Box Destino -->
+                        <div class="p-5 bg-blue-50/60 border border-blue-100 rounded-2xl space-y-4">
+                            <div class="flex items-center gap-2 border-b border-blue-200/60 pb-2">
+                                <span class="text-lg">🎯</span>
+                                <h4 class="text-sm font-bold text-blue-900 uppercase tracking-wider">Ubicación de Destino</h4>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Finca Destino <span class="text-red-500">*</span></label>
+                                <select name="finca_destino_id" id="finca_destino_id" required
+                                        class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                    <option value="">Seleccione finca destino</option>
+                                    @foreach($fincas as $finca)
+                                        <option value="{{ $finca['id'] }}" {{ old('finca_destino_id') == $finca['id'] ? 'selected' : '' }}>
+                                            {{ $finca['nombre'] ?? 'Finca #'.$finca['id'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('finca_destino_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Rebaño Destino <span class="text-red-500">*</span></label>
+                                <select name="rebano_destino_id" id="rebano_destino_id" required
+                                        class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                    <option value="">Seleccione rebaño destino</option>
+                                    @foreach($rebanos as $rebano)
+                                        @php
+                                            $fId = data_get($rebano, 'finca.id', $rebano['finca_id'] ?? '');
+                                        @endphp
+                                        <option value="{{ $rebano['id'] }}" {{ old('rebano_destino_id') == $rebano['id'] ? 'selected' : '' }}
+                                                data-finca="{{ $fId }}">
+                                            {{ $rebano['nombre'] ?? 'Rebaño #'.$rebano['id'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('rebano_destino_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campos auxiliares y observaciones -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Nombre Rebaño Destino</label>
+                            <input type="text" name="rebano_destino" id="rebano_destino" value="{{ old('rebano_destino') }}" maxlength="30" readonly
+                                   placeholder="Se llena automáticamente..."
+                                   class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 text-gray-600 font-semibold">
+                            @error('rebano_destino')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Comentarios / Observaciones</label>
+                            <input type="text" name="comentario" value="{{ old('comentario') }}" maxlength="40"
+                                   placeholder="Comentario adicional del movimiento..."
+                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                            @error('comentario')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Selección Interactiva de Animales -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-100 pb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                                <span>🐄</span> Seleccionar Animales
+                            </h3>
+                            <p class="text-xs text-gray-500 mt-0.5">Seleccione los animales pertenecientes al rebaño de origen</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="btn-select-all" class="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl text-xs font-semibold transition-colors">
+                                Seleccionar Todos
+                            </button>
+                            <button type="button" id="btn-deselect-all" class="px-3 py-1.5 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-xl text-xs font-semibold transition-colors">
+                                Desmarcar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Buscador rápido interno -->
+                    <div class="relative">
+                        <input type="text" id="search-animales" placeholder="🔍 Buscar por nombre o código del animal..."
+                               class="w-full pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all">
+                    </div>
+
+                    <!-- Contenedor con Tarjetas Interactivas de Animales -->
+                    @if(count($animales) > 0)
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-80 overflow-y-auto p-1" id="animales-grid">
+                            @foreach($animales as $animal)
+                                @php
+                                    $rId = data_get($animal, 'rebano.id', $animal['rebano_id'] ?? '');
+                                    $fId = data_get($animal, 'rebano.finca.id', data_get($animal, 'rebano.finca_id', ''));
+                                    $rNombre = data_get($animal, 'rebano.nombre', 'Sin Rebaño');
+                                    $checked = in_array($animal['id'], old('animales', []));
+                                @endphp
+                                <label class="animal-card relative flex items-center p-3 rounded-2xl border border-gray-200 hover:border-ganaderasoft-celeste/60 cursor-pointer transition-all duration-200 group {{ $checked ? 'bg-blue-50/60 border-ganaderasoft-celeste shadow-xs' : 'bg-white hover:bg-gray-50/80' }}"
+                                       data-rebano="{{ $rId }}"
+                                       data-finca="{{ $fId }}"
+                                       data-nombre="{{ strtolower($animal['nombre'] ?? '') }}"
+                                       data-codigo="{{ strtolower($animal['codigo_animal'] ?? '') }}">
+                                    <input type="checkbox" name="animales[]" value="{{ $animal['id'] }}" {{ $checked ? 'checked' : '' }}
+                                           class="animal-checkbox w-4 h-4 text-ganaderasoft-celeste border-gray-300 rounded focus:ring-ganaderasoft-celeste mr-3">
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-sm font-bold text-gray-900 truncate">
+                                            🐄 {{ $animal['nombre'] ?? 'Animal #'.$animal['id'] }}
+                                        </p>
+                                        <p class="text-xs text-gray-500 truncate flex items-center gap-1 mt-0.5">
+                                            <span class="font-mono">#{{ $animal['codigo_animal'] ?? $animal['id'] }}</span>
+                                            <span>•</span>
+                                            <span class="truncate">{{ $rNombre }}</span>
+                                        </p>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="p-8 text-center bg-gray-50 rounded-2xl">
+                            <p class="text-gray-500 text-sm font-medium">No hay animales disponibles en el sistema.</p>
+                        </div>
+                    @endif
+
+                    @error('animales')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Panel de Resumen y Confirmación (1 Tercio) -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-6 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-4 flex items-center gap-2">
+                        <span>📊</span> Resumen del Movimiento
+                    </h3>
+
+                    <div class="space-y-4 text-sm">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                            <span class="text-gray-500">Finca Origen</span>
+                            <span class="font-bold text-gray-900 truncate max-w-[140px]" id="summary-finca-origen">No seleccionada</span>
+                        </div>
+
+                        <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                            <span class="text-gray-500">Rebaño Origen</span>
+                            <span class="font-bold text-gray-900 truncate max-w-[140px]" id="summary-rebano-origen">No seleccionado</span>
+                        </div>
+
+                        <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                            <span class="text-gray-500">Finca Destino</span>
+                            <span class="font-bold text-ganaderasoft-azul truncate max-w-[140px]" id="summary-finca-destino">No seleccionada</span>
+                        </div>
+
+                        <div class="flex justify-between items-center py-2 border-b border-gray-50">
+                            <span class="text-gray-500">Rebaño Destino</span>
+                            <span class="font-bold text-ganaderasoft-azul truncate max-w-[140px]" id="summary-rebano-destino">No seleccionado</span>
+                        </div>
+
+                        <div class="p-4 bg-blue-50/70 border border-blue-100 rounded-2xl text-center space-y-1">
+                            <p class="text-xs font-bold text-blue-700 uppercase tracking-wider">Animales a Trasladar</p>
+                            <p class="text-3xl font-extrabold text-blue-800" id="summary-count-animales">0</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-2">
+                        <button type="submit" id="btn-guardar-movimiento"
+                                class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
+                            <span>+</span> Registrar Movimiento
+                        </button>
+
+                        <a href="{{ route('movimiento-rebano.index') }}"
+                           class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                            Cancelar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const fincaOrigen = document.getElementById('id_Finca');
-    const rebanoOrigen = document.getElementById('id_Rebano');
-    const fincaDestino = document.getElementById('id_Finca_Destino');
-    const rebanoDestino = document.getElementById('id_Rebano_Destino');
-    const nombreRebanoDestino = document.getElementById('Rebano_Destino');
-    const animales = Array.from(document.querySelectorAll('.animal-item'));
+    const fincaOrigen = document.getElementById('finca_id');
+    const rebanoOrigen = document.getElementById('rebano_id');
+    const fincaDestino = document.getElementById('finca_destino_id');
+    const rebanoDestino = document.getElementById('rebano_destino_id');
+    const nombreRebanoDestino = document.getElementById('rebano_destino');
+    const animalesCards = Array.from(document.querySelectorAll('.animal-card'));
+    const searchInput = document.getElementById('search-animales');
+    const btnSelectAll = document.getElementById('btn-select-all');
+    const btnDeselectAll = document.getElementById('btn-deselect-all');
+
+    // Summary Elements
+    const summaryFincaOrigen = document.getElementById('summary-finca-origen');
+    const summaryRebanoOrigen = document.getElementById('summary-rebano-origen');
+    const summaryFincaDestino = document.getElementById('summary-finca-destino');
+    const summaryRebanoDestino = document.getElementById('summary-rebano-destino');
+    const summaryCountAnimales = document.getElementById('summary-count-animales');
 
     function filterRebanos(select, fincaId, excludedRebanoId = null) {
         Array.from(select.options).forEach((option, index) => {
@@ -163,30 +315,99 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function syncDestinoNombre() {
-        const option = rebanoDestino.options[rebanoDestino.selectedIndex];
-        nombreRebanoDestino.value = option && option.value ? option.text.trim() : '';
+    function syncSummary() {
+        const fOrigenOpt = fincaOrigen.options[fincaOrigen.selectedIndex];
+        const rOrigenOpt = rebanoOrigen.options[rebanoOrigen.selectedIndex];
+        const fDestinoOpt = fincaDestino.options[fincaDestino.selectedIndex];
+        const rDestinoOpt = rebanoDestino.options[rebanoDestino.selectedIndex];
+
+        summaryFincaOrigen.textContent = fOrigenOpt && fOrigenOpt.value ? fOrigenOpt.text.trim() : 'No seleccionada';
+        summaryRebanoOrigen.textContent = rOrigenOpt && rOrigenOpt.value ? rOrigenOpt.text.trim() : 'No seleccionado';
+        summaryFincaDestino.textContent = fDestinoOpt && fDestinoOpt.value ? fDestinoOpt.text.trim() : 'No seleccionada';
+        summaryRebanoDestino.textContent = rDestinoOpt && rDestinoOpt.value ? rDestinoOpt.text.trim() : 'No seleccionado';
+
+        nombreRebanoDestino.value = rDestinoOpt && rDestinoOpt.value ? rDestinoOpt.text.trim() : '';
+
+        const selectedCount = document.querySelectorAll('.animal-checkbox:checked').length;
+        summaryCountAnimales.textContent = selectedCount;
     }
 
     function filterAnimales() {
         const rebanoId = rebanoOrigen.value;
-        animales.forEach((item) => {
-            const visible = !rebanoId || item.dataset.rebano === rebanoId;
-            item.style.display = visible ? '' : 'none';
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+        animalesCards.forEach((card) => {
+            const matchesRebano = !rebanoId || card.dataset.rebano === rebanoId;
+            const matchesQuery = !query || card.dataset.nombre.includes(query) || card.dataset.codigo.includes(query);
+            const visible = matchesRebano && matchesQuery;
+
+            card.style.display = visible ? '' : 'none';
             if (!visible) {
-                const checkbox = item.querySelector('input[type="checkbox"]');
-                if (checkbox) checkbox.checked = false;
+                const checkbox = card.querySelector('.animal-checkbox');
+                if (checkbox && checkbox.checked) {
+                    checkbox.checked = false;
+                    card.classList.remove('bg-blue-50/60', 'border-ganaderasoft-celeste', 'shadow-xs');
+                    card.classList.add('bg-white');
+                }
             }
+        });
+        syncSummary();
+    }
+
+    // Toggle styling on checkbox click
+    animalesCards.forEach((card) => {
+        const checkbox = card.querySelector('.animal-checkbox');
+        checkbox.addEventListener('change', function () {
+            if (checkbox.checked) {
+                card.classList.add('bg-blue-50/60', 'border-ganaderasoft-celeste', 'shadow-xs');
+                card.classList.remove('bg-white');
+            } else {
+                card.classList.remove('bg-blue-50/60', 'border-ganaderasoft-celeste', 'shadow-xs');
+                card.classList.add('bg-white');
+            }
+            syncSummary();
+        });
+    });
+
+    if (btnSelectAll) {
+        btnSelectAll.addEventListener('click', function () {
+            animalesCards.forEach((card) => {
+                if (card.style.display !== 'none') {
+                    const checkbox = card.querySelector('.animal-checkbox');
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        card.classList.add('bg-blue-50/60', 'border-ganaderasoft-celeste', 'shadow-xs');
+                        card.classList.remove('bg-white');
+                    }
+                }
+            });
+            syncSummary();
         });
     }
 
+    if (btnDeselectAll) {
+        btnDeselectAll.addEventListener('click', function () {
+            animalesCards.forEach((card) => {
+                const checkbox = card.querySelector('.animal-checkbox');
+                if (checkbox) {
+                    checkbox.checked = false;
+                    card.classList.remove('bg-blue-50/60', 'border-ganaderasoft-celeste', 'shadow-xs');
+                    card.classList.add('bg-white');
+                }
+            });
+            syncSummary();
+        });
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', filterAnimales);
+    }
+
     fincaOrigen.addEventListener('change', function () {
-        if (fincaDestino.value === fincaOrigen.value) {
-            fincaDestino.value = '';
-        }
         filterRebanos(rebanoOrigen, fincaOrigen.value);
         filterRebanos(rebanoDestino, fincaDestino.value, rebanoOrigen.value);
         filterAnimales();
+        syncSummary();
     });
 
     rebanoOrigen.addEventListener('change', function () {
@@ -194,24 +415,21 @@ document.addEventListener('DOMContentLoaded', function () {
         if (rebanoDestino.value === rebanoOrigen.value) {
             rebanoDestino.value = '';
         }
-        syncDestinoNombre();
         filterAnimales();
+        syncSummary();
     });
 
     fincaDestino.addEventListener('change', function () {
-        if (fincaDestino.value && fincaDestino.value === fincaOrigen.value) {
-            fincaDestino.value = '';
-        }
         filterRebanos(rebanoDestino, fincaDestino.value, rebanoOrigen.value);
-        syncDestinoNombre();
+        syncSummary();
     });
 
-    rebanoDestino.addEventListener('change', syncDestinoNombre);
+    rebanoDestino.addEventListener('change', syncSummary);
 
     filterRebanos(rebanoOrigen, fincaOrigen.value);
     filterRebanos(rebanoDestino, fincaDestino.value, rebanoOrigen.value);
     filterAnimales();
-    syncDestinoNombre();
+    syncSummary();
 
     const form = document.getElementById('movimiento-form');
     const submitBtn = document.getElementById('btn-guardar-movimiento');

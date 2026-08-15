@@ -3,86 +3,174 @@
 @section('title', 'Editar Movimiento de Rebaño')
 
 @section('content')
-<div>
-    <div class="mb-6 flex items-center">
-        <a href="{{ route('movimiento-rebano.index') }}" class="mr-4 text-ganaderasoft-celeste hover:text-ganaderasoft-celeste/80">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-        </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🔄 Editar Movimiento #{{ $movimiento['id_Movimiento'] }}</h2>
-    </div>
-
-    <div class="bg-white rounded-xl shadow-md">
-        <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Modificar Datos</h3>
+<div class="space-y-6">
+    <!-- Header Card -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
+                🔄
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                    Editar Movimiento #{{ $movimiento['id'] ?? 'N/A' }}
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">Actualiza las notas y observaciones adicionales del traslado</p>
+            </div>
         </div>
-        <form action="{{ route('movimiento-rebano.update', $movimiento['id_Movimiento']) }}" method="POST" class="p-6">
-            @csrf @method('PUT')
-            @if($errors->any())
-                <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
-                    <ul class="list-disc ml-4">
-                        @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <!-- Información de solo lectura -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 p-4 bg-gray-50 rounded-lg">
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Finca Origen</p>
-                    <p class="text-base text-ganaderasoft-negro mt-1">
-                        {{ $movimiento['fincaOrigen']['Nombre'] ?? (isset($movimiento['id_Finca']) ? 'Finca #'.$movimiento['id_Finca'] : '-') }}
-                    </p>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Rebaño Origen</p>
-                    <p class="text-base text-ganaderasoft-negro mt-1">
-                        {{ $movimiento['rebanoOrigen']['Nombre'] ?? (isset($movimiento['id_Rebano']) ? 'Rebaño #'.$movimiento['id_Rebano'] : '-') }}
-                    </p>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Finca Destino</p>
-                    <p class="text-base text-ganaderasoft-negro mt-1">
-                        {{ $movimiento['fincaDestino']['Nombre'] ?? (isset($movimiento['id_Finca_Destino']) ? 'Finca #'.$movimiento['id_Finca_Destino'] : '-') }}
-                    </p>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Rebaño Destino</p>
-                    <p class="text-base text-ganaderasoft-negro mt-1">
-                        {{ $movimiento['rebanoDestino']['Nombre'] ?? (isset($movimiento['id_Rebano_Destino']) ? 'Rebaño #'.$movimiento['id_Rebano_Destino'] : '-') }}
-                    </p>
-                </div>
-            </div>
-            <p class="text-xs text-gray-400 -mt-2 mb-6">El origen y destino no se pueden modificar. Solo se pueden actualizar los campos siguientes.</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Rebaño Destino</label>
-                    <input type="text" name="Rebano_Destino" maxlength="30"
-                           value="{{ old('Rebano_Destino', $movimiento['Rebano_Destino'] ?? '') }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('Rebano_Destino') border-red-500 @enderror">
-                    @error('Rebano_Destino')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Comentario</label>
-                    <input type="text" name="Comentario" maxlength="40"
-                           value="{{ old('Comentario', $movimiento['Comentario'] ?? '') }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('Comentario') border-red-500 @enderror">
-                    @error('Comentario')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-            </div>
-
-            <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
-                <a href="{{ route('movimiento-rebano.index') }}"
-                   class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</a>
-                <button type="submit"
-                        class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                    Actualizar
-                </button>
-            </div>
-        </form>
+        <div class="flex flex-wrap items-center gap-3">
+            <a href="{{ route('movimiento-rebano.show', $movimiento['id']) }}"
+               class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm inline-flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                Ver Detalle
+            </a>
+            <a href="{{ route('movimiento-rebano.index') }}" 
+               class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver
+            </a>
+        </div>
     </div>
+
+    <!-- Error Messages -->
+    @if(session('error'))
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm font-medium">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm">
+            <p class="text-sm font-bold mb-1">Por favor corrige los siguientes errores:</p>
+            <ul class="list-disc list-inside text-sm pl-2 space-y-0.5">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Form & Content Layout -->
+    <form action="{{ route('movimiento-rebano.update', $movimiento['id']) }}" method="POST">
+        @csrf 
+        @method('PUT')
+        
+        <input type="hidden" name="rebano_destino" value="{{ old('rebano_destino', $movimiento['rebano_destino'] ?? '') }}">
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Columna Izquierda: Información de Lectura y Edición de Comentarios (2 Tercios) -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Resumen Inmutable de Ubicaciones -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                        <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                            <span>🚚</span> Ubicaciones del Traslado
+                        </h3>
+                        <span class="text-xs font-semibold px-3 py-1 bg-gray-100 text-gray-600 rounded-full border border-gray-200 inline-flex items-center gap-1">
+                            🔒 Inmutables por trazabilidad
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Origen Card -->
+                        <div class="p-5 bg-amber-50/60 border border-amber-100 rounded-2xl space-y-3">
+                            <p class="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+                                <span>🏡</span> Ubicación de Origen
+                            </p>
+                            <div>
+                                <span class="text-xs text-gray-500">Rebaño:</span>
+                                <p class="text-base font-bold text-gray-900">
+                                    🐄 {{ data_get($movimiento, 'rebano_origen.nombre') ?? 'N/A' }}
+                                </p>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-500">Finca:</span>
+                                <p class="text-sm font-semibold text-gray-700">
+                                    🏡 {{ data_get($movimiento, 'finca_origen.nombre') ?? 'N/A' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Destino Card -->
+                        <div class="p-5 bg-blue-50/60 border border-blue-100 rounded-2xl space-y-3">
+                            <p class="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+                                <span>🎯</span> Ubicación de Destino
+                            </p>
+                            <div>
+                                <span class="text-xs text-blue-600">Rebaño:</span>
+                                <p class="text-base font-bold text-ganaderasoft-azul">
+                                    🐄 {{ data_get($movimiento, 'rebano_destino_rel.nombre') ?? $movimiento['rebano_destino'] ?? 'N/A' }}
+                                </p>
+                            </div>
+                            <div>
+                                <span class="text-xs text-blue-600">Finca:</span>
+                                <p class="text-sm font-semibold text-blue-900">
+                                    🏡 {{ data_get($movimiento, 'finca_destino.nombre') ?? 'N/A' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campo Editable de Comentarios -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2 border-b border-gray-100 pb-3">
+                        <span>💬</span> Observaciones del Registro
+                    </h3>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Comentarios u Observaciones</label>
+                        <textarea name="comentario" rows="3" maxlength="40"
+                                  placeholder="Escriba algún comentario o nota importante sobre la transferencia..."
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">{{ old('comentario', $movimiento['comentario'] ?? '') }}</textarea>
+                        <p class="text-xs text-gray-400 mt-1">Máximo 40 caracteres.</p>
+                        @error('comentario')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Panel Lateral de Guardado (1 Tercio) -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
+                    <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span>⚙️</span> Guardar Cambios
+                        </h3>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="text-xs text-gray-500 space-y-2 border-b border-gray-100 pb-4">
+                            <div class="flex justify-between">
+                                <span>ID Registro:</span>
+                                <span class="font-bold text-gray-900 font-mono">#{{ $movimiento['id'] ?? 'N/A' }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Fecha Registro:</span>
+                                <span class="font-semibold text-gray-800">{{ isset($movimiento['created_at']) ? date('d/m/Y H:i', strtotime($movimiento['created_at'])) : 'N/A' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 pt-2">
+                            <button type="submit"
+                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
+                                💾 Guardar Cambios
+                            </button>
+
+                            <a href="{{ route('movimiento-rebano.index') }}"
+                               class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                                Cancelar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 @endsection

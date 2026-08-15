@@ -3,140 +3,137 @@
 namespace App\Services\Api;
 
 use App\Services\Contracts\ConfiguracionServiceInterface;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
+/**
+ * Servicio encargado de gestionar las opciones de configuración y catálogos globales
+ * a través del consumo de la API v2 del backend.
+ */
 class ApiConfiguracionService extends BaseApiService implements ConfiguracionServiceInterface
 {
     /**
-     * Get list of etapas options
+     * Verifica si el usuario posee un token de sesión activo.
+     *
+     * @return bool
+     */
+    protected function isAuthenticated(): bool
+    {
+        return session()->has('user.token');
+    }
+
+    /**
+     * Helper genérico para obtener catálogos de configuración sin paginar.
+     *
+     * @param string $endpoint Endpoint relativo de la API
+     * @param string $nombreOp Nombre descriptivo para logging de errores
+     * @return array Estructura o listado devuelto por la API
+     */
+    protected function fetchOption(string $endpoint, string $nombreOp): array
+    {
+        if (!$this->isAuthenticated()) {
+            return [
+                'success' => false,
+                'message' => 'Usuario no autenticado'
+            ];
+        }
+
+        try {
+            return $this->get($endpoint);
+        } catch (Exception $e) {
+            Log::error("Error al obtener la configuración de {$nombreOp}: " . $e->getMessage(), [
+                'exception' => $e
+            ]);
+            return [
+                'success' => false,
+                'message' => "Error al obtener catálogo de {$nombreOp}"
+            ];
+        }
+    }
+
+    /**
+     * Obtiene el listado completo de etapas del sistema sin paginación.
+     *
+     * @return array Colección de etapas de desarrollo
      */
     public function getEtapas(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
+        if (!$this->isAuthenticated()) {
             return [];
         }
 
-        $response = $this->get('/etapas');
+        try {
+            $response = $this->get('/etapas?nopaginate=true');
 
-        if (isset($response['success']) && $response['success']) {
-            return $response['data'] ?? [];
+            if (($response['success'] ?? false) && isset($response['data'])) {
+                $data = $response['data'];
+                return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+            }
+
+            return [];
+        } catch (Exception $e) {
+            Log::error('Error al obtener la lista de etapas: ' . $e->getMessage());
+            return [];
         }
-
-        return [];
     }
 
     /**
-     * Get list of fuente agua options
+     * Obtiene el catálogo de opciones de fuente de agua.
+     *
+     * @return array Opciones disponibles de fuente de agua
      */
     public function getFuenteAgua(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->get('/configuracion/fuente-agua');
-
-        return $response;
+        return $this->fetchOption('/configuracion/fuente-agua', 'fuente de agua');
     }
 
     /**
-     * Get list of tipo explotacion options
+     * Obtiene el catálogo de opciones de tipo de explotación.
+     *
+     * @return array Opciones disponibles de tipo de explotación
      */
     public function getTipoExplotacion(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->get('/configuracion/tipo-explotacion');
-
-        return $response;
+        return $this->fetchOption('/configuracion/tipo-explotacion', 'tipo de explotación');
     }
 
     /**
-     * Get list of tipo relieve options
+     * Obtiene el catálogo de opciones de tipo de relieve.
+     *
+     * @return array Opciones disponibles de tipo de relieve
      */
     public function getTipoRelieve(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->get('/configuracion/tipo-relieve');
-
-        return $response;
+        return $this->fetchOption('/configuracion/tipo-relieve', 'tipo de relieve');
     }
 
     /**
-     * Get list of textura suelo options
+     * Obtiene el catálogo de opciones de textura de suelo.
+     *
+     * @return array Opciones disponibles de textura de suelo
      */
     public function getTexturaSuelo(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->get('/configuracion/textura-suelo');
-
-        return $response;
+        return $this->fetchOption('/configuracion/textura-suelo', 'textura de suelo');
     }
 
     /**
-     * Get list of ph suelo options
+     * Obtiene el catálogo de opciones de pH de suelo.
+     *
+     * @return array Opciones disponibles de pH de suelo
      */
     public function getPhSuelo(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->get('/configuracion/ph-suelo');
-
-        return $response;
+        return $this->fetchOption('/configuracion/ph-suelo', 'pH de suelo');
     }
 
     /**
-     * Get list of metodo riego options
+     * Obtiene el catálogo de opciones de método de riego.
+     *
+     * @return array Opciones disponibles de método de riego
      */
     public function getMetodoRiego(): array
     {
-        $user = session('user');
-        
-        if (!$user || !isset($user['token'])) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        $response = $this->get('/configuracion/metodo-riego');
-
-        return $response;
+        return $this->fetchOption('/configuracion/metodo-riego', 'método de riego');
     }
 }

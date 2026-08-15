@@ -1,446 +1,354 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Nuevo Cambio de Animal - GanaderaSoft')
+@section('title', 'Nuevo Cambio de Animal')
 
 @section('content')
-    <div class="container mx-auto px-4 py-8">
-        <!-- Header -->
-        <div class="flex items-center mb-6">
-            <a href="{{ route('cambios-animal.index') }}" 
-               class="mr-4 text-ganaderasoft-celeste hover:text-ganaderasoft-celeste/80">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-            </a>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro">📝 Nuevo Cambio de Animal</h1>
-        </div>
-
-        <!-- Formulario -->
-        <div class="bg-white rounded-lg shadow-md">
-            <!-- Header del formulario -->
-            <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-lg">
-                <h2 class="text-lg font-semibold">Registro de Cambio de Etapa</h2>
-                <p class="text-sm opacity-90 mt-1">Registre los cambios de desarrollo y etapa del animal</p>
+<div class="space-y-6">
+    <!-- Header Card -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
+                📝
             </div>
-
-            <form action="{{ route('cambios-animal.store') }}" method="POST" class="p-6">
-                @csrf
-
-                <!-- Mensajes de error generales -->
-                @if($errors->any())
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-                        <div class="flex">
-                            <div class="py-1">
-                                <svg class="fill-current h-6 w-6 text-red-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-bold">Hay errores en el formulario:</p>
-                                <ul class="ml-6 list-disc">
-                                    @foreach($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Información Principal -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-semibold text-ganaderasoft-negro border-b pb-2">Información Principal</h3>
-
-                        <!-- Animal -->
-                        <div>
-                            <label for="cambios_etapa_anid" class="block text-sm font-medium text-gray-700 mb-1">
-                                Animal <span class="text-red-500">*</span>
-                            </label>
-                            <select name="cambios_etapa_anid" id="cambios_etapa_anid" 
-                                    class="form-select w-full border-gray-300 rounded-md focus:border-ganaderasoft-celeste focus:ring-ganaderasoft-celeste @error('cambios_etapa_anid') border-red-500 @enderror"
-                                    required>
-                                <option value="">Seleccione un animal</option>
-                                @if(is_array($animales))
-                                    @foreach($animales as $animal)
-                                        @if(is_array($animal) && isset($animal['id_Animal']))
-                                            <option value="{{ $animal['id_Animal'] }}" 
-                                                    {{ old('cambios_etapa_anid') == $animal['id_Animal'] ? 'selected' : '' }}
-                                                    data-sexo="{{ $animal['Sexo'] ?? '' }}"
-                                                    data-tipo-animal="{{ $animal['fk_composicion_raza'] ?? '3' }}">
-                                                {{ $animal['Nombre'] ?? 'Animal #' . $animal['id_Animal'] }}
-                                                @if(isset($animal['rebano']['finca']['Nombre']))
-                                                    - {{ $animal['rebano']['finca']['Nombre'] }}
-                                                @endif
-                                                @if(isset($animal['Sexo']))
-                                                    ({{ $animal['Sexo'] === 'M' ? 'Macho' : 'Hembra' }})
-                                                @endif
-                                            </option>
-                                        @endif
-                                    @endforeach
-                                @endif
-                            </select>
-                            @error('cambios_etapa_anid')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                            <p class="text-xs text-gray-500 mt-1">Seleccione el animal al que se le registrará el cambio</p>
-                        </div>
-
-                        <!-- Etapa -->
-                        <div>
-                            <label for="cambios_etapa_etid" class="block text-sm font-medium text-gray-700 mb-1">
-                                Nueva Etapa <span class="text-red-500">*</span>
-                            </label>
-                            
-                            <!-- Debug info -->
-                            <div id="debug-info" class="mb-2 p-2 bg-blue-100 text-blue-800 text-xs rounded" style="display: none;">
-                                <strong>Debug:</strong> <span id="debug-text">Selecciona un animal para ver su etapa actual</span>
-                            </div>
-                            
-                            <select name="cambios_etapa_etid" id="cambios_etapa_etid" 
-                                    class="form-select w-full border-gray-300 rounded-md focus:border-ganaderasoft-celeste focus:ring-ganaderasoft-celeste @error('cambios_etapa_etid') border-red-500 @enderror"
-                                    required>
-                                <option value="">Seleccione una etapa</option>
-                                @if(is_array($etapas))
-                                    @foreach($etapas as $etapa)
-                                        @if(is_array($etapa) && isset($etapa['etapa_id']))
-                                            <option value="{{ $etapa['etapa_id'] }}" 
-                                                    {{ old('cambios_etapa_etid') == $etapa['etapa_id'] ? 'selected' : '' }}
-                                                    data-sexo="{{ $etapa['etapa_sexo'] ?? '' }}"
-                                                    data-tipo-animal="{{ $etapa['etapa_fk_tipo_animal_id'] ?? '3' }}"
-                                                    data-edad-ini="{{ $etapa['etapa_edad_ini'] ?? '' }}"
-                                                    data-edad-fin="{{ $etapa['etapa_edad_fin'] ?? '' }}">
-                                                {{ $etapa['etapa_nombre'] ?? 'Etapa' }}
-                                                @if(isset($etapa['etapa_sexo']))
-                                                    ({{ $etapa['etapa_sexo'] === 'M' ? 'Macho' : 'Hembra' }})
-                                                @endif
-                                                @if(isset($etapa['etapa_edad_ini']) && isset($etapa['etapa_edad_fin']))
-                                                    - {{ $etapa['etapa_edad_ini'] }} a {{ $etapa['etapa_edad_fin'] }} días
-                                                @endif
-                                            </option>
-                                        @endif
-                                    @endforeach
-                                @endif
-                            </select>
-                            @error('cambios_etapa_etid')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                            <p class="text-xs text-gray-500 mt-1">Seleccione la nueva etapa de desarrollo</p>
-                        </div>
-
-                        <!-- Nombre de Etapa -->
-                        <div>
-                            <label for="Etapa_Cambio" class="block text-sm font-medium text-gray-700 mb-1">
-                                Nombre de la Etapa <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" name="Etapa_Cambio" id="Etapa_Cambio" 
-                                   value="{{ old('Etapa_Cambio') }}"
-                                   class="form-input w-full border-gray-300 rounded-md focus:border-ganaderasoft-celeste focus:ring-ganaderasoft-celeste @error('Etapa_Cambio') border-red-500 @enderror"
-                                   placeholder="Ej: Juvenil, Adulto, etc."
-                                   maxlength="50"
-                                   required>
-                            @error('Etapa_Cambio')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                            <p class="text-xs text-gray-500 mt-1">Solo letras y espacios (máximo 50 caracteres)</p>
-                        </div>
-
-                        <!-- Fecha del Cambio -->
-                        <div>
-                            <label for="Fecha_Cambio" class="block text-sm font-medium text-gray-700 mb-1">
-                                Fecha del Cambio <span class="text-red-500">*</span>
-                            </label>
-                            <input type="date" name="Fecha_Cambio" id="Fecha_Cambio" 
-                                   value="{{ old('Fecha_Cambio', date('Y-m-d')) }}"
-                                   class="form-input w-full border-gray-300 rounded-md focus:border-ganaderasoft-celeste focus:ring-ganaderasoft-celeste @error('Fecha_Cambio') border-red-500 @enderror"
-                                   max="{{ date('Y-m-d') }}"
-                                   required>
-                            @error('Fecha_Cambio')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                            <p class="text-xs text-gray-500 mt-1">No puede ser una fecha futura</p>
-                        </div>
-                    </div>
-
-                    <!-- Medidas Físicas -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-semibold text-ganaderasoft-negro border-b pb-2">Medidas Físicas (Opcional)</h3>
-
-                        <!-- Peso -->
-                        <div>
-                            <label for="Peso" class="block text-sm font-medium text-gray-700 mb-1">
-                                Peso (kg)
-                            </label>
-                            <div class="relative">
-                                <input type="number" name="Peso" id="Peso" 
-                                       value="{{ old('Peso') }}"
-                                       class="form-input w-full pr-12 border-gray-300 rounded-md focus:border-ganaderasoft-celeste focus:ring-ganaderasoft-celeste @error('Peso') border-red-500 @enderror"
-                                       placeholder="0.0"
-                                       step="0.1"
-                                       min="1"
-                                       max="2000">
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                    <span class="text-gray-500 text-sm">kg</span>
-                                </div>
-                            </div>
-                            @error('Peso')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                            <p class="text-xs text-gray-500 mt-1">Peso en kilogramos (1 - 2000 kg)</p>
-                        </div>
-
-                        <!-- Altura -->
-                        <div>
-                            <label for="Altura" class="block text-sm font-medium text-gray-700 mb-1">
-                                Altura (cm)
-                            </label>
-                            <div class="relative">
-                                <input type="number" name="Altura" id="Altura" 
-                                       value="{{ old('Altura') }}"
-                                       class="form-input w-full pr-12 border-gray-300 rounded-md focus:border-ganaderasoft-celeste focus:ring-ganaderasoft-celeste @error('Altura') border-red-500 @enderror"
-                                       placeholder="0.0"
-                                       step="0.1"
-                                       min="10"
-                                       max="300">
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                    <span class="text-gray-500 text-sm">cm</span>
-                                </div>
-                            </div>
-                            @error('Altura')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                            <p class="text-xs text-gray-500 mt-1">Altura en centímetros (10 - 300 cm)</p>
-                        </div>
-
-                        <!-- Comentario -->
-                        <div>
-                            <label for="Comentario" class="block text-sm font-medium text-gray-700 mb-1">
-                                Comentarios
-                            </label>
-                            <textarea name="Comentario" id="Comentario" rows="4"
-                                      class="form-textarea w-full border-gray-300 rounded-md focus:border-ganaderasoft-celeste focus:ring-ganaderasoft-celeste @error('Comentario') border-red-500 @enderror"
-                                      placeholder="Observaciones sobre el cambio de etapa, desarrollo del animal, etc."
-                                      maxlength="500">{{ old('Comentario') }}</textarea>
-                            @error('Comentario')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                            <p class="text-xs text-gray-500 mt-1">Descripción del cambio y observaciones relevantes (máximo 500 caracteres)</p>
-                        </div>
-
-                        <!-- Indicador de caracteres -->
-                        <div class="text-right">
-                            <span id="comentario-contador" class="text-xs text-gray-500">0/500 caracteres</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Botones -->
-                <div class="flex justify-end space-x-3 mt-8 pt-6 border-t border-gray-200">
-                    <a href="{{ route('cambios-animal.index') }}" 
-                       class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-colors">
-                        Cancelar
-                    </a>
-                    <button type="submit" 
-                            class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                        Guardar
-                    </button>
-                </div>
-            </form>
+            <div>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                    Nuevo Cambio de Animal
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">Registra los cambios de desarrollo, etapa y medidas físicas del animal</p>
+            </div>
+        </div>
+        <div>
+            <a href="{{ route('cambios-animal.index') }}" 
+               class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver
+            </a>
         </div>
     </div>
 
-    <!-- Script para validaciones y funcionalidades -->
-    <script>
-        // Función de debug visible
-        function showDebug(message, isError = false) {
-            const debugInfo = document.getElementById('debug-info');
-            const debugText = document.getElementById('debug-text');
-            debugInfo.style.display = 'block';
-            debugText.textContent = message;
-            debugInfo.className = isError ? 
-                'mb-2 p-2 bg-red-100 text-red-800 text-xs rounded' : 
-                'mb-2 p-2 bg-blue-100 text-blue-800 text-xs rounded';
-            console.log('DEBUG:', message);
+    <!-- Error Messages -->
+    @if(session('error'))
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm font-medium">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm">
+            <p class="text-sm font-bold mb-1">Por favor corrige los siguientes errores:</p>
+            <ul class="list-disc list-inside text-sm pl-2 space-y-0.5">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Form Container -->
+    <form action="{{ route('cambios-animal.store') }}" method="POST">
+        @csrf
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Columna Izquierda: Formulario (2 Tercios) -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Card 1: Selección del Animal -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
+                        <span>🐄</span> Selección del Animal
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Animal <span class="text-red-500">*</span>
+                            </label>
+                            <select name="animal_id" id="animal_id" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('animal_id') border-red-500 @enderror">
+                                <option value="">Seleccione un animal...</option>
+                                @if(is_array($animales))
+                                    @foreach($animales as $animal)
+                                        @if(is_array($animal) && isset($animal['id']))
+                                            @php
+                                                $anPk = $animal['id'];
+                                                $etapaActual = data_get($animal, 'etapa_actual', []);
+                                                $etapaId = $etapaActual['etapa_id'] ?? data_get($etapaActual, 'etapa.id') ?? '';
+                                                $animalEtapaId = $etapaActual['id'] ?? $etapaActual['animal_etapa_id'] ?? '';
+                                                $etapaNombre = data_get($etapaActual, 'etapa.nombre')
+                                                    ?? data_get($etapaActual, 'etapa.Nombre')
+                                                    ?? ($etapaActual['nombre'] ?? null)
+                                                    ?? ($etapaActual['descripcion'] ?? null)
+                                                    ?? ($etapaId ? ('Etapa #'.$etapaId) : '');
+                                            @endphp
+                                            <option value="{{ $anPk }}" {{ old('animal_id') == $anPk ? 'selected' : '' }}
+                                                    data-nombre="{{ $animal['nombre'] ?? ('Animal #'.$anPk) }}"
+                                                    data-codigo="{{ $animal['codigo_animal'] ?? '' }}"
+                                                    data-sexo="{{ $animal['sexo'] ?? '' }}"
+                                                    data-etapa-id="{{ $etapaId }}"
+                                                    data-animal-etapa-id="{{ $animalEtapaId }}"
+                                                    data-etapa-nombre="{{ $etapaNombre }}">
+                                                {{ $animal['nombre'] ?? ('Animal #'.$anPk) }} ({{ $animal['codigo_animal'] ?? 'Sin código' }})
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                @endif
+                            </select>
+                            @error('animal_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Etapa Actual del Animal
+                            </label>
+                            <input type="text" id="etapa_actual_texto" readonly
+                                   class="w-full px-4 py-3 border border-gray-200 bg-gray-50 text-gray-600 rounded-xl text-sm font-semibold"
+                                   placeholder="Se completará al seleccionar el animal">
+                            <input type="hidden" name="animal_etapa_id" id="animal_etapa_id" value="{{ old('animal_etapa_id') }}">
+                            <input type="hidden" name="etapa_id" id="etapa_id" value="{{ old('etapa_id') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Datos del Cambio -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
+                        <span>🔄</span> Registro de Etapa
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Nombre de la Nueva Etapa <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="etapa_cambio" id="etapa_cambio" value="{{ old('etapa_cambio') }}" required
+                                   placeholder="Ej: Becerro, Juvenil, Adulto"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('etapa_cambio') border-red-500 @enderror">
+                            @error('etapa_cambio')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Fecha del Cambio <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="fecha_cambio" id="fecha_cambio" value="{{ old('fecha_cambio', date('Y-m-d')) }}" required
+                                   max="{{ date('Y-m-d') }}"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('fecha_cambio') border-red-500 @enderror">
+                            @error('fecha_cambio')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Medidas Físicas y Observaciones (Opcional) -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
+                        <span>⚖️</span> Medidas Físicas y Observaciones
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Peso Corporal (kg)
+                            </label>
+                            <div class="relative">
+                                <input type="number" name="peso" id="peso" value="{{ old('peso') }}"
+                                       step="0.1" min="1" max="2000" placeholder="Ej: 450.0"
+                                       class="w-full px-4 py-3 pr-16 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('peso') border-red-500 @enderror">
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-xs font-bold text-gray-400">
+                                    kg
+                                </div>
+                            </div>
+                            @error('peso')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Altura (cm)
+                            </label>
+                            <div class="relative">
+                                <input type="number" name="altura" id="altura" value="{{ old('altura') }}"
+                                       step="0.1" min="10" max="300" placeholder="Ej: 135.0"
+                                       class="w-full px-4 py-3 pr-16 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('altura') border-red-500 @enderror">
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-xs font-bold text-gray-400">
+                                    cm
+                                </div>
+                            </div>
+                            @error('altura')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            Comentarios y Observaciones
+                        </label>
+                        <textarea name="comentario" id="comentario" rows="3" maxlength="500" placeholder="Observaciones sobre el desarrollo del animal..."
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('comentario') border-red-500 @enderror">{{ old('comentario') }}</textarea>
+                        <div class="flex justify-end mt-1">
+                            <span id="comentarioContador" class="text-xs text-gray-400 font-medium">0 / 500 caracteres</span>
+                        </div>
+                        @error('comentario')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Resumen en Vivo (1 Tercio) -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span>📋</span> Resumen del Cambio
+                        </h3>
+                    </div>
+
+                    <div class="p-6 space-y-5">
+                        <!-- Preview Animal -->
+                        <div class="p-4 bg-cyan-50/60 border border-cyan-100 rounded-2xl space-y-2">
+                            <span class="text-xs font-bold text-cyan-900 uppercase tracking-wider">Animal Seleccionado:</span>
+                            <p id="previewAnimalNombre" class="text-base font-bold text-gray-900">No seleccionado</p>
+                            <div class="flex items-center gap-2 text-xs font-semibold text-gray-600 mt-1">
+                                <span>Etapa Actual:</span>
+                                <span id="previewEtapaActual" class="text-ganaderasoft-azul font-bold">Sin etapa</span>
+                            </div>
+                        </div>
+
+                        <!-- Mini Stats Preview -->
+                        <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
+                            <div class="flex justify-between">
+                                <span>Nueva Etapa:</span>
+                                <span id="previewNuevaEtapa" class="font-extrabold text-emerald-600">No especificada</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Peso Ingresado:</span>
+                                <span id="previewPeso" class="font-bold text-gray-900">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Altura Ingresada:</span>
+                                <span id="previewAltura" class="font-bold text-gray-900">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Fecha del Registro:</span>
+                                <span id="previewFecha" class="font-semibold text-gray-900">{{ date('d/m/Y') }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-3 pt-2">
+                            <button type="submit"
+                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
+                                💾 Guardar Cambio
+                            </button>
+                            <a href="{{ route('cambios-animal.index') }}"
+                               class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                                Cancelar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const animalSelect       = document.getElementById('animal_id');
+    const animalEtapaInput   = document.getElementById('animal_etapa_id');
+    const etapaIdInput       = document.getElementById('etapa_id');
+    const etapaTexto         = document.getElementById('etapa_actual_texto');
+    const etapaCambioInput   = document.getElementById('etapa_cambio');
+
+    const pesoInput          = document.getElementById('peso');
+    const alturaInput        = document.getElementById('altura');
+    const fechaInput         = document.getElementById('fecha_cambio');
+    const comentarioInput    = document.getElementById('comentario');
+    const comentarioContador = document.getElementById('comentarioContador');
+
+    const previewNombre      = document.getElementById('previewAnimalNombre');
+    const previewEtapaActual = document.getElementById('previewEtapaActual');
+    const previewNuevaEtapa  = document.getElementById('previewNuevaEtapa');
+    const previewPeso        = document.getElementById('previewPeso');
+    const previewAltura      = document.getElementById('previewAltura');
+    const previewFecha       = document.getElementById('previewFecha');
+
+    const endpointTemplate   = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
+
+    function renderStage(option, fetchedStage) {
+        let etapaId = '', animalEtapaId = '', etapaNombre = '';
+
+        if (fetchedStage) {
+            etapaId = fetchedStage.etapa_id || (fetchedStage.etapa && fetchedStage.etapa.id) || '';
+            animalEtapaId = fetchedStage.id || fetchedStage.animal_etapa_id || '';
+            etapaNombre = (fetchedStage.etapa && (fetchedStage.etapa.nombre || fetchedStage.etapa.Nombre))
+                || fetchedStage.nombre || fetchedStage.Nombre || fetchedStage.descripcion || '';
+        } else if (option) {
+            etapaId = option.dataset.etapaId || '';
+            animalEtapaId = option.dataset.animalEtapaId || '';
+            etapaNombre = option.dataset.etapaNombre || '';
         }
-        
-        // Filtrar etapas basándose en el animal seleccionado - SOLO ETAPA ACTUAL
-        document.getElementById('cambios_etapa_anid').addEventListener('change', function(e) {
-            const animalSelect = e.target;
-            const etapaSelect = document.getElementById('cambios_etapa_etid');
-            const selectedOption = animalSelect.options[animalSelect.selectedIndex];
-            
-            showDebug('Animal seleccionado, obteniendo solo su etapa actual...');
-            
-            // Reiniciar etapa
-            etapaSelect.value = '';
-            document.getElementById('Etapa_Cambio').value = '';
-            
-            if (!animalSelect.value) {
-                showDebug('No hay animal seleccionado');
-                // Limpiar select y mostrar solo la opción por defecto
-                etapaSelect.innerHTML = '<option value="">Seleccione una etapa</option>';
-                document.getElementById('debug-info').style.display = 'none';
-                return;
-            }
-            
-            const animalId = animalSelect.value;
-            showDebug(`Obteniendo etapa actual para animal ID: ${animalId}`);
-            
-            // Obtener etapa actual del animal vía AJAX
-            fetch(`/cambios-animal/animal/${animalId}/etapa`, {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                }
-            })
-            .then(response => {
-                showDebug(`AJAX Response status: ${response.status}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Respuesta completa del servidor:', data);
-                
-                if (data.success && data.data && data.data.etapa_actual) {
-                    const etapaActualData = data.data.etapa_actual;
-                    showDebug('✅ Etapa actual encontrada, procesando...');
-                    
-                    // La estructura puede ser directa o anidada
-                    let etapaActual;
-                    if (etapaActualData.etapa) {
-                        etapaActual = etapaActualData.etapa;
-                    } else if (etapaActualData.etapa_id) {
-                        etapaActual = etapaActualData;
-                    } else {
-                        showDebug('ERROR: Estructura de etapa_actual no reconocida', true);
-                        return;
-                    }
-                    
-                    showDebug(`✅ Etapa: ${etapaActual.etapa_nombre} (ID: ${etapaActual.etapa_id})`);
-                    
-                    // LIMPIAR el select y agregar SOLO la etapa actual
-                    etapaSelect.innerHTML = '<option value="">Seleccione una etapa</option>';
-                    
-                    const etapaOption = document.createElement('option');
-                    etapaOption.value = etapaActual.etapa_id;
-                    etapaOption.textContent = `${etapaActual.etapa_nombre} (ETAPA ACTUAL)`;
-                    etapaSelect.appendChild(etapaOption);
-                    
-                    showDebug(`✅ ¡LISTO! Solo se muestra: "${etapaOption.textContent}"`);
-                    
-                    // Auto-seleccionar la etapa actual y llenar el nombre
-                    etapaSelect.value = etapaActual.etapa_id;
-                    document.getElementById('Etapa_Cambio').value = etapaActual.etapa_nombre;
-                    
-                    showDebug(`✅ Etapa preseleccionada y nombre autocompletado`);
-                    
-                } else {
-                    showDebug('ERROR: No se encontró etapa_actual válida', true);
-                    etapaSelect.innerHTML = '<option value="">Sin etapa disponible</option>';
-                }
-            })
-            .catch(error => {
-                showDebug(`ERROR AJAX: ${error.message}`, true);
-                console.error('Error obteniendo etapa del animal:', error);
-                etapaSelect.innerHTML = '<option value="">Error al cargar etapa</option>';
-            });
-        });
 
-        // Auto-completar nombre de etapa cuando se selecciona una etapa
-        document.getElementById('cambios_etapa_etid').addEventListener('change', function(e) {
-            const selectedOption = e.target.options[e.target.selectedIndex];
-            if (selectedOption.value) {
-                const etapaNombre = selectedOption.text.split(' (')[0]; // Obtener solo el nombre sin la información adicional
-                document.getElementById('Etapa_Cambio').value = etapaNombre;
-            } else {
-                document.getElementById('Etapa_Cambio').value = '';
-            }
-        });
+        etapaIdInput.value = etapaId;
+        animalEtapaInput.value = animalEtapaId;
 
-        // Validación de nombres (solo letras)
-        document.getElementById('Etapa_Cambio').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑ\s]/g, '');
-            e.target.value = value;
-        });
+        const displayTexto = etapaNombre || (etapaId ? ('Etapa #' + etapaId) : '');
+        etapaTexto.value = displayTexto || 'Animal sin etapa activa';
+        previewEtapaActual.textContent = displayTexto || 'Sin etapa';
 
-        // Contador de caracteres para comentario
-        const comentarioTextarea = document.getElementById('Comentario');
-        const contador = document.getElementById('comentario-contador');
-        
-        function actualizarContador() {
-            const length = comentarioTextarea.value.length;
-            contador.textContent = `${length}/500 caracteres`;
-            
-            if (length > 450) {
-                contador.classList.remove('text-gray-500');
-                contador.classList.add('text-red-500');
-            } else {
-                contador.classList.remove('text-red-500');
-                contador.classList.add('text-gray-500');
+        if (!etapaCambioInput.value && etapaNombre) {
+            etapaCambioInput.value = etapaNombre;
+            previewNuevaEtapa.textContent = etapaNombre;
+        }
+    }
+
+    async function updateStageAndPreview() {
+        const option = animalSelect.options[animalSelect.selectedIndex];
+        if (!animalSelect.value || !option) {
+            etapaIdInput.value = '';
+            animalEtapaInput.value = '';
+            etapaTexto.value = '';
+            previewNombre.textContent = 'No seleccionado';
+            previewEtapaActual.textContent = 'Sin etapa';
+        } else {
+            previewNombre.textContent = option.dataset.nombre || 'Animal seleccionado';
+            renderStage(option, null);
+            if (!etapaIdInput.value || !etapaTexto.value || etapaTexto.value === 'Animal sin etapa activa') {
+                try {
+                    const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
+                    const payload = await response.json();
+                    renderStage(option, payload && payload.data ? payload.data.etapa_actual : null);
+                } catch (error) {
+                    etapaTexto.value = 'No se pudo obtener la etapa';
+                }
             }
         }
-        
-        comentarioTextarea.addEventListener('input', actualizarContador);
-        actualizarContador(); // Inicial
 
-        // Validación de peso y altura
-        document.getElementById('Peso').addEventListener('input', function(e) {
-            let value = parseFloat(e.target.value);
-            if (value < 1) e.target.value = 1;
-            if (value > 2000) e.target.value = 2000;
-        });
+        // Live values preview
+        previewNuevaEtapa.textContent = etapaCambioInput.value.trim() || 'No especificada';
+        previewPeso.textContent = pesoInput.value ? `${parseFloat(pesoInput.value).toFixed(1)} kg` : '--';
+        previewAltura.textContent = alturaInput.value ? `${parseFloat(alturaInput.value).toFixed(1)} cm` : '--';
 
-        document.getElementById('Altura').addEventListener('input', function(e) {
-            let value = parseFloat(e.target.value);
-            if (value < 10) e.target.value = 10;
-            if (value > 300) e.target.value = 300;
-        });
+        if (fechaInput.value) {
+            const parts = fechaInput.value.split('-');
+            if (parts.length === 3) {
+                previewFecha.textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+        }
 
-        // Validar fecha
-        document.getElementById('Fecha_Cambio').addEventListener('change', function(e) {
-            const fechaSeleccionada = new Date(e.target.value);
-            const fechaActual = new Date();
-            
-            if (fechaSeleccionada > fechaActual) {
-                alert('La fecha del cambio no puede ser futura.');
-                e.target.value = new Date().toISOString().split('T')[0];
-            }
-        });
+        if (comentarioInput && comentarioContador) {
+            comentarioContador.textContent = `${comentarioInput.value.length} / 500 caracteres`;
+        }
+    }
 
-        // Prevenir envío del formulario con datos inválidos
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const animal = document.getElementById('cambios_etapa_anid').value;
-            const etapa = document.getElementById('cambios_etapa_etid').value;
-            const etapaNombre = document.getElementById('Etapa_Cambio').value.trim();
-            const fecha = document.getElementById('Fecha_Cambio').value;
-            
-            if (!animal) {
-                alert('Debe seleccionar un animal.');
-                e.preventDefault();
-                return;
-            }
-            
-            if (!etapa) {
-                alert('Debe seleccionar una etapa.');
-                e.preventDefault();
-                return;
-            }
-            
-            if (!etapaNombre) {
-                alert('Debe ingresar el nombre de la etapa.');
-                e.preventDefault();
-                return;
-            }
-            
-            if (!fecha) {
-                alert('Debe seleccionar la fecha del cambio.');
-                e.preventDefault();
-                return;
-            }
-        });
-    </script>
+    animalSelect.addEventListener('change', updateStageAndPreview);
+    etapaCambioInput.addEventListener('input', updateStageAndPreview);
+    pesoInput.addEventListener('input', updateStageAndPreview);
+    alturaInput.addEventListener('input', updateStageAndPreview);
+    fechaInput.addEventListener('change', updateStageAndPreview);
+    if (comentarioInput) comentarioInput.addEventListener('input', updateStageAndPreview);
+
+    updateStageAndPreview();
+});
+</script>
 @endsection

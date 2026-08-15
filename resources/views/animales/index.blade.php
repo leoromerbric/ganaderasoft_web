@@ -3,37 +3,44 @@
 @section('title', 'Gestión de Animales')
 
 @section('content')
-    <div>
-        <!-- Cabecera -->
-        <div class="mb-8 flex items-center justify-between">
+    <div class="space-y-8">
+        <!-- Header section -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div>
-                <h2 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Animales</h2>
-                <p class="text-gray-600 mt-1">Administra los animales del sistema</p>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Animales</h1>
+                <p class="text-gray-500 text-sm mt-1">Administración del inventario de ganado y registro por rebaños</p>
             </div>
             <a href="{{ route('animales.create') }}"
-               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
+               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium">
                 + Nuevo Animal
             </a>
         </div>
 
+        <!-- Alert Messages -->
         @if(session('success'))
-            <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-lg">
-                <p class="font-medium">{{ session('success') }}</p>
+            <div class="p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-sm flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-lg">✅</span>
+                    <p class="text-sm font-medium">{{ session('success') }}</p>
+                </div>
             </div>
         @endif
         @if(session('error'))
-            <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-lg">
-                <p class="font-medium">{{ session('error') }}</p>
+            <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-lg">⚠️</span>
+                    <p class="text-sm font-medium">{{ session('error') }}</p>
+                </div>
             </div>
         @endif
 
-        <!-- Filtros -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-            <div class="flex flex-nowrap gap-4 items-end">
-                <div class="flex-1 min-w-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Finca</label>
+        <!-- Filters Bar -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
                     <select id="filtroFinca"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                         <option value="">Todas las fincas</option>
                         @foreach($fincas as $finca)
                             <option value="{{ $finca['id'] }}" {{ $idFinca == $finca['id'] ? 'selected' : '' }}>
@@ -42,10 +49,10 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Rebaño</label>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño</label>
                     <select id="filtroRebano"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                         <option value="">Todos los rebaños</option>
                         @foreach($rebanos as $rebano)
                             <option value="{{ $rebano['id'] }}"
@@ -56,109 +63,146 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Sexo</label>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Sexo</label>
                     <select id="filtroSexo"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                         <option value="">Todos</option>
                         <option value="M" {{ $sexo === 'M' ? 'selected' : '' }}>Macho</option>
                         <option value="H" {{ $sexo === 'H' ? 'selected' : '' }}>Hembra</option>
                     </select>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Nombre o Código</label>
-                    <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Buscar..."
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Nombre o Código</label>
+                    <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Ej: Lola, BOV-01..."
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
-                <div class="flex-none">
-                    <button onclick="limpiarFiltros()"
-                            class="w-full px-6 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">
-                        Limpiar
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Estadísticas -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="text-center">
-                    <div id="statTotal" class="text-2xl font-bold text-ganaderasoft-azul">{{ $estadisticas['total'] }}</div>
-                    <div class="text-sm text-gray-600">Total Animales</div>
-                </div>
-                <div class="text-center">
-                    <div id="statMachos" class="text-2xl font-bold text-ganaderasoft-celeste">{{ $estadisticas['machos'] }}</div>
-                    <div class="text-sm text-gray-600">Machos</div>
-                </div>
-                <div class="text-center">
-                    <div id="statHembras" class="text-2xl font-bold" style="color:#E07B39;">{{ $estadisticas['hembras'] }}</div>
-                    <div class="text-sm text-gray-600">Hembras</div>
-                </div>
-                <div class="text-center">
-                    <div id="statActivos" class="text-2xl font-bold text-ganaderasoft-verde">{{ $estadisticas['activos'] }}</div>
-                    <div class="text-sm text-gray-600">Activos</div>
+                <div>
+                    <a href="{{ route('animales.index') }}"
+                       class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                        Limpiar Filtros
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Tabla -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <!-- Summary KPIs -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Animales</p>
+                    <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $estadisticas['total'] }}</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
+                    🐄
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Machos</p>
+                    <p id="statMachos" class="text-3xl font-extrabold text-blue-600">{{ $estadisticas['machos'] }}</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-2xl">
+                    🐂
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Hembras</p>
+                    <p id="statHembras" class="text-3xl font-extrabold text-pink-600">{{ $estadisticas['hembras'] }}</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-pink-50 flex items-center justify-center text-2xl">
+                    🐄
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Activos</p>
+                    <p id="statActivos" class="text-3xl font-extrabold text-emerald-600">{{ $estadisticas['activos'] }}</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl">
+                    ✅
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Animales -->
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
             @if(count($animales) > 0)
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sexo</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rebaño</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Nacimiento</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Animal</th>
+                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Código</th>
+                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Sexo</th>
+                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rebaño</th>
+                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha Nacimiento</th>
+                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200" id="tablaAnimales">
+                        <tbody class="bg-white divide-y divide-gray-100 text-sm" id="tablaAnimales">
                             @foreach($animales as $animal)
                                 @php
                                     $rebanoId   = $animal['rebano']['id'] ?? ($animal['rebano_id'] ?? '');
                                     $fincaId    = $animal['rebano']['finca_id']  ?? ($mapaRebanoFinca[$rebanoId] ?? '');
+                                    $isMacho    = ($animal['sexo'] ?? '') === 'M';
                                 @endphp
-                                <tr class="hover:bg-gray-50 transition-colors fila-animal"
+                                <tr class="hover:bg-gray-50/80 transition-colors fila-animal"
                                     data-rebano="{{ $rebanoId }}"
                                     data-finca="{{ $fincaId }}"
                                     data-sexo="{{ $animal['sexo'] ?? '' }}"
                                     data-nombre="{{ strtolower(($animal['nombre'] ?? '').' '.($animal['codigo_animal'] ?? '')) }}">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded-xl {{ $isMacho ? 'bg-blue-50 text-blue-600' : 'bg-pink-50 text-pink-600' }} flex items-center justify-center font-bold text-lg">
+                                                {{ $isMacho ? '🐂' : '🐄' }}
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-gray-900">{{ $animal['nombre'] ?? 'Sin Nombre' }}</p>
+                                                <p class="text-xs text-gray-400">ID: #{{ $animal['id'] }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap font-semibold text-gray-800">
                                         {{ $animal['codigo_animal'] ?? 'N/A' }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $animal['nombre'] ?? 'N/A' }}
-                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full
-                                            {{ ($animal['sexo'] ?? '') === 'M' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' }}">
-                                            {{ ($animal['sexo'] ?? '') === 'M' ? 'Macho' : 'Hembra' }}
+                                        <span class="px-3 py-1 text-xs font-semibold rounded-full border {{ $isMacho ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-pink-50 text-pink-700 border-pink-200' }}">
+                                            {{ $isMacho ? 'Macho' : 'Hembra' }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-medium">
                                         {{ $animal['rebano']['nombre'] ?? 'N/A' }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-500">
                                         {{ isset($animal['fecha_nacimiento']) ? date('d/m/Y', strtotime($animal['fecha_nacimiento'])) : 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if(!empty($animal['archivado']))
-                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700">Archivado</span>
+                                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700 border border-gray-200">Archivado</span>
                                         @else
-                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Activo</span>
+                                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Activo</span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-3">
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                                        <div class="flex justify-center space-x-3">
                                             <a href="{{ route('animales.show', $animal['id']) }}"
-                                               class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
+                                               class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul font-semibold transition-colors inline-flex items-center">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                </svg>
+                                                Ver
+                                            </a>
                                             <a href="{{ route('animales.edit', $animal['id']) }}"
-                                               class="text-ganaderasoft-verde hover:text-ganaderasoft-verde-oscuro">Editar</a>
+                                               class="text-ganaderasoft-azul hover:text-ganaderasoft-celeste font-semibold transition-colors inline-flex items-center">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                </svg>
+                                                Editar
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -168,11 +212,13 @@
                 </div>
             @else
                 <div class="p-12 text-center">
-                    <div class="text-6xl mb-4">&#x1F404;</div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">No hay animales registrados</h3>
-                    <p class="text-gray-500 mb-4">Comienza agregando tu primer animal al sistema</p>
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-ganaderasoft-celeste/10 flex items-center justify-center text-4xl">
+                        🐄
+                    </div>
+                    <h3 class="text-lg font-bold text-ganaderasoft-negro mb-1">No hay animales registrados</h3>
+                    <p class="text-gray-500 text-sm mb-6">Comienza agregando tu primer animal al sistema</p>
                     <a href="{{ route('animales.create') }}"
-                       class="inline-flex items-center px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md">
+                       class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
                         + Nuevo Animal
                     </a>
                 </div>
@@ -218,7 +264,6 @@
                 if (ok) {
                     total++;
                     if (row.dataset.sexo === 'M') machos++; else hembras++;
-                    // activo si no tiene badge archivado (usamos clase)
                     const badge = row.querySelector('td:nth-child(6) span');
                     if (badge && badge.textContent.trim() === 'Activo') activos++;
                 }
@@ -231,18 +276,9 @@
         }
 
         function limpiarFiltros() {
-            document.getElementById('filtroFinca').value  = '';
-            document.getElementById('filtroRebano').value = '';
-            document.getElementById('filtroSexo').value   = '';
-            document.getElementById('filtroNombre').value = '';
-            // Mostrar todos los options del rebano
-            Array.from(document.getElementById('filtroRebano').options).forEach(o => o.style.display = '');
-            document.querySelectorAll('.fila-animal').forEach(r => r.style.display = '');
-            // Reset stats
-            aplicarFiltros();
+            window.location.href = "{{ route('animales.index') }}";
         }
 
-        // Aplicar filtros iniciales si vienen por URL
         @if($idFinca || $idRebano || $sexo || $nombre)
         document.addEventListener('DOMContentLoaded', function () {
             @if($idFinca)

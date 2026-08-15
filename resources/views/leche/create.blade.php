@@ -3,145 +3,209 @@
 @section('title', 'Nuevo Registro de Leche')
 
 @section('content')
-    <div>
-        <!-- Page Title -->
-        <div class="mb-8">
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('leche.index') }}" 
-                   class="text-ganaderasoft-azul hover:text-ganaderasoft-celeste transition-colors">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                </a>
-                <div>
-                    <h2 class="text-3xl font-bold text-ganaderasoft-negro">Nuevo Registro de Leche</h2>
-                    <p class="text-gray-600 mt-1">Registra la producción diaria de leche</p>
-                </div>
+<div class="space-y-6">
+    <!-- Header Card -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
+                🥛
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                    Nuevo Pesaje de Leche
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">Registra la cantidad diaria de litros producida por una hembra en lactancia</p>
             </div>
         </div>
-
-        <!-- Error Messages -->
-        @if(session('error'))
-            <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-lg">
-                <p class="font-medium">{{ session('error') }}</p>
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-lg">
-                <p class="font-medium mb-2">Por favor corrige los siguientes errores:</p>
-                <ul class="list-disc list-inside">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <!-- Form Card -->
-        <div class="bg-white rounded-xl shadow-md p-8">
-            <form method="POST" action="{{ route('leche.store') }}" class="space-y-6">
-                @csrf
-
-                <!-- Lactation Period Selection -->
-                <div>
-                    <label for="leche_lactancia_id" class="block text-sm font-medium text-gray-700 mb-2">
-                        Período de Lactancia <span class="text-red-500">*</span>
-                    </label>
-                    <select name="leche_lactancia_id" id="leche_lactancia_id" required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-ganaderasoft-celeste @error('leche_lactancia_id') border-red-500 @enderror">
-                        <option value="">Seleccionar Período de Lactancia</option>
-                        @foreach($lactancias as $lactancia)
-                            @php
-                                $fechaInicio = date('d/m/Y', strtotime($lactancia['lactancia_fecha_inicio']));
-                                $fechaFin = $lactancia['Lactancia_fecha_fin'] ? date('d/m/Y', strtotime($lactancia['Lactancia_fecha_fin'])) : 'En curso';
-                                $animalNombre = $lactancia['animal']['Nombre'] ?? ('Animal #'.($lactancia['lactancia_etapa_anid'] ?? 'N/A'));
-                                $isSelected = old('leche_lactancia_id', $lactanciaId) == $lactancia['lactancia_id'];
-                            @endphp
-                            <option value="{{ $lactancia['lactancia_id'] }}" {{ $isSelected ? 'selected' : '' }}>
-                                {{ $animalNombre }} - {{ $fechaInicio }} hasta {{ $fechaFin }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('leche_lactancia_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Fecha de Pesaje -->
-                <div>
-                    <label for="leche_fecha_pesaje" class="block text-sm font-medium text-gray-700 mb-2">
-                        Fecha de Pesaje <span class="text-red-500">*</span>
-                    </label>
-                    <input type="date" 
-                           name="leche_fecha_pesaje" 
-                           id="leche_fecha_pesaje" 
-                           value="{{ old('leche_fecha_pesaje', date('Y-m-d')) }}" 
-                           required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-ganaderasoft-celeste @error('leche_fecha_pesaje') border-red-500 @enderror">
-                    @error('leche_fecha_pesaje')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Cantidad de Leche -->
-                <div>
-                    <label for="leche_pesaje_Total" class="block text-sm font-medium text-gray-700 mb-2">
-                        Cantidad de Leche (Litros) <span class="text-red-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <input type="number" 
-                               name="leche_pesaje_Total" 
-                               id="leche_pesaje_Total" 
-                               value="{{ old('leche_pesaje_Total') }}" 
-                               step="0.01" 
-                               min="0" 
-                               placeholder="Ej: 25.50" 
-                               required
-                               class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-ganaderasoft-celeste @error('leche_pesaje_Total') border-red-500 @enderror">
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <span class="text-gray-500 text-sm">Litros</span>
-                        </div>
-                    </div>
-                    @error('leche_pesaje_Total')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                    <p class="mt-1 text-sm text-gray-500">Ingresa la cantidad total de leche producida en este pesaje</p>
-                </div>
-
-                <!-- Submit Buttons -->
-                <div class="flex justify-end space-x-4 pt-6">
-                    <a href="{{ route('leche.index') }}" 
-                       class="px-6 py-3 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-200">
-                        Cancelar
-                    </a>
-                    <button type="submit" 
-                            class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                        Guardar
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Quick Tips -->
-        <div class="mt-8 bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium text-blue-800">Consejos para el registro</h3>
-                    <div class="mt-2 text-sm text-blue-700">
-                        <ul class="list-disc list-inside space-y-1">
-                            <li>Registra la producción inmediatamente después del ordeño</li>
-                            <li>Asegúrate de que la cantidad esté en litros</li>
-                            <li>Puedes registrar múltiples ordeños del mismo día por separado</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        <div>
+            <a href="{{ route('leche.index') }}" 
+               class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver
+            </a>
         </div>
     </div>
+
+    <!-- Error Messages -->
+    @if(session('error'))
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm font-medium">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm">
+            <p class="text-sm font-bold mb-1">Por favor corrige los siguientes errores:</p>
+            <ul class="list-disc list-inside text-sm pl-2 space-y-0.5">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Form Container -->
+    <form action="{{ route('leche.store') }}" method="POST">
+        @csrf
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Columna Izquierda: Formulario (2 Tercios) -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Card 1: Período de Lactancia -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
+                        <span>🐄</span> Período de Lactancia de la Hembra
+                    </h3>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            Seleccionar Lactancia <span class="text-red-500">*</span>
+                        </label>
+                        <select name="lactancia_id" id="lactancia_id" required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('lactancia_id') border-red-500 @enderror">
+                            <option value="">Seleccione un período de lactancia...</option>
+                            @foreach($lactancias as $lactancia)
+                                @php
+                                    $lactId = $lactancia['id'] ?? null;
+                                    $fechaInicio = isset($lactancia['fecha_inicio']) ? \Carbon\Carbon::parse($lactancia['fecha_inicio'])->format('d/m/Y') : '?';
+                                    $fechaFin = !empty($lactancia['fecha_fin']) ? \Carbon\Carbon::parse($lactancia['fecha_fin'])->format('d/m/Y') : 'En curso';
+                                    $animalNombre = data_get($lactancia, 'animal.nombre') ?? ('Animal #'.(data_get($lactancia, 'animal_id') ?? 'N/A'));
+                                    $animalCodigo = data_get($lactancia, 'animal.codigo_animal') ?? '';
+                                    $isSelected = old('lactancia_id', $lactanciaId) == $lactId;
+                                @endphp
+                                @if($lactId)
+                                    <option value="{{ $lactId }}" {{ $isSelected ? 'selected' : '' }}
+                                            data-nombre="{{ $animalNombre }}"
+                                            data-codigo="{{ $animalCodigo }}">
+                                        {{ $animalNombre }} ({{ $animalCodigo ? '#'.$animalCodigo : 'Sin código' }}) — {{ $fechaInicio }} al {{ $fechaFin }}
+                                    </option>
+                                @endif
+                            @endforeach
+                        </select>
+                        @error('lactancia_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+
+                <!-- Card 2: Datos de Producción -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
+                        <span>🥛</span> Datos del Pesaje Lechero
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Fecha de Pesaje <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="fecha_pesaje" id="fecha_pesaje" required value="{{ old('fecha_pesaje', date('Y-m-d')) }}"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('fecha_pesaje') border-red-500 @enderror">
+                            @error('fecha_pesaje')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Cantidad Producida (Litros) <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="number" name="pesaje_total" id="pesaje_total" required value="{{ old('pesaje_total') }}"
+                                       step="0.01" min="0.01" placeholder="Ej: 14.50"
+                                       class="w-full px-4 py-3 pr-16 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('pesaje_total') border-red-500 @enderror">
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-xs font-bold text-gray-400">
+                                    Litros
+                                </div>
+                            </div>
+                            @error('pesaje_total')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Resumen en Vivo (1 Tercio) -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
+                    <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span>📋</span> Resumen del Pesaje
+                        </h3>
+                    </div>
+
+                    <div class="p-6 space-y-5">
+                        <!-- Preview Animal -->
+                        <div class="p-4 bg-pink-50/60 border border-pink-100 rounded-2xl space-y-2">
+                            <span class="text-xs font-bold text-pink-900 uppercase tracking-wider">Hembra / Lactancia:</span>
+                            <p id="previewAnimalNombre" class="text-base font-bold text-gray-900">No seleccionada</p>
+                            <p id="previewAnimalCodigo" class="text-xs text-gray-500 font-mono">-</p>
+                        </div>
+
+                        <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
+                            <div class="flex justify-between">
+                                <span>Fecha Pesaje:</span>
+                                <span id="previewFecha" class="font-semibold text-gray-900">{{ date('d/m/Y') }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>Volumen Registrado:</span>
+                                <span id="previewVolumen" class="font-extrabold text-emerald-600 text-base">0.00 L</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-3 pt-2">
+                            <button type="submit"
+                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
+                                💾 Guardar Registro
+                            </button>
+                            <a href="{{ route('leche.index') }}"
+                               class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                                Cancelar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const lactanciaSelect = document.getElementById('lactancia_id');
+    const fechaInput     = document.getElementById('fecha_pesaje');
+    const pesajeInput    = document.getElementById('pesaje_total');
+
+    const previewNombre  = document.getElementById('previewAnimalNombre');
+    const previewCodigo  = document.getElementById('previewAnimalCodigo');
+    const previewFecha   = document.getElementById('previewFecha');
+    const previewVolumen = document.getElementById('previewVolumen');
+
+    function updateLivePreview() {
+        const option = lactanciaSelect.options[lactanciaSelect.selectedIndex];
+        if (!lactanciaSelect.value || !option) {
+            previewNombre.textContent = 'No seleccionada';
+            previewCodigo.textContent = '-';
+        } else {
+            previewNombre.textContent = option.dataset.nombre || 'Hembra seleccionada';
+            previewCodigo.textContent = option.dataset.codigo ? '#' + option.dataset.codigo : '-';
+        }
+
+        if (fechaInput.value) {
+            const parts = fechaInput.value.split('-');
+            if (parts.length === 3) previewFecha.textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        const vol = parseFloat(pesajeInput.value || 0);
+        previewVolumen.textContent = vol > 0 ? `${vol.toFixed(2)} L` : '0.00 L';
+    }
+
+    lactanciaSelect.addEventListener('change', updateLivePreview);
+    fechaInput.addEventListener('change', updateLivePreview);
+    pesajeInput.addEventListener('input', updateLivePreview);
+
+    updateLivePreview();
+});
+</script>
 @endsection

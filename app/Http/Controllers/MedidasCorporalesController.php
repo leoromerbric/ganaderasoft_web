@@ -2,233 +2,309 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Contracts\MedidasCorporalesServiceInterface;
 use App\Services\Contracts\AnimalesServiceInterface;
+use App\Services\Contracts\MedidasCorporalesServiceInterface;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
+/**
+ * Controlador para el Control y Registro de Medidas Corporales (Morfometría).
+ * 
+ * Administra las mediciones físicas e interactúa exclusivamente
+ * con la API v2.
+ */
 class MedidasCorporalesController extends Controller
 {
-    protected MedidasCorporalesServiceInterface $medidasCorporalesService;
-    protected AnimalesServiceInterface $animalesService;
-
     public function __construct(
-        MedidasCorporalesServiceInterface $medidasCorporalesService,
-        AnimalesServiceInterface $animalesService
-    ) {
-        $this->medidasCorporalesService = $medidasCorporalesService;
-        $this->animalesService = $animalesService;
-    }
+        protected MedidasCorporalesServiceInterface $medidasCorporalesService,
+        protected AnimalesServiceInterface $animalesService
+    ) {}
 
     /**
-     * Display a listing of body measurements
+     * Extrae un mensaje legible de error desde la respuesta de la API v2.
+     *
+     * @param array<string, mixed> $response
+     * @param string $fallback
+     * @return string
      */
-    public function index(Request $request)
+    private function apiMessage(array $response, string $fallback): string
     {
-        $animalId = $request->query('animal_id');
-        
-        $response = $this->medidasCorporalesService->getMedidasCorporales($animalId);
-        
-        if (!$response['success']) {
-            return redirect()->route('dashboard')->with('error', $response['message']);
+        if (!empty($response['message']) && is_string($response['message'])) {
+            return $response['message'];
         }
 
-        // Get animals for filter dropdown
-        $animalesResponse = $this->animalesService->getAnimales();
-        $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
+        if (!empty($response['errors']) && is_array($response['errors'])) {
+            $first = collect($response['errors'])->flatten()->first();
+            if (is_string($first) && $first !== '') {
+                return $first;
+            }
+        }
 
-        $animalesPorId = collect($animales)->keyBy(fn ($animal) => $animal['id_Animal'] ?? null);
-
-        $medidasCorporales = collect($response['data'] ?? [])->map(function ($medida) use ($animalesPorId) {
-            $animalIdRegistro = $medida['medida_etapa_anid'] ?? $medida['animal_id'] ?? null;
-            $animal = $animalesPorId->get($animalIdRegistro, []);
-
-            $medida['animal_nombre'] = $medida['animal_nombre'] ?? ($animal['Nombre'] ?? null);
-            $medida['animal_identificacion'] = $medida['animal_identificacion'] ?? ($animal['Nombre'] ?? null);
-
-            return $medida;
-        })->all();
-
-        $alturas = collect($medidasCorporales)->pluck('Altura_HC')->filter(fn ($valor) => is_numeric($valor))->map(fn ($valor) => (float) $valor);
-        $longitudes = collect($medidasCorporales)->pluck('Longitud_LC')->filter(fn ($valor) => is_numeric($valor))->map(fn ($valor) => (float) $valor);
-        $perimetros = collect($medidasCorporales)->pluck('Perimetro_PT')->filter(fn ($valor) => is_numeric($valor))->map(fn ($valor) => (float) $valor);
-
-        $estadisticas = [
-            'altura_promedio' => $alturas->isNotEmpty() ? number_format($alturas->avg(), 2, ',', '.') : '0,00',
-            'largura_promedio' => $longitudes->isNotEmpty() ? number_format($longitudes->avg(), 2, ',', '.') : '0,00',
-            'circunferencia_promedio' => $perimetros->isNotEmpty() ? number_format($perimetros->avg(), 2, ',', '.') : '0,00',
-        ];
-
-        return view('medidas-corporales.index', compact('medidasCorporales', 'animales', 'animalId', 'estadisticas'));
+        return $fallback;
     }
 
     /**
-     * Show the form for creating a new body measurement record
+     * Muestra la lista de registros de medidas corporales con estadísticas y filtros.
+     *
+     * @param Request $request
+     * @return View|RedirectResponse
      */
-    public function create()
+    public function index(Request $request): View|RedirectResponse
     {
-        $animalesResponse = $this->animalesService->getAnimales();
-        $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
+        try {
+            $animalId = $request->query('animal_id') ? (int) $request->query('animal_id') : null;
 
-        return view('medidas-corporales.create', compact('animales'));
+            $response = $this->medidasCorporalesService->getMedidasCorporales($animalId);
+
+            if (!($response['success'] ?? false)) {
+                return redirect()->route('dashboard')->with('error', $this->apiMessage($response, 'Error al consultar medidas corporales.'));
+            }
+
+            // Cargar animales para los selectores de filtro
+            $animalesResponse = $this->animalesService->getAnimales();
+            $rawAnimales      = $animalesResponse['data'] ?? [];
+            $animales         = is_array($rawAnimales)
+                ? (isset($rawAnimales['data']) && is_array($rawAnimales['data']) ? $rawAnimales['data'] : array_values(array_filter($rawAnimales, 'is_array')))
+                : [];
+
+            $animalesPorId = collect($animales)
+                ->filter(fn ($animal) => isset($animal['id']))
+                ->keyBy(fn ($animal) => (int) $animal['id']);
+
+            $rawMedidas = $response['data'] ?? [];
+            $medidasCorporales = collect(is_array($rawMedidas) ? array_values(array_filter($rawMedidas, 'is_array')) : [])
+                ->map(function ($medida) use ($animalesPorId) {
+                    $anId = $medida['animal_id'] ?? data_get($medida, 'etapa_animal.animal_id') ?? data_get($medida, 'animal.id') ?? null;
+                    $animal = $anId ? $animalesPorId->get((int) $anId, []) : [];
+
+                    $medida['animal_nombre'] = data_get($medida, 'animal.nombre')
+                        ?? ($animal['nombre'] ?? ($anId ? ('Animal #' . $anId) : 'Animal no disponible'));
+                    $medida['animal_identificacion'] = data_get($medida, 'animal.codigo_animal')
+                        ?? ($animal['codigo_animal'] ?? '');
+                    $medida['animal_id_ref'] = $anId;
+
+                    return $medida;
+                })->all();
+
+            $alturas     = collect($medidasCorporales)->pluck('altura_hc')->filter(fn ($v) => is_numeric($v) && $v > 0)->map(fn ($v) => (float) $v);
+            $longitudes  = collect($medidasCorporales)->pluck('longitud_lc')->filter(fn ($v) => is_numeric($v) && $v > 0)->map(fn ($v) => (float) $v);
+            $perimetros  = collect($medidasCorporales)->pluck('perimetro_pt')->filter(fn ($v) => is_numeric($v) && $v > 0)->map(fn ($v) => (float) $v);
+
+            $estadisticas = [
+                'altura_promedio'         => $alturas->isNotEmpty() ? number_format($alturas->avg(), 1, '.', '') : '0.0',
+                'largura_promedio'        => $longitudes->isNotEmpty() ? number_format($longitudes->avg(), 1, '.', '') : '0.0',
+                'circunferencia_promedio' => $perimetros->isNotEmpty() ? number_format($perimetros->avg(), 1, '.', '') : '0.0',
+            ];
+
+            return view('medidas-corporales.index', compact('medidasCorporales', 'animales', 'animalId', 'estadisticas'));
+        } catch (\Exception $e) {
+            Log::error('Error en MedidasCorporalesController@index: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error', 'Error al cargar los registros de medidas corporales.');
+        }
     }
 
     /**
-     * Store a newly created body measurement record
+     * Muestra el formulario para registrar nuevas medidas corporales.
+     *
+     * @param Request $request
+     * @return View
      */
-    public function store(Request $request)
+    public function create(Request $request): View
     {
-        $request->validate([
-            'medida_etapa_anid' => 'required|integer',
-            'medida_etapa_etid' => 'required|integer',
-            'Altura_HC' => 'nullable|numeric|min:0|max:300',
-            'Altura_HG' => 'nullable|numeric|min:0|max:300',
-            'Perimetro_PT' => 'nullable|numeric|min:0|max:500',
-            'Perimetro_PCA' => 'nullable|numeric|min:0|max:200',
-            'Longitud_LC' => 'nullable|numeric|min:0|max:500',
-            'Longitud_LG' => 'nullable|numeric|min:0|max:200',
-            'Anchura_AG' => 'nullable|numeric|min:0|max:200',
+        $animalId = $request->query('animal_id') ? (int) $request->query('animal_id') : null;
+
+        $animalesResponse = $this->animalesService->getAnimales();
+        $rawAnimales      = $animalesResponse['data'] ?? [];
+        $animales         = is_array($rawAnimales)
+            ? (isset($rawAnimales['data']) && is_array($rawAnimales['data']) ? $rawAnimales['data'] : array_values(array_filter($rawAnimales, 'is_array')))
+            : [];
+
+        return view('medidas-corporales.create', compact('animales', 'animalId'));
+    }
+
+    /**
+     * Almacena un nuevo registro de medidas corporales.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $validatedData = $request->validate([
+            'animal_id'     => 'required|integer|min:1',
+            'etapa_id'      => 'nullable|integer',
+            'animal_etapa_id' => 'nullable|integer',
+            'altura_hc'     => 'nullable|numeric|min:0|max:300',
+            'altura_hg'     => 'nullable|numeric|min:0|max:300',
+            'perimetro_pt'  => 'nullable|numeric|min:0|max:500',
+            'perimetro_pca' => 'nullable|numeric|min:0|max:200',
+            'longitud_lc'   => 'nullable|numeric|min:0|max:500',
+            'longitud_lg'   => 'nullable|numeric|min:0|max:200',
+            'anchura_ag'    => 'nullable|numeric|min:0|max:200',
         ], [
-            'medida_etapa_anid.required' => 'El animal es requerido.',
-            'Altura_HC.numeric' => 'La altura a la cruz debe ser un número.',
-            'Altura_HC.max' => 'La altura a la cruz no puede exceder 300 cm.',
-            'Altura_HG.numeric' => 'La altura a la grupa debe ser un número.',
-            'Altura_HG.max' => 'La altura a la grupa no puede exceder 300 cm.',
-            'Perimetro_PT.numeric' => 'El perímetro torácico debe ser un número.',
-            'Perimetro_PT.max' => 'El perímetro torácico no puede exceder 500 cm.',
-            'Perimetro_PCA.numeric' => 'El perímetro de caña debe ser un número.',
-            'Perimetro_PCA.max' => 'El perímetro de caña no puede exceder 200 cm.',
-            'Longitud_LC.numeric' => 'La longitud corporal debe ser un número.',
-            'Longitud_LC.max' => 'La longitud corporal no puede exceder 500 cm.',
-            'Longitud_LG.numeric' => 'La longitud de grupa debe ser un número.',
-            'Longitud_LG.max' => 'La longitud de grupa no puede exceder 200 cm.',
-            'Anchura_AG.numeric' => 'La anchura de grupa debe ser un número.',
-            'Anchura_AG.max' => 'La anchura de grupa no puede exceder 200 cm.',
+            'animal_id.required'  => 'El animal es requerido.',
+            'animal_id.integer'   => 'El animal seleccionado no es válido.',
+            'altura_hc.numeric'   => 'La altura a la cruz debe ser un número.',
+            'altura_hc.max'       => 'La altura a la cruz no puede exceder 300 cm.',
+            'altura_hg.numeric'   => 'La altura a la grupa debe ser un número.',
+            'altura_hg.max'       => 'La altura a la grupa no puede exceder 300 cm.',
+            'perimetro_pt.numeric'=> 'El perímetro torácico debe ser un número.',
+            'perimetro_pt.max'    => 'El perímetro torácico no puede exceder 500 cm.',
+            'perimetro_pca.numeric' => 'El perímetro de caña debe ser un número.',
+            'perimetro_pca.max'   => 'El perímetro de caña no puede exceder 200 cm.',
+            'longitud_lc.numeric' => 'La longitud corporal debe ser un número.',
+            'longitud_lc.max'     => 'La longitud corporal no puede exceder 500 cm.',
+            'longitud_lg.numeric' => 'La longitud de grupa debe ser un número.',
+            'longitud_lg.max'     => 'La longitud de grupa no puede exceder 200 cm.',
+            'anchura_ag.numeric'  => 'La anchura de grupa debe ser un número.',
+            'anchura_ag.max'      => 'La anchura de grupa no puede exceder 200 cm.',
         ]);
 
-        $data = $request->only([
-            'Altura_HC',
-            'Altura_HG',
-            'Perimetro_PT',
-            'Perimetro_PCA',
-            'Longitud_LC',
-            'Longitud_LG',
-            'Anchura_AG',
-            'medida_etapa_anid',
-            'medida_etapa_etid'
-        ]);
+        try {
+            $response = $this->medidasCorporalesService->createMedidaCorporal($validatedData);
 
-        $response = $this->medidasCorporalesService->createMedidaCorporal($data);
+            if ($response['success'] ?? false) {
+                return redirect()->route('medidas-corporales.index')
+                    ->with('success', 'Medidas corporales registradas exitosamente.');
+            }
 
-        if ($response['success']) {
-            return redirect()->route('medidas-corporales.index')
-                ->with('success', 'Medidas corporales registradas exitosamente.');
+            return back()->withInput()->with('error', $this->apiMessage($response, 'No se pudo registrar la medida corporal.'));
+        } catch (\Exception $e) {
+            Log::error('Error en MedidasCorporalesController@store: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Error inesperado al guardar el registro de medidas.');
         }
-
-        return back()->withInput()->with('error', $response['message']);
     }
 
     /**
-     * Display the specified body measurement record
+     * Muestra la vista detallada de una medida corporal.
+     *
+     * @param int $id ID del registro
+     * @return View|RedirectResponse
      */
-    public function show(string $id)
+    public function show(int $id): View|RedirectResponse
     {
-        $response = $this->medidasCorporalesService->getMedidaCorporal($id);
+        try {
+            $response = $this->medidasCorporalesService->getMedidaCorporal($id);
 
-        if (!$response['success']) {
-            return redirect()->route('medidas-corporales.index')->with('error', $response['message']);
+            if (!($response['success'] ?? false) || empty($response['data'])) {
+                return redirect()->route('medidas-corporales.index')->with('error', $this->apiMessage($response, 'Registro de medida corporal no encontrado.'));
+            }
+
+            $medidaCorporal = $response['data'];
+
+            return view('medidas-corporales.show', compact('medidaCorporal'));
+        } catch (\Exception $e) {
+            Log::error("Error en MedidasCorporalesController@show ID {$id}: " . $e->getMessage());
+            return redirect()->route('medidas-corporales.index')->with('error', 'Error al consultar la medida corporal.');
         }
-
-        $medidaCorporal = $response['data'];
-        
-        return view('medidas-corporales.show', compact('medidaCorporal'));
     }
 
     /**
-     * Show the form for editing the specified body measurement record
+     * Muestra el formulario para editar una medida corporal existente.
+     *
+     * @param int $id ID del registro
+     * @return View|RedirectResponse
      */
-    public function edit(string $id)
+    public function edit(int $id): View|RedirectResponse
     {
-        $response = $this->medidasCorporalesService->getMedidaCorporal($id);
+        try {
+            $response = $this->medidasCorporalesService->getMedidaCorporal($id);
 
-        if (!$response['success']) {
-            return redirect()->route('medidas-corporales.index')->with('error', $response['message']);
+            if (!($response['success'] ?? false) || empty($response['data'])) {
+                return redirect()->route('medidas-corporales.index')->with('error', $this->apiMessage($response, 'Registro de medida corporal no encontrado.'));
+            }
+
+            $medidaCorporal = $response['data'];
+
+            $animalesResponse = $this->animalesService->getAnimales();
+            $rawAnimales      = $animalesResponse['data'] ?? [];
+            $animales         = is_array($rawAnimales)
+                ? (isset($rawAnimales['data']) && is_array($rawAnimales['data']) ? $rawAnimales['data'] : array_values(array_filter($rawAnimales, 'is_array')))
+                : [];
+
+            return view('medidas-corporales.edit', compact('medidaCorporal', 'animales'));
+        } catch (\Exception $e) {
+            Log::error("Error en MedidasCorporalesController@edit ID {$id}: " . $e->getMessage());
+            return redirect()->route('medidas-corporales.index')->with('error', 'Error al cargar la información para edición.');
         }
-
-        $medidaCorporal = $response['data'];
-
-        $animalesResponse = $this->animalesService->getAnimales();
-        $animales = $animalesResponse['success'] ? ($animalesResponse['data']['data'] ?? []) : [];
-
-        return view('medidas-corporales.edit', compact('medidaCorporal', 'animales'));
     }
 
     /**
-     * Update the specified body measurement record
+     * Actualiza una medida corporal existente.
+     *
+     * @param Request $request
+     * @param int $id ID del registro
+     * @return RedirectResponse
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, int $id): RedirectResponse
     {
-        $request->validate([
-            'medida_etapa_anid' => 'required|integer',
-            'medida_etapa_etid' => 'required|integer',
-            'Altura_HC' => 'nullable|numeric|min:0|max:300',
-            'Altura_HG' => 'nullable|numeric|min:0|max:300',
-            'Perimetro_PT' => 'nullable|numeric|min:0|max:500',
-            'Perimetro_PCA' => 'nullable|numeric|min:0|max:200',
-            'Longitud_LC' => 'nullable|numeric|min:0|max:500',
-            'Longitud_LG' => 'nullable|numeric|min:0|max:200',
-            'Anchura_AG' => 'nullable|numeric|min:0|max:200',
+        $validatedData = $request->validate([
+            'animal_id'     => 'required|integer|min:1',
+            'etapa_id'      => 'nullable|integer',
+            'animal_etapa_id' => 'nullable|integer',
+            'altura_hc'     => 'nullable|numeric|min:0|max:300',
+            'altura_hg'     => 'nullable|numeric|min:0|max:300',
+            'perimetro_pt'  => 'nullable|numeric|min:0|max:500',
+            'perimetro_pca' => 'nullable|numeric|min:0|max:200',
+            'longitud_lc'   => 'nullable|numeric|min:0|max:500',
+            'longitud_lg'   => 'nullable|numeric|min:0|max:200',
+            'anchura_ag'    => 'nullable|numeric|min:0|max:200',
         ], [
-            'medida_etapa_anid.required' => 'El animal es requerido.',
-            'Altura_HC.numeric' => 'La altura a la cruz debe ser un número.',
-            'Altura_HC.max' => 'La altura a la cruz no puede exceder 300 cm.',
-            'Altura_HG.numeric' => 'La altura a la grupa debe ser un número.',
-            'Altura_HG.max' => 'La altura a la grupa no puede exceder 300 cm.',
-            'Perimetro_PT.numeric' => 'El perímetro torácico debe ser un número.',
-            'Perimetro_PT.max' => 'El perímetro torácico no puede exceder 500 cm.',
-            'Perimetro_PCA.numeric' => 'El perímetro de caña debe ser un número.',
-            'Perimetro_PCA.max' => 'El perímetro de caña no puede exceder 200 cm.',
-            'Longitud_LC.numeric' => 'La longitud corporal debe ser un número.',
-            'Longitud_LC.max' => 'La longitud corporal no puede exceder 500 cm.',
-            'Longitud_LG.numeric' => 'La longitud de grupa debe ser un número.',
-            'Longitud_LG.max' => 'La longitud de grupa no puede exceder 200 cm.',
-            'Anchura_AG.numeric' => 'La anchura de grupa debe ser un número.',
-            'Anchura_AG.max' => 'La anchura de grupa no puede exceder 200 cm.',
+            'animal_id.required'  => 'El animal es requerido.',
+            'animal_id.integer'   => 'El animal seleccionado no es válido.',
+            'altura_hc.numeric'   => 'La altura a la cruz debe ser un número.',
+            'altura_hc.max'       => 'La altura a la cruz no puede exceder 300 cm.',
+            'altura_hg.numeric'   => 'La altura a la grupa debe ser un número.',
+            'altura_hg.max'       => 'La altura a la grupa no puede exceder 300 cm.',
+            'perimetro_pt.numeric'=> 'El perímetro torácico debe ser un número.',
+            'perimetro_pt.max'    => 'El perímetro torácico no puede exceder 500 cm.',
+            'perimetro_pca.numeric' => 'El perímetro de caña debe ser un número.',
+            'perimetro_pca.max'   => 'El perímetro de caña no puede exceder 200 cm.',
+            'longitud_lc.numeric' => 'La longitud corporal debe ser un número.',
+            'longitud_lc.max'     => 'La longitud corporal no puede exceder 500 cm.',
+            'longitud_lg.numeric' => 'La longitud de grupa debe ser un número.',
+            'longitud_lg.max'     => 'La longitud de grupa no puede exceder 200 cm.',
+            'anchura_ag.numeric'  => 'La anchura de grupa debe ser un número.',
+            'anchura_ag.max'      => 'La anchura de grupa no puede exceder 200 cm.',
         ]);
 
-        $data = $request->only([
-            'Altura_HC',
-            'Altura_HG',
-            'Perimetro_PT',
-            'Perimetro_PCA',
-            'Longitud_LC',
-            'Longitud_LG',
-            'Anchura_AG',
-            'medida_etapa_anid',
-            'medida_etapa_etid'
-        ]);
+        try {
+            $response = $this->medidasCorporalesService->updateMedidaCorporal($id, $validatedData);
 
-        $response = $this->medidasCorporalesService->updateMedidaCorporal($id, $data);
+            if ($response['success'] ?? false) {
+                return redirect()->route('medidas-corporales.index')
+                    ->with('success', 'Medidas corporales actualizadas exitosamente.');
+            }
 
-        if ($response['success']) {
-            return redirect()->route('medidas-corporales.index')
-                ->with('success', 'Medidas corporales actualizadas exitosamente.');
+            return back()->withInput()->with('error', $this->apiMessage($response, 'No se pudo actualizar la medida corporal.'));
+        } catch (\Exception $e) {
+            Log::error("Error en MedidasCorporalesController@update ID {$id}: " . $e->getMessage());
+            return back()->withInput()->with('error', 'Error inesperado al actualizar las medidas corporales.');
         }
-
-        return back()->withInput()->with('error', $response['message']);
     }
 
     /**
-     * Remove the specified body measurement record
+     * Elimina una medida corporal.
+     *
+     * @param int $id ID del registro
+     * @return RedirectResponse
      */
-    public function destroy(string $id)
+    public function destroy(int $id): RedirectResponse
     {
-        $response = $this->medidasCorporalesService->deleteMedidaCorporal($id);
+        try {
+            $response = $this->medidasCorporalesService->deleteMedidaCorporal($id);
 
-        if ($response['success']) {
-            return redirect()->route('medidas-corporales.index')
-                ->with('success', 'Registro de medidas eliminado exitosamente.');
+            if ($response['success'] ?? false) {
+                return redirect()->route('medidas-corporales.index')
+                    ->with('success', 'Registro de medidas eliminado exitosamente.');
+            }
+
+            return redirect()->route('medidas-corporales.index')->with('error', $this->apiMessage($response, 'No se pudo eliminar el registro.'));
+        } catch (\Exception $e) {
+            Log::error("Error en MedidasCorporalesController@destroy ID {$id}: " . $e->getMessage());
+            return redirect()->route('medidas-corporales.index')->with('error', 'Error al procesar la eliminación.');
         }
-
-        return redirect()->route('medidas-corporales.index')->with('error', $response['message']);
     }
 }

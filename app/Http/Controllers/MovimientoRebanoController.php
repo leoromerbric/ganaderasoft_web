@@ -3,12 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\MovimientoRebanoServiceInterface;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
+/**
+ * Controlador de Gestión de Movimientos de Rebaño.
+ * 
+ * Administra el traslado de animales entre fincas y rebaños,
+ * interactuando exclusivamente con el servicio API v2.
+ */
 class MovimientoRebanoController extends Controller
 {
-    public function __construct(protected MovimientoRebanoServiceInterface $service) {}
+    /**
+     * Inyección de dependencias del servicio de movimientos de rebaño.
+     */
+    public function __construct(
+        protected MovimientoRebanoServiceInterface $service
+    ) {}
 
+    /**
+     * Procesa y extrae mensajes de error o fallback provenientes de la respuesta de la API.
+     *
+     * @param array<string, mixed> $response Respuesta cruda de la API.
+     * @param string $fallback Mensaje por defecto si no se encuentra un error explícito.
+     * @return string Mensaje limpio para presentar al usuario.
+     */
     private function apiMessage(array $response, string $fallback): string
     {
         if (!empty($response['message']) && is_string($response['message'])) {
@@ -25,26 +45,36 @@ class MovimientoRebanoController extends Controller
         return $fallback;
     }
 
-    public function index(Request $request)
+    /**
+     * Muestra el listado de movimientos de rebaño con filtros aplicados.
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function index(Request $request): View
     {
-        $fincaId         = $request->query('id_finca')         ? (int) $request->query('id_finca')         : null;
-        $rebanoId        = $request->query('id_rebano')        ? (int) $request->query('id_rebano')        : null;
-        $fincaDestinoId  = $request->query('id_finca_destino') ? (int) $request->query('id_finca_destino') : null;
-        $rebanoDestinoId = $request->query('id_rebano_destino')? (int) $request->query('id_rebano_destino'): null;
+        $fincaId         = $request->query('finca_id')         ? (int) $request->query('finca_id')         : null;
+        $rebanoId        = $request->query('rebano_id')        ? (int) $request->query('rebano_id')        : null;
+        $fincaDestinoId  = $request->query('finca_destino_id') ? (int) $request->query('finca_destino_id') : null;
+        $rebanoDestinoId = $request->query('rebano_destino_id')? (int) $request->query('rebano_destino_id'): null;
 
         $response    = $this->service->getList($fincaId, $rebanoId);
-        $movimientos = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
-        $fincas      = $this->service->getFincas();
-        $rebanos     = $this->service->getRebanos();
+        $rawMovs     = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $movimientos = isset($rawMovs['data']) && is_array($rawMovs['data']) 
+            ? $rawMovs['data'] 
+            : (is_array($rawMovs) ? array_values(array_filter($rawMovs, 'is_array')) : []);
 
-        $mapaFincas  = collect($fincas)->keyBy('id_Finca')->map(fn($f) => $f['Nombre'] ?? '')->all();
-        $mapaRebanos = collect($rebanos)->keyBy('id_Rebano')->map(fn($r) => $r['Nombre'] ?? '')->all();
+        $fincas      = array_values(array_filter($this->service->getFincas(), 'is_array'));
+        $rebanos     = array_values(array_filter($this->service->getRebanos(), 'is_array'));
+
+        $mapaFincas  = collect($fincas)->keyBy('id')->map(fn($f) => is_array($f) ? ($f['nombre'] ?? '') : '')->all();
+        $mapaRebanos = collect($rebanos)->keyBy('id')->map(fn($r) => is_array($r) ? ($r['nombre'] ?? '') : '')->all();
 
         if ($fincaDestinoId) {
-            $movimientos = array_values(array_filter($movimientos, fn($m) => (int) ($m['id_Finca_Destino'] ?? 0) === $fincaDestinoId));
+            $movimientos = array_values(array_filter($movimientos, fn($m) => is_array($m) && (int) ($m['finca_destino_id'] ?? 0) === $fincaDestinoId));
         }
         if ($rebanoDestinoId) {
-            $movimientos = array_values(array_filter($movimientos, fn($m) => (int) ($m['id_Rebano_Destino'] ?? 0) === $rebanoDestinoId));
+            $movimientos = array_values(array_filter($movimientos, fn($m) => is_array($m) && (int) ($m['rebano_destino_id'] ?? 0) === $rebanoDestinoId));
         }
 
         return view('movimiento-rebano.index', compact(
@@ -54,46 +84,58 @@ class MovimientoRebanoController extends Controller
         ));
     }
 
-    public function create()
+    /**
+     * Muestra el formulario para registrar un nuevo movimiento de rebaño.
+     *
+     * @return View
+     */
+    public function create(): View
     {
-        $fincas  = $this->service->getFincas();
-        $rebanos = $this->service->getRebanos();
-        $animales = $this->service->getAnimales();
+        $fincas   = array_values(array_filter($this->service->getFincas(), 'is_array'));
+        $rebanos  = array_values(array_filter($this->service->getRebanos(), 'is_array'));
+        $animales = array_values(array_filter($this->service->getAnimales(), 'is_array'));
+
         return view('movimiento-rebano.create', compact('fincas', 'rebanos', 'animales'));
     }
 
-    public function store(Request $request)
+    /**
+     * Almacena un nuevo registro de movimiento de rebaño.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'id_Finca'          => 'required|integer',
-            'id_Rebano'         => 'required|integer',
-            'id_Finca_Destino'  => 'required|integer',
-            'id_Rebano_Destino' => 'required|integer',
-            'Rebano_Destino'    => 'nullable|string|max:30',
-            'Comentario'        => 'nullable|string|max:40',
+            'finca_id'          => 'required|integer',
+            'rebano_id'         => 'required|integer',
+            'finca_destino_id'  => 'required|integer',
+            'rebano_destino_id' => 'required|integer',
+            'rebano_destino'    => 'nullable|string|max:30',
+            'comentario'        => 'nullable|string|max:40',
             'animales'          => 'required|array|min:1',
             'animales.*'        => 'integer',
         ], [
-            'id_Finca.required'          => 'La finca de origen es requerida.',
-            'id_Rebano.required'         => 'El rebaño de origen es requerido.',
-            'id_Finca_Destino.required'  => 'La finca de destino es requerida.',
-            'id_Rebano_Destino.required' => 'El rebaño de destino es requerido.',
+            'finca_id.required'          => 'La finca de origen es requerida.',
+            'rebano_id.required'         => 'El rebaño de origen es requerido.',
+            'finca_destino_id.required'  => 'La finca de destino es requerida.',
+            'rebano_destino_id.required' => 'El rebaño de destino es requerido.',
             'animales.required'          => 'Debe seleccionar al menos un animal para mover.',
         ]);
 
-        if ((int) $request->id_Finca === (int) $request->id_Finca_Destino) {
-            return back()->withInput()->with('error', 'La finca de destino debe ser diferente a la finca de origen.');
+        if ((int) $request->rebano_id === (int) $request->rebano_destino_id) {
+            return back()->withInput()->with('error', 'El rebaño de destino debe ser diferente al rebaño de origen.');
         }
 
         $rebanos = collect($this->service->getRebanos());
-        $rebanoOrigen = $rebanos->first(fn ($rebano) => (int) ($rebano['id_Rebano'] ?? 0) === (int) $request->id_Rebano);
-        $rebanoDestino = $rebanos->first(fn ($rebano) => (int) ($rebano['id_Rebano'] ?? 0) === (int) $request->id_Rebano_Destino);
+        $rebanoOrigen  = $rebanos->first(fn ($rebano) => (int) ($rebano['id'] ?? 0) === (int) $request->rebano_id);
+        $rebanoDestino = $rebanos->first(fn ($rebano) => (int) ($rebano['id'] ?? 0) === (int) $request->rebano_destino_id);
 
-        if (!$rebanoOrigen || (int) ($rebanoOrigen['id_Finca'] ?? 0) !== (int) $request->id_Finca) {
+        if (!$rebanoOrigen || (int) data_get($rebanoOrigen, 'finca.id', $rebanoOrigen['finca_id'] ?? 0) !== (int) $request->finca_id) {
             return back()->withInput()->with('error', 'El rebaño de origen no pertenece a la finca de origen seleccionada.');
         }
 
-        if (!$rebanoDestino || (int) ($rebanoDestino['id_Finca'] ?? 0) !== (int) $request->id_Finca_Destino) {
+        if (!$rebanoDestino || (int) data_get($rebanoDestino, 'finca.id', $rebanoDestino['finca_id'] ?? 0) !== (int) $request->finca_destino_id) {
             return back()->withInput()->with('error', 'El rebaño de destino no pertenece a la finca de destino seleccionada.');
         }
 
@@ -101,10 +143,10 @@ class MovimientoRebanoController extends Controller
         if (!empty($animalesSeleccionados)) {
             $animales = collect($this->service->getAnimales());
             $animalesInvalidos = $animales
-                ->whereIn('id_Animal', $animalesSeleccionados)
+                ->whereIn('id', $animalesSeleccionados)
                 ->filter(function ($animal) use ($request) {
-                    $rebanoId = data_get($animal, 'id_Rebano') ?? data_get($animal, 'rebano.id_Rebano');
-                    return $rebanoId !== null && (int) $rebanoId !== (int) $request->id_Rebano;
+                    $rebanoId = data_get($animal, 'rebano.id') ?? data_get($animal, 'rebano_id');
+                    return $rebanoId !== null && (int) $rebanoId !== (int) $request->rebano_id;
                 });
 
             if ($animalesInvalidos->isNotEmpty()) {
@@ -112,20 +154,20 @@ class MovimientoRebanoController extends Controller
             }
         }
 
-        $data = $request->only(['id_Finca', 'id_Rebano', 'id_Finca_Destino', 'id_Rebano_Destino', 'Comentario', 'animales']);
-        $data['Rebano_Destino'] = $rebanoDestino['Nombre'] ?? $request->input('Rebano_Destino');
+        $data = $request->only(['finca_id', 'rebano_id', 'finca_destino_id', 'rebano_destino_id', 'comentario', 'animales']);
+        $data['rebano_destino'] = $rebanoDestino['nombre'] ?? $request->input('rebano_destino');
 
         $hashPayload = [
-            'id_Finca' => (int) $request->id_Finca,
-            'id_Rebano' => (int) $request->id_Rebano,
-            'id_Finca_Destino' => (int) $request->id_Finca_Destino,
-            'id_Rebano_Destino' => (int) $request->id_Rebano_Destino,
-            'Comentario' => (string) ($request->Comentario ?? ''),
-            'animales' => $animalesSeleccionados,
+            'finca_id'          => (int) $request->finca_id,
+            'rebano_id'         => (int) $request->rebano_id,
+            'finca_destino_id'  => (int) $request->finca_destino_id,
+            'rebano_destino_id' => (int) $request->rebano_destino_id,
+            'comentario'        => (string) ($request->comentario ?? ''),
+            'animales'          => $animalesSeleccionados,
         ];
         $requestHash = sha1(json_encode($hashPayload));
-        $lastHash = session('movimiento_rebano_last_hash');
-        $lastTs = (int) session('movimiento_rebano_last_ts', 0);
+        $lastHash    = session('movimiento_rebano_last_hash');
+        $lastTs      = (int) session('movimiento_rebano_last_ts', 0);
         if ($lastHash === $requestHash && (time() - $lastTs) <= 10) {
             return redirect()->route('movimiento-rebano.index')->with('success', 'Movimiento de rebaño registrado exitosamente.');
         }
@@ -135,45 +177,67 @@ class MovimientoRebanoController extends Controller
         if ($response['success'] ?? false) {
             session([
                 'movimiento_rebano_last_hash' => $requestHash,
-                'movimiento_rebano_last_ts' => time(),
+                'movimiento_rebano_last_ts'   => time(),
             ]);
             return redirect()->route('movimiento-rebano.index')->with('success', 'Movimiento de rebaño registrado exitosamente.');
         }
         return back()->withInput()->with('error', $this->apiMessage($response, 'Error al crear el registro.'));
     }
 
-    public function show(int $id)
+    /**
+     * Muestra la información detallada de un movimiento de rebaño específico.
+     *
+     * @param int $id Identificador del movimiento.
+     * @return View|RedirectResponse
+     */
+    public function show(int $id): View|RedirectResponse
     {
         $response = $this->service->getById($id);
         if (!($response['success'] ?? false)) {
             return redirect()->route('movimiento-rebano.index')->with('error', 'Movimiento no encontrado.');
         }
+
         $movimiento  = $response['data'];
-        $fincas      = $this->service->getFincas();
-        $rebanos     = $this->service->getRebanos();
-        $mapaFincas  = collect($fincas)->keyBy('id_Finca')->map(fn($f) => $f['Nombre'] ?? '')->all();
-        $mapaRebanos = collect($rebanos)->keyBy('id_Rebano')->map(fn($r) => $r['Nombre'] ?? '')->all();
+        $fincas      = array_values(array_filter($this->service->getFincas(), 'is_array'));
+        $rebanos     = array_values(array_filter($this->service->getRebanos(), 'is_array'));
+        $mapaFincas  = collect($fincas)->keyBy('id')->map(fn($f) => is_array($f) ? ($f['nombre'] ?? '') : '')->all();
+        $mapaRebanos = collect($rebanos)->keyBy('id')->map(fn($r) => is_array($r) ? ($r['nombre'] ?? '') : '')->all();
+
         return view('movimiento-rebano.show', compact('movimiento', 'mapaFincas', 'mapaRebanos'));
     }
 
-    public function edit(int $id)
+    /**
+     * Muestra el formulario para editar los campos permitidos de un movimiento.
+     *
+     * @param int $id Identificador del movimiento.
+     * @return View|RedirectResponse
+     */
+    public function edit(int $id): View|RedirectResponse
     {
         $response = $this->service->getById($id);
         if (!($response['success'] ?? false)) {
             return redirect()->route('movimiento-rebano.index')->with('error', 'Movimiento no encontrado.');
         }
+
         $movimiento = $response['data'];
         return view('movimiento-rebano.edit', compact('movimiento'));
     }
 
-    public function update(Request $request, int $id)
+    /**
+     * Actualiza la información modificable de un movimiento de rebaño existente.
+     *
+     * @param Request $request
+     * @param int $id Identificador del movimiento.
+     * @return RedirectResponse
+     */
+    public function update(Request $request, int $id): RedirectResponse
     {
         $request->validate([
-            'Rebano_Destino' => 'nullable|string|max:30',
-            'Comentario'     => 'nullable|string|max:40',
+            'rebano_destino' => 'nullable|string|max:30',
+            'comentario'     => 'nullable|string|max:40',
         ]);
 
-        $response = $this->service->update($id, $request->only(['Rebano_Destino', 'Comentario']));
+        $response = $this->service->update($id, $request->only(['rebano_destino', 'comentario']));
 
         if ($response['success'] ?? false) {
             return redirect()->route('movimiento-rebano.index')->with('success', 'Movimiento de rebaño actualizado.');
@@ -181,7 +245,13 @@ class MovimientoRebanoController extends Controller
         return back()->withInput()->with('error', $this->apiMessage($response, 'Error al actualizar.'));
     }
 
-    public function destroy(int $id)
+    /**
+     * Elimina un movimiento de rebaño del registro.
+     *
+     * @param int $id Identificador del movimiento.
+     * @return RedirectResponse
+     */
+    public function destroy(int $id): RedirectResponse
     {
         $response = $this->service->eliminar($id);
         if ($response['success'] ?? false) {
