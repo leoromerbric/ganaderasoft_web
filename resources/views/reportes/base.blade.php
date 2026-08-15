@@ -5,13 +5,13 @@
 @section('content')
 <style>
     @media print {
-        /* Configuración oficial de página A4 e impresión */
+        /* 1. Eliminar cabeceras y pies por defecto del navegador (Fecha, Título, URL) */
         @page {
-            margin: 12mm 15mm 12mm 15mm !important;
+            margin: 12mm 15mm 15mm 15mm !important;
             size: A4 portrait;
         }
 
-        /* Ocultar elementos de la interfaz web */
+        /* 2. Ocultar la interfaz de usuario de la web */
         header, nav, aside, #sidebar, #sidebar-toggle-wrapper, .no-print {
             display: none !important;
         }
@@ -33,7 +33,7 @@
             width: 100% !important;
         }
 
-        /* Soporte multi-página fluido para reportes cortos y extensos */
+        /* 3. Hoja A4 limpia con espacio para el footer fijo */
         .print-sheet {
             box-shadow: none !important;
             border: none !important;
@@ -42,8 +42,8 @@
             width: 100% !important;
             height: auto !important;
             min-height: 0 !important;
-            max-height: none !important;
             display: block !important;
+            padding-bottom: 20mm !important; /* Espacio para no sobreponerse con el footer fijo */
         }
 
         /* Evitar cortar filas de tablas a la mitad entre páginas */
@@ -57,11 +57,17 @@
             display: table-header-group !important;
         }
 
+        /* 4. Repetir el footer al final de CADA PÁGINA del informe */
         .print-footer {
-            margin-top: 2rem !important;
-            padding-top: 1rem !important;
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            margin-top: 0 !important;
+            padding-top: 0.75rem !important;
             border-top: 1px solid #e5e7eb !important;
-            page-break-inside: avoid !important;
+            background-color: #ffffff !important;
         }
     }
 </style>
@@ -81,11 +87,11 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3 w-full md:w-auto">
-                <button onclick="window.print()" class="w-full md:w-auto px-5 py-3.5 bg-ganaderasoft-azul hover:bg-opacity-90 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2">
+                <button onclick="window.print()" class="w-full md:w-auto px-5 py-4 bg-ganaderasoft-azul hover:bg-opacity-90 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                     </svg>
-                    <span>Descargar PDF</span>
+                    <span>Descargar PDF / Imprimir</span>
                 </button>
             </div>
         </div>
@@ -108,7 +114,7 @@
                         </svg>
                         <span>Generar reporte</span>
                     </button>
-                    <button type="button" onclick="const f = this.closest('form'); if(f) { f.reset(); f.querySelectorAll('input[type=date]').forEach(i => i.value = ''); } if(window.history.pushState) { window.history.pushState({}, '', window.location.pathname); }" class="w-full sm:w-auto text-center px-4 py-3 bg-gray-100 text-gray-700 font-semibold text-sm rounded-xl hover:bg-gray-200 transition-all">
+                    <button type="button" onclick="const f = this.closest('form'); if(f) { f.reset(); f.querySelectorAll('input[type=date]').forEach(i => i.value = ''); } if(window.history.pushState) { window.history.pushState({}, '', window.location.pathname); }" class="w-full sm:w-auto text-center px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-xl hover:bg-gray-200 transition-all">
                         Limpiar
                     </button>
                 </div>
@@ -154,7 +160,7 @@
             @yield('report_content')
         </div>
 
-        <!-- Footer del Documento -->
+        <!-- Footer del Documento (Repetido en cada página al imprimir) -->
         <div class="mt-8 pt-4 border-t border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-400 print-footer">
             <p>© {{ date('Y') }} GanaderaSoft. Documento generado oficialmente.</p>
             <p>Documento oficial del sistema</p>
