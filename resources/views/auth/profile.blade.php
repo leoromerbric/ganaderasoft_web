@@ -50,22 +50,6 @@
                     </div>
                     <span class="absolute bottom-1 right-1 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full shadow-sm" title="Usuario Activo"></span>
                 </div>
-
-                <!-- Roles Badges -->
-                <div class="flex flex-wrap gap-2 pt-2 md:pt-0">
-                    @if(!empty($user['roles']))
-                        @foreach($user['roles'] as $role)
-                            <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-ganaderasoft-azul/10 text-ganaderasoft-azul border border-ganaderasoft-azul/20">
-                                <span class="w-1.5 h-1.5 rounded-full bg-ganaderasoft-azul mr-1.5"></span>
-                                {{ ucfirst(str_replace('_', ' ', $role)) }}
-                            </span>
-                        @endforeach
-                    @else
-                        <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
-                            {{ $user['type_user'] ?? 'Usuario General' }}
-                        </span>
-                    @endif
-                </div>
             </div>
 
             <!-- User Info (100% on crisp white background) -->
