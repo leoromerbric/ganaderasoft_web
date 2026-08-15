@@ -38,9 +38,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Redirect root to login
+// Root route returns welcome view
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('welcome');
 });
 
 // Auth routes
