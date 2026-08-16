@@ -105,9 +105,9 @@
                             $rebanoId = $rebano['id'] ?? null;
                             $rebanoNombre = $rebano['nombre'] ?? 'Rebaño';
                             $fincaObj = $rebano['finca'] ?? null;
-                            $fincaNombre = $fincaObj['nombre'] ?? ('Finca #' . ($rebano['finca_id'] ?? 'N/A'));
+                            $fincaIdAttr = (string)($rebano['finca_id'] ?? ($fincaObj['id'] ?? ''));
+                            $fincaNombre = $fincaObj['nombre'] ?? ('Finca #' . ($fincaIdAttr ?: 'N/A'));
                             $fincaTipo = $fincaObj['explotacion_tipo'] ?? '-';
-                            $fincaIdAttr = $rebano['finca_id'] ?? '';
                             $animalesCount = count($rebano['animales'] ?? []);
                         @endphp
                         <div class="group border border-gray-200 hover:border-ganaderasoft-celeste rounded-2xl p-6 hover:shadow-lg transition-all duration-200 flex flex-col justify-between fila-rebano"
@@ -189,14 +189,19 @@
         document.getElementById('filtroNombre').addEventListener('input', aplicarFiltros);
 
         function aplicarFiltros() {
-            const finca = document.getElementById('filtroFinca').value;
-            const nombre = document.getElementById('filtroNombre').value.toLowerCase();
+            const finca = (document.getElementById('filtroFinca').value || '').trim();
+            const nombre = (document.getElementById('filtroNombre').value || '').toLowerCase().trim();
 
             let total = 0, totalAnimales = 0;
 
             document.querySelectorAll('.fila-rebano').forEach(function (row) {
-                const ok = (!finca || row.dataset.finca === finca)
-                    && (!nombre || row.dataset.nombre.includes(nombre));
+                const rowFinca = (row.dataset.finca || '').trim();
+                const rowNombre = (row.dataset.nombre || '').toLowerCase().trim();
+
+                const matchFinca = !finca || rowFinca === finca;
+                const matchNombre = !nombre || rowNombre.includes(nombre);
+                const ok = matchFinca && matchNombre;
+
                 row.style.display = ok ? '' : 'none';
                 if (ok) {
                     total++;
@@ -212,7 +217,6 @@
         function limpiarFiltros() {
             document.getElementById('filtroFinca').value = '';
             document.getElementById('filtroNombre').value = '';
-            document.querySelectorAll('.fila-rebano').forEach(r => r.style.display = '');
             aplicarFiltros();
         }
     </script>

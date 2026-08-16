@@ -34,10 +34,10 @@ class RebanosController extends Controller
 
         // Filtrar por finca y nombre (V2 finca_id / nombre)
         $rebanos = array_values(array_filter($allRebanos, function ($rebano) use ($fincaId, $nombre) {
-            $rebanoFincaId = $rebano['finca_id'] ?? null;
+            $rebanoFincaId = $rebano['finca_id'] ?? ($rebano['finca']['id'] ?? null);
             $rebanoNombre  = $rebano['nombre'] ?? '';
 
-            if ($fincaId && $rebanoFincaId != $fincaId) return false;
+            if ($fincaId && (string)$rebanoFincaId !== (string)$fincaId) return false;
             if ($nombre && stripos($rebanoNombre, $nombre) === false) return false;
             return true;
         }));
