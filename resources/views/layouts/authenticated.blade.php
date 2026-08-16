@@ -18,7 +18,7 @@
         <x-layouts.sidebar />
 
         <!-- Main Content -->
-        <main id="main-content" class="flex-1 p-8">
+        <main id="main-content" class="flex-1 p-4 sm:p-8 min-w-0">
             @yield('content')
         </main>
     </div>
