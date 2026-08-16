@@ -23,26 +23,6 @@
         </main>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const toggleBtn = document.getElementById('sidebar-toggle');
-            const sidebar = document.getElementById('sidebar');
-
-            if (toggleBtn && sidebar) {
-                toggleBtn.addEventListener('click', function () {
-                    sidebar.classList.toggle('w-64');
-                    sidebar.classList.toggle('w-20');
-
-                    const menuTexts = sidebar.querySelectorAll('.menu-text');
-                    const menuTitles = sidebar.querySelectorAll('.menu-title');
-
-                    menuTexts.forEach(el => el.classList.toggle('hidden'));
-                    menuTitles.forEach(el => el.classList.toggle('hidden'));
-                });
-            }
-        });
-    </script>
-
     @stack('scripts')
 </body>
 </html>

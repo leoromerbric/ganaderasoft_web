@@ -10,14 +10,23 @@
     }
 
     /* Ampliar el ancho del sidebar desplegado para dar espacio holgado a todos los textos */
-    #sidebar:not(.w-20) {
+    #sidebar:not(.w-20):not(.collapsed) {
         width: 17.5rem !important;
     }
 
-    /* Ocultar submenús y textos en estado colapsado (w-20) */
+    /* Ancho colapsado en desktop (w-20 o collapsed) */
+    #sidebar.w-20,
+    #sidebar.collapsed {
+        width: 5rem !important;
+    }
+
+    /* Ocultar submenús y textos en estado colapsado (w-20 o collapsed) */
     #sidebar.w-20 .menu-sublist,
     #sidebar.w-20 .menu-title,
-    #sidebar.w-20 .menu-text {
+    #sidebar.w-20 .menu-text,
+    #sidebar.collapsed .menu-sublist,
+    #sidebar.collapsed .menu-title,
+    #sidebar.collapsed .menu-text {
         display: none !important;
     }
 
@@ -41,8 +50,9 @@
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
-        /* En dispositivos pequeños al colapsar (w-20), ocultamos todo el contenido interno para que ÚNICAMENTE quede el botón flotante de hamburguesa */
-        #sidebar.w-20 {
+        /* En dispositivos pequeños al colapsar (w-20 o collapsed) */
+        #sidebar.w-20,
+        #sidebar.collapsed {
             width: 0 !important;
             background-color: transparent !important;
             box-shadow: none !important;
@@ -51,12 +61,15 @@
         }
 
         #sidebar.w-20 nav,
-        #sidebar.w-20 .menu-title {
+        #sidebar.w-20 .menu-title,
+        #sidebar.collapsed nav,
+        #sidebar.collapsed .menu-title {
             display: none !important;
         }
 
         /* Pestaña fija adosada directamente al borde izquierdo de la pantalla */
-        #sidebar.w-20 #sidebar-toggle-wrapper {
+        #sidebar.w-20 #sidebar-toggle-wrapper,
+        #sidebar.collapsed #sidebar-toggle-wrapper {
             position: fixed !important;
             left: 0 !important;
             top: 4.75rem !important;
@@ -64,7 +77,8 @@
             display: block !important;
         }
 
-        #sidebar.w-20 #sidebar-toggle {
+        #sidebar.w-20 #sidebar-toggle,
+        #sidebar.collapsed #sidebar-toggle {
             background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
             box-shadow: 4px 4px 15px -2px rgba(0, 0, 0, 0.12), 2px 2px 6px -1px rgba(0, 0, 0, 0.06) !important;
             border-top-right-radius: 0.85rem !important;
@@ -81,7 +95,8 @@
             transition: all 0.2s ease !important;
         }
 
-        #sidebar.w-20 #sidebar-toggle:hover {
+        #sidebar.w-20 #sidebar-toggle:hover,
+        #sidebar.collapsed #sidebar-toggle:hover {
             background: #eff6ff !important;
             color: #1d4ed8 !important;
             transform: translateX(2px) !important;
@@ -90,6 +105,11 @@
 </style>
 
 <aside id="sidebar" class="w-64 bg-white shadow-sm border-r border-gray-100 transition-[width] duration-300">
+    <script>
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.currentScript.parentElement.classList.add('collapsed');
+        }
+    </script>
     <!-- Header / Toggle Button -->
     <div class="px-4 h-16 border-b border-gray-100 flex items-center justify-between">
         <span class="menu-title text-xs font-bold uppercase tracking-wider text-gray-400 leading-none">Navegación</span>
@@ -314,10 +334,19 @@
 </aside>
 
 <script>
+    /**
+     * Alterna la visibilidad de un submenú del sidebar y la rotación de su flecha indicadora.
+     * Si el sidebar está en estado colapsado (reducido/cerrado), primero lo despliega automáticamente
+     * antes de mostrar el contenido del submenú.
+     * 
+     * @param {string} id - El ID HTML del contenedor del submenú (ej: 'sub-fincas', 'sub-ganado').
+     */
     function toggleSubmenu(id) {
         const sidebar = document.getElementById('sidebar');
-        const isCollapsed = sidebar && sidebar.classList.contains('w-20');
+        // Evalúa si el sidebar está colapsado comprobando si tiene la clase 'w-20' o 'collapsed'
+        const isCollapsed = sidebar && (sidebar.classList.contains('w-20') || sidebar.classList.contains('collapsed'));
 
+        // 1. Si está colapsado, simula un clic en el botón toggle para abrir el sidebar automáticamente
         if (isCollapsed) {
             const toggleBtn = document.getElementById('sidebar-toggle');
             if (toggleBtn) {
@@ -325,19 +354,26 @@
             }
         }
 
+        // 2. Controla la visibilidad del contenedor de listas del submenú
         const el = document.getElementById(id);
         const arrow = document.getElementById(id + '-arrow');
         if (el) {
             if (isCollapsed) {
+                // Al abrir el sidebar desde estado cerrado, asegura que el submenú quede visible
                 el.classList.remove('hidden');
             } else {
+                // Alterna entre ocultar y mostrar la lista de opciones
                 el.classList.toggle('hidden');
             }
         }
+
+        // 3. Anima la rotación de la flecha indicadora
         if (arrow) {
             if (isCollapsed) {
+                // Apunta la flecha hacia arriba al expandirse
                 arrow.classList.add('rotate-180');
             } else {
+                // Alterna la dirección de la flecha según el estado
                 arrow.classList.toggle('rotate-180');
             }
         }
