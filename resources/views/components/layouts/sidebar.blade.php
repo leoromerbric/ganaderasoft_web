@@ -320,8 +320,16 @@
         </div>
         @endif
 
-        <!-- Cerrar sesión -->
-        <div class="pt-4 border-t border-gray-100 mt-4">
+        <!-- Perfil y Cerrar sesión -->
+        <div class="pt-4 border-t border-gray-100 mt-4 space-y-1">
+            @if(!$isUserSuspended)
+            <!-- Botón Mi perfil (visible en dispositivos móviles para usuarios activos) -->
+            <a href="{{ route('profile') }}" class="sm:hidden menu-item w-full flex items-center px-3 py-2.5 text-base font-semibold {{ request()->routeIs('profile') ? 'bg-ganaderasoft-azul text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }} rounded-xl transition-colors duration-200">
+                <span class="menu-icon text-xl mr-3 shrink-0">👤</span>
+                <span class="menu-text">Mi perfil</span>
+            </a>
+            @endif
+
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="menu-item w-full flex items-center px-3 py-2.5 text-base font-semibold text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors duration-200">
