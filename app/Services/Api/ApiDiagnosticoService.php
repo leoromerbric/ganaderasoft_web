@@ -31,4 +31,28 @@ class ApiDiagnosticoService extends BaseApiService implements DiagnosticoService
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->put("/diagnostico/{$id}", $data);
     }
+
+    public function eliminar(int $id): array
+    {
+        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
+        return $this->delete("/diagnostico/{$id}");
+    }
+
+    public function getAnimales(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/animales?nopaginate=true');
+            
+            if (!($response['success'] ?? false) || empty($response['data'])) {
+                return [];
+            }
+            
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener animales en ApiDiagnosticoService: ' . $e->getMessage());
+            return [];
+        }
+    }
 }

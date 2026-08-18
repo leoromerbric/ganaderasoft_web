@@ -45,4 +45,60 @@ class ApiHistoricoAplicacionService extends BaseApiService implements HistoricoA
             'ha_dosis_id' => $dosisId,
         ]);
     }
+
+    public function getVacunas(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/vacunas?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener vacunas: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getCasasComerciales(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/casa-comercial?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener casas comerciales: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getDosis(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/dosis?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener dosis: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getAnimales(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/animales?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener animales: ' . $e->getMessage());
+            return [];
+        }
+    }
 }

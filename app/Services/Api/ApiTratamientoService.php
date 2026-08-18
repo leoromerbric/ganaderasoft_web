@@ -31,4 +31,24 @@ class ApiTratamientoService extends BaseApiService implements TratamientoService
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->put("/tratamiento/{$id}", $data);
     }
+
+    public function eliminar(int $id): array
+    {
+        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
+        return $this->delete("/tratamiento/{$id}");
+    }
+
+    public function getDiagnosticos(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/diagnostico?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener diagnosticos en ApiTratamientoService: ' . $e->getMessage());
+            return [];
+        }
+    }
 }

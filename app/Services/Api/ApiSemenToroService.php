@@ -35,4 +35,24 @@ class ApiSemenToroService extends BaseApiService implements SemenToroServiceInte
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->put("/semen-toro/{$id}", $data);
     }
+
+    public function eliminar(int $id): array
+    {
+        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
+        return $this->delete("/semen-toro/{$id}");
+    }
+
+    public function getToros(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/animales?nopaginate=true&sexo=M');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener toros en ApiSemenToroService: ' . $e->getMessage());
+            return [];
+        }
+    }
 }

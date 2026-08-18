@@ -36,4 +36,66 @@ class ApiDosisService extends BaseApiService implements DosisServiceInterface
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->put("/dosis/{$id}", $data);
     }
+
+    public function eliminar(int $id): array
+    {
+        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
+        return $this->delete("/dosis/{$id}");
+    }
+
+    public function getVacunas(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/vacunas?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener vacunas en ApiDosisService: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getCasasComerciales(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/casa-comercial?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener casas comerciales en ApiDosisService: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getAnimales(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/animales?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener animales en ApiDosisService: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getRebanos(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/rebanos?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener rebaños en ApiDosisService: ' . $e->getMessage());
+            return [];
+        }
+    }
 }

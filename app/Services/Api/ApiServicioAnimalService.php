@@ -31,4 +31,66 @@ class ApiServicioAnimalService extends BaseApiService implements ServicioAnimalS
         if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->put("/servicio-animal/{$id}", $data);
     }
+
+    public function eliminar(int $id): array
+    {
+        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
+        return $this->delete("/servicio-animal/{$id}");
+    }
+
+    public function getAnimales(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/animales?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener animales en ApiServicioAnimalService: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getSemenToros(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/semen-toro?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener semen de toros en ApiServicioAnimalService: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getPersonalFinca(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/personal?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener personal en ApiServicioAnimalService: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getRegistrosCelo(): array
+    {
+        try {
+            if (!session('user.token')) return [];
+            $response = $this->get('/registro-celo?nopaginate=true');
+            if (!($response['success'] ?? false) || empty($response['data'])) return [];
+            $data = $response['data'];
+            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error al obtener registros de celo en ApiServicioAnimalService: ' . $e->getMessage());
+            return [];
+        }
+    }
 }
