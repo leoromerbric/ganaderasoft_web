@@ -218,6 +218,9 @@
                                 </label>
                             @endforeach
                         </div>
+                        <div id="animales-empty-state" class="p-8 text-center bg-gray-50 rounded-2xl" style="display: none;">
+                            <p class="text-gray-500 text-sm font-medium" id="animales-empty-msg">Seleccione un rebaño origen para ver sus animales.</p>
+                        </div>
                     @else
                         <div class="p-8 text-center bg-gray-50 rounded-2xl">
                             <p class="text-gray-500 text-sm font-medium">No hay animales disponibles en el sistema.</p>
@@ -335,14 +338,17 @@ document.addEventListener('DOMContentLoaded', function () {
     function filterAnimales() {
         const rebanoId = rebanoOrigen.value;
         const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        let visibleCount = 0;
 
         animalesCards.forEach((card) => {
-            const matchesRebano = !rebanoId || card.dataset.rebano === rebanoId;
+            const matchesRebano = rebanoId && card.dataset.rebano === rebanoId;
             const matchesQuery = !query || card.dataset.nombre.includes(query) || card.dataset.codigo.includes(query);
             const visible = matchesRebano && matchesQuery;
 
             card.style.display = visible ? '' : 'none';
-            if (!visible) {
+            if (visible) {
+                visibleCount++;
+            } else {
                 const checkbox = card.querySelector('.animal-checkbox');
                 if (checkbox && checkbox.checked) {
                     checkbox.checked = false;
@@ -351,6 +357,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
+
+        const emptyState = document.getElementById('animales-empty-state');
+        const emptyMsg = document.getElementById('animales-empty-msg');
+        const grid = document.getElementById('animales-grid');
+        
+        if (emptyState && emptyMsg) {
+            if (!rebanoId) {
+                emptyMsg.textContent = 'Seleccione un rebaño origen para ver sus animales.';
+                emptyState.style.display = 'block';
+                if (grid) grid.style.display = 'none';
+            } else if (visibleCount === 0) {
+                emptyMsg.textContent = query ? 'No se encontraron animales que coincidan con la búsqueda.' : 'El rebaño seleccionado no tiene animales.';
+                emptyState.style.display = 'block';
+                if (grid) grid.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                if (grid) grid.style.display = 'grid'; // Maintain grid layout
+            }
+        }
+
         syncSummary();
     }
 
@@ -411,6 +437,14 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     rebanoOrigen.addEventListener('change', function () {
+        // Auto-seleccionar Finca Origen si no está seleccionada o es diferente
+        const selectedOption = rebanoOrigen.options[rebanoOrigen.selectedIndex];
+        if (selectedOption && selectedOption.dataset.finca) {
+            if (fincaOrigen.value !== selectedOption.dataset.finca) {
+                fincaOrigen.value = selectedOption.dataset.finca;
+            }
+        }
+
         filterRebanos(rebanoDestino, fincaDestino.value, rebanoOrigen.value);
         if (rebanoDestino.value === rebanoOrigen.value) {
             rebanoDestino.value = '';
@@ -424,7 +458,16 @@ document.addEventListener('DOMContentLoaded', function () {
         syncSummary();
     });
 
-    rebanoDestino.addEventListener('change', syncSummary);
+    rebanoDestino.addEventListener('change', function() {
+        // Auto-seleccionar Finca Destino si no está seleccionada o es diferente
+        const selectedOption = rebanoDestino.options[rebanoDestino.selectedIndex];
+        if (selectedOption && selectedOption.dataset.finca) {
+            if (fincaDestino.value !== selectedOption.dataset.finca) {
+                fincaDestino.value = selectedOption.dataset.finca;
+            }
+        }
+        syncSummary();
+    });
 
     filterRebanos(rebanoOrigen, fincaOrigen.value);
     filterRebanos(rebanoDestino, fincaDestino.value, rebanoOrigen.value);
