@@ -175,6 +175,19 @@ class BaseApiService
     }
 
     /**
+     * Realiza una petición PATCH a la API.
+     *
+     * @param string $endpoint Ruta del endpoint.
+     * @param array $data Datos a enviar en el cuerpo de la petición.
+     * @param array $headers Cabeceras adicionales.
+     * @return array
+     */
+    protected function patch(string $endpoint, array $data = [], array $headers = []): array
+    {
+        return $this->sendRequest('patch', $endpoint, $data, $headers);
+    }
+
+    /**
      * Realiza una petición DELETE a la API.
      *
      * @param string $endpoint Ruta del endpoint.

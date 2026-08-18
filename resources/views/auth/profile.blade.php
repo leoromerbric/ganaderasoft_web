@@ -1,13 +1,13 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Mi Perfil')
+@section('title', 'Mi perfil')
 
 @section('content')
 <div class="max-w-6xl mx-auto space-y-4 sm:space-y-6">
 
     <!-- Header Section -->
     <div>
-        <h1 class="text-xl sm:text-3xl font-bold text-ganaderasoft-negro">Mi Perfil</h1>
+        <h1 class="text-xl sm:text-3xl font-bold text-ganaderasoft-negro">Mi perfil</h1>
         <p class="text-gray-500 text-xs sm:text-sm mt-0.5">Gestión de datos de usuario e información personal.</p>
     </div>
 
@@ -125,8 +125,8 @@
                 </svg>
             </div>
             <div>
-                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400">Estado Cuenta</p>
-                <p class="text-sm sm:text-lg font-bold {{ $isSuspended ? 'text-rose-600' : 'text-emerald-600' }} capitalize">{{ $isSuspended ? 'Suspendido' : ucfirst($user['status'] ?? 'Activo') }}</p>
+                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400">Estado de cuenta</p>
+                <p class="text-sm sm:text-lg font-bold {{ $isSuspended ? 'text-rose-600' : 'text-emerald-600' }} capitalize">{{ $isSuspended ? 'Suspendido' : ucfirst($user['status'] ?? 'activo') }}</p>
             </div>
         </div>
 
@@ -138,7 +138,7 @@
                 </svg>
             </div>
             <div>
-                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400">Rol Principal</p>
+                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400">Rol principal</p>
                 <p class="text-sm sm:text-lg font-bold text-gray-900 truncate">
                     @if(!empty($user['roles']))
                         {{ ucfirst(str_replace('_', ' ', $user['roles'][0])) }}
@@ -157,7 +157,7 @@
                 </svg>
             </div>
             <div>
-                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400">Miembro Desde</p>
+                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400">Miembro desde</p>
                 <p class="text-sm sm:text-lg font-bold text-gray-900">
                     {{ isset($user['created_at']) ? \Carbon\Carbon::parse($user['created_at'])->format('d M, Y') : 'N/A' }}
                 </p>
@@ -176,7 +176,7 @@
                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    Información General
+                    Información general
                 </button>
 
                 <button type="button" 
@@ -186,7 +186,7 @@
                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
-                    Roles Asignados
+                    Roles asignados
                 </button>
             </nav>
         </div>
@@ -207,31 +207,31 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-bold text-gray-900 text-sm sm:text-base">Datos del Usuario</h3>
+                                <h3 class="font-bold text-gray-900 text-sm sm:text-base">Datos del usuario</h3>
                                 <p class="text-[10px] sm:text-xs text-gray-500">Credenciales del sistema</p>
                             </div>
                         </div>
 
                         <div class="space-y-2.5 sm:space-y-3 text-xs sm:text-sm">
                             <div class="flex flex-col min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between py-1.5 sm:py-2 border-b border-gray-200/50 gap-0.5 min-[480px]:gap-4">
-                                <span class="text-gray-500 font-medium text-xs shrink-0">Nombre de Usuario:</span>
+                                <span class="text-gray-500 font-medium text-xs shrink-0">Nombre de usuario:</span>
                                 <span class="font-semibold text-gray-900 text-xs sm:text-sm text-left min-[480px]:text-right">{{ $user['name'] ?? 'N/A' }}</span>
                             </div>
 
                             <div class="flex flex-col min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between py-1.5 sm:py-2 border-b border-gray-200/50 gap-0.5 min-[480px]:gap-4">
-                                <span class="text-gray-500 font-medium text-xs shrink-0">Correo Electrónico:</span>
+                                <span class="text-gray-500 font-medium text-xs shrink-0">Correo electrónico:</span>
                                 <span class="font-semibold text-ganaderasoft-azul text-xs sm:text-sm text-left min-[480px]:text-right break-all min-[480px]:break-normal">{{ $user['email'] ?? 'N/A' }}</span>
                             </div>
 
                             <div class="flex flex-col min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between py-1.5 sm:py-2 border-b border-gray-200/50 gap-0.5 min-[480px]:gap-4">
-                                <span class="text-gray-500 font-medium text-xs shrink-0">Fecha de Registro:</span>
+                                <span class="text-gray-500 font-medium text-xs shrink-0">Fecha de registro:</span>
                                 <span class="font-semibold text-gray-800 text-xs sm:text-sm text-left min-[480px]:text-right">
                                     {{ isset($user['created_at']) ? \Carbon\Carbon::parse($user['created_at'])->format('d/m/Y H:i') : 'N/A' }}
                                 </span>
                             </div>
 
                             <div class="flex flex-col min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between py-1.5 sm:py-2 gap-1 min-[480px]:gap-4">
-                                <span class="text-gray-500 font-medium text-xs shrink-0">Estado del Sistema:</span>
+                                <span class="text-gray-500 font-medium text-xs shrink-0">Estado del sistema:</span>
                                 <span class="inline-flex items-center w-fit px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mr-1.5"></span>
                                     {{ ucfirst($user['status'] ?? 'activo') }}
@@ -249,7 +249,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-bold text-gray-900 text-sm sm:text-base">Datos Personales</h3>
+                                <h3 class="font-bold text-gray-900 text-sm sm:text-base">Datos personales</h3>
                                 <p class="text-[10px] sm:text-xs text-gray-500">Información de identidad física</p>
                             </div>
                         </div>
@@ -258,22 +258,22 @@
                             @if(!empty($user['persona']))
                                 @php $persona = $user['persona']; @endphp
                                 <div class="flex flex-col min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between py-1.5 sm:py-2 border-b border-gray-200/50 gap-0.5 min-[480px]:gap-4">
-                                    <span class="text-gray-500 font-medium text-xs shrink-0">Cédula de Identidad:</span>
+                                    <span class="text-gray-500 font-medium text-xs shrink-0">Cédula de identidad:</span>
                                     <span class="font-semibold text-gray-900 font-mono text-xs sm:text-sm text-left min-[480px]:text-right">{{ $persona['cedula'] ?? 'N/A' }}</span>
                                 </div>
 
                                 <div class="flex flex-col min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between py-1.5 sm:py-2 border-b border-gray-200/50 gap-0.5 min-[480px]:gap-4">
-                                    <span class="text-gray-500 font-medium text-xs shrink-0">Nombre Completo:</span>
+                                    <span class="text-gray-500 font-medium text-xs shrink-0">Nombre completo:</span>
                                     <span class="font-semibold text-gray-900 text-xs sm:text-sm text-left min-[480px]:text-right">{{ trim(($persona['nombre'] ?? '') . ' ' . ($persona['apellido'] ?? '')) ?: 'N/A' }}</span>
                                 </div>
 
                                 <div class="flex flex-col min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between py-1.5 sm:py-2 border-b border-gray-200/50 gap-0.5 min-[480px]:gap-4">
-                                    <span class="text-gray-500 font-medium text-xs shrink-0">Teléfono Móvil / Contacto:</span>
+                                    <span class="text-gray-500 font-medium text-xs shrink-0">Teléfono móvil / contacto:</span>
                                     <span class="font-semibold text-gray-900 text-xs sm:text-sm text-left min-[480px]:text-right">{{ $persona['telefono'] ?? 'No registrado' }}</span>
                                 </div>
 
                                 <div class="flex flex-col min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between py-1.5 sm:py-2 gap-1 min-[480px]:gap-4">
-                                    <span class="text-gray-500 font-medium text-xs shrink-0">Estado de Registro:</span>
+                                    <span class="text-gray-500 font-medium text-xs shrink-0">Estado de registro:</span>
                                     <span class="inline-flex items-center w-fit px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                                         Registrado
                                     </span>
@@ -300,29 +300,104 @@
             <div id="tab-content-roles" class="profile-tab-content space-y-4 sm:space-y-6 hidden">
                 <div class="space-y-3 sm:space-y-4">
                     <div>
-                        <h3 class="font-bold text-gray-900 text-base sm:text-lg">Roles Asignados</h3>
-                        <p class="text-[10px] sm:text-xs text-gray-500">Roles activos configurados para este usuario.</p>
+                        <h3 class="font-bold text-gray-900 text-base sm:text-lg">Roles y permisos asignados</h3>
+                        <p class="text-[10px] sm:text-xs text-gray-500">Roles activos y permisos específicos otorgados en la plataforma.</p>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                        @if(!empty($user['roles']))
-                            @foreach($user['roles'] as $role)
-                                <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm space-y-2.5 sm:space-y-3 hover:border-ganaderasoft-azul/40 transition-colors">
-                                    <div class="flex items-center justify-between">
-                                        <div class="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-ganaderasoft-azul/10 text-ganaderasoft-azul">
-                                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                            </svg>
+                    <div class="space-y-4">
+                        @php
+                            $rolesDetail = session('user.roles_detail', []);
+                        @endphp
+                        @if(!empty($rolesDetail))
+                            @foreach($rolesDetail as $roleDetail)
+                                @php
+                                    $rPerms = $roleDetail['permissions'] ?? [];
+                                    $groupedPerms = [];
+                                    foreach($rPerms as $perm) {
+                                        $parts = explode('.', $perm);
+                                        if(count($parts) === 2) {
+                                            $group = ucfirst(str_replace('_', ' ', $parts[0]));
+                                            $groupedPerms[$group][] = $parts[1];
+                                        } else {
+                                            $groupedPerms['Otros'][] = $perm;
+                                        }
+                                    }
+                                    ksort($groupedPerms);
+                                @endphp
+
+                                <details class="group bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+                                    <summary class="flex flex-col sm:flex-row sm:items-center justify-between cursor-pointer p-5 select-none hover:bg-slate-50 transition-colors gap-4">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 text-indigo-600 flex items-center justify-center shadow-inner border border-indigo-100/50">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-gray-900 text-lg">{{ $roleDetail['name'] ?? ucfirst($roleDetail['code'] ?? 'Rol') }}</h4>
+                                                <p class="text-sm text-gray-500 font-medium mt-0.5">Rol de sistema asignado</p>
+                                            </div>
                                         </div>
-                                        <span class="text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                            Activo
-                                        </span>
+                                        <div class="flex items-center gap-3">
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">
+                                                <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                                                {{ count($rPerms) }} Permisos asignados
+                                            </span>
+                                            <div class="hidden sm:flex w-10 h-10 rounded-full items-center justify-center bg-white border border-gray-200 text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-all">
+                                                <svg class="w-5 h-5 transition-transform duration-300 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </summary>
+                                    
+                                    <div class="px-5 pb-6 pt-4 border-t border-gray-100 bg-slate-50/50">
+                                        @if(count($groupedPerms) > 0)
+                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                                @foreach($groupedPerms as $module => $actions)
+                                                    <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-[0_1px_3px_0_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow">
+                                                        <div class="flex items-center gap-2.5 mb-4">
+                                                            <div class="w-7 h-7 rounded-lg bg-gray-50 flex items-center justify-center text-gray-500 border border-gray-100">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <h5 class="text-xs font-bold text-gray-700 uppercase tracking-widest">{{ $module }}</h5>
+                                                        </div>
+                                                        
+                                                        <div class="flex flex-wrap gap-2">
+                                                            @foreach($actions as $act)
+                                                                @php
+                                                                    $color = match($act) {
+                                                                        'read' => 'text-blue-600 bg-blue-50/80 border-blue-100',
+                                                                        'create' => 'text-emerald-600 bg-emerald-50/80 border-emerald-100',
+                                                                        'update' => 'text-amber-600 bg-amber-50/80 border-amber-100',
+                                                                        'delete' => 'text-rose-600 bg-rose-50/80 border-rose-100',
+                                                                        default => 'text-slate-600 bg-slate-50/80 border-slate-200'
+                                                                    };
+                                                                    $label = match($act) {
+                                                                        'read' => 'Lectura',
+                                                                        'create' => 'Crear',
+                                                                        'update' => 'Editar',
+                                                                        'delete' => 'Eliminar',
+                                                                        default => ucfirst($act)
+                                                                    };
+                                                                @endphp
+                                                                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold tracking-wide border {{ $color }}">
+                                                                    {{ $label }}
+                                                                </span>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <div class="py-8 text-center bg-white rounded-xl border border-gray-200 border-dashed">
+                                                <p class="text-sm text-gray-500 font-medium">Este rol no tiene permisos específicos asignados.</p>
+                                            </div>
+                                        @endif
                                     </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900 text-sm sm:text-base capitalize">{{ str_replace('_', ' ', $role) }}</h4>
-                                        <p class="text-[10px] sm:text-xs text-gray-500 mt-0.5">Rol activo en el sistema.</p>
-                                    </div>
-                                </div>
+                                </details>
                             @endforeach
                         @else
                             <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm space-y-2.5 sm:space-y-3">
@@ -337,7 +412,7 @@
                                     </span>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-gray-900 text-sm sm:text-base">{{ ucfirst($user['type_user'] ?? 'Usuario General') }}</h4>
+                                    <h4 class="font-bold text-gray-900 text-sm sm:text-base">{{ ucfirst($user['type_user'] ?? 'Usuario general') }}</h4>
                                     <p class="text-[10px] sm:text-xs text-gray-500 mt-0.5">Acceso estándar al sistema.</p>
                                 </div>
                             </div>

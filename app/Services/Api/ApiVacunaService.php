@@ -6,34 +6,38 @@ use App\Services\Contracts\VacunaServiceInterface;
 
 class ApiVacunaService extends BaseApiService implements VacunaServiceInterface
 {
-    public function getList(?string $nombre = null): array
+    protected string $endpoint = '/vacunas';
+
+    // Obtener lista de vacunas (por defecto solicita nopaginate=true)
+    public function getAll(array $params = []): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
-        $endpoint = '/vacunas?nopaginate=true' . ($nombre ? '&nombre=' . urlencode($nombre) : '');
-        return $this->get($endpoint);
+        $query = !empty($params) ? '?' . http_build_query($params) : '?nopaginate=true';
+        $res = $this->get($this->endpoint . $query);
+
+        return $res['data'] ?? [];
     }
 
+    // Obtener detalle de un registro por ID
     public function getById(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
-        return $this->get("/vacunas/{$id}");
+        return $this->get($this->endpoint . '/' . $id);
     }
 
+    // Crear un nuevo registro
     public function create(array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->post('/vacunas', $data);
+        return $this->post($this->endpoint, $data);
     }
 
+    // Actualizar un registro existente
     public function update(int $id, array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->put("/vacunas/{$id}", $data);
+        return $this->put($this->endpoint . '/' . $id, $data);
     }
 
-    public function eliminar(int $id): array
+    // Eliminar un registro por ID
+    public function deleteItem(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->delete("/vacunas/{$id}");
+        return $this->delete($this->endpoint . '/' . $id);
     }
 }

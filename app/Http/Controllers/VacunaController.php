@@ -7,81 +7,87 @@ use Illuminate\Http\Request;
 
 class VacunaController extends Controller
 {
-    public function __construct(protected VacunaServiceInterface $service) {}
+    protected VacunaServiceInterface $service;
+    private string $slug = 'vacunas';
+    private string $name = 'Vacunas';
+    private string $description = 'Registro de vacunas sanitarias';
 
-    public function index(Request $request)
+    public function __construct(VacunaServiceInterface $service)
     {
-        $nombre   = $request->query('nombre');
-        $response = $this->service->getList($nombre);
-        $data     = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
-        $vacunas  = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
+        $this->service = $service;
+    }
 
-        return view('vacuna.index', compact('vacunas', 'nombre'));
+    public function index()
+    {
+        $catalog = ['slug' => $this->slug, 'name' => $this->name, 'description' => $this->description];
+        $items = $this->service->getAll();
+        return view("admin.parametros.{$this->slug}.index", compact('catalog', 'items'));
     }
 
     public function create()
     {
-        return view('vacuna.create');
+        $catalog = ['slug' => $this->slug, 'name' => $this->name, 'description' => $this->description];
+        return view("admin.parametros.{$this->slug}.create", compact('catalog'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:80',
             'descripcion' => 'nullable|string',
             'activa' => 'nullable|boolean',
         ]);
 
-        $response = $this->service->create($request->only(['nombre', 'descripcion', 'activa']));
-
-        if ($response['success'] ?? false) {
-            return redirect()->route('vacuna.index')->with('success', 'Vacuna registrada exitosamente.');
+        if (isset($validated['nombre'])) {
+            $validated['nombre'] = ucfirst($validated['nombre']);
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al crear.');
+
+        $result = $this->service->create($validated);
+        if ($result['success']) {
+            return redirect()->route("admin.{$this->slug}.index")->with('success', 'Elemento guardado exitosamente.');
+        }
+
+        return back()->withInput()->with('error', $result['message'] ?? 'Error al guardar.');
     }
 
-    public function show(int $id)
+    public function edit($id)
     {
-        $response = $this->service->getById($id);
-        if (!($response['success'] ?? false)) {
-            return redirect()->route('vacuna.index')->with('error', 'Vacuna no encontrada.');
+        $catalog = ['slug' => $this->slug, 'name' => $this->name, 'description' => $this->description];
+        $result = $this->service->getById((int)$id);
+        if (!$result['success']) {
+            return redirect()->route("admin.{$this->slug}.index")->with('error', $result['message']);
         }
-        $vacuna = $response['data'];
-        return view('vacuna.show', compact('vacuna'));
+        $item = $result['data'];
+        return view("admin.parametros.{$this->slug}.edit", compact('catalog', 'item'));
     }
 
-    public function edit(int $id)
+    public function update(Request $request, $id)
     {
-        $response = $this->service->getById($id);
-        if (!($response['success'] ?? false)) {
-            return redirect()->route('vacuna.index')->with('error', 'Vacuna no encontrada.');
-        }
-        $vacuna = $response['data'];
-        return view('vacuna.edit', compact('vacuna'));
-    }
-
-    public function update(Request $request, int $id)
-    {
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:80',
             'descripcion' => 'nullable|string',
             'activa' => 'nullable|boolean',
         ]);
 
-        $response = $this->service->update($id, $request->only(['nombre', 'descripcion', 'activa']));
-
-        if ($response['success'] ?? false) {
-            return redirect()->route('vacuna.index')->with('success', 'Vacuna actualizada exitosamente.');
+        if (isset($validated['nombre'])) {
+            $validated['nombre'] = ucfirst($validated['nombre']);
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al actualizar.');
+
+        $result = $this->service->update((int)$id, $validated);
+        if ($result['success']) {
+            return redirect()->route("admin.{$this->slug}.index")->with('success', 'Elemento actualizado exitosamente.');
+        }
+
+        return back()->withInput()->with('error', $result['message'] ?? 'Error al actualizar.');
     }
 
-    public function destroy(int $id)
+    public function destroy($id)
     {
-        $response = $this->service->eliminar($id);
-        if ($response['success'] ?? false) {
-            return redirect()->route('vacuna.index')->with('success', 'Vacuna eliminada.');
+        $result = $this->service->deleteItem((int)$id);
+        if ($result['success']) {
+            return redirect()->route("admin.{$this->slug}.index")->with('success', $result['message']);
         }
-        return redirect()->route('vacuna.index')->with('error', $response['message'] ?? 'Error al eliminar.');
+
+        return back()->with('error', $result['message'] ?? 'Error al eliminar.');
     }
 }

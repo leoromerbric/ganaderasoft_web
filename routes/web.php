@@ -25,17 +25,22 @@ use App\Http\Controllers\CasaComercialController;
 use App\Http\Controllers\ArbolGenController;
 use App\Http\Controllers\MovimientoRebanoController;
 use App\Http\Controllers\ReportesController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TipoTrabajadorController;
+use App\Http\Controllers\TipoAnimalController;
+use App\Http\Controllers\ComposicionRazaController;
+use App\Http\Controllers\AdminComposicionRazaController;
+use App\Http\Controllers\EtapaController;
+use App\Http\Controllers\EstadoSaludController;
+use App\Http\Controllers\DiaPalpacionController;
+use App\Http\Controllers\FoliculoController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
 // Root route returns welcome view
@@ -211,14 +216,6 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::put('/tratamiento/{id}', [TratamientoController::class, 'update'])->name('tratamiento.update');
     Route::delete('/tratamiento/{id}', [TratamientoController::class, 'destroy'])->name('tratamiento.destroy');
 
-    // Vacunas
-    Route::get('/vacunas', [VacunaController::class, 'index'])->name('vacuna.index');
-    Route::get('/vacunas/create', [VacunaController::class, 'create'])->name('vacuna.create');
-    Route::post('/vacunas', [VacunaController::class, 'store'])->name('vacuna.store');
-    Route::get('/vacunas/{id}', [VacunaController::class, 'show'])->name('vacuna.show');
-    Route::get('/vacunas/{id}/edit', [VacunaController::class, 'edit'])->name('vacuna.edit');
-    Route::put('/vacunas/{id}', [VacunaController::class, 'update'])->name('vacuna.update');
-    Route::delete('/vacunas/{id}', [VacunaController::class, 'destroy'])->name('vacuna.destroy');
 
     // Vacunación (modelo sanitario principal)
     Route::get('/vacunaciones', [VacunacionController::class, 'index'])->name('vacunacion.index');
@@ -230,14 +227,6 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::put('/vacunaciones/{id}', [VacunacionController::class, 'update'])->name('vacunacion.update');
     Route::delete('/vacunaciones/{id}', [VacunacionController::class, 'destroy'])->name('vacunacion.destroy');
 
-    // Casas Comerciales
-    Route::get('/casas-comerciales', [CasaComercialController::class, 'index'])->name('casa-comercial.index');
-    Route::get('/casas-comerciales/create', [CasaComercialController::class, 'create'])->name('casa-comercial.create');
-    Route::post('/casas-comerciales', [CasaComercialController::class, 'store'])->name('casa-comercial.store');
-    Route::get('/casas-comerciales/{id}', [CasaComercialController::class, 'show'])->name('casa-comercial.show');
-    Route::get('/casas-comerciales/{id}/edit', [CasaComercialController::class, 'edit'])->name('casa-comercial.edit');
-    Route::put('/casas-comerciales/{id}', [CasaComercialController::class, 'update'])->name('casa-comercial.update');
-    Route::delete('/casas-comerciales/{id}', [CasaComercialController::class, 'destroy'])->name('casa-comercial.destroy');
 
     // ===================== MOVIMIENTOS DE REBAÑO =====================
     Route::get('/movimiento-rebano', [MovimientoRebanoController::class, 'index'])->name('movimiento-rebano.index');
@@ -248,8 +237,37 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::put('/movimiento-rebano/{id}', [MovimientoRebanoController::class, 'update'])->name('movimiento-rebano.update');
     Route::delete('/movimiento-rebano/{id}', [MovimientoRebanoController::class, 'destroy'])->name('movimiento-rebano.destroy');
 
+    // ===================== MÓDULO DE RAZAS (Operativo) =====================
+    Route::resource('razas', ComposicionRazaController::class);
+
     // ===================== MÓDULO DE REPORTES =====================
     Route::get('/reportes/general', [ReportesController::class, 'indexGeneral'])->name('reportes.general');
     Route::get('/reportes/reproductivo', [ReportesController::class, 'indexReproductivo'])->name('reportes.reproductivo');
     Route::get('/reportes/pesaje-leche', [ReportesController::class, 'indexPesajeLeche'])->name('reportes.pesaje-leche');
+});
+
+// ===================== MÓDULO DE ADMINISTRACIÓN =====================
+Route::middleware(['mock.auth', 'has.role:global_admin,admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard Admin
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Gestión de usuarios
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::post('/users/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+
+    // Catálogos Maestros (Rutas Limpias e Independientes)
+    Route::resource('tipos-trabajador', TipoTrabajadorController::class);
+    Route::resource('tipos-animal', TipoAnimalController::class);
+    Route::resource('etapas', EtapaController::class);
+    Route::resource('estados-salud', EstadoSaludController::class);
+    Route::resource('dias-palpacion', DiaPalpacionController::class);
+    Route::resource('foliculos', FoliculoController::class);
+    Route::resource('vacunas', VacunaController::class);
+    Route::resource('casas-comerciales', CasaComercialController::class);
+    Route::resource('razas', AdminComposicionRazaController::class);
 });

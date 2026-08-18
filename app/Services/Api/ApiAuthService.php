@@ -103,15 +103,33 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
      */
     private function formatUserData(array $apiUser, ?string $token = null, ?string $tokenType = null): array
     {
-        $roles = $apiUser['roles'] ?? [];
+        $rolesCollection = collect($apiUser['roles'] ?? []);
+
+        // 1. Arreglo plano de códigos de rol (ej: ['global_admin', 'propietario'])
+        $roleCodes = $rolesCollection->map(function ($r) {
+            return is_array($r) ? ($r['code'] ?? '') : (string)$r;
+        })->filter()->values()->all();
+
+        // 2. Arreglo plano de permisos únicos (ej: ['usuario.read', 'finca.read'])
+        $permissions = $rolesCollection->pluck('permissions')
+            ->flatten()
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        // 3. Detalle completo de roles para vistas de perfil
+        $rolesDetail = $rolesCollection->all();
 
         return [
             'id'                => $apiUser['id'] ?? null,
             'name'              => $apiUser['name'] ?? '',
             'email'             => $apiUser['email'] ?? '',
             'status'            => $apiUser['status'] ?? 'active',
-            'roles'             => $roles,
-            'type_user'         => $this->resolveUserType($roles),
+            'roles'             => $roleCodes,
+            'permissions'       => $permissions,
+            'roles_detail'      => $rolesDetail,
+            'type_user'         => $this->resolveUserType($roleCodes),
             'image'             => $apiUser['image'] ?? 'user.png',
             'created_at'        => $apiUser['created_at'] ?? null,
             'email_verified_at' => $apiUser['email_verified_at'] ?? null,

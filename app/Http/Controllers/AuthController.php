@@ -30,6 +30,20 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
+
+    //Redirige al usuario según su rol hacia el dashboard correspondiente.
+
+    private function redirectUserByRole(): RedirectResponse
+    {
+        $roles = session('user.roles', []);
+
+        if (is_array($roles) && (in_array('global_admin', $roles, true) || in_array('admin', $roles, true))) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('dashboard');
+    }
+
     /**
      * Muestra el formulario de inicio de sesión.
      *
@@ -37,9 +51,9 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        // Redirigir al dashboard si ya existe una sesión activa
+        // Redirigir al dashboard correspondiente si ya existe una sesión activa
         if (Session::has('authenticated')) {
-            return redirect()->route('dashboard');
+            return $this->redirectUserByRole();
         }
 
         return view('auth.login');
@@ -66,7 +80,7 @@ class AuthController extends Controller
         $user = $this->authService->login($request->email, $request->password);
 
         if ($user) {
-            return redirect()->route('dashboard');
+            return $this->redirectUserByRole();
         }
 
         $errorMessage = session('auth_error', 'Las credenciales proporcionadas no son correctas.');

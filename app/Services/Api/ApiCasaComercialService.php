@@ -6,34 +6,38 @@ use App\Services\Contracts\CasaComercialServiceInterface;
 
 class ApiCasaComercialService extends BaseApiService implements CasaComercialServiceInterface
 {
-    public function getList(?string $laboratorio = null): array
+    protected string $endpoint = '/casas-comerciales';
+
+    // Obtener lista de casas comerciales (por defecto solicita nopaginate=true)
+    public function getAll(array $params = []): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
-        $endpoint = '/casas-comerciales?nopaginate=true' . ($laboratorio ? '&laboratorio=' . urlencode($laboratorio) : '');
-        return $this->get($endpoint);
+        $query = !empty($params) ? '?' . http_build_query($params) : '?nopaginate=true';
+        $res = $this->get($this->endpoint . $query);
+
+        return $res['data'] ?? [];
     }
 
+    // Obtener detalle de un registro por ID
     public function getById(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
-        return $this->get("/casas-comerciales/{$id}");
+        return $this->get($this->endpoint . '/' . $id);
     }
 
+    // Crear un nuevo registro
     public function create(array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->post('/casas-comerciales', $data);
+        return $this->post($this->endpoint, $data);
     }
 
+    // Actualizar un registro existente
     public function update(int $id, array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->put("/casas-comerciales/{$id}", $data);
+        return $this->put($this->endpoint . '/' . $id, $data);
     }
 
-    public function eliminar(int $id): array
+    // Eliminar un registro por ID
+    public function deleteItem(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
-        return $this->delete("/casas-comerciales/{$id}");
+        return $this->delete($this->endpoint . '/' . $id);
     }
 }

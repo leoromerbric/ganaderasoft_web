@@ -7,26 +7,32 @@ use Illuminate\Http\Request;
 
 class CasaComercialController extends Controller
 {
-    public function __construct(protected CasaComercialServiceInterface $service) {}
+    protected CasaComercialServiceInterface $service;
+    private string $slug = 'casas-comerciales';
+    private string $name = 'Casas comerciales';
+    private string $description = 'Laboratorios y proveedores de productos';
 
-    public function index(Request $request)
+    public function __construct(CasaComercialServiceInterface $service)
     {
-        $laboratorio = $request->query('laboratorio');
-        $response    = $this->service->getList($laboratorio);
-        $data        = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
-        $casas       = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
+        $this->service = $service;
+    }
 
-        return view('casa-comercial.index', compact('casas', 'laboratorio'));
+    public function index()
+    {
+        $catalog = ['slug' => $this->slug, 'name' => $this->name, 'description' => $this->description];
+        $items = $this->service->getAll();
+        return view("admin.parametros.{$this->slug}.index", compact('catalog', 'items'));
     }
 
     public function create()
     {
-        return view('casa-comercial.create');
+        $catalog = ['slug' => $this->slug, 'name' => $this->name, 'description' => $this->description];
+        return view("admin.parametros.{$this->slug}.create", compact('catalog'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'laboratorio'     => 'required|string|max:60',
             'marca_comercial' => 'required|string|max:60',
             'activa'          => 'nullable|boolean',
@@ -35,56 +41,51 @@ class CasaComercialController extends Controller
             'marca_comercial.required' => 'La marca comercial es requerida.',
         ]);
 
-        $response = $this->service->create($request->only(['laboratorio', 'marca_comercial', 'activa']));
-
-        if ($response['success'] ?? false) {
-            return redirect()->route('casa-comercial.index')->with('success', 'Casa comercial registrada exitosamente.');
+        $result = $this->service->create($validated);
+        if ($result['success']) {
+            return redirect()->route("admin.{$this->slug}.index")->with('success', 'Elemento guardado exitosamente.');
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al crear.');
+
+        return back()->withInput()->with('error', $result['message'] ?? 'Error al guardar.');
     }
 
-    public function show(int $id)
+    public function edit($id)
     {
-        $response = $this->service->getById($id);
-        if (!($response['success'] ?? false)) {
-            return redirect()->route('casa-comercial.index')->with('error', 'Casa comercial no encontrada.');
+        $catalog = ['slug' => $this->slug, 'name' => $this->name, 'description' => $this->description];
+        $result = $this->service->getById((int)$id);
+        if (!$result['success']) {
+            return redirect()->route("admin.{$this->slug}.index")->with('error', $result['message']);
         }
-        $casa = $response['data'];
-        return view('casa-comercial.show', compact('casa'));
+        $item = $result['data'];
+        return view("admin.parametros.{$this->slug}.edit", compact('catalog', 'item'));
     }
 
-    public function edit(int $id)
+    public function update(Request $request, $id)
     {
-        $response = $this->service->getById($id);
-        if (!($response['success'] ?? false)) {
-            return redirect()->route('casa-comercial.index')->with('error', 'Casa comercial no encontrada.');
-        }
-        $casa = $response['data'];
-        return view('casa-comercial.edit', compact('casa'));
-    }
-
-    public function update(Request $request, int $id)
-    {
-        $request->validate([
+        $validated = $request->validate([
             'laboratorio'     => 'required|string|max:60',
             'marca_comercial' => 'required|string|max:60',
             'activa'          => 'nullable|boolean',
+        ], [
+            'laboratorio.required'     => 'El laboratorio es requerido.',
+            'marca_comercial.required' => 'La marca comercial es requerida.',
         ]);
 
-        $response = $this->service->update($id, $request->only(['laboratorio', 'marca_comercial', 'activa']));
-
-        if ($response['success'] ?? false) {
-            return redirect()->route('casa-comercial.index')->with('success', 'Casa comercial actualizada exitosamente.');
+        $result = $this->service->update((int)$id, $validated);
+        if ($result['success']) {
+            return redirect()->route("admin.{$this->slug}.index")->with('success', 'Elemento actualizado exitosamente.');
         }
-        return back()->withInput()->with('error', $response['message'] ?? 'Error al actualizar.');
+
+        return back()->withInput()->with('error', $result['message'] ?? 'Error al actualizar.');
     }
 
-    public function destroy(int $id)
+    public function destroy($id)
     {
-        $response = $this->service->eliminar($id);
-        if ($response['success'] ?? false) {
-            return redirect()->route('casa-comercial.index')->with('success', 'Casa comercial eliminada.');
+        $result = $this->service->deleteItem((int)$id);
+        if ($result['success']) {
+            return redirect()->route("admin.{$this->slug}.index")->with('success', $result['message']);
         }
-        return redirect()->route('casa-comercial.index')->with('error', $response['message'] ?? 'Error al eliminar.');
+
+        return back()->with('error', $result['message'] ?? 'Error al eliminar.');
     }
 }

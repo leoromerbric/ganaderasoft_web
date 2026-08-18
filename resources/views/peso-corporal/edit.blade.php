@@ -5,7 +5,8 @@
 @section('content')
 @php
     $pesoId = $pesoCorporal['id'] ?? null;
-    $animalNombre = data_get($pesoCorporal, 'animal.nombre') ?? ('Animal #'.($pesoCorporal['animal_id'] ?? ''));
+    $animalId = data_get($pesoCorporal, 'animal.id') ?? ($pesoCorporal['animal_id'] ?? '');
+    $animalNombre = data_get($pesoCorporal, 'animal.nombre') ?? ('Animal #'.($animalId ?: 'N/A'));
     $animalCodigo = data_get($pesoCorporal, 'animal.codigo_animal') ?? '';
     $valFecha = old('fecha_peso') ?: (isset($pesoCorporal['fecha_peso']) ? substr($pesoCorporal['fecha_peso'], 0, 10) : date('Y-m-d'));
     $valPeso = old('peso', $pesoCorporal['peso'] ?? '');
@@ -62,7 +63,7 @@
         @csrf
         @method('PUT')
 
-        <input type="hidden" name="animal_id" value="{{ old('animal_id', $pesoCorporal['animal_id'] ?? '') }}">
+        <input type="hidden" name="animal_id" value="{{ old('animal_id', $animalId) }}">
         <input type="hidden" name="etapa_id" value="{{ old('etapa_id', $pesoCorporal['etapa_id'] ?? '') }}">
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
