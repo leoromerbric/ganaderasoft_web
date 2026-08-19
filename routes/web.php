@@ -90,6 +90,9 @@ Route::middleware(['mock.auth'])->group(function () {
 
     // Animales routes
     Route::get('/animales', [AnimalesController::class, 'index'])->name('animales.index');
+    Route::get('/animales/importar', [AnimalesController::class, 'importarForm'])->name('animales.importar');
+    Route::post('/animales/importar', [AnimalesController::class, 'importar'])->name('animales.importar.procesar');
+    Route::get('/animales/plantilla-csv', [AnimalesController::class, 'descargarPlantilla'])->name('animales.plantilla');
     Route::get('/animales/create', [AnimalesController::class, 'create'])->name('animales.create');
     Route::post('/animales', [AnimalesController::class, 'store'])->name('animales.store');
     Route::get('/animales/{id}', [AnimalesController::class, 'show'])->name('animales.show');

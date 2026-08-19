@@ -117,4 +117,24 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
 
         return $this->get('/etapas');
     }
+
+    /**
+     * Importa masivamente animales desde un archivo CSV o TXT.
+     *
+     * @param int $fincaId ID de la finca destino.
+     * @param mixed $file Archivo UploadedFile.
+     * @return array Respuesta de la API.
+     */
+    public function importarAnimales(int $fincaId, $file): array
+    {
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
+        }
+
+        return $this->postMultipart(
+            '/animales/importar',
+            ['finca_id' => $fincaId],
+            ['archivo' => $file]
+        );
+    }
 }

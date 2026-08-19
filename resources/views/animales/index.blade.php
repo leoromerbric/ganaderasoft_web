@@ -10,10 +10,16 @@
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Animales</h1>
                 <p class="text-gray-500 text-sm mt-1">Administración del inventario de ganado y registro por rebaños</p>
             </div>
-            <a href="{{ route('animales.create') }}"
-               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium">
-                + Nuevo Animal
-            </a>
+            <div class="flex flex-wrap items-center gap-3">
+                <a href="{{ route('animales.importar', ['finca_id' => $idFinca]) }}"
+                   class="px-5 py-3 border border-ganaderasoft-verde-oscuro text-ganaderasoft-verde-oscuro hover:bg-ganaderasoft-verde-oscuro hover:text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md inline-flex items-center justify-center font-medium">
+                    📥 Importar CSV / TXT
+                </a>
+                <a href="{{ route('animales.create') }}"
+                   class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium">
+                    + Nuevo Animal
+                </a>
+            </div>
         </div>
 
         <!-- Alert Messages -->

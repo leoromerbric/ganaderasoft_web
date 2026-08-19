@@ -222,4 +222,92 @@ class AnimalesController extends Controller
         return redirect()->route('animales.index')
             ->with('success', '¡Animal actualizado exitosamente!');
     }
+
+    /**
+     * Muestra el formulario para importar animales masivamente mediante CSV o TXT.
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function importarForm(Request $request)
+    {
+        $fincasResponse = $this->fincasService->getFincas();
+        $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
+        $idFinca = $request->query('finca_id') ?? session('selected_finca')['id'] ?? null;
+
+        return view('animales.importar', compact('fincas', 'idFinca'));
+    }
+
+    /**
+     * Procesa la importación masiva de animales.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function importar(Request $request)
+    {
+        $request->validate([
+            'finca_id' => 'required|integer',
+            'archivo'  => 'required|file|max:10240',
+        ], [
+            'finca_id.required' => 'Debe seleccionar una finca de destino para los animales.',
+            'finca_id.integer'  => 'El identificador de la finca debe ser numérico.',
+            'archivo.required'  => 'Debe seleccionar un archivo .csv o .txt para procesar.',
+            'archivo.file'      => 'El elemento subido no es un archivo válido.',
+            'archivo.max'       => 'El tamaño del archivo no debe exceder los 10MB.',
+        ]);
+
+        $response = $this->animalesService->importarAnimales(
+            (int) $request->input('finca_id'),
+            $request->file('archivo')
+        );
+
+        if ($response['success'] ?? false) {
+            return redirect()->route('animales.index', ['finca_id' => $request->input('finca_id')])
+                ->with('success', $response['message'] ?? 'Animales importados exitosamente.');
+        }
+
+        $errorMessage = $response['message'] ?? 'Ocurrió un error al procesar el archivo.';
+        $importErrors = $response['errors']['filas'] ?? ($response['errors'] ?? []);
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', $errorMessage)
+            ->with('import_errors', (array)$importErrors);
+    }
+
+    /**
+     * Genera y descarga un archivo CSV de ejemplo con encabezados y filas de muestra.
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function descargarPlantilla(Request $request)
+    {
+        $delimitador = $request->query('delimitador') === 'punto_coma' ? ';' : ',';
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="plantilla_animales.csv"',
+        ];
+
+        $columns = ['codigo_animal', 'nombre', 'sexo', 'fecha_nacimiento', 'procedencia', 'rebano', 'raza', 'estado_salud', 'peso'];
+        $samples = [
+            ['AN-001', 'Vaca Mariposa', 'H', '2023-03-15', 'Local', 'Lote Produccion A', 'Holstein', 'Sano', '420'],
+            ['AN-002', 'Toro Titan', 'M', '2022-11-20', 'Compra', 'Lote Reproduccion', 'Brahman', 'Sano', '550'],
+            ['AN-003', 'Becerra Princesa', 'H', '2024-01-10', 'Nacimiento', 'Lote Cria', 'Carora', 'Sano', '110'],
+        ];
+
+        $callback = function () use ($columns, $samples, $delimitador) {
+            $file = fopen('php://output', 'w');
+            // Inyectar BOM UTF-8 para compatibilidad transparente con Excel
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fputcsv($file, $columns, $delimitador);
+            foreach ($samples as $sample) {
+                fputcsv($file, $sample, $delimitador);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

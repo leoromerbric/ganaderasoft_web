@@ -38,4 +38,9 @@ interface AnimalesServiceInterface
      * Get list of available animal stages
      */
     public function getEtapas(): array;
+
+    /**
+     * Import animals in bulk from a CSV or TXT file
+     */
+    public function importarAnimales(int $fincaId, $file): array;
 }

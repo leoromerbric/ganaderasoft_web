@@ -198,4 +198,63 @@ class BaseApiService
     {
         return $this->sendRequest('delete', $endpoint, [], $headers);
     }
+
+    /**
+     * Realiza una petición POST con archivos multipart a la API.
+     *
+     * @param string $endpoint Ruta del endpoint.
+     * @param array $data Campos de texto a enviar.
+     * @param array $files Arreglo de archivos en formato ['campo' => UploadedFile].
+     * @param array $headers Cabeceras adicionales.
+     * @return array
+     */
+    protected function postMultipart(string $endpoint, array $data = [], array $files = [], array $headers = []): array
+    {
+        try {
+            $reqHeaders = [
+                'Accept' => 'application/json',
+                'X-API-VERSION' => '2',
+            ];
+            if (session()->has('user.token')) {
+                $reqHeaders['Authorization'] = 'Bearer ' . session('user.token');
+            }
+            $reqHeaders = array_merge($reqHeaders, $headers);
+
+            $http = Http::withHeaders($reqHeaders)->timeout(60);
+
+            foreach ($files as $name => $file) {
+                if ($file instanceof \Illuminate\Http\UploadedFile) {
+                    $http->attach($name, file_get_contents($file->getRealPath()), $file->getClientOriginalName());
+                } elseif (is_array($file)) {
+                    $http->attach($name, file_get_contents($file['path']), $file['name'] ?? basename($file['path']));
+                }
+            }
+
+            $response = $http->post($this->baseUrl . $endpoint, $data);
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            if ($response->serverError()) {
+                Log::error("API POST Multipart request failed (Server Error)", [
+                    'endpoint' => $endpoint,
+                    'status'   => $response->status(),
+                    'body'     => $response->body()
+                ]);
+            }
+
+            return $this->formatApiFailure($response, 'Error al procesar el archivo');
+        } catch (\Exception $e) {
+            Log::error("API POST Multipart request exception", [
+                'endpoint' => $endpoint,
+                'error'    => $e->getMessage()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Error de conexión: ' . $e->getMessage()
+            ];
+        }
+    }
 }
