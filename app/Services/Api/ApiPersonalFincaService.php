@@ -12,9 +12,9 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
      */
     public function getPersonalFinca(?int $fincaId = null): array
     {
-        $endpoint = '/personal-finca';
+        $endpoint = '/personal-finca?nopaginate=true';
         if ($fincaId) {
-            $endpoint .= '?finca_id=' . $fincaId;
+            $endpoint .= '&finca_id=' . $fincaId;
         }
 
         return $this->get($endpoint);

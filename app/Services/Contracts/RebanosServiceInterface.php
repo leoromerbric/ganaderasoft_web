@@ -7,7 +7,7 @@ interface RebanosServiceInterface
     /**
      * Get list of rebaños for authenticated user
      */
-    public function getRebanos(): array;
+    public function getRebanos(array $params = []): array;
 
     /**
      * Create a new rebaño

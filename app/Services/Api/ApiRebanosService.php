@@ -10,9 +10,10 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
     /**
      * Get list of rebaños for authenticated user
      */
-    public function getRebanos(): array
+    public function getRebanos(array $params = []): array
     {
-        return $this->get('/rebanos');
+        $query = !empty($params) ? '?' . http_build_query($params) : '?nopaginate=true';
+        return $this->get('/rebanos' . $query);
     }
 
     /**

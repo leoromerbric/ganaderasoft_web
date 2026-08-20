@@ -7,7 +7,7 @@ interface FincasServiceInterface
     /**
      * Get list of fincas for authenticated user
      */
-    public function getFincas(): array;
+    public function getFincas(array $params = []): array;
 
     /**
      * Get a single finca by ID

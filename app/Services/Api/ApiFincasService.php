@@ -10,9 +10,10 @@ class ApiFincasService extends BaseApiService implements FincasServiceInterface
     /**
      * Get list of fincas for authenticated user
      */
-    public function getFincas(): array
+    public function getFincas(array $params = []): array
     {
-        return $this->get('/fincas');
+        $query = !empty($params) ? '?' . http_build_query($params) : '?nopaginate=true';
+        return $this->get('/fincas' . $query);
     }
 
     /**

@@ -12,7 +12,7 @@ class ApiPersonalService extends BaseApiService implements PersonalServiceInterf
      */
     public function getPersonal(int $idFinca): array
     {
-        return $this->get('/personal-finca?finca_id=' . $idFinca);
+        return $this->get('/personal-finca?nopaginate=true&finca_id=' . $idFinca);
     }
 
     /**
