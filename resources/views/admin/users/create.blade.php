@@ -37,7 +37,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('admin.users.store') }}" class="space-y-6">
+    <form method="POST" action="{{ route('admin.users.store') }}" novalidate class="space-y-6">
         @csrf
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -52,26 +52,27 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="nombre" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Nombre <span class="text-red-500">*</span></label>
-                            <input type="text" id="nombre" name="nombre" value="{{ old('nombre') }}" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                            <input type="text" id="nombre" name="nombre" value="{{ old('nombre') }}" required placeholder="Ej: Carlos"
+                                   class="w-full px-4 py-3 border @error('nombre') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('nombre')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label for="apellido" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Apellido <span class="text-red-500">*</span></label>
-                            <input type="text" id="apellido" name="apellido" value="{{ old('apellido') }}" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                            <input type="text" id="apellido" name="apellido" value="{{ old('apellido') }}" required placeholder="Ej: Pérez"
+                                   class="w-full px-4 py-3 border @error('apellido') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('apellido')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label for="cedula" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Cédula / Documento <span class="text-red-500">*</span></label>
-                            <input type="text" id="cedula" name="cedula" value="{{ old('cedula') }}" required
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                            <input type="text" id="cedula" name="cedula" value="{{ old('cedula') }}" required placeholder="Ej: V12345678"
+                                   class="w-full px-4 py-3 border @error('cedula') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all uppercase">
                             @error('cedula')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
                             <label for="telefono" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Teléfono de contacto</label>
-                            <input type="text" id="telefono" name="telefono" value="{{ old('telefono') }}" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                            <input type="text" id="telefono" name="telefono" value="{{ old('telefono') }}" placeholder="Ej: 04141234567"
+                                   class="w-full px-4 py-3 border @error('telefono') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                            @error('telefono')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                     </div>
                 </div>
@@ -85,15 +86,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="correo" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Correo electrónico <span class="text-red-500">*</span></label>
-                            <input type="email" id="correo" name="correo" value="{{ old('correo') }}" required 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                            <input type="email" id="correo" name="correo" value="{{ old('correo') }}" required placeholder="ejemplo@correo.com"
+                                   class="w-full px-4 py-3 border @error('correo') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('correo')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label for="password" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Contraseña inicial <span class="text-red-500">*</span></label>
-                            <input type="password" id="password" name="password" required minlength="8" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                            <input type="password" id="password" name="password" required placeholder="Mínimo 8 caracteres"
+                                   class="w-full px-4 py-3 border @error('password') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('password')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                     </div>
@@ -106,9 +107,9 @@
                     </h3>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Roles de usuario <span class="text-red-500">*</span></label>
-                        <div class="space-y-2">
+                        <div class="space-y-2 @error('roles') p-2 border border-red-300 bg-red-50/20 rounded-xl @enderror">
                             @foreach($availableRoles as $r)
-                                <label class="flex items-center space-x-3 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors">
+                                <label class="flex items-center space-x-3 p-3 border border-gray-200 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors bg-white">
                                     <input type="checkbox" name="roles[]" value="{{ $r['code'] }}" class="role-checkbox w-5 h-5 text-ganaderasoft-azul border-gray-300 rounded focus:ring-ganaderasoft-celeste"
                                            {{ is_array(old('roles')) && in_array($r['code'], old('roles')) ? 'checked' : '' }}>
                                     <span class="text-sm font-medium text-gray-700">{{ $r['name'] }}</span>
@@ -190,13 +191,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const nombreInput  = document.getElementById('nombre');
-    const apellidoInput= document.getElementById('apellido');
-    const correoInput  = document.getElementById('correo');
-    const cedulaInput  = document.getElementById('cedula');
-    const telefonoInput= document.getElementById('telefono');
-    const passwordInput= document.getElementById('password');
-    const roleCheckboxes = document.querySelectorAll('.role-checkbox');
+    const nombreInput       = document.getElementById('nombre');
+    const apellidoInput     = document.getElementById('apellido');
+    const correoInput       = document.getElementById('correo');
+    const cedulaInput       = document.getElementById('cedula');
+    const telefonoInput     = document.getElementById('telefono');
+    const passwordInput     = document.getElementById('password');
+    const roleCheckboxes    = document.querySelectorAll('.role-checkbox');
 
     const previewNombre   = document.getElementById('previewNombre');
     const previewCorreo   = document.getElementById('previewCorreo');

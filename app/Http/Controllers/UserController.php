@@ -54,11 +54,21 @@ class UserController extends Controller
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'correo' => 'required|email|max:255',
-            'cedula' => 'required|string|max:50',
+            'cedula' => ['required', 'string', 'regex:/^[VGEJ][0-9]+$/'],
             'telefono' => 'nullable|string|max:50',
             'password' => 'required|string|min:8',
             'roles' => 'required|array|min:1',
             'roles.*' => 'string|in:propietario,global_admin,admin',
+        ], [
+            'cedula.required' => 'La cédula o documento de identidad es obligatorio.',
+            'cedula.regex' => 'La cédula debe comenzar con la letra del documento (V, E, J o G) seguido de números (ej: V12345678).',
+            'nombre.required' => 'El nombre es obligatorio.',
+            'apellido.required' => 'El apellido es obligatorio.',
+            'correo.required' => 'El correo electrónico es obligatorio.',
+            'correo.email' => 'El correo electrónico no es válido.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'roles.required' => 'Debe seleccionar al menos un rol.',
         ]);
 
         $payload = [
@@ -78,7 +88,12 @@ class UserController extends Controller
             return redirect()->route('admin.users.index')->with('success', 'Usuario creado exitosamente.');
         }
 
-        return back()->withInput()->with('error', $result['message'] ?? 'Error al crear el usuario.');
+        $redirect = back()->withInput();
+        if (!empty($result['errors']) && is_array($result['errors'])) {
+            $redirect->withErrors($result['errors']);
+        }
+
+        return $redirect->with('error', $result['message'] ?? 'Error al crear el usuario.');
     }
 
     /**
@@ -125,12 +140,22 @@ class UserController extends Controller
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'correo' => 'required|email|max:255',
-            'cedula' => 'required|string|max:50',
+            'cedula' => ['required', 'string', 'regex:/^[VGEJ][0-9]+$/'],
             'telefono' => 'nullable|string|max:50',
             'password' => 'nullable|string|min:8',
             'roles' => 'required|array|min:1',
             'roles.*' => 'string|in:propietario,global_admin,admin',
             'status' => 'required|string|in:active,suspended',
+        ], [
+            'cedula.required' => 'La cédula o documento de identidad es obligatorio.',
+            'cedula.regex' => 'La cédula debe comenzar con la letra del documento (V, E, J o G) seguido de números (ej: V12345678).',
+            'nombre.required' => 'El nombre es obligatorio.',
+            'apellido.required' => 'El apellido es obligatorio.',
+            'correo.required' => 'El correo electrónico es obligatorio.',
+            'correo.email' => 'El correo electrónico no es válido.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'roles.required' => 'Debe seleccionar al menos un rol.',
+            'status.required' => 'El estado de cuenta es obligatorio.',
         ]);
 
         $payload = [
@@ -154,7 +179,12 @@ class UserController extends Controller
             return redirect()->route('admin.users.index')->with('success', 'Usuario actualizado exitosamente.');
         }
 
-        return back()->withInput()->with('error', $result['message'] ?? 'Error al actualizar el usuario.');
+        $redirect = back()->withInput();
+        if (!empty($result['errors']) && is_array($result['errors'])) {
+            $redirect->withErrors($result['errors']);
+        }
+
+        return $redirect->with('error', $result['message'] ?? 'Error al actualizar el usuario.');
     }
 
     /**
