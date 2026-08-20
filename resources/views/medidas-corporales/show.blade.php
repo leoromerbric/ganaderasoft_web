@@ -5,12 +5,18 @@
 @section('content')
 @php
     $medidaId = data_get($medidaCorporal, 'id');
-    $animalId = data_get($medidaCorporal, 'animal_id') ?? data_get($medidaCorporal, 'etapa_animal.animal_id');
+    $animalId = data_get($medidaCorporal, 'animal_id') 
+        ?? data_get($medidaCorporal, 'animal.id')
+        ?? data_get($medidaCorporal, 'etapa_animal.animal_id')
+        ?? data_get($indicesData, 'animal.id');
     
     $animalNombre = data_get($medidaCorporal, 'animal.nombre')
-        ?? ('Animal #'.($animalId ?? 'N/A'));
+        ?? data_get($indicesData, 'animal.nombre')
+        ?? ($animalId ? ('Animal #'.$animalId) : 'Animal no disponible');
 
-    $animalCodigo = data_get($medidaCorporal, 'animal.codigo_animal') ?? '';
+    $animalCodigo = data_get($medidaCorporal, 'animal.codigo_animal')
+        ?? data_get($indicesData, 'animal.codigo_animal')
+        ?? '';
 
     $alturaHc    = (float) data_get($medidaCorporal, 'altura_hc', 0);
     $alturaHg    = (float) data_get($medidaCorporal, 'altura_hg', 0);
