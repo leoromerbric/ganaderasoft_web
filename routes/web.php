@@ -60,6 +60,9 @@ Route::middleware(['mock.auth'])->group(function () {
     
     // Fincas routes
     Route::get('/fincas', [FincasController::class, 'index'])->name('fincas.index');
+    Route::get('/fincas/importar', [FincasController::class, 'importarForm'])->name('fincas.importar');
+    Route::post('/fincas/importar', [FincasController::class, 'importar'])->name('fincas.importar.procesar');
+    Route::get('/fincas/plantilla-csv', [FincasController::class, 'descargarPlantilla'])->name('fincas.importar.plantilla');
     Route::get('/fincas/create', [FincasController::class, 'create'])->name('fincas.create');
     Route::post('/fincas', [FincasController::class, 'store'])->name('fincas.store');
     Route::get('/fincas/{id}/edit', [FincasController::class, 'edit'])->name('fincas.edit');

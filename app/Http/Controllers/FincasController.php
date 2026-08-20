@@ -249,4 +249,92 @@ class FincasController extends Controller
             'message' => $response['message'] ?? 'Error al obtener las fincas'
         ], 500);
     }
+
+    /**
+     * Muestra la vista de formulario para importar fincas masivamente vía CSV/TXT.
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function importarForm(Request $request)
+    {
+        $user = session('user');
+        $propietarioId = $user['propietario']['id'] ?? $user['id'] ?? null;
+
+        return view('fincas.importar', compact('propietarioId'));
+    }
+
+    /**
+     * Procesa la importación masiva de fincas.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function importar(Request $request)
+    {
+        $request->validate([
+            'archivo'        => 'required|file|max:10240',
+            'propietario_id' => 'nullable|integer',
+        ], [
+            'archivo.required' => 'Debe seleccionar un archivo .csv o .txt para procesar.',
+            'archivo.file'     => 'El elemento subido no es un archivo válido.',
+            'archivo.max'      => 'El tamaño del archivo no debe exceder los 10MB.',
+        ]);
+
+        $user = session('user');
+        $propietarioId = $request->input('propietario_id') ?: ($user['propietario']['id'] ?? null);
+
+        $response = $this->fincasService->importarFincas(
+            $request->file('archivo'),
+            $propietarioId ? (int)$propietarioId : null
+        );
+
+        if ($response['success'] ?? false) {
+            return redirect()->route('fincas.index')
+                ->with('success', $response['message'] ?? 'Fincas importadas exitosamente.');
+        }
+
+        $errorMessage = $response['message'] ?? 'Ocurrió un error al procesar el archivo.';
+        $importErrors = $response['errors']['import_errors'] ?? ($response['errors'] ?? []);
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', $errorMessage)
+            ->with('import_errors', (array)$importErrors);
+    }
+
+    /**
+     * Genera y descarga un archivo CSV de ejemplo con encabezados y filas de muestra.
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function descargarPlantilla(Request $request)
+    {
+        $delimitador = $request->query('delimitador') === 'punto_coma' ? ';' : ',';
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="plantilla_fincas.csv"',
+        ];
+
+        $columns = ['nombre', 'explotacion_tipo', 'identificador_hierro', 'superficie', 'relieve', 'fuente_agua'];
+        $samples = [
+            ['Hacienda Santa Ines', 'Mixto', 'HSI-01', '150.5', 'Plano', 'Rio'],
+            ['Finca El Porvenir', 'Intensiva', 'FEP-02', '85.0', 'Ondulado', 'Pozo'],
+            ['Agropecuaria San Jose', 'Extensiva', '', '220.0', 'Plano', 'Quebrada'],
+        ];
+
+        $callback = function () use ($columns, $samples, $delimitador) {
+            $file = fopen('php://output', 'w');
+            // Inyectar BOM UTF-8 para compatibilidad transparente con Excel
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fputcsv($file, $columns, $delimitador);
+            foreach ($samples as $sample) {
+                fputcsv($file, $sample, $delimitador);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

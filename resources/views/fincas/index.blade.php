@@ -11,10 +11,16 @@
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Fincas</h1>
                 <p class="text-gray-500 text-sm mt-1">Administración de fincas y unidades de producción ganadera</p>
             </div>
-            <a href="{{ route('fincas.create') }}"
-                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                + Nueva Finca
-            </a>
+            <div class="flex flex-wrap items-center gap-3">
+                <a href="{{ route('fincas.importar') }}"
+                   class="px-5 py-3 border border-ganaderasoft-verde-oscuro text-ganaderasoft-verde-oscuro hover:bg-ganaderasoft-verde-oscuro hover:text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md inline-flex items-center justify-center font-medium">
+                    📥 Importar CSV / TXT
+                </a>
+                <a href="{{ route('fincas.create') }}"
+                   class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium">
+                    + Nueva Finca
+                </a>
+            </div>
         </div>
 
         <!-- Alert Messages -->
