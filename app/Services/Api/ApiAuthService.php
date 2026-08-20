@@ -130,7 +130,10 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
             'permissions'       => $permissions,
             'roles_detail'      => $rolesDetail,
             'type_user'         => $this->resolveUserType($roleCodes),
-            'image'             => $apiUser['image'] ?? 'user.png',
+            'foto'              => $apiUser['foto'] ?? null,
+            'avatar'            => $apiUser['avatar'] ?? $apiUser['foto'] ?? null,
+            'profile_photo_url' => $apiUser['profile_photo_url'] ?? $apiUser['foto'] ?? null,
+            'image'             => $apiUser['avatar'] ?? $apiUser['foto'] ?? 'user.png',
             'created_at'        => $apiUser['created_at'] ?? null,
             'email_verified_at' => $apiUser['email_verified_at'] ?? null,
             'persona'           => $apiUser['persona'] ?? null,
@@ -138,6 +141,53 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
             'token'             => $token ?? session('user.token') ?? '',
             'token_type'        => $tokenType ?? session('user.token_type') ?? 'Bearer',
         ];
+    }
+
+    /**
+     * Actualiza la foto de perfil del usuario autenticado en la API.
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @return array
+     */
+    public function updateProfilePhoto(\Illuminate\Http\UploadedFile $file): array
+    {
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
+        }
+
+        $response = $this->postMultipart(
+            '/profile/photo',
+            [],
+            ['foto' => $file]
+        );
+
+        if (!empty($response['success']) && !empty($response['data']['user'])) {
+            $userData = $this->formatUserData($response['data']['user']);
+            $this->storeSession($userData);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Elimina la foto de perfil del usuario autenticado en la API.
+     *
+     * @return array
+     */
+    public function deleteProfilePhoto(): array
+    {
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
+        }
+
+        $response = $this->delete('/profile/photo');
+
+        if (!empty($response['success']) && !empty($response['data']['user'])) {
+            $userData = $this->formatUserData($response['data']['user']);
+            $this->storeSession($userData);
+        }
+
+        return $response;
     }
 
     /**

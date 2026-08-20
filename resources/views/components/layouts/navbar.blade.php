@@ -25,7 +25,19 @@
             <div class="flex items-center">
                 <a href="{{ route('profile') }}" class="flex items-center space-x-2.5 sm:space-x-3 transition-all duration-200 hover:opacity-85 group" title="Ver mi perfil">
                     <div class="relative flex-shrink-0">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-ganaderasoft-azul text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow-xs border border-ganaderasoft-azul/20">
+                        @php
+                            $navAvatar = $authUser['avatar'] ?? $authUser['foto'] ?? $authUser['image'] ?? null;
+                            $navHasAvatar = !empty($navAvatar) && $navAvatar !== 'user.png' && (filter_var($navAvatar, FILTER_VALIDATE_URL) || str_starts_with($navAvatar, 'http') || str_starts_with($navAvatar, '/') || str_starts_with($navAvatar, 'data:image'));
+                        @endphp
+
+                        @if($navHasAvatar)
+                            <img src="{{ $navAvatar }}" 
+                                 alt="{{ $authUser['name'] ?? 'Usuario' }}" 
+                                 class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shadow-xs border border-ganaderasoft-azul/20"
+                                 onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                        @endif
+
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-ganaderasoft-azul text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow-xs border border-ganaderasoft-azul/20 {{ $navHasAvatar ? 'hidden' : '' }}">
                             {{ strtoupper(substr(session('user.name') ?? 'U', 0, 1)) }}
                         </div>
                         <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 {{ $statusDotColor }} border-2 border-white rounded-full" title="{{ $statusDotTitle }}"></span>

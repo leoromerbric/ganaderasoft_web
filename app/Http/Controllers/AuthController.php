@@ -168,4 +168,51 @@ class AuthController extends Controller
             'message' => 'Sesión cerrada exitosamente.'
         ], Response::HTTP_OK);
     }
+
+    /**
+     * Actualiza la foto de perfil del usuario autenticado.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updatePhoto(Request $request)
+    {
+        $request->validate([
+            'foto' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ], [
+            'foto.required' => 'Debe seleccionar una imagen para su foto de perfil.',
+            'foto.image'    => 'El archivo seleccionado debe ser una imagen válida.',
+            'foto.mimes'    => 'La imagen debe tener formato: jpeg, png, jpg o webp.',
+            'foto.max'      => 'El tamaño máximo permitido para la imagen es de 5MB.',
+        ]);
+
+        $response = $this->authService->updateProfilePhoto($request->file('foto'));
+
+        if (!empty($response['success'])) {
+            return redirect()->route('profile')
+                ->with('success', '¡Foto de perfil actualizada exitosamente!');
+        }
+
+        return redirect()->route('profile')
+            ->with('error', $response['message'] ?? 'Error al actualizar la foto de perfil.');
+    }
+
+    /**
+     * Elimina la foto de perfil del usuario autenticado.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deletePhoto(Request $request)
+    {
+        $response = $this->authService->deleteProfilePhoto();
+
+        if (!empty($response['success'])) {
+            return redirect()->route('profile')
+                ->with('success', 'Foto de perfil eliminada exitosamente.');
+        }
+
+        return redirect()->route('profile')
+            ->with('error', $response['message'] ?? 'Error al eliminar la foto de perfil.');
+    }
 }

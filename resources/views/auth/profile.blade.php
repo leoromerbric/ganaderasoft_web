@@ -11,6 +11,24 @@
         <p class="text-gray-500 text-xs sm:text-sm mt-0.5">Gestión de datos de usuario e información personal.</p>
     </div>
 
+    @if(session('success'))
+        <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 sm:px-5 sm:py-4 rounded-xl sm:rounded-2xl flex items-center justify-between shadow-sm" role="alert">
+            <div class="flex items-center space-x-3">
+                <span class="text-xl">✅</span>
+                <p class="text-xs sm:text-sm font-semibold">{{ session('success') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 sm:px-5 sm:py-4 rounded-xl sm:rounded-2xl flex items-center justify-between shadow-sm" role="alert">
+            <div class="flex items-center space-x-3">
+                <span class="text-xl">⚠️</span>
+                <p class="text-xs sm:text-sm font-semibold">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
+
     @if(session('warning'))
         <div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 sm:px-5 sm:py-4 rounded-xl sm:rounded-2xl flex items-center space-x-3 shadow-sm" role="alert">
             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,16 +80,17 @@
         <!-- Identity Bar (Avatar + Name + Roles) -->
         <div class="px-4 sm:px-8 pb-4 sm:pb-6 bg-white">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 -mt-10 sm:-mt-14 mb-3 sm:mb-4">
-                <!-- Avatar with Explicit Fixed Dimensions -->
-                <div class="relative w-20 h-20 sm:w-28 sm:h-28 shrink-0">
-                    <div class="w-full h-full rounded-xl sm:rounded-2xl bg-white p-1 sm:p-1.5 shadow-xl ring-4 ring-white border border-gray-100 flex items-center justify-center overflow-hidden">
+                <!-- Avatar with Explicit Fixed Dimensions & Edit Overlay -->
+                <div class="relative w-20 h-20 sm:w-28 sm:h-28 shrink-0 group">
+                    <div class="w-full h-full rounded-xl sm:rounded-2xl bg-white p-1 sm:p-1.5 shadow-xl ring-4 ring-white border border-gray-100 flex items-center justify-center overflow-hidden relative">
                         @php
-                            $userImage = $user['avatar'] ?? $user['image'] ?? $user['profile_photo_url'] ?? null;
-                            $hasImage = !empty($userImage) && (filter_var($userImage, FILTER_VALIDATE_URL) || str_starts_with($userImage, 'http') || str_starts_with($userImage, '/') || str_starts_with($userImage, 'data:image'));
+                            $userImage = $user['avatar'] ?? $user['foto'] ?? $user['image'] ?? $user['profile_photo_url'] ?? null;
+                            $hasImage = !empty($userImage) && $userImage !== 'user.png' && (filter_var($userImage, FILTER_VALIDATE_URL) || str_starts_with($userImage, 'http') || str_starts_with($userImage, '/') || str_starts_with($userImage, 'data:image'));
                         @endphp
 
                         @if($hasImage)
-                            <img src="{{ $userImage }}" 
+                            <img id="profile-avatar-img"
+                                 src="{{ $userImage }}" 
                                  alt="{{ $user['name'] ?? 'Usuario' }}"     
                                  class="w-full h-full rounded-lg sm:rounded-xl object-cover"
                                  onerror="this.style.display='none'; document.getElementById('avatar-fallback').classList.remove('hidden');">
@@ -80,8 +99,41 @@
                         <div id="avatar-fallback" class="w-full h-full rounded-lg sm:rounded-xl bg-gradient-to-br from-ganaderasoft-azul to-ganaderasoft-celeste flex items-center justify-center text-white text-2xl sm:text-4xl font-extrabold shadow-inner {{ $hasImage ? 'hidden' : '' }}">
                             {{ strtoupper(substr($user['name'] ?? 'U', 0, 1)) }}
                         </div>
+
+                        <!-- Hover overlay button -->
+                        <button type="button" onclick="openPhotoModal()" 
+                                class="absolute inset-0 bg-black/45 text-white rounded-lg sm:rounded-xl flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer backdrop-blur-[1px]"
+                                title="Cambiar foto de perfil">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span class="text-[9px] sm:text-[10px] font-semibold mt-0.5">Editar</span>
+                        </button>
                     </div>
+
+                    <!-- Floating Mobile Edit Button -->
+                    <button type="button" onclick="openPhotoModal()"
+                            class="absolute -top-1.5 -right-1.5 sm:hidden w-7 h-7 bg-ganaderasoft-azul text-white rounded-full shadow-md flex items-center justify-center border-2 border-white"
+                            title="Cambiar foto">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                    </button>
+
+                    <!-- Status Indicator Dot -->
                     <span class="absolute bottom-0.5 right-0.5 sm:bottom-1 sm:right-1 w-4 h-4 sm:w-5 sm:h-5 {{ $isSuspended ? 'bg-rose-500' : 'bg-emerald-500' }} border-2 border-white rounded-full shadow-sm" title="{{ $isSuspended ? 'Cuenta suspendida' : 'Usuario activo' }}"></span>
+                </div>
+
+                <!-- Desktop Action Button -->
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="openPhotoModal()"
+                            class="hidden sm:inline-flex items-center px-4 py-2 text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all shadow-xs gap-2 border border-gray-200">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>Cambiar foto de perfil</span>
+                    </button>
                 </div>
             </div>
 
@@ -424,6 +476,90 @@
         </div>
     </div>
 </div>
+
+<!-- Photo Upload & Edit Modal -->
+<div id="modalFotoPerfil" class="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4" onclick="closePhotoModal()">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-8 space-y-6 border border-gray-100 relative" onclick="event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-10 h-10 rounded-xl bg-ganaderasoft-celeste/20 text-ganaderasoft-azul flex items-center justify-center text-lg">
+                    📷
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-900 text-lg">Foto de perfil</h3>
+                    <p class="text-xs text-gray-500">Actualiza tu imagen de usuario en el sistema</p>
+                </div>
+            </div>
+            <button type="button" onclick="closePhotoModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition-colors">
+                ✕
+            </button>
+        </div>
+
+        <!-- Preview and Form -->
+        <form id="formSubirFoto" action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+
+            <!-- Live Circular Preview -->
+            <div class="flex flex-col items-center justify-center space-y-3">
+                <div class="w-32 h-32 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-300 p-1.5 flex items-center justify-center overflow-hidden shadow-inner relative group">
+                    <img id="modalPreviewImg" 
+                         src="{{ $hasImage ? $userImage : '' }}" 
+                         alt="Vista previa" 
+                         class="w-full h-full rounded-xl object-cover {{ $hasImage ? '' : 'hidden' }}">
+                    
+                    <div id="modalPreviewFallback" class="w-full h-full rounded-xl bg-gradient-to-br from-ganaderasoft-azul to-ganaderasoft-celeste flex items-center justify-center text-white text-4xl font-extrabold shadow-inner {{ $hasImage ? 'hidden' : '' }}">
+                        {{ strtoupper(substr($user['name'] ?? 'U', 0, 1)) }}
+                    </div>
+                </div>
+                <p id="modalFileName" class="text-xs text-gray-500 font-medium"></p>
+            </div>
+
+            <!-- File Input Area -->
+            <div>
+                <label for="fotoInput" 
+                       class="cursor-pointer block text-center px-4 py-3 bg-gray-50 hover:bg-green-50/50 border border-gray-200 hover:border-ganaderasoft-verde-oscuro rounded-2xl transition-all">
+                    <span class="text-xs font-bold text-ganaderasoft-azul hover:text-ganaderasoft-celeste flex items-center justify-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        Seleccionar imagen desde tu dispositivo
+                    </span>
+                    <span class="block text-[10px] text-gray-400 mt-0.5">JPG, PNG o WEBP (Máx. 5MB)</span>
+                    <input type="file" name="foto" id="fotoInput" accept="image/jpeg,image/png,image/jpg,image/webp" class="hidden" required onchange="handleModalFileSelect(this)">
+                </label>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-100">
+                <button type="button" onclick="closePhotoModal()" class="px-4 py-2 text-xs font-semibold text-gray-600 hover:text-gray-800">
+                    Cancelar
+                </button>
+                <button type="submit" id="btnGuardarFoto" disabled
+                        class="px-6 py-2.5 bg-ganaderasoft-verde-oscuro text-white text-xs font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-sm opacity-50 cursor-not-allowed">
+                    Guardar foto
+                </button>
+            </div>
+        </form>
+
+        @if($hasImage)
+            <!-- Delete Photo Option -->
+            <div class="pt-2 border-t border-gray-100 flex items-center justify-between">
+                <span class="text-xs text-gray-500">¿Deseas quitar tu foto actual?</span>
+                <form action="{{ route('profile.photo.delete') }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar tu foto de perfil actual?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline inline-flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Eliminar foto
+                    </button>
+                </form>
+            </div>
+        @endif
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -449,5 +585,53 @@
             targetBtn.classList.add('border-ganaderasoft-azul', 'text-ganaderasoft-azul');
         }
     }
+
+    function openPhotoModal() {
+        const modal = document.getElementById('modalFotoPerfil');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closePhotoModal() {
+        const modal = document.getElementById('modalFotoPerfil');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    function handleModalFileSelect(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const previewImg = document.getElementById('modalPreviewImg');
+        const fallback = document.getElementById('modalPreviewFallback');
+        const fileName = document.getElementById('modalFileName');
+        const btnGuardar = document.getElementById('btnGuardarFoto');
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert('El archivo excede el tamaño máximo permitido de 5MB.');
+            input.value = '';
+            return;
+        }
+
+        fileName.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            previewImg.src = e.target.result;
+            previewImg.classList.remove('hidden');
+            fallback.classList.add('hidden');
+
+            btnGuardar.disabled = false;
+            btnGuardar.classList.remove('opacity-50', 'cursor-not-allowed');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Cerrar modal con tecla Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closePhotoModal();
+        }
+    });
 </script>
 @endpush

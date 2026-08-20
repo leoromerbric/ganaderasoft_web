@@ -25,4 +25,14 @@ interface AuthServiceInterface
      * Get user profile details from API V2
      */
     public function getProfile(): ?array;
+
+    /**
+     * Actualizar la foto de perfil del usuario autenticado en la API.
+     */
+    public function updateProfilePhoto(\Illuminate\Http\UploadedFile $file): array;
+
+    /**
+     * Eliminar la foto de perfil del usuario autenticado en la API.
+     */
+    public function deleteProfilePhoto(): array;
 }

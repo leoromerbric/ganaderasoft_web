@@ -57,6 +57,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['mock.auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/perfil', [AuthController::class, 'profile'])->name('profile');
+    Route::post('/perfil/foto', [AuthController::class, 'updatePhoto'])->name('profile.photo.update');
+    Route::delete('/perfil/foto', [AuthController::class, 'deletePhoto'])->name('profile.photo.delete');
     
     // Fincas routes
     Route::get('/fincas', [FincasController::class, 'index'])->name('fincas.index');
