@@ -6,10 +6,6 @@ use App\Services\Contracts\FincasServiceInterface;
 
 class ApiFincasService extends BaseApiService implements FincasServiceInterface
 {
-    /**
-     * Versión de API V2 para el módulo de Fincas (Patrón Estrangulador)
-     */
-    protected string $apiVersion = '2';
 
     /**
      * Get list of fincas for authenticated user

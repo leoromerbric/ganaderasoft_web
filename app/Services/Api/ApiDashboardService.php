@@ -6,10 +6,6 @@ use App\Services\Contracts\DashboardServiceInterface;
 
 class ApiDashboardService extends BaseApiService implements DashboardServiceInterface
 {
-    /**
-     * Versión de API V2 para el módulo de Dashboard (Patrón Estrangulador)
-     */
-    protected string $apiVersion = '2';
 
     /**
      * Get farm statistics from API V2

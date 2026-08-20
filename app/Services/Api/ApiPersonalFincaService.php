@@ -6,10 +6,6 @@ use App\Services\Contracts\PersonalFincaServiceInterface;
 
 class ApiPersonalFincaService extends BaseApiService implements PersonalFincaServiceInterface
 {
-    /**
-     * Versión de API V2 para el módulo de Personal de Finca (Patrón Estrangulador)
-     */
-    protected string $apiVersion = '2';
 
     /**
      * Get list of personal de finca

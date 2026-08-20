@@ -22,18 +22,23 @@ class BaseApiService
 
     /**
      * Genera las cabeceras por defecto para todas las peticiones a la API.
-     * Inyecta automáticamente el token de autorización si el usuario tiene sesión.
+     * Inyecta automáticamente el token de autorización si el usuario tiene sesión activa,
+     * la versión de la API (X-API-VERSION: 2) y el formato JSON.
      *
      * @param array $customHeaders Cabeceras adicionales que sobrescribirán las por defecto.
+     * @param bool $isJson Si es true incluye Content-Type application/json.
      * @return array Arreglo final de cabeceras.
      */
-    protected function defaultHeaders(array $customHeaders = []): array
+    protected function defaultHeaders(array $customHeaders = [], bool $isJson = true): array
     {
         $headers = [
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
+            'Accept'        => 'application/json',
             'X-API-VERSION' => '2',
         ];
+
+        if ($isJson) {
+            $headers['Content-Type'] = 'application/json';
+        }
 
         if (session()->has('user.token')) {
             $headers['Authorization'] = 'Bearer ' . session('user.token');
@@ -211,16 +216,7 @@ class BaseApiService
     protected function postMultipart(string $endpoint, array $data = [], array $files = [], array $headers = []): array
     {
         try {
-            $reqHeaders = [
-                'Accept' => 'application/json',
-                'X-API-VERSION' => '2',
-            ];
-            if (session()->has('user.token')) {
-                $reqHeaders['Authorization'] = 'Bearer ' . session('user.token');
-            }
-            $reqHeaders = array_merge($reqHeaders, $headers);
-
-            $http = Http::withHeaders($reqHeaders)->timeout(60);
+            $http = Http::withHeaders($this->defaultHeaders($headers, false))->timeout(60);
 
             foreach ($files as $name => $file) {
                 if ($file instanceof \Illuminate\Http\UploadedFile) {

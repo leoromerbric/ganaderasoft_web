@@ -16,19 +16,13 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
      */
     public function getAnimales(?int $rebanoId = null, array $filters = []): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
         $params = array_merge(['nopaginate' => 'true'], $filters);
         
         if ($rebanoId) {
             $params['rebano_id'] = $rebanoId;
         }
 
-        $endpoint = '/animales?' . http_build_query($params);
-
-        return $this->get($endpoint);
+        return $this->get('/animales?' . http_build_query($params));
     }
 
     /**
@@ -39,10 +33,6 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
      */
     public function getAnimal(int $id): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
         return $this->get("/animales/{$id}");
     }
 
@@ -54,10 +44,6 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
      */
     public function createAnimal(array $data): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
         return $this->post('/animales', $data);
     }
 
@@ -70,10 +56,6 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
      */
     public function updateAnimal(int $id, array $data): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
         return $this->put("/animales/{$id}", $data);
     }
 
@@ -85,10 +67,6 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
      */
     public function restoreAnimal(int $id): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
         return $this->post("/animales/{$id}/restaurar");
     }
 
@@ -99,10 +77,6 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
      */
     public function getRazas(): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
         return $this->get('/composicion-raza');
     }
 
@@ -113,10 +87,6 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
      */
     public function getEstadosSalud(): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
         return $this->get('/estados-salud');
     }
 
@@ -127,10 +97,6 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
      */
     public function getEtapas(): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
         return $this->get('/etapas');
     }
 
@@ -143,10 +109,6 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
      */
     public function importarAnimales(int $fincaId, $file): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
         return $this->postMultipart(
             '/animales/importar',
             ['finca_id' => $fincaId],

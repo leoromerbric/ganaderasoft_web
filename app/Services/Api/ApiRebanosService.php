@@ -6,10 +6,6 @@ use App\Services\Contracts\RebanosServiceInterface;
 
 class ApiRebanosService extends BaseApiService implements RebanosServiceInterface
 {
-    /**
-     * Versión de API V2 para el módulo de Rebaños (Patrón Estrangulador)
-     */
-    protected string $apiVersion = '2';
 
     /**
      * Get list of rebaños for authenticated user
