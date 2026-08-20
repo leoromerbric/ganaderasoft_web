@@ -107,6 +107,7 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/animales/{id}', [AnimalesController::class, 'show'])->name('animales.show');
     Route::get('/animales/{id}/edit', [AnimalesController::class, 'edit'])->name('animales.edit');
     Route::put('/animales/{id}', [AnimalesController::class, 'update'])->name('animales.update');
+    Route::post('/animales/{id}/restaurar', [AnimalesController::class, 'restore'])->name('animales.restore');
     
     // Lactancia routes - Gestión de períodos de lactancia
     Route::get('/lactancia', [LactanciaController::class, 'index'])->name('lactancia.index');

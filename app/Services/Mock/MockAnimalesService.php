@@ -9,7 +9,7 @@ class MockAnimalesService implements AnimalesServiceInterface
     /**
      * Get list of animals for authenticated user
      */
-    public function getAnimales(?int $rebanoId = null): array
+    public function getAnimales(?int $rebanoId = null, array $filters = []): array
     {
         $allAnimales = [
             // Animals for Rebaño 6: "Mi Rebaño" 
@@ -291,18 +291,31 @@ class MockAnimalesService implements AnimalesServiceInterface
     }
 
     /**
-     * Get list of available animal stages
+     * Restore an archived animal
      */
-    public function getEtapas(): array
+    public function restoreAnimal(int $id): array
     {
         return [
             'success' => true,
-            'message' => 'Lista de etapas',
+            'message' => 'Animal restaurado exitosamente',
             'data' => [
-                ['etapa_id' => 1, 'etapa_nombre' => 'Cría'],
-                ['etapa_id' => 2, 'etapa_nombre' => 'Desarrollo'],
-                ['etapa_id' => 3, 'etapa_nombre' => 'Adulto'],
-                ['etapa_id' => 4, 'etapa_nombre' => 'Reproducción'],
+                'id' => $id,
+                'archivado' => false,
+            ],
+        ];
+    }
+
+    /**
+     * Import animals in bulk from a CSV or TXT file
+     */
+    public function importarAnimales(int $fincaId, $file): array
+    {
+        return [
+            'success' => true,
+            'message' => 'Animales importados exitosamente (mock)',
+            'data' => [
+                'total_filas' => 0,
+                'importados' => 0,
             ],
         ];
     }

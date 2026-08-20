@@ -31,6 +31,17 @@
                 </svg>
                 Editar
             </a>
+            @if(!empty($animal['archivado']))
+                <form action="{{ route('animales.restore', $animal['id']) }}" method="POST" class="inline" onsubmit="return confirm('¿Confirma que desea restaurar y reactivar este animal en el sistema?');">
+                    @csrf
+                    <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2 text-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Restaurar Animal
+                    </button>
+                </form>
+            @endif
             <a href="{{ route('animales.index') }}" 
                class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,11 +83,18 @@
                     </div>
                     
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de Nacimiento</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de Nacimiento / Edad</p>
                         <p class="text-lg font-bold text-gray-900">
                             {{ isset($animal['fecha_nacimiento']) ? date('d/m/Y', strtotime($animal['fecha_nacimiento'])) : 'N/A' }}
-                            @if(isset($animal['fecha_nacimiento']))
-                                <span class="text-xs text-gray-500 font-normal">({{ \Carbon\Carbon::parse($animal['fecha_nacimiento'])->age }} años)</span>
+                        </p>
+                        <p class="text-xs text-gray-500 font-medium mt-0.5">
+                            @if(!empty($animal['edad_formateada']))
+                                Edad: <span class="font-bold text-ganaderasoft-azul">{{ $animal['edad_formateada'] }}</span>
+                                @if(isset($animal['edad_dias']))
+                                    <span class="text-gray-400">({{ number_format($animal['edad_dias']) }} días)</span>
+                                @endif
+                            @elseif(isset($animal['fecha_nacimiento']))
+                                Edad: <span class="font-bold text-ganaderasoft-azul">{{ \Carbon\Carbon::parse($animal['fecha_nacimiento'])->diffForHumans(null, true) }}</span>
                             @endif
                         </p>
                     </div>

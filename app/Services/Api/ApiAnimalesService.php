@@ -8,18 +8,19 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
 {
     /**
      * Obtiene la lista de animales para el usuario autenticado.
-     * Permite filtrar por rebaño y solicita resultados sin paginar.
+     * Permite filtrar por rebaño, estado de archivado y solicita resultados sin paginar.
      *
      * @param int|null $rebanoId ID del rebaño para filtrar (opcional).
+     * @param array $filters Filtros adicionales (ej: 'archivado' => true/'todos').
      * @return array Respuesta de la API con el listado de animales.
      */
-    public function getAnimales(?int $rebanoId = null): array
+    public function getAnimales(?int $rebanoId = null, array $filters = []): array
     {
         if (!session('user.token')) {
             return ['success' => false, 'message' => 'Usuario no autenticado'];
         }
 
-        $params = ['nopaginate' => 'true'];
+        $params = array_merge(['nopaginate' => 'true'], $filters);
         
         if ($rebanoId) {
             $params['rebano_id'] = $rebanoId;
@@ -74,6 +75,21 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
         }
 
         return $this->put("/animales/{$id}", $data);
+    }
+
+    /**
+     * Restaura un animal archivado.
+     *
+     * @param int $id Identificador del animal a restaurar.
+     * @return array Respuesta de la API.
+     */
+    public function restoreAnimal(int $id): array
+    {
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
+        }
+
+        return $this->post("/animales/{$id}/restaurar");
     }
 
     /**

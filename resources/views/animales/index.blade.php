@@ -42,7 +42,7 @@
 
         <!-- Filters Bar -->
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
                     <select id="filtroFinca"
@@ -79,7 +79,16 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Nombre o Código</label>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
+                    <select id="filtroArchivado" onchange="cambiarFiltroArchivado(this.value)"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                        <option value="activos" {{ ($archivado ?? 'activos') === 'activos' ? 'selected' : '' }}>Solo Activos</option>
+                        <option value="archivados" {{ ($archivado ?? '') === 'archivados' ? 'selected' : '' }}>Solo Archivados</option>
+                        <option value="todos" {{ ($archivado ?? '') === 'todos' ? 'selected' : '' }}>Todos los animales</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Nombre / Código</label>
                     <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Ej: Lola, BOV-01..."
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
@@ -96,7 +105,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Animales</p>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Listados</p>
                     <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $estadisticas['total'] }}</p>
                 </div>
                 <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
@@ -143,7 +152,7 @@
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Código</th>
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Sexo</th>
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rebaño</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha Nacimiento</th>
+                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nacimiento / Edad</th>
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
                                 <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                             </tr>
@@ -154,8 +163,9 @@
                                     $rebanoId   = $animal['rebano']['id'] ?? ($animal['rebano_id'] ?? '');
                                     $fincaId    = $animal['rebano']['finca_id']  ?? ($mapaRebanoFinca[$rebanoId] ?? '');
                                     $isMacho    = ($animal['sexo'] ?? '') === 'M';
+                                    $isArchivado = !empty($animal['archivado']);
                                 @endphp
-                                <tr class="hover:bg-gray-50/80 transition-colors fila-animal"
+                                <tr class="hover:bg-gray-50/80 transition-colors fila-animal {{ $isArchivado ? 'bg-gray-50/50' : '' }}"
                                     data-rebano="{{ $rebanoId }}"
                                     data-finca="{{ $fincaId }}"
                                     data-sexo="{{ $animal['sexo'] ?? '' }}"
@@ -183,17 +193,22 @@
                                         {{ $animal['rebano']['nombre'] ?? 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-gray-500">
-                                        {{ isset($animal['fecha_nacimiento']) ? date('d/m/Y', strtotime($animal['fecha_nacimiento'])) : 'N/A' }}
+                                        <p class="font-medium text-gray-800">{{ isset($animal['fecha_nacimiento']) ? date('d/m/Y', strtotime($animal['fecha_nacimiento'])) : 'N/A' }}</p>
+                                        @if(!empty($animal['edad_formateada']))
+                                            <p class="text-xs text-gray-400">{{ $animal['edad_formateada'] }}</p>
+                                        @elseif(!empty($animal['fecha_nacimiento']))
+                                            <p class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($animal['fecha_nacimiento'])->diffForHumans(null, true) }}</p>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        @if(!empty($animal['archivado']))
+                                        @if($isArchivado)
                                             <span class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700 border border-gray-200">Archivado</span>
                                         @else
                                             <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Activo</span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                        <div class="flex justify-center space-x-3">
+                                        <div class="flex justify-center space-x-3 items-center">
                                             <a href="{{ route('animales.show', $animal['id']) }}"
                                                class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul font-semibold transition-colors inline-flex items-center">
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,6 +224,17 @@
                                                 </svg>
                                                 Editar
                                             </a>
+                                            @if($isArchivado)
+                                                <form action="{{ route('animales.restore', $animal['id']) }}" method="POST" class="inline" onsubmit="return confirm('¿Desea restaurar y reactivar este animal?');">
+                                                    @csrf
+                                                    <button type="submit" class="text-emerald-600 hover:text-emerald-800 font-semibold transition-colors inline-flex items-center">
+                                                        <svg class="w-4 h-4 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                        </svg>
+                                                        Restaurar
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -279,6 +305,16 @@
             document.getElementById('statMachos').textContent  = machos;
             document.getElementById('statHembras').textContent = hembras;
             document.getElementById('statActivos').textContent = activos;
+        }
+
+        function cambiarFiltroArchivado(val) {
+            const url = new URL(window.location.href);
+            if (val && val !== 'activos') {
+                url.searchParams.set('archivado', val);
+            } else {
+                url.searchParams.delete('archivado');
+            }
+            window.location.href = url.toString();
         }
 
         function limpiarFiltros() {

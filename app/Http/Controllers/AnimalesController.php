@@ -27,13 +27,22 @@ class AnimalesController extends Controller
      */
     public function index(Request $request)
     {
-        $idFinca  = $request->query('finca_id')  ? (int) $request->query('finca_id')  : null;
-        $idRebano = $request->query('rebano_id') ? (int) $request->query('rebano_id') : null;
-        $sexo     = $request->query('sexo', '');
-        $nombre   = $request->query('nombre', '');
+        $idFinca   = $request->query('finca_id')  ? (int) $request->query('finca_id')  : null;
+        $idRebano  = $request->query('rebano_id') ? (int) $request->query('rebano_id') : null;
+        $sexo      = $request->query('sexo', '');
+        $nombre    = $request->query('nombre', '');
+        $archivado = $request->query('archivado', 'activos');
 
-        // Obtener todos los animales del rebaño si está especificado
-        $response = $this->animalesService->getAnimales($idRebano);
+        // Mapear filtro de archivado para el servicio API
+        $apiFilters = [];
+        if ($archivado === 'archivados') {
+            $apiFilters['archivado'] = 'true';
+        } elseif ($archivado === 'todos') {
+            $apiFilters['archivado'] = 'todos';
+        }
+
+        // Obtener los animales aplicando rebaño y filtro de archivado
+        $response = $this->animalesService->getAnimales($idRebano, $apiFilters);
         $animales = ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
 
         // Cargar catálogos auxiliares (rebaños y fincas)
@@ -52,11 +61,12 @@ class AnimalesController extends Controller
             'machos'    => count(array_filter($animales, fn($a) => ($a['sexo'] ?? '') === 'M')),
             'hembras'   => count(array_filter($animales, fn($a) => ($a['sexo'] ?? '') === 'H')),
             'activos'   => count(array_filter($animales, fn($a) => !($a['archivado'] ?? false))),
+            'archivados'=> count(array_filter($animales, fn($a) => (bool)($a['archivado'] ?? false))),
         ];
 
         return view('animales.index', compact(
             'animales', 'rebanos', 'fincas',
-            'idFinca', 'idRebano', 'sexo', 'nombre',
+            'idFinca', 'idRebano', 'sexo', 'nombre', 'archivado',
             'mapaRebanoFinca', 'estadisticas'
         ));
     }
@@ -309,5 +319,23 @@ class AnimalesController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Restaura un animal archivado a estado activo.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore(Request $request, $id)
+    {
+        $response = $this->animalesService->restoreAnimal((int) $id);
+
+        if ($response['success'] ?? false) {
+            return redirect()->back()->with('success', $response['message'] ?? 'Animal restaurado exitosamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al restaurar el animal.');
     }
 }

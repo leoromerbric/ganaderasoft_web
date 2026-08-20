@@ -7,7 +7,7 @@ interface AnimalesServiceInterface
     /**
      * Get list of animals for authenticated user
      */
-    public function getAnimales(?int $rebanoId = null): array;
+    public function getAnimales(?int $rebanoId = null, array $filters = []): array;
 
     /**
      * Get a single animal by ID
@@ -23,6 +23,11 @@ interface AnimalesServiceInterface
      * Update an existing animal
      */
     public function updateAnimal(int $id, array $data): array;
+
+    /**
+     * Restore an archived animal
+     */
+    public function restoreAnimal(int $id): array;
 
     /**
      * Get list of available breeds (composicion_raza)
