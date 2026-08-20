@@ -148,4 +148,44 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
             return ['success' => false, 'message' => 'Error inesperado al eliminar el registro de medidas corporales'];
         }
     }
+
+    /**
+     * Obtiene los índices zoométricos calculados para una medición.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getIndicesByMedida(int $id): array
+    {
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
+        }
+
+        try {
+            return $this->get("/medidas-corporales/{$id}/indices");
+        } catch (Exception $e) {
+            Log::error("Error al consultar índices zoométricos de medida ID {$id}: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error al calcular índices corporales'];
+        }
+    }
+
+    /**
+     * Obtiene la evolución histórica de índices zoométricos de un animal.
+     *
+     * @param int $animalId
+     * @return array
+     */
+    public function getEvolucionIndices(int $animalId): array
+    {
+        if (!session('user.token')) {
+            return ['success' => false, 'message' => 'Usuario no autenticado'];
+        }
+
+        try {
+            return $this->get("/animales/{$animalId}/indices-corporales");
+        } catch (Exception $e) {
+            Log::error("Error al consultar evolución zoométrica de animal ID {$animalId}: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error al consultar evolución de índices corporales'];
+        }
+    }
 }

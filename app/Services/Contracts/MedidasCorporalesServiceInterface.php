@@ -9,4 +9,6 @@ interface MedidasCorporalesServiceInterface
     public function createMedidaCorporal(array $data): array;
     public function updateMedidaCorporal(int $id, array $data): array;
     public function deleteMedidaCorporal(int $id): array;
+    public function getIndicesByMedida(int $id): array;
+    public function getEvolucionIndices(int $animalId): array;
 }

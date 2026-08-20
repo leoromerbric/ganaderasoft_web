@@ -194,7 +194,11 @@ class MedidasCorporalesController extends Controller
 
             $medidaCorporal = $response['data'];
 
-            return view('medidas-corporales.show', compact('medidaCorporal'));
+            // Consultar análisis e índices zoométricos calculados on-the-fly
+            $indicesResponse = $this->medidasCorporalesService->getIndicesByMedida($id);
+            $indicesData     = ($indicesResponse['success'] ?? false) ? ($indicesResponse['data'] ?? null) : null;
+
+            return view('medidas-corporales.show', compact('medidaCorporal', 'indicesData'));
         } catch (\Exception $e) {
             Log::error("Error en MedidasCorporalesController@show ID {$id}: " . $e->getMessage());
             return redirect()->route('medidas-corporales.index')->with('error', 'Error al consultar la medida corporal.');
