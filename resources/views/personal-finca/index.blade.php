@@ -87,47 +87,46 @@
 
         <!-- Summary KPIs -->
         @php
-            $tipoStyleMap = [
-                'veterinario'   => ['icon' => '🏥', 'bg' => 'bg-green-100', 'text' => 'text-green-600'],
-                'médico'        => ['icon' => '🏥', 'bg' => 'bg-green-100', 'text' => 'text-green-600'],
-                'tecnico'       => ['icon' => '🔧', 'bg' => 'bg-blue-100', 'text' => 'text-blue-600'],
-                'técnico'       => ['icon' => '🔧', 'bg' => 'bg-blue-100', 'text' => 'text-blue-600'],
-                'operario'      => ['icon' => '👷', 'bg' => 'bg-amber-100', 'text' => 'text-amber-600'],
-                'supervisor'    => ['icon' => '📋', 'bg' => 'bg-purple-100', 'text' => 'text-purple-600'],
-                'administrador' => ['icon' => '💼', 'bg' => 'bg-indigo-100', 'text' => 'text-indigo-600'],
-                'vigilante'     => ['icon' => '🛡️', 'bg' => 'bg-rose-100', 'text' => 'text-rose-600'],
-            ];
+            $pluralizarTipo = function(string $nombre): string {
+                $nombre = trim($nombre);
+                if (empty($nombre)) return '';
+                $ultimaLetra = mb_strtolower(mb_substr($nombre, -1));
+                
+                // Si termina en s o x (ej: Tesis), no cambia
+                if (in_array($ultimaLetra, ['s', 'x'])) {
+                    return $nombre;
+                }
+                // Si termina en z (ej: Capataz -> Capataces)
+                if ($ultimaLetra === 'z') {
+                    return mb_substr($nombre, 0, -1) . 'ces';
+                }
+                // Si termina en vocal
+                if (in_array($ultimaLetra, ['a', 'e', 'i', 'o', 'u', 'á', 'é', 'ó'])) {
+                    return $nombre . 's';
+                }
+                // Si termina en consonante (r, d, l, n, etc. ej: Administrador -> Administradores, Inseminador -> Inseminadores)
+                return $nombre . 'es';
+            };
         @endphp
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Total Personal Card -->
-            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Personal</p>
-                    <p class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $estadisticas['total_personal'] }}</p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
-                    👥
-                </div>
+            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex flex-col justify-between">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Total Personal</p>
+                <p class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $estadisticas['total_personal'] }}</p>
             </div>
 
             <!-- Dynamic KPI Cards from Backend Worker Types -->
             @foreach(array_slice($tiposTrabajador, 0, 3) as $tipo)
                 @php
                     $nombreTipo = $tipo['nombre'] ?? '';
-                    $key = strtolower($nombreTipo);
-                    $style = $tipoStyleMap[$key] ?? ['icon' => '👤', 'bg' => 'bg-gray-100', 'text' => 'text-gray-700'];
+                    $tituloPlural = $pluralizarTipo($nombreTipo);
                     $count = $estadisticas['por_tipo'][$nombreTipo] ?? 0;
                 @endphp
-                <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 truncate" title="{{ $nombreTipo }}">
-                            {{ $nombreTipo }}s
-                        </p>
-                        <p class="text-3xl font-extrabold {{ $style['text'] }}">{{ $count }}</p>
-                    </div>
-                    <div class="w-12 h-12 rounded-xl {{ $style['bg'] }} flex items-center justify-center text-2xl">
-                        {{ $style['icon'] }}
-                    </div>
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex flex-col justify-between">
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 truncate" title="{{ $tituloPlural }}">
+                        {{ $tituloPlural }}
+                    </p>
+                    <p class="text-3xl font-extrabold text-gray-900">{{ $count }}</p>
                 </div>
             @endforeach
         </div>
