@@ -36,6 +36,10 @@ class PersonalFincaController extends Controller
         $fincasResponse = $this->fincasService->getFincas();
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
+        // Get tipos de trabajador from backend API
+        $tiposResponse = $this->personalFincaService->getTiposTrabajador();
+        $tiposTrabajador = ($tiposResponse['success'] ?? false) ? ($tiposResponse['data']['data'] ?? $tiposResponse['data'] ?? []) : [];
+
         $personalFinca = $response['data']['data'] ?? $response['data'] ?? [];
 
         // Calculate statistics
@@ -53,7 +57,7 @@ class PersonalFincaController extends Controller
             $estadisticas['por_tipo'][$tipo]++;
         }
 
-        return view('personal-finca.index', compact('personalFinca', 'fincas', 'fincaId', 'estadisticas'));
+        return view('personal-finca.index', compact('personalFinca', 'fincas', 'fincaId', 'estadisticas', 'tiposTrabajador'));
     }
 
     /**

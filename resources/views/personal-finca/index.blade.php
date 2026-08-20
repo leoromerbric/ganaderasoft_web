@@ -62,12 +62,12 @@
                     <select id="filtroTipo"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                         <option value="">Todos los tipos</option>
-                        <option value="tecnico">Técnico</option>
-                        <option value="veterinario">Veterinario</option>
-                        <option value="operario">Operario</option>
-                        <option value="vigilante">Vigilante</option>
-                        <option value="supervisor">Supervisor</option>
-                        <option value="administrador">Administrador</option>
+                        @foreach($tiposTrabajador as $tipo)
+                            @php
+                                $tNombre = $tipo['nombre'] ?? '';
+                            @endphp
+                            <option value="{{ strtolower($tNombre) }}">{{ $tNombre }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div>
@@ -86,7 +86,20 @@
         </div>
 
         <!-- Summary KPIs -->
+        @php
+            $tipoStyleMap = [
+                'veterinario'   => ['icon' => '🏥', 'bg' => 'bg-green-100', 'text' => 'text-green-600'],
+                'médico'        => ['icon' => '🏥', 'bg' => 'bg-green-100', 'text' => 'text-green-600'],
+                'tecnico'       => ['icon' => '🔧', 'bg' => 'bg-blue-100', 'text' => 'text-blue-600'],
+                'técnico'       => ['icon' => '🔧', 'bg' => 'bg-blue-100', 'text' => 'text-blue-600'],
+                'operario'      => ['icon' => '👷', 'bg' => 'bg-amber-100', 'text' => 'text-amber-600'],
+                'supervisor'    => ['icon' => '📋', 'bg' => 'bg-purple-100', 'text' => 'text-purple-600'],
+                'administrador' => ['icon' => '💼', 'bg' => 'bg-indigo-100', 'text' => 'text-indigo-600'],
+                'vigilante'     => ['icon' => '🛡️', 'bg' => 'bg-rose-100', 'text' => 'text-rose-600'],
+            ];
+        @endphp
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Total Personal Card -->
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Personal</p>
@@ -96,36 +109,27 @@
                     👥
                 </div>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Veterinarios</p>
-                    <p class="text-3xl font-extrabold text-green-600">{{ $estadisticas['por_tipo']['Veterinario'] ?? 0 }}
-                    </p>
+
+            <!-- Dynamic KPI Cards from Backend Worker Types -->
+            @foreach(array_slice($tiposTrabajador, 0, 3) as $tipo)
+                @php
+                    $nombreTipo = $tipo['nombre'] ?? '';
+                    $key = strtolower($nombreTipo);
+                    $style = $tipoStyleMap[$key] ?? ['icon' => '👤', 'bg' => 'bg-gray-100', 'text' => 'text-gray-700'];
+                    $count = $estadisticas['por_tipo'][$nombreTipo] ?? 0;
+                @endphp
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 truncate" title="{{ $nombreTipo }}">
+                            {{ $nombreTipo }}s
+                        </p>
+                        <p class="text-3xl font-extrabold {{ $style['text'] }}">{{ $count }}</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl {{ $style['bg'] }} flex items-center justify-center text-2xl">
+                        {{ $style['icon'] }}
+                    </div>
                 </div>
-                <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center text-2xl">
-                    🏥
-                </div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Técnicos</p>
-                    <p class="text-3xl font-extrabold text-blue-600">
-                        {{ $estadisticas['por_tipo']['Tecnico'] ?? ($estadisticas['por_tipo']['Técnico'] ?? 0) }}
-                    </p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
-                    🔧
-                </div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Operarios</p>
-                    <p class="text-3xl font-extrabold text-amber-600">{{ $estadisticas['por_tipo']['Operario'] ?? 0 }}</p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-2xl">
-                    👷
-                </div>
-            </div>
+            @endforeach
         </div>
 
         <!-- Personal Table -->
