@@ -35,6 +35,7 @@ use App\Http\Controllers\EtapaController;
 use App\Http\Controllers\EstadoSaludController;
 use App\Http\Controllers\DiaPalpacionController;
 use App\Http\Controllers\FoliculoController;
+use App\Http\Controllers\StorageProxyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,6 +43,9 @@ use Illuminate\Support\Facades\Route;
 | Web Routes
 |--------------------------------------------------------------------------
 */
+
+// Proxy para archivos estáticos de storage del backend
+Route::get('/storage/{path}', [StorageProxyController::class, 'show'])->where('path', '.*')->name('storage.proxy');
 
 // Root route returns welcome view
 Route::get('/', function () {

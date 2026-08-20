@@ -121,6 +121,19 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
         // 3. Detalle completo de roles para vistas de perfil
         $rolesDetail = $rolesCollection->all();
 
+        // 4. Normalizar ruta del avatar para servir a través del proxy local de storage
+        $rawAvatar = $apiUser['avatar'] ?? $apiUser['foto'] ?? $apiUser['profile_photo_url'] ?? null;
+        $normalizedAvatar = null;
+        if (!empty($rawAvatar) && $rawAvatar !== 'user.png') {
+            if (preg_match('#/storage/(.+)$#', $rawAvatar, $matches)) {
+                $normalizedAvatar = '/storage/' . $matches[1];
+            } elseif (!str_starts_with($rawAvatar, 'http') && !str_starts_with($rawAvatar, '/') && !str_starts_with($rawAvatar, 'data:image')) {
+                $normalizedAvatar = '/storage/' . $rawAvatar;
+            } else {
+                $normalizedAvatar = $rawAvatar;
+            }
+        }
+
         return [
             'id'                => $apiUser['id'] ?? null,
             'name'              => $apiUser['name'] ?? '',
@@ -130,10 +143,10 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
             'permissions'       => $permissions,
             'roles_detail'      => $rolesDetail,
             'type_user'         => $this->resolveUserType($roleCodes),
-            'foto'              => $apiUser['foto'] ?? null,
-            'avatar'            => $apiUser['avatar'] ?? $apiUser['foto'] ?? null,
-            'profile_photo_url' => $apiUser['profile_photo_url'] ?? $apiUser['foto'] ?? null,
-            'image'             => $apiUser['avatar'] ?? $apiUser['foto'] ?? 'user.png',
+            'foto'              => $normalizedAvatar,
+            'avatar'            => $normalizedAvatar,
+            'profile_photo_url' => $normalizedAvatar,
+            'image'             => $normalizedAvatar ?? 'user.png',
             'created_at'        => $apiUser['created_at'] ?? null,
             'email_verified_at' => $apiUser['email_verified_at'] ?? null,
             'persona'           => $apiUser['persona'] ?? null,
