@@ -27,10 +27,8 @@ use App\Services\Contracts\SemenToroServiceInterface;
 use App\Services\Contracts\DiagnosticoServiceInterface;
 use App\Services\Contracts\TratamientoServiceInterface;
 use App\Services\Contracts\VacunaServiceInterface;
-use App\Services\Contracts\DosisServiceInterface;
 use App\Services\Contracts\VacunacionServiceInterface;
 use App\Services\Contracts\CasaComercialServiceInterface;
-use App\Services\Contracts\HistoricoAplicacionServiceInterface;
 use App\Services\Contracts\MovimientoRebanoServiceInterface;
 use App\Services\Contracts\ArbolGenServiceInterface;
 use App\Services\Contracts\ReportesServiceInterface;
@@ -66,10 +64,8 @@ use App\Services\Api\ApiSemenToroService;
 use App\Services\Api\ApiDiagnosticoService;
 use App\Services\Api\ApiTratamientoService;
 use App\Services\Api\ApiVacunaService;
-use App\Services\Api\ApiDosisService;
 use App\Services\Api\ApiVacunacionService;
 use App\Services\Api\ApiCasaComercialService;
-use App\Services\Api\ApiHistoricoAplicacionService;
 use App\Services\Api\ApiMovimientoRebanoService;
 use App\Services\Api\ApiArbolGenService;
 use App\Services\Api\ApiReportesService;
@@ -115,10 +111,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DiagnosticoServiceInterface::class, ApiDiagnosticoService::class);
         $this->app->bind(TratamientoServiceInterface::class, ApiTratamientoService::class);
         $this->app->bind(VacunaServiceInterface::class, ApiVacunaService::class);
-        $this->app->bind(DosisServiceInterface::class, ApiDosisService::class);
         $this->app->bind(VacunacionServiceInterface::class, ApiVacunacionService::class);
         $this->app->bind(CasaComercialServiceInterface::class, ApiCasaComercialService::class);
-        $this->app->bind(HistoricoAplicacionServiceInterface::class, ApiHistoricoAplicacionService::class);
 
         // Movimiento de Rebaño
         $this->app->bind(MovimientoRebanoServiceInterface::class, ApiMovimientoRebanoService::class);
