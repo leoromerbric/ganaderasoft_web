@@ -100,20 +100,6 @@ abstract class BaseApiService
         return [];
     }
 
-    /**
-     * Extrae de forma segura el registro único (item/detalle) de una respuesta de la API.
-     *
-     * @param array $response Respuesta de la API.
-     * @return array|null Datos del registro o null si no se encontró.
-     */
-    protected function extractItem(array $response): ?array
-    {
-        if (!($response['success'] ?? false) || !isset($response['data']) || !is_array($response['data'])) {
-            return null;
-        }
-
-        return $response['data'];
-    }
 
     /**
      * Estandariza el formato de respuesta cuando la API devuelve un error (ej: 400, 422, 500).

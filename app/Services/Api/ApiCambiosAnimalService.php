@@ -160,6 +160,8 @@ class ApiCambiosAnimalService extends BaseApiService implements CambiosAnimalSer
     public function getAnimalById(int $id): array
     {
         $response = $this->get("/animales/{$id}");
-        return $this->extractItem($response) ?? [];
+        return ($response['success'] ?? false) && is_array($response['data'] ?? null)
+            ? $response['data']
+            : [];
     }
 }

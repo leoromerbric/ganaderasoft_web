@@ -17,13 +17,7 @@ class ApiReportesService extends BaseApiService implements ReportesServiceInterf
      */
     public function getReporteGeneral(array $filters = []): array
     {
-        $response = $this->get('/reportes/general' . $this->buildQuery($filters));
-
-        if (!($response['success'] ?? false)) {
-            return ['success' => false, 'data' => [], 'message' => $response['message'] ?? 'Error al consultar Reporte General'];
-        }
-
-        return ['success' => true, 'data' => $response['data'] ?? []];
+        return $this->get('/reportes/general' . $this->buildQuery($filters));
     }
 
     /**
@@ -34,13 +28,7 @@ class ApiReportesService extends BaseApiService implements ReportesServiceInterf
      */
     public function getReporteReproductivo(array $filters = []): array
     {
-        $response = $this->get('/reportes/reproductivo' . $this->buildQuery($filters));
-
-        if (!($response['success'] ?? false)) {
-            return ['success' => false, 'data' => [], 'message' => $response['message'] ?? 'Error al consultar Reporte Reproductivo'];
-        }
-
-        return ['success' => true, 'data' => $response['data'] ?? []];
+        return $this->get('/reportes/reproductivo' . $this->buildQuery($filters));
     }
 
     /**
@@ -51,12 +39,6 @@ class ApiReportesService extends BaseApiService implements ReportesServiceInterf
      */
     public function getReportePesajeLeche(array $filters = []): array
     {
-        $response = $this->get('/reportes/pesaje-leche' . $this->buildQuery($filters));
-
-        if (!($response['success'] ?? false)) {
-            return ['success' => false, 'data' => [], 'message' => $response['message'] ?? 'Error al consultar Reporte de Pesaje de Leche'];
-        }
-
-        return ['success' => true, 'data' => $response['data'] ?? []];
+        return $this->get('/reportes/pesaje-leche' . $this->buildQuery($filters));
     }
 }
