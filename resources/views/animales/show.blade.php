@@ -179,14 +179,12 @@
 
         <!-- Columna Derecha: Tarjetas de Estado y Sistema (1 Tercio) -->
         <div class="space-y-6">
-            <!-- Etapa Actual Card -->
-            @if(isset($animal['etapa_actual']))
+            <!-- Etapa Actual Card (V2 Estándar) -->
             @php
-                $etapaObj = data_get($animal, 'etapa_actual.etapa');
-                $nombreEtapa = data_get($etapaObj, 'nombre', data_get($animal, 'etapa_actual.nombre', 'Sin etapa'));
+                $nombreEtapa = data_get($animal, 'etapa_actual.etapa.nombre');
                 $fechaIniEtapa = data_get($animal, 'etapa_actual.fecha_ini');
-                $edadIni = data_get($etapaObj, 'edad_ini');
-                $edadFin = data_get($etapaObj, 'edad_fin');
+                $edadIni = data_get($animal, 'etapa_actual.etapa.edad_ini');
+                $edadFin = data_get($animal, 'etapa_actual.etapa.edad_fin');
             @endphp
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-slate-50 border-b border-gray-100 px-6 py-4">
@@ -197,19 +195,27 @@
                 <div class="p-6 space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Etapa alcanzada</label>
-                        <span class="inline-flex px-3 py-1 text-sm font-bold rounded-full bg-blue-50 text-blue-800 border border-blue-200">
-                            {{ $nombreEtapa }}
-                        </span>
+                        @if($nombreEtapa)
+                            <span class="inline-flex px-3 py-1 text-sm font-bold rounded-full bg-blue-50 text-blue-800 border border-blue-200">
+                                {{ $nombreEtapa }}
+                            </span>
+                        @else
+                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-600 border border-gray-200">
+                                Sin etapa asignada
+                            </span>
+                        @endif
                     </div>
+                    @if($fechaIniEtapa)
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de inicio en etapa</label>
                         <p class="text-base font-bold text-gray-900">
-                            {{ $fechaIniEtapa ? date('d/m/Y', strtotime($fechaIniEtapa)) : 'N/A' }}
+                            {{ date('d/m/Y', strtotime($fechaIniEtapa)) }}
                         </p>
                     </div>
+                    @endif
                     @if($edadIni !== null && $edadFin !== null)
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rango estimado</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rango biológico estimado</label>
                         <p class="text-base font-bold text-gray-900">
                             {{ $edadIni }} - {{ $edadFin }} días
                         </p>
@@ -217,16 +223,12 @@
                     @endif
                 </div>
             </div>
-            @endif
 
-            <!-- Estado de Salud Actual Card -->
-            @if(isset($animal['estado_actual']) || (isset($animal['estados']) && count($animal['estados']) > 0))
+            <!-- Estado de Salud Actual Card (V2 Estándar) -->
             @php
-                $estadoActual = $animal['estado_actual'] ?? (isset($animal['estados'][0]) ? $animal['estados'][0] : null);
-                $nombreEstado = data_get($estadoActual, 'estado_salud.nombre', 'N/A');
-                $fechaIniEstado = data_get($estadoActual, 'fecha_ini');
+                $nombreEstado = data_get($animal, 'estado_actual.estado_salud.nombre', 'Sano');
+                $fechaIniEstado = data_get($animal, 'estado_actual.fecha_ini');
             @endphp
-            @if($estadoActual)
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-slate-50 border-b border-gray-100 px-6 py-4">
                     <h3 class="text-base font-bold text-ganaderasoft-negro flex items-center gap-2">
@@ -240,16 +242,16 @@
                             {{ $nombreEstado }}
                         </span>
                     </div>
+                    @if($fechaIniEstado)
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de diagnóstico</label>
                         <p class="text-base font-bold text-gray-900">
-                            {{ $fechaIniEstado ? date('d/m/Y', strtotime($fechaIniEstado)) : 'N/A' }}
+                            {{ date('d/m/Y', strtotime($fechaIniEstado)) }}
                         </p>
                     </div>
+                    @endif
                 </div>
             </div>
-            @endif
-            @endif
 
             <!-- Información del Sistema Card -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">

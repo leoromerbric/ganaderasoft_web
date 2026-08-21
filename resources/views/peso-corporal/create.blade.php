@@ -73,9 +73,8 @@
                                 @foreach($animales as $animal)
                                     @php
                                         $animalPk = $animal['id'] ?? null;
-                                        $etapaActual = data_get($animal, 'etapa_actual', []);
-                                        $etapaId = data_get($etapaActual, 'etapa_id') ?? data_get($etapaActual, 'id') ?? '';
-                                        $etapaNombre = data_get($etapaActual, 'etapa.nombre') ?? data_get($etapaActual, 'etapa.descripcion') ?? data_get($etapaActual, 'nombre') ?? data_get($etapaActual, 'descripcion') ?? ($etapaId ? 'Etapa #'.$etapaId : '');
+                                        $etapaId = data_get($animal, 'etapa_actual.etapa.id') ?? data_get($animal, 'etapa_actual.etapa_id') ?? data_get($animal, 'etapa_actual.id') ?? '';
+                                        $etapaNombre = data_get($animal, 'etapa_actual.etapa.nombre') ?? data_get($animal, 'etapa_actual.nombre') ?? ($etapaId ? 'Etapa #'.$etapaId : '');
                                     @endphp
                                     <option value="{{ $animalPk }}" {{ old('animal_id') == $animalPk ? 'selected' : '' }}
                                             data-nombre="{{ $animal['nombre'] ?? ('Animal #'.$animalPk) }}"
@@ -207,10 +206,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
 
     function renderStage(option, fetchedStage) {
-        const etapaId = (fetchedStage && (fetchedStage.etapa_id || fetchedStage.etan_etapa_id)) || (option && option.dataset.etapaId) || '';
-        const etapaNombre = (fetchedStage && (fetchedStage.Nombre || fetchedStage.nombre || fetchedStage.descripcion)) || (option && option.dataset.etapaNombre) || '';
+        const etapaId = (fetchedStage && (fetchedStage.etapa_id || (fetchedStage.etapa && fetchedStage.etapa.id) || fetchedStage.id || fetchedStage.etan_etapa_id)) || (option && option.dataset.etapaId) || '';
+        const etapaNombre = (fetchedStage && ((fetchedStage.etapa && fetchedStage.etapa.nombre) || fetchedStage.nombre || fetchedStage.Nombre || fetchedStage.descripcion)) || (option && option.dataset.etapaNombre) || '';
         etapaInput.value = etapaId;
-        etapaTexto.value = etapaId ? (etapaNombre || 'Etapa actual') : 'Animal sin etapa activa';
+        etapaTexto.value = etapaNombre || (etapaId ? 'Etapa #' + etapaId : 'Animal sin etapa activa');
         previewEtapa.textContent = etapaTexto.value;
     }
 
