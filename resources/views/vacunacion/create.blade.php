@@ -264,7 +264,7 @@
     const resumenCosto = document.getElementById('resumen-costo-unitario');
     const resumenTotal = document.getElementById('resumen-total-animales');
 
-    const endpoint = '{{ route('vacunacion.animales-elegibles') }}';
+    const endpoint = '{{ route('vacunacion.animales-elegibles', [], false) }}';
 
     // Lista original de opciones de rebaño para reconstrucción en caliente
     const listaRebanosOriginal = Array.from(rebano?.options || []).map(opt => ({
