@@ -18,6 +18,10 @@
         ?? data_get($indicesData, 'animal.codigo_animal')
         ?? '';
 
+    $animalSexo = data_get($medidaCorporal, 'animal.sexo')
+        ?? data_get($indicesData, 'animal.sexo')
+        ?? '';
+
     $alturaHc    = (float) data_get($medidaCorporal, 'altura_hc', 0);
     $alturaHg    = (float) data_get($medidaCorporal, 'altura_hg', 0);
     $perimetroPt = (float) data_get($medidaCorporal, 'perimetro_pt', 0);
@@ -25,6 +29,13 @@
     $longitudLc  = (float) data_get($medidaCorporal, 'longitud_lc', 0);
     $longitudLg  = (float) data_get($medidaCorporal, 'longitud_lg', 0);
     $anchuraAg   = (float) data_get($medidaCorporal, 'anchura_ag', 0);
+
+    $fechaMedicion = data_get($medidaCorporal, 'fecha_medicion') 
+        ?? data_get($medidaCorporal, 'created_at') 
+        ?? data_get($medidaCorporal, 'fecha')
+        ?? data_get($indicesData, 'created_at');
+    $observaciones = data_get($medidaCorporal, 'observaciones')
+        ?? data_get($medidaCorporal, 'comentario');
 
     $indices = data_get($indicesData, 'indices', []);
     $interpretacion = data_get($indicesData, 'interpretacion', []);
@@ -34,332 +45,308 @@
     $esqueletoTipo = data_get($interpretacion, 'esqueleto_tipo');
 @endphp
 
-<div class="space-y-6">
-    <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<div class="space-y-8">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
+            <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl shadow-xs">
                 📐
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Medidas e índices corporales #{{ $medidaId ?? 'N/A' }}
+                    Medidas corporales #{{ $medidaId ?? 'N/A' }}
                 </h1>
-                <p class="text-gray-500 text-sm mt-1">Morfometría física y cálculo automático de índices zoométricos del animal</p>
+                <p class="text-gray-500 text-sm mt-1 flex items-center gap-2">
+                    Evaluación biométrica de <span class="font-bold text-gray-800">{{ $animalNombre }}</span>
+                    @if($animalCodigo)
+                        <span class="font-mono text-gray-500">(#{{ $animalCodigo }})</span>
+                    @endif
+                </p>
             </div>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-            <a href="{{ route('medidas-corporales.edit', $medidaId) }}"
-               class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm inline-flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                </svg>
-                Editar
-            </a>
+            @if($medidaId)
+                <a href="{{ route('medidas-corporales.edit', $medidaId) }}"
+                   class="px-6 py-3 bg-ganaderasoft-azul hover:bg-opacity-90 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm inline-flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Editar medición
+                </a>
+            @endif
             <a href="{{ route('medidas-corporales.index') }}" 
                class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
-                Volver
+                Ver listado
             </a>
         </div>
     </div>
 
-    <!-- Seccion de Índices Zoométricos Calculados On-The-Fly -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4">
-            <div>
-                <h2 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    <span>🧬</span> Índices zoométricos (cálculo dinámico)
-                </h2>
-                <p class="text-xs text-gray-500 mt-0.5">Indicadores morfológicos calculados automáticamente a partir de las 7 medidas corporales</p>
-            </div>
-            @if($biotipo)
-                <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold shadow-xs
-                    {{ $biotipo === 'Brevilíneo' ? 'bg-amber-100 text-amber-900 border border-amber-200' : '' }}
-                    {{ $biotipo === 'Mediolíneo' ? 'bg-emerald-100 text-emerald-900 border border-emerald-200' : '' }}
-                    {{ $biotipo === 'Longilíneo' ? 'bg-blue-100 text-blue-900 border border-blue-200' : '' }}">
-                    <span>Biotipo:</span>
-                    <span class="text-sm font-black">{{ $biotipo }}</span>
-                </div>
-            @endif
-        </div>
-
-        @if($biotipoDesc)
-            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 flex items-start space-x-3">
-                <span class="text-lg">💡</span>
-                <div>
-                    <span class="font-bold">Interpretación conformacional:</span> {{ $biotipoDesc }}
-                    @if($pelvisConformacion)
-                        <span class="mx-2">•</span> <span class="font-bold">Pelvis:</span> {{ $pelvisConformacion }}
-                    @endif
-                    @if($esqueletoTipo)
-                        <span class="mx-2">•</span> <span class="font-bold">Estructura ósea:</span> {{ $esqueletoTipo }}
-                    @endif
-                </div>
-            </div>
-        @endif
-
-        <!-- Grid de los 7 Índices -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- 1. Anamorfosis -->
-            @php $ia = data_get($indices, 'anamorfosis.valor'); @endphp
-            <div class="p-4 bg-gradient-to-br from-purple-50/70 to-purple-100/40 border border-purple-100 rounded-2xl space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-purple-900 uppercase tracking-wider">Anamorfosis (ia)</span>
-                    <span class="text-xs font-mono text-purple-600 bg-purple-100 px-2 py-0.5 rounded-md">Pt² / hc</span>
-                </div>
-                <p class="text-2xl font-black text-purple-800">
-                    {{ $ia !== null ? number_format($ia, 2) : 'N/D' }}
-                </p>
-                <p class="text-[11px] text-purple-700 leading-tight">Compacidad toraco-abdominal en relación a la alzada.</p>
-            </div>
-
-            <!-- 2. Corporal -->
-            @php $ic = data_get($indices, 'corporal.valor'); $icClasif = data_get($indices, 'corporal.clasificacion'); @endphp
-            <div class="p-4 bg-gradient-to-br from-emerald-50/70 to-emerald-100/40 border border-emerald-100 rounded-2xl space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-emerald-900 uppercase tracking-wider">Corporal (ic)</span>
-                    <span class="text-xs font-mono text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-md">(Lc/pt)*100</span>
-                </div>
-                <div class="flex items-baseline justify-between">
-                    <p class="text-2xl font-black text-emerald-800">
-                        {{ $ic !== null ? number_format($ic, 2) : 'N/D' }}
-                    </p>
-                    @if($icClasif)
-                        <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-200 text-emerald-900 rounded-lg">
-                            {{ $icClasif }}
-                        </span>
-                    @endif
-                </div>
-                <p class="text-[11px] text-emerald-700 leading-tight">&Lt;85 brevilíneo, 85-90 mediolíneo, &gt;90 longilíneo.</p>
-            </div>
-
-            <!-- 3. Pelviano -->
-            @php $ip = data_get($indices, 'pelviano.valor'); $ipClasif = data_get($indices, 'pelviano.clasificacion'); @endphp
-            <div class="p-4 bg-gradient-to-br from-pink-50/70 to-pink-100/40 border border-pink-100 rounded-2xl space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-pink-900 uppercase tracking-wider">Pelviano (ip)</span>
-                    <span class="text-xs font-mono text-pink-600 bg-pink-100 px-2 py-0.5 rounded-md">(Ag/lg)*100</span>
-                </div>
-                <div class="flex items-baseline justify-between">
-                    <p class="text-2xl font-black text-pink-800">
-                        {{ $ip !== null ? number_format($ip, 2) : 'N/D' }}
-                    </p>
-                    @if($ipClasif)
-                        <span class="text-[10px] font-bold px-2 py-0.5 bg-pink-200 text-pink-900 rounded-lg">
-                            {{ $ipClasif }}
-                        </span>
-                    @endif
-                </div>
-                <p class="text-[11px] text-pink-700 leading-tight">Amplitud pélvica y aptitud materna de parto.</p>
-            </div>
-
-            <!-- 4. Proporcionalidad -->
-            @php $ipr = data_get($indices, 'proporcionalidad.valor'); @endphp
-            <div class="p-4 bg-gradient-to-br from-sky-50/70 to-sky-100/40 border border-sky-100 rounded-2xl space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-sky-900 uppercase tracking-wider">Proporcionalidad (ipr)</span>
-                    <span class="text-xs font-mono text-sky-600 bg-sky-100 px-2 py-0.5 rounded-md">(Hc/lc)*100</span>
-                </div>
-                <p class="text-2xl font-black text-sky-800">
-                    {{ $ipr !== null ? number_format($ipr, 2) : 'N/D' }}
-                </p>
-                <p class="text-[11px] text-sky-700 leading-tight">Relación entre la alzada y longitud del tronco.</p>
-            </div>
-
-            <!-- 5. Dáctilo-Torácico -->
-            @php $idt = data_get($indices, 'dactilo_toracico.valor'); $idtClasif = data_get($indices, 'dactilo_toracico.clasificacion'); @endphp
-            <div class="p-4 bg-gradient-to-br from-amber-50/70 to-amber-100/40 border border-amber-100 rounded-2xl space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-amber-900 uppercase tracking-wider">Dáctilo-torácico (idt)</span>
-                    <span class="text-xs font-mono text-amber-600 bg-amber-100 px-2 py-0.5 rounded-md">(Pca/pt)*100</span>
-                </div>
-                <div class="flex items-baseline justify-between">
-                    <p class="text-2xl font-black text-amber-800">
-                        {{ $idt !== null ? number_format($idt, 2) : 'N/D' }}
-                    </p>
-                    @if($idtClasif)
-                        <span class="text-[10px] font-bold px-2 py-0.5 bg-amber-200 text-amber-900 rounded-lg">
-                            {{ $idtClasif }}
-                        </span>
-                    @endif
-                </div>
-                <p class="text-[11px] text-amber-700 leading-tight">Fortaleza ósea respecto a la masa torácica.</p>
-            </div>
-
-            <!-- 6. Pelviano Transversal -->
-            @php $ipt = data_get($indices, 'pelviano_transversal.valor'); @endphp
-            <div class="p-4 bg-gradient-to-br from-indigo-50/70 to-indigo-100/40 border border-indigo-100 rounded-2xl space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-indigo-900 uppercase tracking-wider">Pelviano transv. (Ipt)</span>
-                    <span class="text-xs font-mono text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-md">(Ag/hc)*100</span>
-                </div>
-                <p class="text-2xl font-black text-indigo-800">
-                    {{ $ipt !== null ? number_format($ipt, 2) : 'N/D' }}
-                </p>
-                <p class="text-[11px] text-indigo-700 leading-tight">Amplitud de la grupa relativa a la alzada.</p>
-            </div>
-
-            <!-- 7. Pelviano Longitudinal -->
-            @php $ipl = data_get($indices, 'pelviano_longitudinal.valor'); @endphp
-            <div class="p-4 bg-gradient-to-br from-teal-50/70 to-teal-100/40 border border-teal-100 rounded-2xl space-y-2">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-teal-900 uppercase tracking-wider">Pelviano longit. (Ipl)</span>
-                    <span class="text-xs font-mono text-teal-600 bg-teal-100 px-2 py-0.5 rounded-md">(Lg/hc)*100</span>
-                </div>
-                <p class="text-2xl font-black text-teal-800">
-                    {{ $ipl !== null ? number_format($ipl, 2) : 'N/D' }}
-                </p>
-                <p class="text-[11px] text-teal-700 leading-tight">Longitud de la grupa relativa a la alzada.</p>
-            </div>
-
-            <!-- Resumen de Cobertura -->
-            <div class="p-4 bg-gray-50 border border-gray-200 rounded-2xl flex flex-col justify-center items-center text-center space-y-1">
-                <span class="text-xs font-bold text-gray-500 uppercase">Índices procesados</span>
-                <p class="text-3xl font-black text-ganaderasoft-negro">
-                    {{ data_get($interpretacion, 'total_calculados', 0) }} / 7
-                </p>
-                <span class="text-[10px] text-gray-400">100% Dinámico</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Content Grid (Medidas Físicas) -->
+    <!-- Main Content Layout -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Columna Izquierda: Detalles de Mediciones Físicas (2 Tercios) -->
+        <!-- Columna Izquierda: Medidas e Índices (2 Tercios) -->
         <div class="lg:col-span-2 space-y-6">
-            <!-- Alturas -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-                <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                    <span>📏</span> Alturas
+
+            <!-- Card 1: Dimensiones Morfométricas Directas -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-xl font-bold text-ganaderasoft-negro mb-6 flex items-center gap-2 border-b border-gray-100 pb-3">
+                    <span>📏</span> Dimensiones corporales evaluadas
                 </h3>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="p-4 bg-emerald-50/60 border border-emerald-100 rounded-2xl">
-                        <p class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-1">Altura a la cruz (hc)</p>
-                        <p class="text-2xl font-black text-emerald-700">
-                            {{ $alturaHc > 0 ? number_format($alturaHc, 1).' cm' : 'No registrada' }}
-                        </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <!-- Hc -->
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Altura cruz (Hc)</span>
+                        <p class="text-2xl font-bold text-gray-900">{{ $alturaHc > 0 ? number_format($alturaHc, 1).' cm' : 'Sin registro' }}</p>
                     </div>
 
-                    <div class="p-4 bg-emerald-50/60 border border-emerald-100 rounded-2xl">
-                        <p class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-1">Altura a la grupa (hg)</p>
-                        <p class="text-2xl font-black text-emerald-700">
-                            {{ $alturaHg > 0 ? number_format($alturaHg, 1).' cm' : 'No registrada' }}
-                        </p>
+                    <!-- Hg -->
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Altura grupa (Hg)</span>
+                        <p class="text-2xl font-bold text-gray-900">{{ $alturaHg > 0 ? number_format($alturaHg, 1).' cm' : 'Sin registro' }}</p>
+                    </div>
+
+                    <!-- Pt -->
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Perímetro tórax (Pt)</span>
+                        <p class="text-2xl font-bold text-gray-900">{{ $perimetroPt > 0 ? number_format($perimetroPt, 1).' cm' : 'Sin registro' }}</p>
+                    </div>
+
+                    <!-- Pca -->
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Perímetro caña (Pca)</span>
+                        <p class="text-2xl font-bold text-gray-900">{{ $perimetroPca > 0 ? number_format($perimetroPca, 1).' cm' : 'Sin registro' }}</p>
+                    </div>
+
+                    <!-- Lc -->
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Longitud cuerpo (Lc)</span>
+                        <p class="text-2xl font-bold text-gray-900">{{ $longitudLc > 0 ? number_format($longitudLc, 1).' cm' : 'Sin registro' }}</p>
+                    </div>
+
+                    <!-- Lg -->
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Longitud grupa (Lg)</span>
+                        <p class="text-2xl font-bold text-gray-900">{{ $longitudLg > 0 ? number_format($longitudLg, 1).' cm' : 'Sin registro' }}</p>
+                    </div>
+
+                    <!-- Ag -->
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Ancho de grupa (Ag)</span>
+                        <p class="text-2xl font-bold text-gray-900">{{ $anchuraAg > 0 ? number_format($anchuraAg, 1).' cm' : 'Sin registro' }}</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Perímetros -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-                <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                    <span>⭕</span> Perímetros
-                </h3>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="p-4 bg-purple-50/60 border border-purple-100 rounded-2xl">
-                        <p class="text-xs font-bold text-purple-900 uppercase tracking-wider mb-1">Perímetro torácico (pt)</p>
-                        <p class="text-2xl font-black text-purple-700">
-                            {{ $perimetroPt > 0 ? number_format($perimetroPt, 1).' cm' : 'No registrado' }}
-                        </p>
+            <!-- Card 2: Índices Zoométricos Dinámicos -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-3">
+                    <div>
+                        <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                            <span>🧬</span> Índices zoométricos
+                        </h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Indicadores morfológicos calculados automáticamente a partir de las dimensiones físicas</p>
                     </div>
-
-                    <div class="p-4 bg-purple-50/60 border border-purple-100 rounded-2xl">
-                        <p class="text-xs font-bold text-purple-900 uppercase tracking-wider mb-1">Perímetro de caña (pca)</p>
-                        <p class="text-2xl font-black text-purple-700">
-                            {{ $perimetroPca > 0 ? number_format($perimetroPca, 1).' cm' : 'No registrado' }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Longitudes y Anchura -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-                <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                    <span>📐</span> Longitudes y anchura
-                </h3>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="p-4 bg-cyan-50/60 border border-cyan-100 rounded-2xl">
-                        <p class="text-xs font-bold text-cyan-900 uppercase tracking-wider mb-1">Longitud corporal (lc)</p>
-                        <p class="text-xl font-black text-cyan-700">
-                            {{ $longitudLc > 0 ? number_format($longitudLc, 1).' cm' : 'N/R' }}
-                        </p>
-                    </div>
-
-                    <div class="p-4 bg-cyan-50/60 border border-cyan-100 rounded-2xl">
-                        <p class="text-xs font-bold text-cyan-900 uppercase tracking-wider mb-1">Longitud de grupa (lg)</p>
-                        <p class="text-xl font-black text-cyan-700">
-                            {{ $longitudLg > 0 ? number_format($longitudLg, 1).' cm' : 'N/R' }}
-                        </p>
-                    </div>
-
-                    <div class="p-4 bg-cyan-50/60 border border-cyan-100 rounded-2xl">
-                        <p class="text-xs font-bold text-cyan-900 uppercase tracking-wider mb-1">Anchura de grupa (ag)</p>
-                        <p class="text-xl font-black text-cyan-700">
-                            {{ $anchuraAg > 0 ? number_format($anchuraAg, 1).' cm' : 'N/R' }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Animal Evaluado -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-                <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                    <span>🐄</span> Animal evaluado
-                </h3>
-
-                <div class="p-5 bg-pink-50/60 border border-pink-100 rounded-2xl flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 rounded-xl bg-white border border-pink-200 text-pink-700 font-bold flex items-center justify-center text-2xl shadow-xs">
-                            🐄
+                    @if($biotipo)
+                        <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-xs font-bold
+                            {{ $biotipo === 'Brevilíneo' ? 'bg-amber-50 text-amber-900 border border-amber-200' : '' }}
+                            {{ $biotipo === 'Mediolíneo' ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : '' }}
+                            {{ $biotipo === 'Longilíneo' ? 'bg-blue-50 text-blue-900 border border-blue-200' : '' }}">
+                            <span>Biotipo:</span>
+                            <span class="text-sm font-extrabold">{{ $biotipo }}</span>
                         </div>
+                    @endif
+                </div>
+
+                @if($biotipoDesc)
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 flex items-start space-x-3">
+                        <span class="text-lg">💡</span>
                         <div>
-                            <p class="text-lg font-bold text-gray-900">{{ $animalNombre }}</p>
-                            @if($animalCodigo)
-                                <p class="text-xs text-gray-500 font-mono mt-0.5">Código: #{{ $animalCodigo }}</p>
+                            <span class="font-bold">Interpretación biotipológica:</span> {{ $biotipoDesc }}
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Grid de Índices -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- 1. Anamorfosis -->
+                    @php $ia = data_get($indices, 'anamorfosis.valor'); @endphp
+                    <div class="p-4 bg-purple-50/60 border border-purple-100 rounded-2xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-purple-900 uppercase tracking-wider">Anamorfosis (Ia)</span>
+                            <span class="text-xs font-mono text-purple-700 bg-purple-100/80 px-2 py-0.5 rounded-md font-semibold">Pt² / Hc</span>
+                        </div>
+                        <p class="text-2xl font-black text-purple-800">
+                            {{ $ia !== null ? number_format($ia, 2) : 'N/D' }}
+                        </p>
+                        <p class="text-[11px] text-purple-700 leading-tight">Compacidad toraco-abdominal en relación a la alzada.</p>
+                    </div>
+
+                    <!-- 2. Corporal -->
+                    @php $ic = data_get($indices, 'corporal.valor'); $icClasif = data_get($indices, 'corporal.clasificacion'); @endphp
+                    <div class="p-4 bg-emerald-50/60 border border-emerald-100 rounded-2xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-900 uppercase tracking-wider">Corporal (Ic)</span>
+                            <span class="text-xs font-mono text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md font-semibold">(Lc / Pt) * 100</span>
+                        </div>
+                        <div class="flex items-baseline justify-between">
+                            <p class="text-2xl font-black text-emerald-800">
+                                {{ $ic !== null ? number_format($ic, 2) : 'N/D' }}
+                            </p>
+                            @if($icClasif)
+                                <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-200 text-emerald-900 rounded-md">
+                                    {{ $icClasif }}
+                                </span>
                             @endif
+                        </div>
+                        <p class="text-[11px] text-emerald-700 leading-tight">Formato corporal (&lt;85 brevilíneo, 85-90 mediolíneo, &gt;90 longilíneo).</p>
+                    </div>
+
+                    <!-- 3. Pelviano -->
+                    @php $ip = data_get($indices, 'pelviano.valor'); $ipClasif = data_get($indices, 'pelviano.clasificacion'); @endphp
+                    <div class="p-4 bg-pink-50/60 border border-pink-100 rounded-2xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-pink-900 uppercase tracking-wider">Pelviano (Ip)</span>
+                            <span class="text-xs font-mono text-pink-700 bg-pink-100/80 px-2 py-0.5 rounded-md font-semibold">(Ag / Lg) * 100</span>
+                        </div>
+                        <div class="flex items-baseline justify-between">
+                            <p class="text-2xl font-black text-pink-800">
+                                {{ $ip !== null ? number_format($ip, 2) : 'N/D' }}
+                            </p>
+                            @if($ipClasif)
+                                <span class="text-[10px] font-bold px-2 py-0.5 bg-pink-200 text-pink-900 rounded-md">
+                                    {{ $ipClasif }}
+                                </span>
+                            @endif
+                        </div>
+                        <p class="text-[11px] text-pink-700 leading-tight">Conformación pelviana y amplitud de la grupa.</p>
+                    </div>
+
+                    <!-- 4. Dáctilo-Torácico -->
+                    @php $idt = data_get($indices, 'dactilo_toracico.valor'); $idtClasif = data_get($indices, 'dactilo_toracico.clasificacion'); @endphp
+                    <div class="p-4 bg-blue-50/60 border border-blue-100 rounded-2xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-blue-900 uppercase tracking-wider">Dáctilo-Torácico (Idt)</span>
+                            <span class="text-xs font-mono text-blue-700 bg-blue-100/80 px-2 py-0.5 rounded-md font-semibold">(Pca / Pt) * 100</span>
+                        </div>
+                        <div class="flex items-baseline justify-between">
+                            <p class="text-2xl font-black text-blue-800">
+                                {{ $idt !== null ? number_format($idt, 2) : 'N/D' }}
+                            </p>
+                            @if($idtClasif)
+                                <span class="text-[10px] font-bold px-2 py-0.5 bg-blue-200 text-blue-900 rounded-md">
+                                    {{ $idtClasif }}
+                                </span>
+                            @endif
+                        </div>
+                        <p class="text-[11px] text-blue-700 leading-tight">Desarrollo del esqueleto y grosor de extremidades.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Tarjetas Laterales (1 Tercio) -->
+        <div class="space-y-6">
+            <!-- Card 1: Ficha del Ejemplar -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-slate-50 border-b border-gray-100 px-6 py-4">
+                    <h3 class="text-base font-bold text-ganaderasoft-negro flex items-center gap-2">
+                        <span>🐄</span> Ejemplar evaluado
+                    </h3>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-xl {{ $animalSexo === 'M' ? 'bg-blue-50 text-blue-600 border border-blue-100' : 'bg-pink-50 text-pink-600 border border-pink-100' }} font-bold flex items-center justify-center text-2xl shrink-0">
+                            {{ $animalSexo === 'M' ? '🐂' : '🐄' }}
+                        </div>
+                        <div class="overflow-hidden">
+                            <p class="text-base font-bold text-gray-900 truncate">{{ $animalNombre }}</p>
+                            <p class="text-xs text-gray-500 font-mono">
+                                {{ $animalCodigo ? 'Código: #'.$animalCodigo : 'ID: #'.$animalId }}
+                            </p>
                         </div>
                     </div>
 
                     @if($animalId)
-                        <div>
-                            <a href="{{ route('animales.show', $animalId) }}" 
-                                class="px-4 py-2 bg-pink-100 hover:bg-pink-200 text-pink-800 font-bold rounded-xl text-xs transition-colors">
-                                Ver animal
+                        <div class="pt-2">
+                            <a href="{{ route('animales.show', $animalId) }}"
+                               class="w-full py-2.5 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 transition-colors">
+                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                                Ver expediente del animal
                             </a>
                         </div>
                     @endif
                 </div>
             </div>
-        </div>
 
-        <!-- Columna Derecha: Panel de Metadatos (1 Tercio) -->
-        <div class="space-y-6">
+            <!-- Card 2: Diagnóstico Conformacional -->
+            @if($biotipo || $pelvisConformacion || $esqueletoTipo)
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
-                    <h3 class="text-lg font-bold flex items-center gap-2">
-                        <span>⚙️</span> Información del registro
+                <div class="bg-slate-50 border-b border-gray-100 px-6 py-4">
+                    <h3 class="text-base font-bold text-ganaderasoft-negro flex items-center gap-2">
+                        <span>🎯</span> Diagnóstico conformacional
                     </h3>
                 </div>
+                <div class="p-6 space-y-3 text-xs">
+                    @if($biotipo)
+                    <div>
+                        <span class="text-gray-500 block mb-1">Biotipo morfológico</span>
+                        <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-blue-50 text-blue-800 border border-blue-200">
+                            {{ $biotipo }}
+                        </span>
+                    </div>
+                    @endif
+                    @if($pelvisConformacion)
+                    <div>
+                        <span class="text-gray-500 block mb-1">Conformación de pelvis</span>
+                        <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-purple-50 text-purple-800 border border-purple-200">
+                            {{ $pelvisConformacion }}
+                        </span>
+                    </div>
+                    @endif
+                    @if($esqueletoTipo)
+                    <div>
+                        <span class="text-gray-500 block mb-1">Estructura ósea</span>
+                        <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            {{ $esqueletoTipo }}
+                        </span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
 
-                <div class="p-6 space-y-4">
-                    <div class="space-y-3 text-xs text-gray-600">
-                        <div class="flex justify-between">
-                            <span>ID medida:</span>
-                            <span class="font-bold text-gray-900 font-mono">#{{ $medidaId }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Fecha de toma:</span>
-                            <span class="font-semibold text-gray-800">{{ isset($medidaCorporal['created_at']) ? date('d/m/Y H:i', strtotime($medidaCorporal['created_at'])) : 'N/A' }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Última actualización:</span>
-                            <span class="font-semibold text-gray-800">{{ isset($medidaCorporal['updated_at']) ? date('d/m/Y H:i', strtotime($medidaCorporal['updated_at'])) : 'N/A' }}</span>
-                        </div>
+            <!-- Card 3: Metadatos del Registro -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-slate-50 border-b border-gray-100 px-6 py-4">
+                    <h3 class="text-base font-bold text-ganaderasoft-negro flex items-center gap-2">
+                        <span>📝</span> Datos del registro
+                    </h3>
+                </div>
+                <div class="p-6 space-y-4 text-xs">
+                    <div>
+                        <span class="text-gray-500 block mb-1">Fecha de evaluación</span>
+                        <p class="text-sm font-bold text-gray-900">
+                            {{ $fechaMedicion ? \Carbon\Carbon::parse($fechaMedicion)->format('d/m/Y') : 'No disponible' }}
+                        </p>
+                    </div>
+
+                    @if($observaciones)
+                    <div>
+                        <span class="text-gray-500 block mb-1">Observaciones</span>
+                        <p class="text-sm font-medium text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            {{ $observaciones }}
+                        </p>
+                    </div>
+                    @endif
+
+                    <div class="border-t border-gray-100 pt-3 text-gray-400">
+                        <p>ID Medición: <span class="font-mono text-gray-600 font-semibold">#{{ $medidaId }}</span></p>
                     </div>
                 </div>
             </div>

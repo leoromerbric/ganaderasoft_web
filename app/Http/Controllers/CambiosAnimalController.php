@@ -45,6 +45,34 @@ class CambiosAnimalController extends Controller
             $fincas        = $this->cambiosAnimalService->getFincas();
             $rebanos       = $this->cambiosAnimalService->getRebanos();
 
+            // Mapeos rápidos para enriquecer los registros de cambio
+            $mapaAnimalesPorId = [];
+            $mapaAnimalesPorEtapaId = [];
+
+            foreach ($animalesTodos as $an) {
+                if (!is_array($an) || empty($an['id'])) {
+                    continue;
+                }
+                $anId = (int) $an['id'];
+                $mapaAnimalesPorId[$anId] = $an;
+
+                // Mapear por etapa actual
+                $etapaActualId = data_get($an, 'etapa_actual.id') ?? data_get($an, 'etapa_actual.animal_etapa_id');
+                if ($etapaActualId) {
+                    $mapaAnimalesPorEtapaId[(int) $etapaActualId] = $an;
+                }
+
+                // Mapear por historial de etapas
+                $etapasHistorial = data_get($an, 'etapa_animales', []);
+                if (is_array($etapasHistorial)) {
+                    foreach ($etapasHistorial as $ea) {
+                        if (!empty($ea['id'])) {
+                            $mapaAnimalesPorEtapaId[(int) $ea['id']] = $an;
+                        }
+                    }
+                }
+            }
+
             // Filtrar rebaños por la finca seleccionada si existe
             if ($idFinca) {
                 $rebanos = array_values(array_filter($rebanos, fn ($r) => (int) ($r['finca_id'] ?? 0) === $idFinca));
@@ -62,31 +90,50 @@ class CambiosAnimalController extends Controller
             }
 
             // Colección de IDs de animales autorizados por el filtro de ubicación
-            $idsPermitidos = array_column($animales, 'id');
+            $idsPermitidos = array_map('intval', array_column($animales, 'id'));
 
-            // Consultar historial de cambios y aplicar filtros cruzados
+            // Consultar historial de cambios
             $cambiosTodos = $this->cambiosAnimalService->getList($idAnimal, null);
-            $cambios = ($idFinca || $idRebano)
-                ? array_values(array_filter($cambiosTodos, fn ($c) => in_array($c['animal_id'] ?? null, $idsPermitidos, true)))
-                : $cambiosTodos;
 
-            // Mapear un diccionario [id => nombre] para despliegue en filtros y respaldos
+            // Enriquecer cada registro de cambio con su animal completo
+            $cambiosEnriquecidos = array_map(function ($c) use ($mapaAnimalesPorId, $mapaAnimalesPorEtapaId) {
+                $anId = (int) ($c['animal_id'] ?? data_get($c, 'animal.id') ?? $c['cambios_etapa_anid'] ?? 0);
+                $etapaAnId = (int) ($c['animal_etapa_id'] ?? $c['cambios_etapa_etid'] ?? 0);
+
+                $animalData = null;
+                if ($anId && isset($mapaAnimalesPorId[$anId])) {
+                    $animalData = $mapaAnimalesPorId[$anId];
+                } elseif ($etapaAnId && isset($mapaAnimalesPorEtapaId[$etapaAnId])) {
+                    $animalData = $mapaAnimalesPorEtapaId[$etapaAnId];
+                }
+
+                if ($animalData) {
+                    $c['animal_id'] = $animalData['id'];
+                    $c['animal'] = $animalData;
+                    $c['animal_nombre'] = $animalData['nombre'] ?? ('Animal #' . $animalData['id']);
+                } else {
+                    $c['animal_id'] = $anId ?: null;
+                    $c['animal_nombre'] = $c['animal_nombre'] ?? data_get($c, 'animal.nombre') ?? ($anId ? ('Animal #' . $anId) : 'Animal no asignado');
+                }
+
+                return $c;
+            }, $cambiosTodos);
+
+            // Aplicar filtros de finca/rebaño si existen
+            $cambios = ($idFinca || $idRebano)
+                ? array_values(array_filter($cambiosEnriquecidos, function ($c) use ($idsPermitidos) {
+                    $anId = (int) ($c['animal_id'] ?? data_get($c, 'animal.id') ?? 0);
+                    return in_array($anId, $idsPermitidos, true);
+                }))
+                : $cambiosEnriquecidos;
+
+            $estadisticas = $this->cambiosAnimalService->getEstadisticas();
+
+            // Mapa simple [id => nombre] para compatibilidad
             $mapaAnimales = collect($animalesTodos)
                 ->filter(fn ($a) => isset($a['id']))
                 ->mapWithKeys(fn ($a) => [(int) $a['id'] => $a['nombre'] ?? ('Animal #' . $a['id'])])
                 ->all();
-
-            // Enriquecer la lista de cambios con el nombre del animal entregado por la API v2
-            $cambios = array_map(function ($c) use ($mapaAnimales) {
-                $animalId = $c['animal_id'] ?? null;
-                $c['animal_nombre'] = data_get($c, 'animal.nombre')
-                    ?? ($animalId ? ($mapaAnimales[(int) $animalId] ?? null) : null)
-                    ?? ($animalId ? ('Animal #' . $animalId) : 'Animal no asignado');
-
-                return $c;
-            }, $cambios);
-
-            $estadisticas = $this->cambiosAnimalService->getEstadisticas();
 
             return view('cambios-animal.index', compact(
                 'cambios', 'estadisticas', 'animales', 'idAnimal',
@@ -216,6 +263,15 @@ class CambiosAnimalController extends Controller
         ]);
 
         try {
+            // Resolver animal_etapa_id si no vino en el formulario
+            if (empty($validatedData['animal_etapa_id']) && !empty($validatedData['animal_id'])) {
+                $animal = $this->cambiosAnimalService->getAnimalById((int) $validatedData['animal_id']);
+                $etapaActId = data_get($animal, 'etapa_actual.id') ?? data_get($animal, 'etapa_actual.animal_etapa_id');
+                if ($etapaActId) {
+                    $validatedData['animal_etapa_id'] = (int) $etapaActId;
+                }
+            }
+
             $response = $this->cambiosAnimalService->create($validatedData);
 
             if ($response['success'] ?? false) {
@@ -255,6 +311,30 @@ class CambiosAnimalController extends Controller
             }
 
             $cambio = $response['data'];
+
+            // Resolver información completa del animal
+            $animalId = (int) ($cambio['animal_id'] ?? data_get($cambio, 'animal.id') ?? $cambio['cambios_etapa_anid'] ?? 0);
+            $etapaAnId = (int) ($cambio['animal_etapa_id'] ?? $cambio['cambios_etapa_etid'] ?? 0);
+
+            if ($animalId) {
+                $animalData = $this->cambiosAnimalService->getAnimalById($animalId);
+                if ($animalData) {
+                    $cambio['animal'] = $animalData;
+                    $cambio['animal_id'] = $animalId;
+                    $cambio['animal_nombre'] = $animalData['nombre'] ?? ('Animal #' . $animalId);
+                }
+            } elseif ($etapaAnId) {
+                $animalesTodos = $this->cambiosAnimalService->getAnimales();
+                foreach ($animalesTodos as $an) {
+                    $eaId = data_get($an, 'etapa_actual.id') ?? data_get($an, 'etapa_actual.animal_etapa_id');
+                    if ($eaId == $etapaAnId) {
+                        $cambio['animal'] = $an;
+                        $cambio['animal_id'] = $an['id'];
+                        $cambio['animal_nombre'] = $an['nombre'] ?? ('Animal #' . $an['id']);
+                        break;
+                    }
+                }
+            }
 
             return view('cambios-animal.show', compact('cambio'));
         } catch (\Exception $e) {
@@ -296,11 +376,13 @@ class CambiosAnimalController extends Controller
                 ], 404);
             }
 
+            $etapaActual = $animal['etapa_actual'] ?? null;
+
             return response()->json([
                 'success' => true,
                 'data'    => [
                     'animal'       => $animal,
-                    'etapa_actual' => $animal['etapa_actual'] ?? null
+                    'etapa_actual' => $etapaActual
                 ]
             ]);
         } catch (\Exception $e) {

@@ -22,18 +22,18 @@
         </div>
         <div class="flex flex-wrap items-center gap-3">
             <a href="{{ route('movimiento-rebano.edit', $movimiento['id']) }}" 
-               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2 text-sm">
+               class="px-6 py-3 bg-ganaderasoft-azul text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2 text-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                 </svg>
-                Editar
+                Editar movimiento
             </a>
             <a href="{{ route('movimiento-rebano.index') }}" 
                class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
-                Volver
+                Ver listado
             </a>
         </div>
     </div>
@@ -138,12 +138,13 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
                                         @if($animId)
-                                            <a href="{{ route('animales.show', $animId) }}" class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul font-semibold text-xs inline-flex items-center gap-1">
+                                            <a href="{{ route('animales.show', $animId) }}" 
+                                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-celeste/10 text-ganaderasoft-celeste hover:bg-ganaderasoft-celeste hover:text-white transition-colors"
+                                               title="Ver expediente del animal">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                                 </svg>
-                                                Ver
                                             </a>
                                         @else
                                             <span class="text-gray-400 text-xs">-</span>

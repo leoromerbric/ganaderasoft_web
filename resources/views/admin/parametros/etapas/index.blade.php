@@ -169,6 +169,19 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    <!-- Mensaje de Sin Resultados Filtrados -->
+                    <div id="sinResultadosFiltro" class="hidden p-12 text-center">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-2xl">
+                            🔍
+                        </div>
+                        <h4 class="text-base font-bold text-ganaderasoft-negro mb-1">No se encontraron registros</h4>
+                        <p class="text-gray-500 text-xs mb-4">No hay elementos que coincidan con la búsqueda aplicada.</p>
+                        <button type="button" onclick="document.getElementById('filtroBuscador').value=''; aplicarFiltros();"
+                                class="px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-xs inline-flex items-center gap-1.5 cursor-pointer">
+                            Limpiar filtro
+                        </button>
+                    </div>
                 </div>
             @else
                 <div class="p-12 text-center">
@@ -194,13 +207,29 @@
         document.getElementById('filtroBuscador')?.addEventListener('input', aplicarFiltros);
 
         function aplicarFiltros() {
-            const buscador = document.getElementById('filtroBuscador').value.toLowerCase();
+            const buscador = document.getElementById('filtroBuscador')?.value.toLowerCase().trim() || '';
+            const tabla = document.getElementById('tablaContenedor') || document.querySelector('table');
+            const sinResultados = document.getElementById('sinResultadosFiltro');
+            const filas = document.querySelectorAll('.fila-registro');
 
-            document.querySelectorAll('.fila-registro').forEach(function(row) {
+            let totalVisibles = 0;
+
+            filas.forEach(function(row) {
                 const searchData = row.getAttribute('data-search') || '';
                 const matchesSearch = !buscador || searchData.includes(buscador);
+                if (matchesSearch) totalVisibles++;
                 row.style.display = matchesSearch ? '' : 'none';
             });
+
+            if (sinResultados) {
+                if (totalVisibles === 0 && filas.length > 0) {
+                    sinResultados.classList.remove('hidden');
+                    if (tabla) tabla.classList.add('hidden');
+                } else {
+                    sinResultados.classList.add('hidden');
+                    if (tabla) tabla.classList.remove('hidden');
+                }
+            }
         }
     </script>
 @endsection
