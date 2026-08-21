@@ -3,137 +3,80 @@
 namespace App\Services\Api;
 
 use App\Services\Contracts\ConfiguracionServiceInterface;
-use Exception;
-use Illuminate\Support\Facades\Log;
 
 /**
- * Servicio encargado de gestionar las opciones de configuración y catálogos globales
- * a través del consumo de la API v2 del backend.
+ * Servicio encargado de gestionar las opciones de configuración y catálogos globales.
  */
 class ApiConfiguracionService extends BaseApiService implements ConfiguracionServiceInterface
 {
     /**
-     * Verifica si el usuario posee un token de sesión activo.
-     *
-     * @return bool
-     */
-    protected function isAuthenticated(): bool
-    {
-        return session()->has('user.token');
-    }
-
-    /**
-     * Helper genérico para obtener catálogos de configuración sin paginar.
-     *
-     * @param string $endpoint Endpoint relativo de la API
-     * @param string $nombreOp Nombre descriptivo para logging de errores
-     * @return array Estructura o listado devuelto por la API
-     */
-    protected function fetchOption(string $endpoint, string $nombreOp): array
-    {
-        if (!$this->isAuthenticated()) {
-            return [
-                'success' => false,
-                'message' => 'Usuario no autenticado'
-            ];
-        }
-
-        try {
-            return $this->get($endpoint);
-        } catch (Exception $e) {
-            Log::error("Error al obtener la configuración de {$nombreOp}: " . $e->getMessage(), [
-                'exception' => $e
-            ]);
-            return [
-                'success' => false,
-                'message' => "Error al obtener catálogo de {$nombreOp}"
-            ];
-        }
-    }
-
-    /**
      * Obtiene el listado completo de etapas del sistema sin paginación.
      *
-     * @return array Colección de etapas de desarrollo
+     * @return array
      */
     public function getEtapas(): array
     {
-        if (!$this->isAuthenticated()) {
-            return [];
-        }
-
-        try {
-            $response = $this->get('/etapas?nopaginate=true');
-
-            if (($response['success'] ?? false) && isset($response['data'])) {
-                $data = $response['data'];
-                return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
-            }
-
-            return [];
-        } catch (Exception $e) {
-            Log::error('Error al obtener la lista de etapas: ' . $e->getMessage());
-            return [];
-        }
+        $response = $this->get('/etapas' . $this->buildQuery([], true));
+        return $this->extractCollection($response);
     }
 
     /**
      * Obtiene el catálogo de opciones de fuente de agua.
      *
-     * @return array Opciones disponibles de fuente de agua
+     * @return array
      */
     public function getFuenteAgua(): array
     {
-        return $this->fetchOption('/configuracion/fuente-agua', 'fuente de agua');
+        return $this->get('/configuracion/fuente-agua');
     }
 
     /**
      * Obtiene el catálogo de opciones de tipo de explotación.
      *
-     * @return array Opciones disponibles de tipo de explotación
+     * @return array
      */
     public function getTipoExplotacion(): array
     {
-        return $this->fetchOption('/configuracion/tipo-explotacion', 'tipo de explotación');
+        return $this->get('/configuracion/tipo-explotacion');
     }
 
     /**
      * Obtiene el catálogo de opciones de tipo de relieve.
      *
-     * @return array Opciones disponibles de tipo de relieve
+     * @return array
      */
     public function getTipoRelieve(): array
     {
-        return $this->fetchOption('/configuracion/tipo-relieve', 'tipo de relieve');
+        return $this->get('/configuracion/tipo-relieve');
     }
 
     /**
      * Obtiene el catálogo de opciones de textura de suelo.
      *
-     * @return array Opciones disponibles de textura de suelo
+     * @return array
      */
     public function getTexturaSuelo(): array
     {
-        return $this->fetchOption('/configuracion/textura-suelo', 'textura de suelo');
+        return $this->get('/configuracion/textura-suelo');
     }
 
     /**
      * Obtiene el catálogo de opciones de pH de suelo.
      *
-     * @return array Opciones disponibles de pH de suelo
+     * @return array
      */
     public function getPhSuelo(): array
     {
-        return $this->fetchOption('/configuracion/ph-suelo', 'pH de suelo');
+        return $this->get('/configuracion/ph-suelo');
     }
 
     /**
      * Obtiene el catálogo de opciones de método de riego.
      *
-     * @return array Opciones disponibles de método de riego
+     * @return array
      */
     public function getMetodoRiego(): array
     {
-        return $this->fetchOption('/configuracion/metodo-riego', 'método de riego');
+        return $this->get('/configuracion/metodo-riego');
     }
 }

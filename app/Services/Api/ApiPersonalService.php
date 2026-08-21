@@ -6,17 +6,22 @@ use App\Services\Contracts\PersonalServiceInterface;
 
 class ApiPersonalService extends BaseApiService implements PersonalServiceInterface
 {
-
     /**
-     * Get list of personal for a given finca
+     * Obtiene la lista de personal para una finca dada.
+     *
+     * @param int $idFinca
+     * @return array
      */
     public function getPersonal(int $idFinca): array
     {
-        return $this->get('/personal-finca?nopaginate=true&finca_id=' . $idFinca);
+        return $this->get('/personal-finca' . $this->buildQuery(['finca_id' => $idFinca], true));
     }
 
     /**
-     * Create new personal for a finca
+     * Registra nuevo personal para una finca.
+     *
+     * @param array $data
+     * @return array
      */
     public function createPersonal(array $data): array
     {
@@ -24,18 +29,24 @@ class ApiPersonalService extends BaseApiService implements PersonalServiceInterf
     }
 
     /**
-     * Update existing personal
+     * Actualiza un registro de personal.
+     *
+     * @param int $id
+     * @param array $data
+     * @return array
      */
     public function updatePersonal(int $id, array $data): array
     {
-        return $this->put('/personal-finca/' . $id, $data);
+        return $this->put("/personal-finca/{$id}", $data);
     }
 
     /**
-     * Get list of tipos de trabajador
+     * Obtiene el listado de tipos de trabajador.
+     *
+     * @return array
      */
     public function getTiposTrabajador(): array
     {
-        return $this->get('/tipos-trabajador?nopaginate=true');
+        return $this->get('/tipos-trabajador' . $this->buildQuery([], true));
     }
 }

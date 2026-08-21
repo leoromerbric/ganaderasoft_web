@@ -6,53 +6,76 @@ use App\Services\Contracts\SemenToroServiceInterface;
 
 class ApiSemenToroService extends BaseApiService implements SemenToroServiceInterface
 {
+    /**
+     * Obtiene el listado de registros de semen de toro.
+     *
+     * @param int|null $toroId
+     * @param bool|null $activo
+     * @return array
+     */
     public function getList(?int $toroId = null, ?bool $activo = null): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
-        $params = array_filter([
-            'toro_id' => $toroId, 
-            'activo' => $activo !== null ? ($activo ? '1' : '0') : null,
-            'nopaginate' => 'true'
-        ]);
-        $endpoint = '/semen-toro' . (!empty($params) ? '?' . http_build_query($params) : '');
-        return $this->get($endpoint);
+        $params = [
+            'toro_id' => $toroId,
+            'activo'  => $activo !== null ? ($activo ? '1' : '0') : null,
+        ];
+
+        return $this->get('/semen-toro' . $this->buildQuery($params, true));
     }
 
+    /**
+     * Obtiene el detalle de un registro de semen de toro por ID.
+     *
+     * @param int $id
+     * @return array
+     */
     public function getById(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
         return $this->get("/semen-toro/{$id}");
     }
 
+    /**
+     * Registra una nueva muestra o lote de semen de toro.
+     *
+     * @param array $data
+     * @return array
+     */
     public function create(array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->post('/semen-toro', $data);
     }
 
+    /**
+     * Actualiza un registro de semen de toro existente.
+     *
+     * @param int $id
+     * @param array $data
+     * @return array
+     */
     public function update(int $id, array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->put("/semen-toro/{$id}", $data);
     }
 
+    /**
+     * Elimina un registro de semen de toro por su ID.
+     *
+     * @param int $id
+     * @return array
+     */
     public function eliminar(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->delete("/semen-toro/{$id}");
     }
 
+    /**
+     * Obtiene el catálogo de toros (machos) para selectores.
+     *
+     * @return array
+     */
     public function getToros(): array
     {
-        try {
-            if (!session('user.token')) return [];
-            $response = $this->get('/animales?nopaginate=true&sexo=M');
-            if (!($response['success'] ?? false) || empty($response['data'])) return [];
-            $data = $response['data'];
-            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error al obtener toros en ApiSemenToroService: ' . $e->getMessage());
-            return [];
-        }
+        $response = $this->get('/animales' . $this->buildQuery(['sexo' => 'M'], true));
+        return $this->extractCollection($response);
     }
 }

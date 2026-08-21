@@ -5,19 +5,30 @@ namespace App\Services\Api;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class BaseApiService
+/**
+ * Servicio base abstracto para el consumo de la API Backend V2.
+ * Proporciona métodos HTTP estandarizados, inyección de tokens de sesión,
+ * logging inteligente de errores, utilidades de query string y extracción de datos.
+ */
+abstract class BaseApiService
 {
     /**
-     * URL base de la API, obtenida de las variables de entorno.
+     * URL base de la API backend.
      */
     protected string $baseUrl;
 
     /**
-     * Inicializa el servicio configurando la URL base.
+     * Timeout en segundos para las peticiones HTTP.
+     */
+    protected int $timeout;
+
+    /**
+     * Inicializa el servicio configurando la URL base y timeout desde la configuración.
      */
     public function __construct()
     {
-        $this->baseUrl = env('API_BASE_URL', 'http://ec2-54-219-108-54.us-west-1.compute.amazonaws.com:9000/api');
+        $this->baseUrl = rtrim(config('services.api.base_url', env('API_BASE_URL', 'http://ganaderasoft-backend/api')), '/');
+        $this->timeout = (int) config('services.api.timeout', env('API_TIMEOUT', 15));
     }
 
     /**
@@ -48,6 +59,63 @@ class BaseApiService
     }
 
     /**
+     * Construye una cadena de consulta (query string) limpia a partir de un arreglo de parámetros,
+     * omitiendo valores nulos o cadenas vacías.
+     *
+     * @param array $params Parámetros clave-valor.
+     * @param bool $defaultNoPaginate Si es true y no viene especificado 'nopaginate', añade 'nopaginate=true'.
+     * @return string Query string comenzando con '?' o cadena vacía.
+     */
+    protected function buildQuery(array $params = [], bool $defaultNoPaginate = false): string
+    {
+        $clean = array_filter($params, static function ($v) {
+            return $v !== null && $v !== '';
+        });
+
+        if ($defaultNoPaginate && !isset($clean['nopaginate']) && !isset($clean['page'])) {
+            $clean['nopaginate'] = 'true';
+        }
+
+        return !empty($clean) ? '?' . http_build_query($clean) : '';
+    }
+
+    /**
+     * Extrae de forma segura una colección/listado de elementos desde la respuesta de la API V2,
+     * dando soporte tanto a respuestas paginadas (data.data) como a colecciones directas (data).
+     *
+     * @param array $response Respuesta estructurada de la API.
+     * @return array Arreglo de elementos extraídos o arreglo vacío si no hay datos.
+     */
+    protected function extractCollection(array $response): array
+    {
+        $data = $response['data'] ?? [];
+
+        if (is_array($data)) {
+            if (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) {
+                return $data['data'];
+            }
+            return $data;
+        }
+
+        return [];
+    }
+
+    /**
+     * Extrae de forma segura el registro único (item/detalle) de una respuesta de la API.
+     *
+     * @param array $response Respuesta de la API.
+     * @return array|null Datos del registro o null si no se encontró.
+     */
+    protected function extractItem(array $response): ?array
+    {
+        if (!($response['success'] ?? false) || !isset($response['data']) || !is_array($response['data'])) {
+            return null;
+        }
+
+        return $response['data'];
+    }
+
+    /**
      * Estandariza el formato de respuesta cuando la API devuelve un error (ej: 400, 422, 500).
      * Extrae el primer mensaje de validación si existe, o devuelve un mensaje por defecto.
      *
@@ -73,23 +141,22 @@ class BaseApiService
             return [
                 'success' => false,
                 'message' => $message,
-                'errors' => $json['errors'] ?? null,
-                'status' => $response->status(),
+                'errors'  => $json['errors'] ?? null,
+                'status'  => $response->status(),
             ];
         }
 
         return [
             'success' => false,
             'message' => $defaultMessage,
-            'status' => $response->status(),
+            'status'  => $response->status(),
         ];
     }
 
     /**
      * Método centralizado para ejecutar las peticiones HTTP y manejar sus excepciones.
-     * Reduce la duplicación de código en los métodos GET, POST, PUT y DELETE.
      *
-     * @param string $method Método HTTP (get, post, put, delete).
+     * @param string $method Método HTTP (get, post, put, patch, delete).
      * @param string $endpoint Ruta relativa del endpoint.
      * @param array $data Cuerpo de la petición (opcional).
      * @param array $headers Cabeceras personalizadas (opcional).
@@ -97,46 +164,44 @@ class BaseApiService
      */
     private function sendRequest(string $method, string $endpoint, array $data = [], array $headers = []): array
     {
+        $url = $this->baseUrl . '/' . ltrim($endpoint, '/');
+
         try {
-            $request = Http::withHeaders($this->defaultHeaders($headers))->timeout(10);
-            
-            // Los métodos GET y DELETE no envían el cuerpo ($data) de la misma forma en Laravel Http,
-            // pero para simplificar, si hay data la pasamos (aunque para GET/DELETE suele estar vacía).
-            $response = empty($data) 
-                ? $request->{$method}($this->baseUrl . $endpoint)
-                : $request->{$method}($this->baseUrl . $endpoint, $data);
+            $request = Http::withHeaders($this->defaultHeaders($headers))->timeout($this->timeout);
+
+            $response = empty($data)
+                ? $request->{$method}($url)
+                : $request->{$method}($url, $data);
 
             if ($response->successful()) {
-                return $response->json();
+                $json = $response->json();
+                return is_array($json) ? $json : ['success' => true, 'data' => $json];
             }
 
-            // Registrar errores en los logs de forma inteligente para no ensuciarlos con validaciones fallidas
+            // Logging de errores del servidor
             if ($response->serverError()) {
-                // Solo logueamos como error crítico cuando el backend falla (5xx)
                 Log::error("API " . strtoupper($method) . " request failed (Server Error)", [
                     'endpoint' => $endpoint,
-                    'status' => $response->status(),
-                    'body' => $response->body()
+                    'status'   => $response->status(),
+                    'body'     => $response->body(),
                 ]);
-            } elseif ($response->clientError() && !in_array($response->status(), [401, 422])) {
-                // Advertencias para otros errores (ej. 403, 404)
+            } elseif ($response->clientError() && !in_array($response->status(), [401, 422], true)) {
                 Log::warning("API " . strtoupper($method) . " request failed (Client Error)", [
                     'endpoint' => $endpoint,
-                    'status' => $response->status()
+                    'status'   => $response->status(),
                 ]);
             }
 
             return $this->formatApiFailure($response, 'Error al conectar con el servidor');
-            
         } catch (\Exception $e) {
             Log::error("API " . strtoupper($method) . " request exception", [
                 'endpoint' => $endpoint,
-                'error' => $e->getMessage()
+                'error'    => $e->getMessage(),
             ]);
 
             return [
                 'success' => false,
-                'message' => 'Error de conexión: ' . $e->getMessage()
+                'message' => 'Error de conexión: ' . $e->getMessage(),
             ];
         }
     }
@@ -215,28 +280,31 @@ class BaseApiService
      */
     protected function postMultipart(string $endpoint, array $data = [], array $files = [], array $headers = []): array
     {
+        $url = $this->baseUrl . '/' . ltrim($endpoint, '/');
+
         try {
             $http = Http::withHeaders($this->defaultHeaders($headers, false))->timeout(60);
 
             foreach ($files as $name => $file) {
                 if ($file instanceof \Illuminate\Http\UploadedFile) {
                     $http->attach($name, file_get_contents($file->getRealPath()), $file->getClientOriginalName());
-                } elseif (is_array($file)) {
+                } elseif (is_array($file) && isset($file['path'])) {
                     $http->attach($name, file_get_contents($file['path']), $file['name'] ?? basename($file['path']));
                 }
             }
 
-            $response = $http->post($this->baseUrl . $endpoint, $data);
+            $response = $http->post($url, $data);
 
             if ($response->successful()) {
-                return $response->json();
+                $json = $response->json();
+                return is_array($json) ? $json : ['success' => true, 'data' => $json];
             }
 
             if ($response->serverError()) {
                 Log::error("API POST Multipart request failed (Server Error)", [
                     'endpoint' => $endpoint,
                     'status'   => $response->status(),
-                    'body'     => $response->body()
+                    'body'     => $response->body(),
                 ]);
             }
 
@@ -244,12 +312,12 @@ class BaseApiService
         } catch (\Exception $e) {
             Log::error("API POST Multipart request exception", [
                 'endpoint' => $endpoint,
-                'error'    => $e->getMessage()
+                'error'    => $e->getMessage(),
             ]);
 
             return [
                 'success' => false,
-                'message' => 'Error de conexión: ' . $e->getMessage()
+                'message' => 'Error de conexión: ' . $e->getMessage(),
             ];
         }
     }

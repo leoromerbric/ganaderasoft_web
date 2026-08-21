@@ -8,41 +8,58 @@ class ApiUserService extends BaseApiService implements UserServiceInterface
 {
     protected string $endpoint = '/users';
 
-    // Obtener lista de usuarios desde la API con filtros opcionales
+    /**
+     * Obtiene el listado de usuarios desde la API con filtros opcionales.
+     *
+     * @param array $filters
+     * @return array
+     */
     public function getUsers(array $filters = []): array
     {
-        $params = array_filter([
-            'search'     => $filters['search'] ?? null,
-            'role'       => $filters['role'] ?? null,
-            'status'     => $filters['status'] ?? null,
-            'nopaginate' => true,
-        ]);
-
-        $query = '?' . http_build_query($params);
-        $response = $this->get($this->endpoint . $query);
-
-        return $response['data'] ?? [];
+        $response = $this->get($this->endpoint . $this->buildQuery($filters, true));
+        return $this->extractCollection($response);
     }
 
-    // Obtener detalle de un usuario por su ID
+    /**
+     * Obtiene el detalle de un usuario por su ID.
+     *
+     * @param int $id
+     * @return array
+     */
     public function getUserById(int $id): array
     {
         return $this->get("{$this->endpoint}/{$id}");
     }
 
-    // Crear un nuevo usuario en el sistema
+    /**
+     * Registra un nuevo usuario en el sistema.
+     *
+     * @param array $data
+     * @return array
+     */
     public function createUser(array $data): array
     {
         return $this->post($this->endpoint, $data);
     }
 
-    // Actualizar datos de un usuario existente
+    /**
+     * Actualiza los datos de un usuario existente.
+     *
+     * @param int $id
+     * @param array $data
+     * @return array
+     */
     public function updateUser(int $id, array $data): array
     {
         return $this->put("{$this->endpoint}/{$id}", $data);
     }
 
-    // Alternar estado de la cuenta (activar o suspender)
+    /**
+     * Alterna el estado de la cuenta (activar o suspender).
+     *
+     * @param int $id
+     * @return array
+     */
     public function toggleUserStatus(int $id): array
     {
         $userResult = $this->getUserById($id);

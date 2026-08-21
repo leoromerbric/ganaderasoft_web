@@ -6,63 +6,91 @@ use App\Services\Contracts\PalpacionServiceInterface;
 
 class ApiPalpacionService extends BaseApiService implements PalpacionServiceInterface
 {
+    /**
+     * Obtiene la lista de palpaciones con filtros opcionales.
+     *
+     * @param int|null $animalId
+     * @param string|null $tipo
+     * @param string|null $fechaInicio
+     * @param string|null $fechaFin
+     * @return array
+     */
     public function getList(?int $animalId = null, ?string $tipo = null, ?string $fechaInicio = null, ?string $fechaFin = null): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
-        $params = array_filter(['animal_id' => $animalId, 'tipo' => $tipo, 'fecha_inicio' => $fechaInicio, 'fecha_fin' => $fechaFin]);
-        $endpoint = '/palpacion?nopaginate=true' . (!empty($params) ? '&' . http_build_query($params) : '');
-        return $this->get($endpoint);
+        $params = [
+            'animal_id'    => $animalId,
+            'tipo'         => $tipo,
+            'fecha_inicio' => $fechaInicio,
+            'fecha_fin'    => $fechaFin,
+        ];
+
+        return $this->get('/palpacion' . $this->buildQuery($params, true));
     }
 
+    /**
+     * Obtiene el detalle de una palpación por su ID.
+     *
+     * @param int $id
+     * @return array
+     */
     public function getById(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
         return $this->get("/palpacion/{$id}");
     }
 
+    /**
+     * Registra una nueva palpación.
+     *
+     * @param array $data
+     * @return array
+     */
     public function create(array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->post('/palpacion', $data);
     }
 
+    /**
+     * Actualiza una palpación existente.
+     *
+     * @param int $id
+     * @param array $data
+     * @return array
+     */
     public function update(int $id, array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->put("/palpacion/{$id}", $data);
     }
 
+    /**
+     * Elimina una palpación por su ID.
+     *
+     * @param int $id
+     * @return array
+     */
     public function eliminar(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->delete("/palpacion/{$id}");
     }
 
+    /**
+     * Obtiene el listado de animales para selectores.
+     *
+     * @return array
+     */
     public function getAnimales(): array
     {
-        try {
-            if (!session('user.token')) return [];
-            $response = $this->get('/animales?nopaginate=true');
-            if (!($response['success'] ?? false) || empty($response['data'])) return [];
-            $data = $response['data'];
-            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error al obtener animales en ApiPalpacionService: ' . $e->getMessage());
-            return [];
-        }
+        $response = $this->get('/animales' . $this->buildQuery([], true));
+        return $this->extractCollection($response);
     }
 
+    /**
+     * Obtiene el listado de personal para selectores.
+     *
+     * @return array
+     */
     public function getPersonalFinca(): array
     {
-        try {
-            if (!session('user.token')) return [];
-            $response = $this->get('/personal?nopaginate=true');
-            if (!($response['success'] ?? false) || empty($response['data'])) return [];
-            $data = $response['data'];
-            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error al obtener personal en ApiPalpacionService: ' . $e->getMessage());
-            return [];
-        }
+        $response = $this->get('/personal' . $this->buildQuery([], true));
+        return $this->extractCollection($response);
     }
 }

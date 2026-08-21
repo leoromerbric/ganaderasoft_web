@@ -6,49 +6,78 @@ use App\Services\Contracts\TratamientoServiceInterface;
 
 class ApiTratamientoService extends BaseApiService implements TratamientoServiceInterface
 {
+    /**
+     * Obtiene el listado de tratamientos con filtros opcionales.
+     *
+     * @param int|null $diagnosticoId
+     * @param string|null $fechaInicio
+     * @param string|null $fechaFin
+     * @return array
+     */
     public function getList(?int $diagnosticoId = null, ?string $fechaInicio = null, ?string $fechaFin = null): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
-        $params = array_filter(['diagnostico_id' => $diagnosticoId, 'fecha_inicio' => $fechaInicio, 'fecha_fin' => $fechaFin]);
-        $endpoint = '/tratamiento?nopaginate=true' . (!empty($params) ? '&' . http_build_query($params) : '');
-        return $this->get($endpoint);
+        $params = [
+            'diagnostico_id' => $diagnosticoId,
+            'fecha_inicio'   => $fechaInicio,
+            'fecha_fin'      => $fechaFin,
+        ];
+
+        return $this->get('/tratamiento' . $this->buildQuery($params, true));
     }
 
+    /**
+     * Obtiene el detalle de un tratamiento por su ID.
+     *
+     * @param int $id
+     * @return array
+     */
     public function getById(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
         return $this->get("/tratamiento/{$id}");
     }
 
+    /**
+     * Registra un nuevo tratamiento.
+     *
+     * @param array $data
+     * @return array
+     */
     public function create(array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->post('/tratamiento', $data);
     }
 
+    /**
+     * Actualiza un tratamiento existente.
+     *
+     * @param int $id
+     * @param array $data
+     * @return array
+     */
     public function update(int $id, array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->put("/tratamiento/{$id}", $data);
     }
 
+    /**
+     * Elimina un tratamiento por su ID.
+     *
+     * @param int $id
+     * @return array
+     */
     public function eliminar(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->delete("/tratamiento/{$id}");
     }
 
+    /**
+     * Obtiene el listado de diagnósticos para selectores.
+     *
+     * @return array
+     */
     public function getDiagnosticos(): array
     {
-        try {
-            if (!session('user.token')) return [];
-            $response = $this->get('/diagnostico?nopaginate=true');
-            if (!($response['success'] ?? false) || empty($response['data'])) return [];
-            $data = $response['data'];
-            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error al obtener diagnosticos en ApiTratamientoService: ' . $e->getMessage());
-            return [];
-        }
+        $response = $this->get('/diagnostico' . $this->buildQuery([], true));
+        return $this->extractCollection($response);
     }
 }

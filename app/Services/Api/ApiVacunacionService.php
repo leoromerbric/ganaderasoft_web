@@ -14,12 +14,7 @@ class ApiVacunacionService extends BaseApiService implements VacunacionServiceIn
      */
     public function getList(array $filters = []): array
     {
-        $params = array_merge(
-            ['nopaginate' => 'true'],
-            array_filter($filters, fn($v) => !is_null($v) && $v !== '')
-        );
-
-        return $this->get('/vacunaciones?' . http_build_query($params));
+        return $this->get('/vacunaciones' . $this->buildQuery($filters, true));
     }
 
     /**

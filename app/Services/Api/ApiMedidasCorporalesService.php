@@ -3,33 +3,12 @@
 namespace App\Services\Api;
 
 use App\Services\Contracts\MedidasCorporalesServiceInterface;
-use Exception;
-use Illuminate\Support\Facades\Log;
 
 /**
- * Servicio encargado de gestionar las medidas corporales (morfometría)
- * a través de la API v2 del backend.
+ * Servicio encargado de gestionar las medidas corporales (morfometría).
  */
 class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorporalesServiceInterface
 {
-    /**
-     * Extrae la colección de datos de la respuesta de la API v2,
-     * soportando tanto respuestas paginadas (data.data) como listas planas (data).
-     *
-     * @param array $response Respuesta de la API
-     * @return array Elementos extraídos
-     */
-    protected function extractDataCollection(array $response): array
-    {
-        if (!($response['success'] ?? false) || empty($response['data'])) {
-            return [];
-        }
-
-        $data = $response['data'];
-
-        return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
-    }
-
     /**
      * Obtiene la lista de medidas corporales con soporte nopaginate.
      *
@@ -40,32 +19,18 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
      */
     public function getMedidasCorporales(?int $animalId = null, ?int $etapaId = null, bool $nopaginate = true): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'data' => []];
+        $params = [
+            'animal_id' => $animalId,
+            'etapa_id'  => $etapaId,
+        ];
+
+        $response = $this->get('/medidas-corporales' . $this->buildQuery($params, $nopaginate));
+
+        if (!($response['success'] ?? false)) {
+            return ['success' => false, 'data' => [], 'message' => $response['message'] ?? 'Error al consultar medidas corporales'];
         }
 
-        try {
-            $params = array_filter([
-                'animal_id' => $animalId,
-                'etapa_id'  => $etapaId,
-            ], fn ($v) => $v !== null);
-
-            if ($nopaginate) {
-                $params['nopaginate'] = 'true';
-            }
-
-            $endpoint = '/medidas-corporales' . (!empty($params) ? '?' . http_build_query($params) : '');
-            $response = $this->get($endpoint);
-
-            if (!($response['success'] ?? false)) {
-                return ['success' => false, 'data' => []];
-            }
-
-            return ['success' => true, 'data' => $this->extractDataCollection($response)];
-        } catch (Exception $e) {
-            Log::error('Error al consultar medidas corporales: ' . $e->getMessage(), ['exception' => $e]);
-            return ['success' => false, 'data' => []];
-        }
+        return ['success' => true, 'data' => $this->extractCollection($response)];
     }
 
     /**
@@ -76,16 +41,7 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
      */
     public function getMedidaCorporal(int $id): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
-        try {
-            return $this->get("/medidas-corporales/{$id}");
-        } catch (Exception $e) {
-            Log::error("Error al obtener la medida corporal ID {$id}: " . $e->getMessage());
-            return ['success' => false, 'message' => 'Error al obtener el detalle de medidas corporales'];
-        }
+        return $this->get("/medidas-corporales/{$id}");
     }
 
     /**
@@ -96,16 +52,7 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
      */
     public function createMedidaCorporal(array $data): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
-        try {
-            return $this->post('/medidas-corporales', $data);
-        } catch (Exception $e) {
-            Log::error('Error al registrar medidas corporales: ' . $e->getMessage(), ['payload' => $data]);
-            return ['success' => false, 'message' => 'Error inesperado al registrar las medidas corporales'];
-        }
+        return $this->post('/medidas-corporales', $data);
     }
 
     /**
@@ -117,16 +64,7 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
      */
     public function updateMedidaCorporal(int $id, array $data): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
-        try {
-            return $this->put("/medidas-corporales/{$id}", $data);
-        } catch (Exception $e) {
-            Log::error("Error al actualizar la medida corporal ID {$id}: " . $e->getMessage(), ['payload' => $data]);
-            return ['success' => false, 'message' => 'Error inesperado al actualizar las medidas corporales'];
-        }
+        return $this->put("/medidas-corporales/{$id}", $data);
     }
 
     /**
@@ -137,16 +75,7 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
      */
     public function deleteMedidaCorporal(int $id): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
-        try {
-            return $this->delete("/medidas-corporales/{$id}");
-        } catch (Exception $e) {
-            Log::error("Error al eliminar la medida corporal ID {$id}: " . $e->getMessage());
-            return ['success' => false, 'message' => 'Error inesperado al eliminar el registro de medidas corporales'];
-        }
+        return $this->delete("/medidas-corporales/{$id}");
     }
 
     /**
@@ -157,16 +86,7 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
      */
     public function getIndicesByMedida(int $id): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
-        try {
-            return $this->get("/medidas-corporales/{$id}/indices");
-        } catch (Exception $e) {
-            Log::error("Error al consultar índices zoométricos de medida ID {$id}: " . $e->getMessage());
-            return ['success' => false, 'message' => 'Error al calcular índices corporales'];
-        }
+        return $this->get("/medidas-corporales/{$id}/indices");
     }
 
     /**
@@ -177,15 +97,6 @@ class ApiMedidasCorporalesService extends BaseApiService implements MedidasCorpo
      */
     public function getEvolucionIndices(int $animalId): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
-        try {
-            return $this->get("/animales/{$animalId}/indices-corporales");
-        } catch (Exception $e) {
-            Log::error("Error al consultar evolución zoométrica de animal ID {$animalId}: " . $e->getMessage());
-            return ['success' => false, 'message' => 'Error al consultar evolución de índices corporales'];
-        }
+        return $this->get("/animales/{$animalId}/indices-corporales");
     }
 }

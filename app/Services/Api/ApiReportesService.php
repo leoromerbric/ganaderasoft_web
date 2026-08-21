@@ -3,11 +3,9 @@
 namespace App\Services\Api;
 
 use App\Services\Contracts\ReportesServiceInterface;
-use Exception;
-use Illuminate\Support\Facades\Log;
 
 /**
- * Servicio encargado de la comunicación con los endpoints de Reportes en la API v2.
+ * Servicio encargado de la comunicación con los endpoints de Reportes en la API V2.
  */
 class ApiReportesService extends BaseApiService implements ReportesServiceInterface
 {
@@ -19,23 +17,13 @@ class ApiReportesService extends BaseApiService implements ReportesServiceInterf
      */
     public function getReporteGeneral(array $filters = []): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'data' => [], 'message' => 'Usuario no autenticado'];
+        $response = $this->get('/reportes/general' . $this->buildQuery($filters));
+
+        if (!($response['success'] ?? false)) {
+            return ['success' => false, 'data' => [], 'message' => $response['message'] ?? 'Error al consultar Reporte General'];
         }
 
-        try {
-            $queryString = !empty($filters) ? '?' . http_build_query($filters) : '';
-            $response = $this->get('/reportes/general' . $queryString);
-
-            if (!($response['success'] ?? false)) {
-                return ['success' => false, 'data' => []];
-            }
-
-            return ['success' => true, 'data' => $response['data'] ?? []];
-        } catch (Exception $e) {
-            Log::error('Error al consultar Reporte General: ' . $e->getMessage(), ['filters' => $filters]);
-            return ['success' => false, 'data' => [], 'message' => 'Error al consultar Reporte General'];
-        }
+        return ['success' => true, 'data' => $response['data'] ?? []];
     }
 
     /**
@@ -46,23 +34,13 @@ class ApiReportesService extends BaseApiService implements ReportesServiceInterf
      */
     public function getReporteReproductivo(array $filters = []): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'data' => [], 'message' => 'Usuario no autenticado'];
+        $response = $this->get('/reportes/reproductivo' . $this->buildQuery($filters));
+
+        if (!($response['success'] ?? false)) {
+            return ['success' => false, 'data' => [], 'message' => $response['message'] ?? 'Error al consultar Reporte Reproductivo'];
         }
 
-        try {
-            $queryString = !empty($filters) ? '?' . http_build_query($filters) : '';
-            $response = $this->get('/reportes/reproductivo' . $queryString);
-
-            if (!($response['success'] ?? false)) {
-                return ['success' => false, 'data' => []];
-            }
-
-            return ['success' => true, 'data' => $response['data'] ?? []];
-        } catch (Exception $e) {
-            Log::error('Error al consultar Reporte Reproductivo: ' . $e->getMessage(), ['filters' => $filters]);
-            return ['success' => false, 'data' => [], 'message' => 'Error al consultar Reporte Reproductivo'];
-        }
+        return ['success' => true, 'data' => $response['data'] ?? []];
     }
 
     /**
@@ -73,22 +51,12 @@ class ApiReportesService extends BaseApiService implements ReportesServiceInterf
      */
     public function getReportePesajeLeche(array $filters = []): array
     {
-        if (!session('user.token')) {
-            return ['success' => false, 'data' => [], 'message' => 'Usuario no autenticado'];
+        $response = $this->get('/reportes/pesaje-leche' . $this->buildQuery($filters));
+
+        if (!($response['success'] ?? false)) {
+            return ['success' => false, 'data' => [], 'message' => $response['message'] ?? 'Error al consultar Reporte de Pesaje de Leche'];
         }
 
-        try {
-            $queryString = !empty($filters) ? '?' . http_build_query($filters) : '';
-            $response = $this->get('/reportes/pesaje-leche' . $queryString);
-
-            if (!($response['success'] ?? false)) {
-                return ['success' => false, 'data' => []];
-            }
-
-            return ['success' => true, 'data' => $response['data'] ?? []];
-        } catch (Exception $e) {
-            Log::error('Error al consultar Reporte de Pesaje de Leche: ' . $e->getMessage(), ['filters' => $filters]);
-            return ['success' => false, 'data' => [], 'message' => 'Error al consultar Reporte de Pesaje de Leche'];
-        }
+        return ['success' => true, 'data' => $response['data'] ?? []];
     }
 }

@@ -6,11 +6,10 @@ use App\Services\Contracts\AuthServiceInterface;
 use Illuminate\Support\Facades\Session;
 
 /**
- * Servicio encargado de la autenticación con la API V2.
+ * Servicio encargado de la autenticación y perfil de usuario con la API V2.
  */
 class ApiAuthService extends BaseApiService implements AuthServiceInterface
 {
-
     /**
      * Inicia sesión autenticando al usuario contra la API V2, guarda el token
      * y enriquece la sesión con los datos completos del perfil.
@@ -41,7 +40,7 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
         );
         $this->storeSession($userData);
 
-        //  Enriquecer la sesión con los detalles completos del perfil (/profile)
+        // 2. Enriquecer la sesión con los detalles completos del perfil (/profile)
         return $this->getProfile() ?? $userData;
     }
 
@@ -94,11 +93,50 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
     }
 
     /**
+     * Actualiza la foto de perfil del usuario autenticado en la API.
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @return array
+     */
+    public function updateProfilePhoto(\Illuminate\Http\UploadedFile $file): array
+    {
+        $response = $this->postMultipart(
+            '/profile/photo',
+            [],
+            ['foto' => $file]
+        );
+
+        if (!empty($response['success']) && !empty($response['data']['user'])) {
+            $userData = $this->formatUserData($response['data']['user']);
+            $this->storeSession($userData);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Elimina la foto de perfil del usuario autenticado en la API.
+     *
+     * @return array
+     */
+    public function deleteProfilePhoto(): array
+    {
+        $response = $this->delete('/profile/photo');
+
+        if (!empty($response['success']) && !empty($response['data']['user'])) {
+            $userData = $this->formatUserData($response['data']['user']);
+            $this->storeSession($userData);
+        }
+
+        return $response;
+    }
+
+    /**
      * Formateador único para estandarizar los datos del usuario retornados por la API V2.
      *
      * @param array $apiUser Datos del usuario provenientes de la API.
-     * @param string|null $token Token de autenticación (opcional si ya existe en sesión).
-     * @param string|null $tokenType Tipo de token (opcional si ya existe en sesión).
+     * @param string|null $token Token de autenticación.
+     * @param string|null $tokenType Tipo de token.
      * @return array
      */
     private function formatUserData(array $apiUser, ?string $token = null, ?string $tokenType = null): array
@@ -110,7 +148,7 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
             return is_array($r) ? ($r['code'] ?? '') : (string)$r;
         })->filter()->values()->all();
 
-        // 2. Arreglo plano de permisos únicos (ej: ['usuario.read', 'finca.read'])
+        // 2. Arreglo plano de permisos únicos
         $permissions = $rolesCollection->pluck('permissions')
             ->flatten()
             ->filter()
@@ -118,10 +156,10 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
             ->values()
             ->all();
 
-        // 3. Detalle completo de roles para vistas de perfil
+        // 3. Detalle completo de roles
         $rolesDetail = $rolesCollection->all();
 
-        // 4. Normalizar ruta del avatar para servir a través del proxy local de storage
+        // 4. Normalizar ruta del avatar
         $rawAvatar = $apiUser['avatar'] ?? $apiUser['foto'] ?? $apiUser['profile_photo_url'] ?? null;
         $normalizedAvatar = null;
         if (!empty($rawAvatar) && $rawAvatar !== 'user.png') {
@@ -154,53 +192,6 @@ class ApiAuthService extends BaseApiService implements AuthServiceInterface
             'token'             => $token ?? session('user.token') ?? '',
             'token_type'        => $tokenType ?? session('user.token_type') ?? 'Bearer',
         ];
-    }
-
-    /**
-     * Actualiza la foto de perfil del usuario autenticado en la API.
-     *
-     * @param \Illuminate\Http\UploadedFile $file
-     * @return array
-     */
-    public function updateProfilePhoto(\Illuminate\Http\UploadedFile $file): array
-    {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
-        $response = $this->postMultipart(
-            '/profile/photo',
-            [],
-            ['foto' => $file]
-        );
-
-        if (!empty($response['success']) && !empty($response['data']['user'])) {
-            $userData = $this->formatUserData($response['data']['user']);
-            $this->storeSession($userData);
-        }
-
-        return $response;
-    }
-
-    /**
-     * Elimina la foto de perfil del usuario autenticado en la API.
-     *
-     * @return array
-     */
-    public function deleteProfilePhoto(): array
-    {
-        if (!session('user.token')) {
-            return ['success' => false, 'message' => 'Usuario no autenticado'];
-        }
-
-        $response = $this->delete('/profile/photo');
-
-        if (!empty($response['success']) && !empty($response['data']['user'])) {
-            $userData = $this->formatUserData($response['data']['user']);
-            $this->storeSession($userData);
-        }
-
-        return $response;
     }
 
     /**

@@ -6,22 +6,22 @@ use App\Services\Contracts\PersonalFincaServiceInterface;
 
 class ApiPersonalFincaService extends BaseApiService implements PersonalFincaServiceInterface
 {
-
     /**
-     * Get list of personal de finca
+     * Obtiene el listado de personal de finca con filtro opcional por finca.
+     *
+     * @param int|null $fincaId
+     * @return array
      */
     public function getPersonalFinca(?int $fincaId = null): array
     {
-        $endpoint = '/personal-finca?nopaginate=true';
-        if ($fincaId) {
-            $endpoint .= '&finca_id=' . $fincaId;
-        }
-
-        return $this->get($endpoint);
+        return $this->get('/personal-finca' . $this->buildQuery(['finca_id' => $fincaId], true));
     }
 
     /**
-     * Get a single personal de finca record by ID
+     * Obtiene un registro individual de personal de finca por ID.
+     *
+     * @param int $id
+     * @return array
      */
     public function getPersonalFincaById(int $id): array
     {
@@ -29,7 +29,10 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
     }
 
     /**
-     * Create a new personal de finca record
+     * Asigna un nuevo trabajador a una finca.
+     *
+     * @param array $data
+     * @return array
      */
     public function createPersonalFinca(array $data): array
     {
@@ -37,7 +40,11 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
     }
 
     /**
-     * Update an existing personal de finca record
+     * Actualiza la asignación de personal de finca.
+     *
+     * @param int $id
+     * @param array $data
+     * @return array
      */
     public function updatePersonalFinca(int $id, array $data): array
     {
@@ -45,7 +52,10 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
     }
 
     /**
-     * Delete a personal de finca record
+     * Elimina una asignación de personal de finca.
+     *
+     * @param int $id
+     * @return array
      */
     public function deletePersonalFinca(int $id): array
     {
@@ -53,10 +63,12 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
     }
 
     /**
-     * Get list of tipos de trabajador
+     * Obtiene el catálogo de tipos de trabajador.
+     *
+     * @return array
      */
     public function getTiposTrabajador(): array
     {
-        return $this->get('/tipos-trabajador?nopaginate=true');
+        return $this->get('/tipos-trabajador' . $this->buildQuery([], true));
     }
 }

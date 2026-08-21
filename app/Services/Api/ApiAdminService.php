@@ -7,30 +7,24 @@ use App\Services\Contracts\AdminServiceInterface;
 class ApiAdminService extends BaseApiService implements AdminServiceInterface
 {
     /**
-     * Extrae de forma segura el arreglo de elementos ignorando metadatos de paginación.
+     * Obtiene métricas y KPIs globales para el Dashboard de Administración.
+     *
+     * @return array
      */
-    private function extractItems(array $response): array
-    {
-        $data = $response['data'] ?? [];
-        if (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) {
-            return $data['data'];
-        }
-        return is_array($data) ? $data : [];
-    }
-
-    // Obtener métricas y KPIs globales para el Dashboard de Administración
     public function getDashboardKpis(): array
     {
         // 1. Obtener y procesar usuarios
-        $usersResponse = $this->get('/users?nopaginate=true');
-        $users = $this->extractItems($usersResponse);
+        $usersResponse = $this->get('/users' . $this->buildQuery([], true));
+        $users = $this->extractCollection($usersResponse);
         $usersCollection = collect($users);
 
         $totalUsers = $usersCollection->count();
         $recentUsers = $usersCollection->take(5)->values()->all();
 
         $suspendedUsers = $usersCollection->filter(function ($u) {
-            if (!is_array($u)) return false;
+            if (!is_array($u)) {
+                return false;
+            }
             $st = strtolower($u['status'] ?? 'active');
             return in_array($st, ['suspended', 'inactive', 'suspendido', 'inactivo'], true);
         })->count();
@@ -38,28 +32,32 @@ class ApiAdminService extends BaseApiService implements AdminServiceInterface
         $activeUsers = $totalUsers - $suspendedUsers;
 
         $totalPropietarios = $usersCollection->filter(function ($u) {
-            if (!is_array($u)) return false;
+            if (!is_array($u)) {
+                return false;
+            }
             $roles = collect($u['roles'] ?? [])->map(fn($r) => is_array($r) ? ($r['code'] ?? '') : (string)$r);
             return $roles->contains('propietario');
         })->count();
 
         $totalAdministradores = $usersCollection->filter(function ($u) {
-            if (!is_array($u)) return false;
+            if (!is_array($u)) {
+                return false;
+            }
             $roles = collect($u['roles'] ?? [])->map(fn($r) => is_array($r) ? ($r['code'] ?? '') : (string)$r);
             return $roles->contains('admin') || $roles->contains('global_admin');
         })->count();
 
         // 2. Obtener total de fincas
-        $fincasResponse = $this->get('/fincas?nopaginate=true');
-        $totalFincas = count($this->extractItems($fincasResponse));
+        $fincasResponse = $this->get('/fincas' . $this->buildQuery([], true));
+        $totalFincas = count($this->extractCollection($fincasResponse));
 
         // 3. Obtener total de rebaños
-        $rebanosResponse = $this->get('/rebanos?nopaginate=true');
-        $totalRebanos = count($this->extractItems($rebanosResponse));
+        $rebanosResponse = $this->get('/rebanos' . $this->buildQuery([], true));
+        $totalRebanos = count($this->extractCollection($rebanosResponse));
 
         // 4. Obtener censo ganadero (animales)
-        $animalesResponse = $this->get('/animales?nopaginate=true');
-        $totalAnimales = count($this->extractItems($animalesResponse));
+        $animalesResponse = $this->get('/animales' . $this->buildQuery([], true));
+        $totalAnimales = count($this->extractCollection($animalesResponse));
 
         return [
             'kpis' => [

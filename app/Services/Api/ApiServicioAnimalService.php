@@ -6,91 +6,113 @@ use App\Services\Contracts\ServicioAnimalServiceInterface;
 
 class ApiServicioAnimalService extends BaseApiService implements ServicioAnimalServiceInterface
 {
+    /**
+     * Obtiene la lista de servicios reproductivos / montas / inseminaciones.
+     *
+     * @param int|null $animalId
+     * @param string|null $tipo
+     * @param string|null $fechaInicio
+     * @param string|null $fechaFin
+     * @return array
+     */
     public function getList(?int $animalId = null, ?string $tipo = null, ?string $fechaInicio = null, ?string $fechaFin = null): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
-        $params = array_filter(['animal_id' => $animalId, 'tipo' => $tipo, 'fecha_inicio' => $fechaInicio, 'fecha_fin' => $fechaFin]);
-        $endpoint = '/servicio-animal?nopaginate=true' . (!empty($params) ? '&' . http_build_query($params) : '');
-        return $this->get($endpoint);
+        $params = [
+            'animal_id'    => $animalId,
+            'tipo'         => $tipo,
+            'fecha_inicio' => $fechaInicio,
+            'fecha_fin'    => $fechaFin,
+        ];
+
+        return $this->get('/servicio-animal' . $this->buildQuery($params, true));
     }
 
+    /**
+     * Obtiene el detalle de un servicio reproductivo por ID.
+     *
+     * @param int $id
+     * @return array
+     */
     public function getById(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'data' => []];
         return $this->get("/servicio-animal/{$id}");
     }
 
+    /**
+     * Registra un nuevo servicio reproductivo.
+     *
+     * @param array $data
+     * @return array
+     */
     public function create(array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->post('/servicio-animal', $data);
     }
 
+    /**
+     * Actualiza un servicio reproductivo existente.
+     *
+     * @param int $id
+     * @param array $data
+     * @return array
+     */
     public function update(int $id, array $data): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->put("/servicio-animal/{$id}", $data);
     }
 
+    /**
+     * Elimina un servicio reproductivo por su ID.
+     *
+     * @param int $id
+     * @return array
+     */
     public function eliminar(int $id): array
     {
-        if (!session('user.token')) return ['success' => false, 'message' => 'Usuario no autenticado'];
         return $this->delete("/servicio-animal/{$id}");
     }
 
+    /**
+     * Obtiene el listado de animales para selectores.
+     *
+     * @return array
+     */
     public function getAnimales(): array
     {
-        try {
-            if (!session('user.token')) return [];
-            $response = $this->get('/animales?nopaginate=true');
-            if (!($response['success'] ?? false) || empty($response['data'])) return [];
-            $data = $response['data'];
-            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error al obtener animales en ApiServicioAnimalService: ' . $e->getMessage());
-            return [];
-        }
+        $response = $this->get('/animales' . $this->buildQuery([], true));
+        return $this->extractCollection($response);
     }
 
+    /**
+     * Obtiene el catálogo de semen de toros para selectores.
+     *
+     * @return array
+     */
     public function getSemenToros(): array
     {
-        try {
-            if (!session('user.token')) return [];
-            $response = $this->get('/semen-toro?nopaginate=true');
-            if (!($response['success'] ?? false) || empty($response['data'])) return [];
-            $data = $response['data'];
-            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error al obtener semen de toros en ApiServicioAnimalService: ' . $e->getMessage());
-            return [];
-        }
+        $response = $this->get('/semen-toro' . $this->buildQuery([], true));
+        return $this->extractCollection($response);
     }
 
+    /**
+     * Obtiene el listado de personal para selectores.
+     *
+     * @return array
+     */
     public function getPersonalFinca(): array
     {
-        try {
-            if (!session('user.token')) return [];
-            $response = $this->get('/personal?nopaginate=true');
-            if (!($response['success'] ?? false) || empty($response['data'])) return [];
-            $data = $response['data'];
-            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error al obtener personal en ApiServicioAnimalService: ' . $e->getMessage());
-            return [];
-        }
+        $response = $this->get('/personal' . $this->buildQuery([], true));
+        return $this->extractCollection($response);
     }
 
+    /**
+     * Obtiene el listado de registros de celo para selectores.
+     *
+     * @return array
+     */
     public function getRegistrosCelo(): array
     {
-        try {
-            if (!session('user.token')) return [];
-            $response = $this->get('/registro-celo?nopaginate=true');
-            if (!($response['success'] ?? false) || empty($response['data'])) return [];
-            $data = $response['data'];
-            return isset($data['data']) && is_array($data['data']) ? $data['data'] : (is_array($data) ? $data : []);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error al obtener registros de celo en ApiServicioAnimalService: ' . $e->getMessage());
-            return [];
-        }
+        $response = $this->get('/registro-celo' . $this->buildQuery([], true));
+        return $this->extractCollection($response);
     }
 }

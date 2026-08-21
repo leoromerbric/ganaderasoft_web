@@ -6,21 +6,22 @@ use App\Services\Contracts\RebanosServiceInterface;
 
 class ApiRebanosService extends BaseApiService implements RebanosServiceInterface
 {
-
     /**
-     * Get list of rebaños for authenticated user
+     * Obtiene la lista de rebaños del usuario autenticado.
+     *
+     * @param array $params
+     * @return array
      */
     public function getRebanos(array $params = []): array
     {
-        $query = !empty($params) ? '?' . http_build_query($params) : '?nopaginate=true';
-        return $this->get('/rebanos' . $query);
+        return $this->get('/rebanos' . $this->buildQuery($params, true));
     }
 
     /**
      * Crea un nuevo registro de rebaño.
      *
-     * @param array $data Datos del rebaño a crear.
-     * @return array Respuesta de la API indicando el resultado de la creación.
+     * @param array $data
+     * @return array
      */
     public function createRebano(array $data): array
     {
@@ -30,9 +31,9 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
     /**
      * Actualiza la información de un rebaño existente.
      *
-     * @param int $id Identificador único del rebaño a actualizar.
-     * @param array $data Datos actualizados del rebaño.
-     * @return array Respuesta de la API indicando el resultado de la actualización.
+     * @param int $id
+     * @param array $data
+     * @return array
      */
     public function updateRebano(int $id, array $data): array
     {
