@@ -73,7 +73,6 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::post('/fincas', [FincasController::class, 'store'])->name('fincas.store');
     Route::get('/fincas/{id}/edit', [FincasController::class, 'edit'])->name('fincas.edit');
     Route::put('/fincas/{id}', [FincasController::class, 'update'])->name('fincas.update');
-    Route::get('/fincas/{id}/dashboard', [FincasController::class, 'dashboard'])->name('fincas.dashboard');
     Route::get('/fincas/{id}/select', [FincasController::class, 'select'])->name('fincas.select');
     Route::get('/fincas/clear-selection', [FincasController::class, 'clearSelection'])->name('fincas.clear-selection');
     

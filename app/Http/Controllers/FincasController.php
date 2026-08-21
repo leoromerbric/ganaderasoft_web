@@ -42,24 +42,6 @@ class FincasController extends Controller
         return view('fincas.index', compact('fincas', 'tipos', 'nombre', 'tipoFiltro'));
     }
 
-    /**
-     * Display the finca management dashboard and set as active finca in session
-     */
-    public function dashboard($id)
-    {
-        $response = $this->fincasService->getFinca((int)$id);
-
-        if (!isset($response['success']) || !$response['success'] || empty($response['data'])) {
-            return redirect()->route('fincas.index')->with('error', 'Finca no encontrada');
-        }
-
-        $finca = $response['data'];
-        
-        // Guardar finca activa en sesión
-        session(['selected_finca' => $finca]);
-
-        return view('fincas.dashboard', compact('finca'));
-    }
 
     /**
      * Select finca into session and redirect back
