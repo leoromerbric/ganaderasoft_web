@@ -7,31 +7,33 @@
     <!-- Header Card -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center space-x-4">
-          
+            <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl shadow-xs">
+                🌳
+            </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    🌳 Árbol genealógico
+                    Árbol genealógico
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">
-                    Historial genealógico de <span class="font-bold text-gray-800">{{ $arbol['animal']['nombre'] ?? 'Animal' }}</span> 
+                    Historial genealógico y linaje de <span class="font-bold text-gray-800">{{ $arbol['animal']['nombre'] ?? 'Animal' }}</span> 
                     @if($arbol['animal']['codigo_animal'] ?? null)
-                        <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md font-mono">#{{ $arbol['animal']['codigo_animal'] }}</span>
+                        <span class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md font-mono font-bold">#{{ $arbol['animal']['codigo_animal'] }}</span>
                     @endif
                 </p>
             </div>
         </div>
         <div class="flex flex-wrap items-center gap-3">
             <button onclick="openModal('Padre')"
-                    class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2">
-                <span class="text-base">♂</span> + Asignar padre
+                    class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2 cursor-pointer">
+                <span class="text-base font-bold">♂</span> + Asignar padre
             </button>
             <button onclick="openModal('Madre')"
-                    class="px-5 py-2.5 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2">
-                <span class="text-base">♀</span> + Asignar madre
+                    class="px-5 py-2.5 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2 cursor-pointer">
+                <span class="text-base font-bold">♀</span> + Asignar madre
             </button>
             <a href="{{ route('animales.show', $id) }}"
                class="px-5 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
                 Ver detalle
@@ -81,7 +83,7 @@
                             <div class="tree-card-badge blue">Abuelo paterno</div>
                             <a href="{{ route('animales.show', $abueloP['id']) }}" class="block hover:opacity-80 transition-opacity">
                                 <p class="font-bold text-gray-900 text-base leading-tight">{{ $abueloP['nombre'] }}</p>
-                                @if($abueloP['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abueloP['codigo_animal'] }}</p>@endif
+                                @if($abueloP['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5 font-mono">#{{ $abueloP['codigo_animal'] }}</p>@endif
                             </a>
                         </div>
                     @else
@@ -94,7 +96,7 @@
                             <div class="tree-card-badge pink">Abuela paterna</div>
                             <a href="{{ route('animales.show', $abuelaP['id']) }}" class="block hover:opacity-80 transition-opacity">
                                 <p class="font-bold text-gray-900 text-base leading-tight">{{ $abuelaP['nombre'] }}</p>
-                                @if($abuelaP['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abuelaP['codigo_animal'] }}</p>@endif
+                                @if($abuelaP['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5 font-mono">#{{ $abuelaP['codigo_animal'] }}</p>@endif
                             </a>
                         </div>
                     @else
@@ -107,7 +109,7 @@
                             <div class="tree-card-badge blue">Abuelo materno</div>
                             <a href="{{ route('animales.show', $abueloM['id']) }}" class="block hover:opacity-80 transition-opacity">
                                 <p class="font-bold text-gray-900 text-base leading-tight">{{ $abueloM['nombre'] }}</p>
-                                @if($abueloM['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abueloM['codigo_animal'] }}</p>@endif
+                                @if($abueloM['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5 font-mono">#{{ $abueloM['codigo_animal'] }}</p>@endif
                             </a>
                         </div>
                     @else
@@ -120,7 +122,7 @@
                             <div class="tree-card-badge pink">Abuela materna</div>
                             <a href="{{ route('animales.show', $abuelaM['id']) }}" class="block hover:opacity-80 transition-opacity">
                                 <p class="font-bold text-gray-900 text-base leading-tight">{{ $abuelaM['nombre'] }}</p>
-                                @if($abuelaM['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5">{{ $abuelaM['codigo_animal'] }}</p>@endif
+                                @if($abuelaM['codigo_animal'] ?? null)<p class="text-xs text-gray-500 mt-0.5 font-mono">#{{ $abuelaM['codigo_animal'] }}</p>@endif
                             </a>
                         </div>
                     @else
@@ -151,10 +153,10 @@
                                 @endif
                             </a>
                             <form method="POST" action="{{ route('arbol-gen.destroy', [$id, 'Padre']) }}"
-                                  onsubmit="return confirm('¿Eliminar relación de Padre?')"
+                                  onsubmit="return confirm('¿Confirma que desea eliminar la relación de Padre?')"
                                   class="mt-3">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 font-semibold transition-colors">
+                                <button type="submit" class="inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 font-semibold transition-colors cursor-pointer">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     Quitar padre
                                 </button>
@@ -164,8 +166,8 @@
                         <div class="tree-card-empty">
                             <p class="text-gray-500 font-medium text-sm mb-2">Sin padre registrado</p>
                             <button onclick="openModal('Padre')"
-                                    class="px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-xl text-xs font-semibold transition-colors inline-flex items-center gap-1">
-                                <span>♂</span> + Asignar padre
+                                    class="px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-xl text-xs font-semibold transition-colors inline-flex items-center gap-1 cursor-pointer">
+                                <span class="font-bold">♂</span> + Asignar padre
                             </button>
                         </div>
                     @endif
@@ -184,10 +186,10 @@
                                 @endif
                             </a>
                             <form method="POST" action="{{ route('arbol-gen.destroy', [$id, 'Madre']) }}"
-                                  onsubmit="return confirm('¿Eliminar relación de Madre?')"
+                                  onsubmit="return confirm('¿Confirma que desea eliminar la relación de Madre?')"
                                   class="mt-3">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 font-semibold transition-colors">
+                                <button type="submit" class="inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 font-semibold transition-colors cursor-pointer">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     Quitar madre
                                 </button>
@@ -197,8 +199,8 @@
                         <div class="tree-card-empty">
                             <p class="text-gray-500 font-medium text-sm mb-2">Sin madre registrada</p>
                             <button onclick="openModal('Madre')"
-                                    class="px-4 py-2 bg-pink-50 text-pink-600 hover:bg-pink-100 rounded-xl text-xs font-semibold transition-colors inline-flex items-center gap-1">
-                                <span>♀</span> + Asignar madre
+                                    class="px-4 py-2 bg-pink-50 text-pink-600 hover:bg-pink-100 rounded-xl text-xs font-semibold transition-colors inline-flex items-center gap-1 cursor-pointer">
+                                <span class="font-bold">♀</span> + Asignar madre
                             </button>
                         </div>
                     @endif
@@ -263,9 +265,9 @@
 <!-- Modal: Asignar progenitor -->
 <div id="modal-progenitor" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs">
     <div class="w-full max-w-lg rounded-2xl bg-white shadow-2xl p-6 mx-4 border border-gray-100">
-        <div class="mb-4 flex items-center justify-between">
+        <div class="mb-4 flex items-center justify-between pb-3 border-b border-gray-100">
             <h3 class="text-xl font-bold text-ganaderasoft-negro" id="modal-title">Asignar padre</h3>
-            <button onclick="closeModal()" class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 flex items-center justify-center text-2xl leading-none transition-colors">&Times;</button>
+            <button onclick="closeModal()" class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 flex items-center justify-center text-2xl leading-none transition-colors cursor-pointer">&times;</button>
         </div>
 
         <form method="POST" action="{{ route('arbol-gen.store', $id) }}" id="form-progenitor">
@@ -288,11 +290,11 @@
 
             <div class="flex justify-end gap-3 pt-2">
                 <button type="button" onclick="closeModal()"
-                        class="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm">
+                        class="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm cursor-pointer">
                     Cancelar
                 </button>
                 <button type="submit" id="btn-guardar-prog"
-                        class="px-6 py-2.5 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md disabled:opacity-50 text-sm"
+                        class="px-6 py-2.5 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md disabled:opacity-50 text-sm cursor-pointer"
                         disabled>
                     Guardar
                 </button>
@@ -333,7 +335,7 @@
 .tree-card-badge {
     position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
     font-size: 0.68rem; font-weight: 700; padding: 2px 10px; border-radius: 99px; white-space: nowrap;
-    letter-spacing: 0.05em; text-transform: uppercase; shadow: 0 1px 2px rgba(0,0,0,0.05);
+    letter-spacing: 0.05em; text-transform: uppercase;
 }
 .tree-card-badge.blue  { background: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; }
 .tree-card-badge.pink  { background: #FCE7F3; color: #9D174D; border: 1px solid #FBCFE8; }
@@ -448,7 +450,7 @@
             <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-ganaderasoft-celeste/10 transition-colors"
                  data-id="${id}"
                  onclick="selectAnimal(${id}, '${escapeHtml(nombre)}', '${escapeHtml(codigo)}')">
-                <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isMacho ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}">
+                <span class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isMacho ? 'bg-blue-100 text-blue-700' : 'bg-pink-100 text-pink-700'}">
                     ${isMacho ? '♂' : '♀'}
                 </span>
                 <div>
