@@ -119,7 +119,7 @@
                    class="text-ganaderasoft-azul font-semibold hover:underline">
                     Descargar app android (apk)
                 </a>
-                <span class="text-gray-400 text-[10px] sm:text-[11px]">&Copy; {{ date('Y') }} GanaderaSoft</span>
+                <span class="text-gray-400 text-[10px] sm:text-[11px]">&copy; {{ date('Y') }} GanaderaSoft</span>
             </div>
         </div>
 

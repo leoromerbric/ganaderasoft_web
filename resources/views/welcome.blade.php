@@ -5,46 +5,13 @@
 @section('content')
 <div class="min-h-screen bg-slate-50 text-gray-800 flex flex-col justify-between selection:bg-ganaderasoft-celeste selection:text-white">
 
-    <!-- Header / Navbar -->
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-12 sm:h-20">
-                <!-- Brand Logo & Name -->
-                <a href="{{ url('/') }}" class="flex items-center space-x-1.5 sm:space-x-3 group">
-                    <div class="bg-white p-1 sm:p-2.5 rounded-lg sm:rounded-2xl shadow-md border border-gray-100 group-hover:scale-105 transition-transform duration-200">
-                        <img src="{{ asset('images/logo.png') }}" alt="GanaderaSoft Logo" class="w-6 h-6 sm:w-10 sm:h-10 object-contain">
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-xs sm:text-2xl font-black tracking-tight text-ganaderasoft-negro">Ganadera<span class="text-ganaderasoft-azul">Soft</span></span>
-                        <span class="text-[9px] sm:text-xs text-gray-500 font-medium">Facultad de agronomía</span>
-                    </div>
-                </a>
-
-                <!-- Desktop Navigation Links -->
-                <nav class="hidden lg:flex items-center space-x-6 xl:space-x-8 text-sm font-semibold text-gray-600">
-                    <a href="#caracteristicas" class="hover:text-ganaderasoft-azul transition-colors">Características</a>
-                    <a href="#modulos" class="hover:text-ganaderasoft-azul transition-colors">Módulos</a>
-                    <a href="#app-movil" class="hover:text-ganaderasoft-azul transition-colors">App móvil</a>
-                    <a href="#organizacion" class="hover:text-ganaderasoft-azul transition-colors">Instituciones</a>
-                </nav>
-
-                <!-- Auth Action Buttons -->
-                <div class="flex items-center space-x-2 sm:space-x-4">
-                    @auth
-                        <a href="{{ route('dashboard') }}" 
-                           class="inline-flex items-center justify-center px-2.5 py-1 sm:px-5 sm:py-2.5 text-[11px] sm:text-sm font-semibold text-white bg-gradient-to-r from-ganaderasoft-celeste to-ganaderasoft-azul rounded-md sm:rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 whitespace-nowrap">
-                            Ir al dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" 
-                           class="inline-flex items-center justify-center px-2.5 py-1 sm:px-6 sm:py-2.5 text-[11px] sm:text-sm font-bold text-white bg-gradient-to-r from-ganaderasoft-celeste via-[#4aa9d6] to-ganaderasoft-azul rounded-md sm:rounded-xl shadow-lg shadow-ganaderasoft-celeste/30 hover:shadow-xl hover:scale-105 transition-all duration-200 whitespace-nowrap">
-                            Iniciar sesión
-                        </a>
-                    @endauth
-                </div>
-            </div>
-        </div>
-    </header>
+    <!-- Header / Navbar Modular -->
+    <x-layouts.public-header>
+        <a href="#caracteristicas" class="hover:text-ganaderasoft-azul transition-colors">Características</a>
+        <a href="#modulos" class="hover:text-ganaderasoft-azul transition-colors">Módulos</a>
+        <a href="#app-movil" class="hover:text-ganaderasoft-azul transition-colors">App móvil</a>
+        <a href="#organizacion" class="hover:text-ganaderasoft-azul transition-colors">Instituciones</a>
+    </x-layouts.public-header>
 
     <!-- Hero Section -->
     <section id="caracteristicas" class="scroll-mt-28 relative overflow-hidden pt-4 pb-8 sm:pt-12 sm:pb-20 lg:pt-20 lg:pb-28 bg-gradient-to-b from-white via-slate-50 to-gray-50">
@@ -324,23 +291,8 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-gray-400 py-6 sm:py-12 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-6">
-                
-                <div class="flex items-center space-x-2 sm:space-x-3">
-                    <img src="{{ asset('images/logo.png') }}" alt="GanaderaSoft Logo" class="w-6 h-6 sm:w-8 sm:h-8 object-contain">
-                    <span class="text-sm sm:text-lg font-bold text-white">GanaderaSoft</span>
-                </div>
-
-                <p class="text-[9px] sm:text-sm text-center md:text-right">
-                    &Copy; {{ date('Y') }} GanaderaSoft - facultad de agronomía. Todos los derechos reservados.
-                </p>
-
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Modular -->
+    <x-layouts.public-footer />
 
 </div>
 @endsection

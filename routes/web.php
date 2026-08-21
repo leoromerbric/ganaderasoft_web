@@ -283,3 +283,14 @@ Route::middleware(['mock.auth', 'has.role:global_admin,admin'])->prefix('admin')
     Route::resource('casas-comerciales', CasaComercialController::class);
     Route::resource('razas', AdminComposicionRazaController::class);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Ruta Fallback (Error 404)
+|--------------------------------------------------------------------------
+| Captura cualquier petición web a una URL no definida para renderizar
+| la vista de error 404 manteniendo activo el pipeline de sesión (cookies, auth).
+*/
+Route::fallback(function () {
+    return response()->view('errors.404', [], 404);
+})->name('fallback.404');
