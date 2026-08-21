@@ -39,7 +39,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar</label>
-                    <input type="text" id="filtroBuscador" placeholder="Buscar por Laboratorio..."
+                    <input type="text" id="filtroBuscador" placeholder="Buscar por laboratorio..."
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
                 <div class="flex justify-end">
@@ -59,8 +59,8 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Detalle</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Marca Comercial</th>
-<th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado (Activa)</th>
+                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Marca comercial</th>
+<th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado (activa)</th>
 
                                 <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                             </tr>

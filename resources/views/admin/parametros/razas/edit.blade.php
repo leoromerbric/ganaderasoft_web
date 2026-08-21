@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 ✏️
@@ -69,7 +69,7 @@
                             <label for="finca_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
                             <select id="finca_id" name="finca_id"
                                     class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
-                                <option value="" {{ old('finca_id', $item['finca_id'] ?? '') == '' ? 'selected' : '' }}>Ninguna (Raza Global/Pública)</option>
+                                <option value="" {{ old('finca_id', $item['finca_id'] ?? '') == '' ? 'selected' : '' }}>Ninguna (raza global/pública)</option>
                                 @foreach($fincas as $finca)
                                     @php
                                         $fId = is_array($finca) ? ($finca['id'] ?? $finca['finca_id'] ?? '') : $finca->id;
@@ -132,7 +132,7 @@
                                 @php $currentProposito = old('proposito', $item['proposito'] ?? ''); @endphp
                                 <option value="Carne" {{ $currentProposito == 'Carne' ? 'selected' : '' }}>Carne</option>
                                 <option value="Leche" {{ $currentProposito == 'Leche' ? 'selected' : '' }}>Leche</option>
-                                <option value="Doble" {{ $currentProposito == 'Doble' ? 'selected' : '' }}>Doble Propósito</option>
+                                <option value="Doble" {{ $currentProposito == 'Doble' ? 'selected' : '' }}>Doble propósito</option>
                                 <option value="Lidia" {{ $currentProposito == 'Lidia' ? 'selected' : '' }}>Lidia</option>
                                 <option value="Trabajo" {{ $currentProposito == 'Trabajo' ? 'selected' : '' }}>Trabajo</option>
                             </select>

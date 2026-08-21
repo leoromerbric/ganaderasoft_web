@@ -1,12 +1,12 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Registro de Celo')
+@section('title', 'Registro de celo')
 
 @section('content')
 <div>
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🌡️ Registro de Celo</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🌡️ Registro de celo</h2>
             <p class="text-gray-600 mt-1">Gestión de registros de celo de los animales</p>
         </div>
         <a href="{{ route('registro-celo.create') }}"
@@ -85,7 +85,7 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Animal</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Celo</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha celo</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Observación</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
@@ -136,7 +136,7 @@
                 <p class="text-gray-500 mb-6">Comienza registrando el primer evento de celo</p>
                 <a href="{{ route('registro-celo.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
-                    Nuevo Registro
+                    Nuevo registro
                 </a>
             </div>
         @endif

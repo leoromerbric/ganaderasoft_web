@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 📋
@@ -59,10 +59,10 @@
                         </div>
 
                         <div>
-                            <label for="tipo_animal_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Tipo de Animal <span class="text-red-500">*</span></label>
+                            <label for="tipo_animal_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Tipo de animal <span class="text-red-500">*</span></label>
                             <select id="tipo_animal_id" name="tipo_animal_id" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
                                 <option value="">Seleccione un tipo de animal</option>
-                                @if(isset($tiposAnimal) && (is_array($tiposAnimal) || is_object($tiposAnimal)))
+                                @if(Isset($tiposanimal) && (is_array($tiposanimal) || is_object($tiposanimal)))
                                     @foreach($tiposAnimal as $tipo)
                                         @php 
                                             $tId = is_array($tipo) ? ($tipo['id'] ?? '') : $tipo->id;
@@ -76,19 +76,19 @@
                         </div>
 
                         <div>
-                            <label for="edad_ini" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Edad Inicio (Meses)</label>
+                            <label for="edad_ini" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Edad inicio (meses)</label>
                             <input type="number" id="edad_ini" name="edad_ini" value="{{ old('edad_ini') }}" min="0"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('edad_ini')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
-                            <label for="edad_fin" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Edad Fin (Meses)</label>
+                            <label for="edad_fin" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Edad fin (meses)</label>
                             <input type="number" id="edad_fin" name="edad_fin" value="{{ old('edad_fin') }}" min="0"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             <p class="text-xs text-gray-500 mt-1.5 flex items-center gap-1">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                Deje en blanco si no tiene límite (Ej: Adultos).
+                                Deje en blanco si no tiene límite (ej: Adultos).
                             </p>
                             @error('edad_fin')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>

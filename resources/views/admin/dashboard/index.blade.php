@@ -143,7 +143,7 @@
                     <h3 class="text-lg font-bold text-gray-900">Parámetros del sistema</h3>
                 </div>
                 <p class="text-sm text-gray-500 mt-2 leading-relaxed">
-                    Gestiona los catálogos maestros de referencia utilizados en toda la plataforma: tipos de trabajador, razas, etapas, estados de salud, vacunas y más.
+                    Gestiona los catálogos maestros de referencia utilizados en toda la plataforma: Tipos de trabajador, razas, etapas, estados de salud, vacunas y más.
                 </p>
                 
                 <ul class="mt-4 space-y-2">

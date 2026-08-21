@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-8">
     <!-- Header Card -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl {{ ($animal['sexo'] ?? '') === 'M' ? 'bg-blue-50 text-blue-600' : 'bg-pink-50 text-pink-600' }} flex items-center justify-center font-bold text-2xl">
                 {{ ($animal['sexo'] ?? '') === 'M' ? '🐂' : '🐄' }}
@@ -22,7 +22,7 @@
         <div class="flex flex-wrap items-center gap-3">
             <a href="{{ route('arbol-gen.show', $animal['id']) }}"
                class="px-6 py-3 bg-ganaderasoft-celeste hover:bg-ganaderasoft-azul text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2 text-sm">
-                🌳 Árbol Genealógico
+                🌳 Árbol genealógico
             </a>
             <a href="{{ route('animales.edit', $animal['id']) }}" 
                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2 text-sm">
@@ -38,7 +38,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
-                        Restaurar Animal
+                        Restaurar animal
                     </button>
                 </form>
             @endif
@@ -47,7 +47,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
-                Ver Listado
+                Ver listado
             </a>
         </div>
     </div>
@@ -59,7 +59,7 @@
             <!-- Información General -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <h3 class="text-xl font-bold text-ganaderasoft-negro mb-6 flex items-center gap-2">
-                    <span>📋</span> Información General
+                    <span>📋</span> Información general
                 </h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -69,7 +69,7 @@
                     </div>
                     
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Código Identificador</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Código identificador</p>
                         <p class="text-lg font-bold text-gray-900 font-mono">#{{ $animal['codigo_animal'] ?? 'N/A' }}</p>
                     </div>
                     
@@ -83,7 +83,7 @@
                     </div>
                     
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de Nacimiento / Edad</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de nacimiento / edad</p>
                         <p class="text-lg font-bold text-gray-900">
                             {{ isset($animal['fecha_nacimiento']) ? date('d/m/Y', strtotime($animal['fecha_nacimiento'])) : 'N/A' }}
                         </p>
@@ -105,7 +105,7 @@
                     </div>
                     
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Estado de Registro</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Estado de registro</p>
                         <div class="mt-1">
                             @if(!empty($animal['archivado']))
                                 <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-700 border border-gray-200">Archivado</span>
@@ -121,11 +121,11 @@
             @if(isset($animal['composicion_raza']))
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <h3 class="text-xl font-bold text-ganaderasoft-negro mb-6 flex items-center gap-2">
-                    <span>🧬</span> Genética y Raza
+                    <span>🧬</span> Genética y raza
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Nombre de Raza</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Nombre de raza</p>
                         <p class="text-base font-bold text-gray-900">{{ data_get($animal, 'composicion_raza.nombre', 'N/A') }}</p>
                     </div>
                     <div>
@@ -148,7 +148,7 @@
             @if(isset($animal['rebano']))
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <h3 class="text-xl font-bold text-ganaderasoft-negro mb-6 flex items-center gap-2">
-                    <span>🏡</span> Ubicación y Unidad de Producción
+                    <span>🏡</span> Ubicación y unidad de producción
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex items-center space-x-3 p-4 bg-gray-50 rounded-xl">
@@ -156,7 +156,7 @@
                             🐄
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Rebaño Perteneciente</p>
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Rebaño perteneciente</p>
                             <p class="text-base font-bold text-gray-900">{{ data_get($animal, 'rebano.nombre', 'N/A') }}</p>
                         </div>
                     </div>
@@ -166,7 +166,7 @@
                             🏡
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Finca / Predio</p>
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Finca / predio</p>
                             <p class="text-base font-bold text-gray-900">{{ data_get($animal, 'rebano.finca.nombre', 'N/A') }}</p>
                         </div>
                     </div>
@@ -190,25 +190,25 @@
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-ganaderasoft-celeste text-white px-6 py-4">
                     <h3 class="text-lg font-semibold flex items-center gap-2">
-                        <span>📊</span> Etapa de Crecimiento Actual
+                        <span>📊</span> Etapa de crecimiento actual
                     </h3>
                 </div>
                 <div class="p-6 space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Etapa Alcanzada</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Etapa alcanzada</label>
                         <span class="inline-flex px-3 py-1 text-base font-bold rounded-full bg-blue-50 text-blue-800 border border-blue-200">
                             {{ $nombreEtapa }}
                         </span>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de Inicio en Etapa</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de inicio en etapa</label>
                         <p class="text-base font-bold text-gray-900">
                             {{ $fechaIniEtapa ? date('d/m/Y', strtotime($fechaIniEtapa)) : 'N/A' }}
                         </p>
                     </div>
                     @if($edadIni !== null && $edadFin !== null)
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rango de Edad</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rango de edad</label>
                         <p class="text-base font-bold text-gray-900">
                             {{ $edadIni }} - {{ $edadFin }} días
                         </p>
@@ -219,7 +219,7 @@
             @endif
 
             <!-- Estado de Salud Actual Card -->
-            @if(isset($animal['estado_actual']) || (isset($animal['estados']) && count($animal['estados']) > 0))
+            @if(Isset($animal['estado_actual']) || (isset($animal['estados']) && count($animal['estados']) > 0))
             @php
                 $estadoActual = $animal['estado_actual'] ?? (isset($animal['estados'][0]) ? $animal['estados'][0] : null);
                 $nombreEstado = data_get($estadoActual, 'estado_salud.nombre', 'N/A');
@@ -229,18 +229,18 @@
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-ganaderasoft-verde-oscuro text-white px-6 py-4">
                     <h3 class="text-lg font-semibold flex items-center gap-2">
-                        <span>🩺</span> Estado de Salud Actual
+                        <span>🩺</span> Estado de salud actual
                     </h3>
                 </div>
                 <div class="p-6 space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Estado de Salud</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Estado de salud</label>
                         <span class="inline-flex px-3 py-1 text-base font-bold rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
                             {{ $nombreEstado }}
                         </span>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de Diagnóstico</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de diagnóstico</label>
                         <p class="text-base font-bold text-gray-900">
                             {{ $fechaIniEstado ? date('d/m/Y', strtotime($fechaIniEstado)) : 'N/A' }}
                         </p>
@@ -254,18 +254,18 @@
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                     <h3 class="text-lg font-bold flex items-center gap-2">
-                        <span>⚙️</span> Registro del Sistema
+                        <span>⚙️</span> Registro del sistema
                     </h3>
                 </div>
                 <div class="p-6 space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de Registro</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de registro</label>
                         <p class="text-sm font-semibold text-gray-900">
                             {{ isset($animal['created_at']) ? date('d/m/Y H:i', strtotime($animal['created_at'])) : 'N/A' }}
                         </p>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Última Actualización</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Última actualización</label>
                         <p class="text-sm font-semibold text-gray-900">
                             {{ isset($animal['updated_at']) ? date('d/m/Y H:i', strtotime($animal['updated_at'])) : 'N/A' }}
                         </p>

@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Detalle Reproducción Animal')
+@section('title', 'Detalle reproducción animal')
 
 @section('content')
 @php
@@ -44,11 +44,11 @@
                 </p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Tipo de Reproducción</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Tipo de reproducción</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $tipo }}</p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de Reproducción</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de reproducción</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
                     {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                 </p>

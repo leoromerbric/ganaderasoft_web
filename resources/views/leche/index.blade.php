@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Registro de Producción de Leche')
+@section('title', 'Registro de producción de leche')
 
 @section('content')
 @php
@@ -11,17 +11,17 @@
 
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                🥛 Producción de Leche
+                🥛 Producción de leche
             </h1>
             <p class="text-gray-500 text-sm mt-1">Control diario de pesaje y volumen lechero por hembra y período</p>
         </div>
         <div>
             <a href="{{ route('leche.create', ['lactancia_id' => $lactanciaId]) }}"
                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center text-sm gap-1.5">
-                <span class="text-base font-bold">+</span> Nuevo Registro
+                <span class="text-base font-bold">+</span> Nuevo registro
             </a>
         </div>
     </div>
@@ -48,7 +48,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Pesajes</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total pesajes</p>
                 <p id="statTotalCount" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $countRegistros }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
@@ -57,8 +57,8 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Producción Total</p>
-                <p id="statTotalVol" class="text-3xl font-extrabold text-emerald-600">{{ number_format($totalProduccion, 2) }} L</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Producción total</p>
+                <p id="statTotalVol" class="text-3xl font-extrabold text-emerald-600">{{ number_format($totalProduccion, 2) }} l</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl">
                 📊
@@ -66,8 +66,8 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Promedio por Pesaje</p>
-                <p id="statPromedioVol" class="text-3xl font-extrabold text-cyan-600">{{ number_format($promedioPesaje, 2) }} L</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Promedio por pesaje</p>
+                <p id="statPromedioVol" class="text-3xl font-extrabold text-cyan-600">{{ number_format($promedioPesaje, 2) }} l</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center text-2xl">
                 ⚖️
@@ -91,7 +91,7 @@
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Hembra / Lactancia</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Hembra / lactancia</label>
                 <select id="filtroAnimal" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all truncate">
                     <option value="">Todas las lactancias</option>
                     @foreach($lactancias as $lact)
@@ -113,19 +113,19 @@
                                     data-finca-id="{{ $fId }}"
                                     data-finca-nombre="{{ $fNm }}"
                                     {{ (string)$lactanciaId === (string)$li ? 'selected' : '' }}>
-                                {{ $anNm }} (Lactancia #{{ $li }}{{ $fi ? ' • '.$fi : '' }})
+                                {{ $anNm }} (lactancia #{{ $li }}{{ $fi ? ' • '.$fi : '' }})
                             </option>
                         @endif
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Fecha Pesaje</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Fecha pesaje</label>
                 <input type="date" id="filtroFecha" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
             <div>
                 <a href="{{ route('leche.index') }}" onclick="limpiarFiltros(event)" class="w-full px-4 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                    Limpiar Filtros
+                    Limpiar filtros
                 </a>
             </div>
         </div>
@@ -138,10 +138,10 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha Pesaje</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Animal / Hembra</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Cantidad Producida</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">ID Lactancia</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha pesaje</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Animal / hembra</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Cantidad producida</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">ID lactancia</th>
                             <th class="px-6 py-3.5 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
@@ -173,7 +173,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-3.5 py-1.5 text-xs font-extrabold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 inline-flex items-center gap-1">
-                                    🥛 {{ number_format($pesajeTotal, 2) }} L
+                                    🥛 {{ number_format($pesajeTotal, 2) }} l
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-gray-500 font-mono text-xs">
@@ -224,7 +224,7 @@
                 <p class="text-gray-500 text-sm mb-6">Comienza registrando la primera producción lechera del rebaño</p>
                 <a href="{{ route('leche.create', ['lactancia_id' => $lactanciaId]) }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg text-sm">
-                    + Nuevo Registro
+                    + Nuevo registro
                 </a>
             </div>
         @endif

@@ -5,14 +5,14 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl {{ ($animal['sexo'] ?? '') === 'M' ? 'bg-blue-50 text-blue-600' : 'bg-pink-50 text-pink-600' }} flex items-center justify-center font-bold text-2xl">
                 {{ ($animal['sexo'] ?? '') === 'M' ? '🐂' : '🐄' }}
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Editar Animal
+                    Editar animal
                 </h1>
                 <p class="text-gray-500 text-sm mt-1 flex items-center gap-2">
                     Expediente: <span class="font-bold text-gray-800">{{ $animal['nombre'] ?? 'Animal' }}</span> 
@@ -29,7 +29,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                 </svg>
-                Ver Detalle
+                Ver detalle
             </a>
             <a href="{{ route('animales.index') }}" 
                class="px-5 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
@@ -73,29 +73,29 @@
                 <!-- Card 1: Identificación del Animal -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>🐄</span> Datos de Identificación
+                        <span>🐄</span> Datos de identificación
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Nombre -->
                         <div>
                             <label for="nombre" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Nombre del Animal <span class="text-red-500">*</span>
+                                Nombre del animal <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="nombre" name="nombre" value="{{ old('nombre', $animal['nombre'] ?? '') }}" required
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('nombre') border-red-500 @enderror"
-                                   placeholder="Ej: Vaca Lechera #1">
+                                   placeholder="Ej: Vaca lechera #1">
                             @error('nombre')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <!-- Código Identificador -->
                         <div>
                             <label for="codigo_animal" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Código Identificador <span class="text-red-500">*</span>
+                                Código identificador <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="codigo_animal" name="codigo_animal" value="{{ old('codigo_animal', $animal['codigo_animal'] ?? '') }}" required
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('codigo_animal') border-red-500 @enderror"
-                                   placeholder="Ej: BOV-001">
+                                   placeholder="Ej: Bov-001">
                             @error('codigo_animal')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
 
@@ -116,7 +116,7 @@
                         <!-- Fecha de Nacimiento -->
                         <div>
                             <label for="fecha_nacimiento" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Fecha de Nacimiento <span class="text-red-500">*</span>
+                                Fecha de nacimiento <span class="text-red-500">*</span>
                             </label>
                             <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" 
                                    value="{{ old('fecha_nacimiento', isset($animal['fecha_nacimiento']) ? date('Y-m-d', strtotime($animal['fecha_nacimiento'])) : '') }}" required
@@ -130,14 +130,14 @@
                 <!-- Card 2: Ubicación, Genética y Estado -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>🏡</span> Ubicación y Clasificación
+                        <span>🏡</span> Ubicación y clasificación
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Rebaño -->
                         <div>
                             <label for="rebano_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Rebaño Perteneciente <span class="text-red-500">*</span>
+                                Rebaño perteneciente <span class="text-red-500">*</span>
                             </label>
                             <select id="rebano_id" name="rebano_id" required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('rebano_id') border-red-500 @enderror">
@@ -158,7 +158,7 @@
                         <!-- Raza -->
                         <div>
                             <label for="composicion_raza_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Raza / Genética <span class="text-red-500">*</span>
+                                Raza / genética <span class="text-red-500">*</span>
                             </label>
                             <select id="composicion_raza_id" name="composicion_raza_id" required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('composicion_raza_id') border-red-500 @enderror">
@@ -184,7 +184,7 @@
                             </label>
                             <input type="text" id="procedencia" name="procedencia" value="{{ old('procedencia', $animal['procedencia'] ?? '') }}" required
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('procedencia') border-red-500 @enderror"
-                                   placeholder="Ej: Nacido en Finca, Compra Local">
+                                   placeholder="Ej: Nacido en finca, compra local">
                             @error('procedencia')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
 
@@ -206,7 +206,7 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                         <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span>📋</span> Resumen de Ficha
+                            <span>📋</span> Resumen de ficha
                         </h3>
                     </div>
 
@@ -254,7 +254,7 @@
                         <div class="space-y-3 pt-2">
                             <button type="submit"
                                     class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                                💾 Actualizar Ejemplar
+                                💾 Actualizar ejemplar
                             </button>
                             <a href="{{ route('animales.index') }}"
                                class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">

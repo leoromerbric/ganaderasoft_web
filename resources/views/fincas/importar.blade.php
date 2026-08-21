@@ -1,21 +1,21 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Importación Masiva de Fincas')
+@section('title', 'Importación masiva de fincas')
 
 @section('content')
     <div class="max-w-4xl mx-auto space-y-8">
         <!-- Header & Breadcrumb -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Importación Masiva de Fincas</h1>
-                <p class="text-gray-500 text-sm mt-1">Cargue unidades de producción ganadera a partir de archivos delimitados (.csv o .txt)</p>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Importación masiva de fincas</h1>
+                <p class="text-gray-500 text-sm mt-1">Cargue unidades de producción ganadera a partir de archivos delimitados (.Csv o .Txt)</p>
             </div>
             <a href="{{ route('fincas.index') }}"
                class="inline-flex items-center text-sm text-ganaderasoft-azul hover:text-ganaderasoft-celeste font-medium transition-colors">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Volver a Fincas
+                Volver a fincas
             </a>
         </div>
 
@@ -35,7 +35,7 @@
                     <span class="text-xl">⚠️</span>
                     <p class="text-sm font-bold">{{ session('error') }}</p>
                 </div>
-                @if(session('import_errors') && is_array(session('import_errors')) && count(session('import_errors')) > 0)
+                @if(Session('import_errors') && is_array(session('import_errors')) && count(session('import_errors')) > 0)
                     <div class="mt-3 pl-8 text-xs space-y-1.5 border-t border-red-200 pt-3">
                         <p class="font-semibold text-red-900 mb-1">Detalles de los errores detectados en el archivo:</p>
                         <ul class="list-disc list-inside space-y-1 text-red-700 max-h-48 overflow-y-auto pr-2">
@@ -70,7 +70,7 @@
                 <!-- Drag & Drop File Zone -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                        Archivo Delimitado (.csv o .txt) <span class="text-red-500">*</span>
+                        Archivo delimitado (.Csv o .Txt) <span class="text-red-500">*</span>
                     </label>
                     <div id="dropZone"
                          class="border-2 border-dashed border-gray-300 hover:border-ganaderasoft-verde-oscuro rounded-2xl p-8 text-center bg-gray-50/50 hover:bg-green-50/30 transition-all cursor-pointer">
@@ -110,7 +110,7 @@
                     </a>
                     <button type="submit" id="btnSubmit"
                             class="px-8 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-xl font-semibold hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg inline-flex items-center space-x-2">
-                        <span>🚀 Procesar Importación</span>
+                        <span>🚀 Procesar importación</span>
                     </button>
                 </div>
             </form>
@@ -121,18 +121,18 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-100 pb-4">
                 <div>
                     <h2 class="text-lg font-bold text-ganaderasoft-negro flex items-center gap-2">
-                        <span>ℹ️</span> Especificaciones de la Plantilla
+                        <span>ℹ️</span> Especificaciones de la plantilla
                     </h2>
                     <p class="text-xs text-gray-500 mt-0.5">El sistema detecta automáticamente encabezados y delimitadores (coma o punto y coma)</p>
                 </div>
                 <div class="flex items-center space-x-2">
                     <a href="{{ route('fincas.importar.plantilla', ['delimitador' => 'coma']) }}"
                        class="px-4 py-2 text-xs font-semibold text-ganaderasoft-verde-oscuro bg-green-50 border border-green-200 rounded-xl hover:bg-green-100 transition-colors inline-flex items-center gap-1.5">
-                        <span>📥</span> Descargar Plantilla (Comas)
+                        <span>📥</span> Descargar plantilla (comas)
                     </a>
                     <a href="{{ route('fincas.importar.plantilla', ['delimitador' => 'punto_coma']) }}"
                        class="px-4 py-2 text-xs font-semibold text-gray-700 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors inline-flex items-center gap-1.5">
-                        <span>📥</span> Plantilla (Punto y coma)
+                        <span>📥</span> Plantilla (punto y coma)
                     </a>
                 </div>
             </div>
@@ -144,50 +144,50 @@
                         <tr>
                             <th class="px-4 py-3 font-bold text-gray-700 uppercase">Columna</th>
                             <th class="px-4 py-3 font-bold text-gray-700 uppercase">Obligatorio</th>
-                            <th class="px-4 py-3 font-bold text-gray-700 uppercase">Tipo / Valores Válidos</th>
-                            <th class="px-4 py-3 font-bold text-gray-700 uppercase">Descripción / Sinónimos</th>
+                            <th class="px-4 py-3 font-bold text-gray-700 uppercase">Tipo / valores válidos</th>
+                            <th class="px-4 py-3 font-bold text-gray-700 uppercase">Descripción / sinónimos</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 bg-white">
                         <tr>
-                            <td class="px-4 py-3 font-mono font-bold text-ganaderasoft-azul">nombre</td>
-                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-100 text-red-800 rounded font-semibold text-[10px]">REQUERIDO</span></td>
+                            <td class="px-4 py-3 font-mono font-bold text-ganaderasoft-azul">Nombre</td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-100 text-red-800 rounded font-semibold text-[10px]">Requerido</span></td>
                             <td class="px-4 py-3 text-gray-600">Texto (máx. 25 caracteres)</td>
-                            <td class="px-4 py-3 text-gray-500">Nombre de la finca (ej: <code>Hacienda Santa Ines</code>). Sinónimos: <code>nombre_finca</code>, <code>finca</code>.</td>
+                            <td class="px-4 py-3 text-gray-500">Nombre de la finca (ej: <code>Hacienda santa ines</code>). Sinónimos: <code>Nombre_finca</code>, <code>Finca</code>.</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-3 font-mono font-bold text-ganaderasoft-azul">explotacion_tipo</td>
-                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-100 text-red-800 rounded font-semibold text-[10px]">REQUERIDO</span></td>
+                            <td class="px-4 py-3 font-mono font-bold text-ganaderasoft-azul">Explotacion_tipo</td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-100 text-red-800 rounded font-semibold text-[10px]">Requerido</span></td>
                             <td class="px-4 py-3 text-gray-600"><code>Intensiva</code>, <code>Extensiva</code>, <code>Mixto</code>, <code>Lechero</code>, <code>Ceba</code></td>
-                            <td class="px-4 py-3 text-gray-500">Sistema productivo principal. Sinónimos: <code>tipo_explotacion</code>, <code>explotacion</code>.</td>
+                            <td class="px-4 py-3 text-gray-500">Sistema productivo principal. Sinónimos: <code>Tipo_explotacion</code>, <code>Explotacion</code>.</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-3 font-mono font-bold text-gray-700">identificador_hierro</td>
-                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-semibold text-[10px]">OPCIONAL</span></td>
+                            <td class="px-4 py-3 font-mono font-bold text-gray-700">Identificador_hierro</td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-semibold text-[10px]">Opcional</span></td>
                             <td class="px-4 py-3 text-gray-600">Texto (máx. 20 caracteres)</td>
-                            <td class="px-4 py-3 text-gray-500">Identificador del hierro ganadero (ej: <code>HSI-01</code>). Crea automáticamente el registro de hierro.</td>
+                            <td class="px-4 py-3 text-gray-500">Identificador del hierro ganadero (ej: <code>Hsi-01</code>). Crea automáticamente el registro de hierro.</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-3 font-mono font-bold text-gray-700">superficie</td>
-                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-semibold text-[10px]">OPCIONAL</span></td>
+                            <td class="px-4 py-3 font-mono font-bold text-gray-700">Superficie</td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-semibold text-[10px]">Opcional</span></td>
                             <td class="px-4 py-3 text-gray-600">Numérico (&ge; 0)</td>
-                            <td class="px-4 py-3 text-gray-500">Superficie total en hectáreas (ej: <code>150.5</code>). Sinónimos: <code>hectareas</code>, <code>area</code>.</td>
+                            <td class="px-4 py-3 text-gray-500">Superficie total en hectáreas (ej: <code>150.5</code>). Sinónimos: <code>Hectareas</code>, <code>Area</code>.</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-3 font-mono font-bold text-gray-700">relieve</td>
-                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-semibold text-[10px]">OPCIONAL</span></td>
+                            <td class="px-4 py-3 font-mono font-bold text-gray-700">Relieve</td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-semibold text-[10px]">Opcional</span></td>
                             <td class="px-4 py-3 text-gray-600"><code>Plano</code>, <code>Ondulado</code>, <code>Quebrado</code></td>
                             <td class="px-4 py-3 text-gray-500">Topografía predominante del terreno.</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-3 font-mono font-bold text-gray-700">fuente_agua</td>
-                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-semibold text-[10px]">OPCIONAL</span></td>
+                            <td class="px-4 py-3 font-mono font-bold text-gray-700">Fuente_agua</td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-semibold text-[10px]">Opcional</span></td>
                             <td class="px-4 py-3 text-gray-600"><code>Rio</code>, <code>Pozo</code>, <code>Quebrada</code>, <code>Represa</code></td>
                             <td class="px-4 py-3 text-gray-500">Principal abastecimiento hídrico de la finca.</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-3 font-mono font-bold text-gray-700">suelo_textura</td>
-                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-semibold text-[10px]">OPCIONAL</span></td>
+                            <td class="px-4 py-3 font-mono font-bold text-gray-700">Suelo_textura</td>
+                            <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-semibold text-[10px]">Opcional</span></td>
                             <td class="px-4 py-3 text-gray-600"><code>Arenoso</code>, <code>Arcilloso</code>, <code>Franco</code></td>
                             <td class="px-4 py-3 text-gray-500">Tipo textural del suelo.</td>
                         </tr>
@@ -198,7 +198,7 @@
             <!-- Notes -->
             <div class="p-4 bg-amber-50/70 border border-amber-200 rounded-xl text-xs text-amber-900 space-y-1.5">
                 <p class="font-bold flex items-center gap-1.5">
-                    <span>💡</span> Recomendaciones Importantes:
+                    <span>💡</span> Recomendaciones importantes:
                 </p>
                 <ul class="list-disc list-inside space-y-0.5 pl-2">
                     <li>La primera fila puede contener los nombres de las columnas o comenzar directamente con los datos.</li>

@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Editar Registro de Leche')
+@section('title', 'Editar registro de leche')
 
 @section('content')
 @php
@@ -16,14 +16,14 @@
 
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 ✏️
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Editar Pesaje de Leche #{{ $lecheId ?? 'N/A' }}
+                    Editar pesaje de leche #{{ $lecheId ?? 'N/A' }}
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Modifica la fecha o la cantidad producida en este pesaje</p>
             </div>
@@ -35,7 +35,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                 </svg>
-                Ver Detalle
+                Ver detalle
             </a>
             <a href="{{ route('leche.index') }}" 
                class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
@@ -79,7 +79,7 @@
                 <!-- Card 1: Período de Lactancia -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>🐄</span> Período de Lactancia
+                        <span>🐄</span> Período de lactancia
                     </h3>
 
                     <div>
@@ -110,13 +110,13 @@
                 <!-- Card 2: Campos Modificables -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>🥛</span> Modificar Datos de Producción
+                        <span>🥛</span> Modificar datos de producción
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Fecha de Pesaje <span class="text-red-500">*</span>
+                                Fecha de pesaje <span class="text-red-500">*</span>
                             </label>
                             <input type="date" name="fecha_pesaje" id="fecha_pesaje" required value="{{ $vFechaPesaje }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('fecha_pesaje') border-red-500 @enderror">
@@ -125,7 +125,7 @@
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Cantidad Producida (Litros) <span class="text-red-500">*</span>
+                                Cantidad producida (litros) <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
                                 <input type="number" name="pesaje_total" id="pesaje_total" required value="{{ $vPesajeTotal }}"
@@ -146,14 +146,14 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                         <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span>⚙️</span> Actualizar Registro
+                            <span>⚙️</span> Actualizar registro
                         </h3>
                     </div>
 
                     <div class="p-6 space-y-4">
                         <div class="text-xs text-gray-500 space-y-2 border-b border-gray-100 pb-4">
                             <div class="flex justify-between">
-                                <span>ID Registro:</span>
+                                <span>ID registro:</span>
                                 <span class="font-bold text-gray-900 font-mono">#{{ $lecheId }}</span>
                             </div>
                             <div class="flex justify-between">
@@ -170,7 +170,7 @@
                         <div class="space-y-3 pt-2">
                             <button type="submit"
                                     class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                                💾 Actualizar Registro
+                                💾 Actualizar registro
                             </button>
 
                             <a href="{{ route('leche.index') }}"

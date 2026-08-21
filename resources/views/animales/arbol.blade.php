@@ -5,12 +5,12 @@
 @section('content')
 <div class="space-y-8">
     <!-- Header Card -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center space-x-4">
           
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    🌳 Árbol Genealógico
+                    🌳 Árbol genealógico
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">
                     Historial genealógico de <span class="font-bold text-gray-800">{{ $arbol['animal']['nombre'] ?? 'Animal' }}</span> 
@@ -23,18 +23,18 @@
         <div class="flex flex-wrap items-center gap-3">
             <button onclick="openModal('Padre')"
                     class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2">
-                <span class="text-base">♂</span> + Asignar Padre
+                <span class="text-base">♂</span> + Asignar padre
             </button>
             <button onclick="openModal('Madre')"
                     class="px-5 py-2.5 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-semibold text-sm transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center gap-2">
-                <span class="text-base">♀</span> + Asignar Madre
+                <span class="text-base">♀</span> + Asignar madre
             </button>
             <a href="{{ route('animales.show', $id) }}"
                class="px-5 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
-                Ver Detalle
+                Ver detalle
             </a>
         </div>
     </div>
@@ -156,7 +156,7 @@
                                 @csrf @method('DELETE')
                                 <button type="submit" class="inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 font-semibold transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    Quitar Padre
+                                    Quitar padre
                                 </button>
                             </form>
                         </div>
@@ -165,7 +165,7 @@
                             <p class="text-gray-500 font-medium text-sm mb-2">Sin padre registrado</p>
                             <button onclick="openModal('Padre')"
                                     class="px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-xl text-xs font-semibold transition-colors inline-flex items-center gap-1">
-                                <span>♂</span> + Asignar Padre
+                                <span>♂</span> + Asignar padre
                             </button>
                         </div>
                     @endif
@@ -189,7 +189,7 @@
                                 @csrf @method('DELETE')
                                 <button type="submit" class="inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 font-semibold transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                    Quitar Madre
+                                    Quitar madre
                                 </button>
                             </form>
                         </div>
@@ -198,7 +198,7 @@
                             <p class="text-gray-500 font-medium text-sm mb-2">Sin madre registrada</p>
                             <button onclick="openModal('Madre')"
                                     class="px-4 py-2 bg-pink-50 text-pink-600 hover:bg-pink-100 rounded-xl text-xs font-semibold transition-colors inline-flex items-center gap-1">
-                                <span>♀</span> + Asignar Madre
+                                <span>♀</span> + Asignar madre
                             </button>
                         </div>
                     @endif
@@ -212,7 +212,7 @@
             <div class="tree-row justify-center">
                 <div class="tree-col-main">
                     <div class="tree-card-main">
-                        <div class="tree-card-badge main">Animal Principal</div>
+                        <div class="tree-card-badge main">Animal principal</div>
                         <p class="font-extrabold text-2xl text-gray-900 leading-tight mb-1">{{ $animal['nombre'] ?? 'Animal' }}</p>
                         @if($animal['codigo_animal'] ?? null)
                             <p class="text-sm text-gray-500 font-mono">#{{ $animal['codigo_animal'] }}</p>
@@ -264,8 +264,8 @@
 <div id="modal-progenitor" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-xs">
     <div class="w-full max-w-lg rounded-2xl bg-white shadow-2xl p-6 mx-4 border border-gray-100">
         <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-xl font-bold text-ganaderasoft-negro" id="modal-title">Asignar Padre</h3>
-            <button onclick="closeModal()" class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 flex items-center justify-center text-2xl leading-none transition-colors">&times;</button>
+            <h3 class="text-xl font-bold text-ganaderasoft-negro" id="modal-title">Asignar padre</h3>
+            <button onclick="closeModal()" class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 flex items-center justify-center text-2xl leading-none transition-colors">&Times;</button>
         </div>
 
         <form method="POST" action="{{ route('arbol-gen.store', $id) }}" id="form-progenitor">

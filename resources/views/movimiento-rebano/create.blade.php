@@ -1,18 +1,18 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Nuevo Movimiento de Rebaño')
+@section('title', 'Nuevo movimiento de rebaño')
 
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 🔄
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Nuevo Movimiento de Rebaño
+                    Nuevo movimiento de rebaño
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Registra y transfiere animales de forma masiva entre rebaños y fincas</p>
             </div>
@@ -58,7 +58,7 @@
                 <!-- Card 1: Origen y Destino -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                        <span>🚚</span> Configuración del Traslado
+                        <span>🚚</span> Configuración del traslado
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -66,11 +66,11 @@
                         <div class="p-5 bg-amber-50/60 border border-amber-100 rounded-2xl space-y-4">
                             <div class="flex items-center gap-2 border-b border-amber-200/60 pb-2">
                                 <span class="text-lg">🏡</span>
-                                <h4 class="text-sm font-bold text-amber-900 uppercase tracking-wider">Ubicación de Origen</h4>
+                                <h4 class="text-sm font-bold text-amber-900 uppercase tracking-wider">Ubicación de origen</h4>
                             </div>
 
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Finca Origen <span class="text-red-500">*</span></label>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Finca origen <span class="text-red-500">*</span></label>
                                 <select name="finca_id" id="finca_id" required
                                         class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all">
                                     <option value="">Seleccione finca origen</option>
@@ -84,7 +84,7 @@
                             </div>
 
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Rebaño Origen <span class="text-red-500">*</span></label>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Rebaño origen <span class="text-red-500">*</span></label>
                                 <select name="rebano_id" id="rebano_id" required
                                         class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all">
                                     <option value="">Seleccione rebaño origen</option>
@@ -106,11 +106,11 @@
                         <div class="p-5 bg-blue-50/60 border border-blue-100 rounded-2xl space-y-4">
                             <div class="flex items-center gap-2 border-b border-blue-200/60 pb-2">
                                 <span class="text-lg">🎯</span>
-                                <h4 class="text-sm font-bold text-blue-900 uppercase tracking-wider">Ubicación de Destino</h4>
+                                <h4 class="text-sm font-bold text-blue-900 uppercase tracking-wider">Ubicación de destino</h4>
                             </div>
 
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Finca Destino <span class="text-red-500">*</span></label>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Finca destino <span class="text-red-500">*</span></label>
                                 <select name="finca_destino_id" id="finca_destino_id" required
                                         class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                                     <option value="">Seleccione finca destino</option>
@@ -124,7 +124,7 @@
                             </div>
 
                             <div>
-                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Rebaño Destino <span class="text-red-500">*</span></label>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Rebaño destino <span class="text-red-500">*</span></label>
                                 <select name="rebano_destino_id" id="rebano_destino_id" required
                                         class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                                     <option value="">Seleccione rebaño destino</option>
@@ -146,7 +146,7 @@
                     <!-- Campos auxiliares y observaciones -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-gray-100">
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Nombre Rebaño Destino</label>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Nombre rebaño destino</label>
                             <input type="text" name="rebano_destino" id="rebano_destino" value="{{ old('rebano_destino') }}" maxlength="30" readonly
                                    placeholder="Se llena automáticamente..."
                                    class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 text-gray-600 font-semibold">
@@ -154,7 +154,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Comentarios / Observaciones</label>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Comentarios / observaciones</label>
                             <input type="text" name="comentario" value="{{ old('comentario') }}" maxlength="40"
                                    placeholder="Comentario adicional del movimiento..."
                                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
@@ -168,13 +168,13 @@
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-100 pb-4">
                         <div>
                             <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                                <span>🐄</span> Seleccionar Animales
+                                <span>🐄</span> Seleccionar animales
                             </h3>
                             <p class="text-xs text-gray-500 mt-0.5">Seleccione los animales pertenecientes al rebaño de origen</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <button type="button" id="btn-select-all" class="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl text-xs font-semibold transition-colors">
-                                Seleccionar Todos
+                                Seleccionar todos
                             </button>
                             <button type="button" id="btn-deselect-all" class="px-3 py-1.5 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-xl text-xs font-semibold transition-colors">
                                 Desmarcar
@@ -235,32 +235,32 @@
             <div class="space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-4 flex items-center gap-2">
-                        <span>📊</span> Resumen del Movimiento
+                        <span>📊</span> Resumen del movimiento
                     </h3>
 
                     <div class="space-y-4 text-sm">
                         <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                            <span class="text-gray-500">Finca Origen</span>
+                            <span class="text-gray-500">Finca origen</span>
                             <span class="font-bold text-gray-900 truncate max-w-[140px]" id="summary-finca-origen">No seleccionada</span>
                         </div>
 
                         <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                            <span class="text-gray-500">Rebaño Origen</span>
+                            <span class="text-gray-500">Rebaño origen</span>
                             <span class="font-bold text-gray-900 truncate max-w-[140px]" id="summary-rebano-origen">No seleccionado</span>
                         </div>
 
                         <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                            <span class="text-gray-500">Finca Destino</span>
+                            <span class="text-gray-500">Finca destino</span>
                             <span class="font-bold text-ganaderasoft-azul truncate max-w-[140px]" id="summary-finca-destino">No seleccionada</span>
                         </div>
 
                         <div class="flex justify-between items-center py-2 border-b border-gray-50">
-                            <span class="text-gray-500">Rebaño Destino</span>
+                            <span class="text-gray-500">Rebaño destino</span>
                             <span class="font-bold text-ganaderasoft-azul truncate max-w-[140px]" id="summary-rebano-destino">No seleccionado</span>
                         </div>
 
                         <div class="p-4 bg-blue-50/70 border border-blue-100 rounded-2xl text-center space-y-1">
-                            <p class="text-xs font-bold text-blue-700 uppercase tracking-wider">Animales a Trasladar</p>
+                            <p class="text-xs font-bold text-blue-700 uppercase tracking-wider">Animales a trasladar</p>
                             <p class="text-3xl font-extrabold text-blue-800" id="summary-count-animales">0</p>
                         </div>
                     </div>
@@ -268,7 +268,7 @@
                     <div class="space-y-3 pt-2">
                         <button type="submit" id="btn-guardar-movimiento"
                                 class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                            <span>+</span> Registrar Movimiento
+                            <span>+</span> Registrar movimiento
                         </button>
 
                         <a href="{{ route('movimiento-rebano.index') }}"

@@ -5,7 +5,7 @@
 @section('content')
     <div class="space-y-8">
         <!-- Page Header -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div>
             <h1 class="text-3xl font-bold text-ganaderasoft-negro">Dashboard</h1>
             <p class="text-gray-500 text-sm mt-1">Resumen estadístico general del sistema ganadero</p>
         </div>
@@ -36,7 +36,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-bold text-ganaderasoft-negro flex items-center">
                         <span class="w-3 h-3 rounded-full bg-ganaderasoft-celeste mr-2"></span>
-                        Distribución por Sexo
+                        Distribución por sexo
                     </h3>
                 </div>
                 <div class="relative flex-1 min-h-[280px]">
@@ -49,7 +49,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-bold text-ganaderasoft-negro flex items-center">
                         <span class="w-3 h-3 rounded-full bg-ganaderasoft-verde mr-2"></span>
-                        Personal por Tipo
+                        Personal por tipo
                     </h3>
                 </div>
                 @if(isset($statistics['data']['personal_por_tipo']) && count($statistics['data']['personal_por_tipo']) > 0)
@@ -74,7 +74,7 @@
                 <!-- Farms Table -->
                 <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 space-y-4">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-bold text-ganaderasoft-negro">Fincas Registradas</h3>
+                        <h3 class="text-lg font-bold text-ganaderasoft-negro">Fincas registradas</h3>
                         <span
                             class="text-xs font-semibold text-ganaderasoft-azul bg-ganaderasoft-celeste/15 px-3 py-1 rounded-full">
                             {{ count($statistics['data']['fincas']) }} finca(s)
@@ -118,7 +118,7 @@
                 <!-- Herds Table -->
                 <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 space-y-4">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-bold text-ganaderasoft-negro">Rebaños Activos</h3>
+                        <h3 class="text-lg font-bold text-ganaderasoft-negro">Rebaños activos</h3>
                         <span
                             class="text-xs font-semibold text-ganaderasoft-verde-oscuro bg-ganaderasoft-verde/20 px-3 py-1 rounded-full">
                             {{ count($statistics['data']['rebanos'] ?? []) }} rebaño(s)
@@ -171,7 +171,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                Alertas y Estado del Sistema
+                Alertas y estado del sistema
             </h3>
             <div class="space-y-3">
                 @foreach($alerts as $alert)

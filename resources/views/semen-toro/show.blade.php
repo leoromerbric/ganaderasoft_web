@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Detalle Semen de Toro')
+@section('title', 'Detalle semen de toro')
 
 @section('content')
 <div>

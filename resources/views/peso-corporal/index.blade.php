@@ -1,21 +1,21 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Peso Corporal')
+@section('title', 'Peso corporal')
 
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                📊 Control de Peso Corporal
+                📊 Control de peso corporal
             </h1>
             <p class="text-gray-500 text-sm mt-1">Registro, monitoreo y seguimiento del desarrollo ponderal de los animales</p>
         </div>
         <div>
             <a href="{{ route('peso-corporal.create') }}"
                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center text-sm gap-1.5">
-                <span class="text-base font-bold">+</span> Nuevo Pesaje
+                <span class="text-base font-bold">+</span> Nuevo pesaje
             </a>
         </div>
     </div>
@@ -42,7 +42,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Pesajes</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total pesajes</p>
                 <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ count($pesosCorporales) }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
@@ -51,8 +51,8 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Peso Promedio</p>
-                <p id="statPromedio" class="text-3xl font-extrabold text-emerald-600">{{ $estadisticas['peso_promedio'] }} <span class="text-base font-medium text-gray-500">kg</span></p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Peso promedio</p>
+                <p id="statPromedio" class="text-3xl font-extrabold text-emerald-600">{{ $estadisticas['peso_promedio'] }} <span class="text-base font-medium text-gray-500">Kg</span></p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl">
                 📈
@@ -60,8 +60,8 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Peso Máximo</p>
-                <p id="statMaximo" class="text-3xl font-extrabold text-blue-600">{{ $estadisticas['peso_maximo'] }} <span class="text-base font-medium text-gray-500">kg</span></p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Peso máximo</p>
+                <p id="statMaximo" class="text-3xl font-extrabold text-blue-600">{{ $estadisticas['peso_maximo'] }} <span class="text-base font-medium text-gray-500">Kg</span></p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-2xl">
                 🏆
@@ -69,8 +69,8 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Peso Mínimo</p>
-                <p id="statMinimo" class="text-3xl font-extrabold text-indigo-600">{{ $estadisticas['peso_minimo'] }} <span class="text-base font-medium text-gray-500">kg</span></p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Peso mínimo</p>
+                <p id="statMinimo" class="text-3xl font-extrabold text-indigo-600">{{ $estadisticas['peso_minimo'] }} <span class="text-base font-medium text-gray-500">Kg</span></p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-2xl">
                 📐
@@ -125,7 +125,7 @@
             </div>
             <div>
                 <a href="{{ route('peso-corporal.index') }}" onclick="limpiarFiltros(event)" class="w-full px-4 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                    Limpiar Filtros
+                    Limpiar filtros
                 </a>
             </div>
         </div>
@@ -139,8 +139,8 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Animal</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha Pesaje</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Peso Registrado</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha pesaje</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Peso registrado</th>
                             <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Observaciones</th>
                             <th class="px-6 py-3.5 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
@@ -220,7 +220,7 @@
                 <p class="text-gray-500 text-sm mb-6">Comienza guardando el primer pesaje corporal de un animal</p>
                 <a href="{{ route('peso-corporal.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg text-sm">
-                    + Nuevo Pesaje
+                    + Nuevo pesaje
                 </a>
             </div>
         @endif

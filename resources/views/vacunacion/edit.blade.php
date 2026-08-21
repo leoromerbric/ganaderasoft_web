@@ -19,7 +19,7 @@
 
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-verde/15 text-ganaderasoft-verde-oscuro flex items-center justify-center font-bold text-2xl shadow-sm border border-ganaderasoft-verde/20">
                 💉
@@ -69,7 +69,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200/70">
                         <div>
-                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Nombre / Código</p>
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Nombre / código</p>
                             <p class="text-base font-bold text-gray-900">{{ $animalCodigo }} - {{ $animalNombre }}</p>
                         </div>
                         <div>
@@ -141,7 +141,7 @@
                             <label for="lote" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                                 Número de lote
                             </label>
-                            <input type="text" id="lote" name="lote" value="{{ old('lote', $vacunacion['lote'] ?? '') }}" placeholder="Ej: LOTE-2026-X"
+                            <input type="text" id="lote" name="lote" value="{{ old('lote', $vacunacion['lote'] ?? '') }}" placeholder="Ej: Lote-2026-X"
                                    class="w-full px-4 py-3 border @error('lote') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('lote')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>

@@ -1,19 +1,19 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Movimiento de Rebaño')
+@section('title', 'Movimiento de rebaño')
 
 @section('content')
 <div class="space-y-8">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Movimientos de Rebaño</h1>
+            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Movimientos de rebaño</h1>
             <p class="text-gray-500 text-sm mt-1">Gestión y registro de traslados de animales entre fincas y rebaños</p>
         </div>
         <div>
             <a href="{{ route('movimiento-rebano.create') }}"
                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium">
-                + Nuevo Movimiento
+                + Nuevo movimiento
             </a>
         </div>
     </div>
@@ -40,7 +40,7 @@
     <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca Origen</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca origen</label>
                 <select id="filtroFincaOrigen" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todas las fincas</option>
                     @foreach($fincas as $finca)
@@ -52,7 +52,7 @@
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño Origen</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño origen</label>
                 <select id="filtroRebanoOrigen" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todos los rebaños</option>
                     @foreach($rebanos as $rebano)
@@ -67,7 +67,7 @@
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca Destino</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca destino</label>
                 <select id="filtroFincaDestino" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todas las fincas</option>
                     @foreach($fincas as $finca)
@@ -79,7 +79,7 @@
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño Destino</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño destino</label>
                 <select id="filtroRebanoDestino" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todos los rebaños</option>
                     @foreach($rebanos as $rebano)
@@ -95,7 +95,7 @@
             </div>
             <div>
                 <button type="button" onclick="limpiarFiltros(event)" class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                    Limpiar Filtros
+                    Limpiar filtros
                 </button>
             </div>
         </div>
@@ -111,7 +111,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Movimientos</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total movimientos</p>
                 <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $totalMovs }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
@@ -120,7 +120,7 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Animales Trasladados</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Animales trasladados</p>
                 <p id="statAnimales" class="text-3xl font-extrabold text-ganaderasoft-verde-oscuro">{{ $totalAnimalesTrasladados }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-ganaderasoft-verde/20 flex items-center justify-center text-2xl">
@@ -182,15 +182,15 @@
                             <!-- Details -->
                             <div class="space-y-2 py-3 border-t border-b border-gray-100 text-xs">
                                 <div class="flex items-center justify-between">
-                                    <span class="text-gray-500">Finca Origen:</span>
+                                    <span class="text-gray-500">Finca origen:</span>
                                     <span class="font-semibold text-gray-900 truncate max-w-[160px]">🏡 {{ $fincaOrigNombre }}</span>
                                 </div>
                                 <div class="flex items-center justify-between">
-                                    <span class="text-gray-500">Finca Destino:</span>
+                                    <span class="text-gray-500">Finca destino:</span>
                                     <span class="font-semibold text-ganaderasoft-azul truncate max-w-[160px]">🏡 {{ $fincaDestNombre }}</span>
                                 </div>
                                 <div class="flex items-center justify-between">
-                                    <span class="text-gray-500">Total Animales:</span>
+                                    <span class="text-gray-500">Total animales:</span>
                                     <span class="px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 font-bold badge-animales">
                                         {{ $cantAnimales }}
                                     </span>
@@ -202,11 +202,11 @@
                         <div class="flex items-center space-x-2 mt-6 pt-2">
                             <a href="{{ route('movimiento-rebano.show', $idMov) }}"
                                 class="flex-1 px-4 py-2.5 bg-ganaderasoft-celeste/15 hover:bg-ganaderasoft-celeste text-ganaderasoft-azul hover:text-white rounded-xl text-xs font-bold text-center transition-all duration-200">
-                                Ver Detalle
+                                Ver detalle
                             </a>
                             <a href="{{ route('movimiento-rebano.edit', $idMov) }}"
                                 class="px-3 py-2.5 border border-gray-200 hover:border-gray-300 text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition-colors"
-                                title="Editar Movimiento">
+                                title="Editar movimiento">
                                 ✏️
                             </a>
                             <form method="POST" action="{{ route('movimiento-rebano.destroy', $idMov) }}" class="inline"
@@ -214,7 +214,7 @@
                                 @csrf @method('DELETE')
                                 <button type="submit" 
                                     class="px-3 py-2.5 border border-red-100 hover:border-red-200 text-red-600 rounded-xl text-xs font-semibold hover:bg-red-50 transition-colors"
-                                    title="Eliminar Movimiento">
+                                    title="Eliminar movimiento">
                                     🗑️
                                 </button>
                             </form>
@@ -231,7 +231,7 @@
                 <p class="text-gray-500 text-sm mb-6">Comienza registrando el primer movimiento de rebaño</p>
                 <a href="{{ route('movimiento-rebano.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                    + Nuevo Movimiento
+                    + Nuevo movimiento
                 </a>
             </div>
         @endif

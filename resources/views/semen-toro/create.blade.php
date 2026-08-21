@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Nuevo Semen de Toro')
+@section('title', 'Nuevo semen de toro')
 
 @section('content')
 <div>
@@ -10,12 +10,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🧪 Nuevo Semen de Toro</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🧪 Nuevo semen de toro</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Datos del Semen</h3>
+            <h3 class="text-lg font-semibold">Datos del semen</h3>
         </div>
         <form action="{{ route('semen-toro.store') }}" method="POST" class="p-6">
             @csrf

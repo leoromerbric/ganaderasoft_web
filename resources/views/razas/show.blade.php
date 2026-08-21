@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-8">
     <!-- Header Card -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center space-x-4">
             @php
                 $nom = $item['nombre'] ?? 'R';
@@ -133,11 +133,11 @@
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tipo de visibilidad</label>
                         @if($isPublic)
                             <span class="inline-flex px-3 py-1 text-sm font-bold rounded-full bg-blue-50 text-blue-800 border border-blue-200">
-                                🌐 Raza pública (Global)
+                                🌐 Raza pública (global)
                             </span>
                         @else
                             <span class="inline-flex px-3 py-1 text-sm font-bold rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-                                🔒 Raza privada (Finca)
+                                🔒 Raza privada (finca)
                             </span>
                         @endif
                     </div>

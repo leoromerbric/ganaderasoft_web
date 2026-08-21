@@ -1,19 +1,19 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Personal de Finca')
+@section('title', 'Personal de finca')
 
 @section('content')
     <div class="space-y-8">
         <!-- Header Section -->
         <div
-            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Personal de Finca</h1>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Personal de finca</h1>
                 <p class="text-gray-500 text-sm mt-1">Gestión del personal asignado a las unidades de producción</p>
             </div>
             <a href="{{ route('personal-finca.create') }}"
                 class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                + Registrar Personal
+                + Registrar personal
             </a>
         </div>
 
@@ -58,7 +58,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Tipo de
-                        Trabajador</label>
+                        trabajador</label>
                     <select id="filtroTipo"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                         <option value="">Todos los tipos</option>
@@ -72,14 +72,14 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar por
-                        Nombre</label>
+                        nombre</label>
                     <input type="text" id="filtroNombre" placeholder="Escriba el nombre..."
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
                 <div>
                     <button onclick="limpiarFiltros()"
                         class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                        Limpiar Filtros
+                        Limpiar filtros
                     </button>
                 </div>
             </div>
@@ -111,7 +111,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Total Personal Card -->
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex flex-col justify-between">
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Total Personal</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Total personal</p>
                 <p class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $estadisticas['total_personal'] }}</p>
             </div>
 
@@ -143,7 +143,7 @@
                     <p class="text-gray-500 text-sm mb-6">Comienza registrando el personal asignado a tus fincas</p>
                     <a href="{{ route('personal-finca.create') }}"
                         class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                        + Registrar Personal
+                        + Registrar personal
                     </a>
                 </div>
             @else

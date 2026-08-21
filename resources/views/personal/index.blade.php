@@ -1,18 +1,18 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Gestión de Personal')
+@section('title', 'Gestión de personal')
 
 @section('content')
 <div class="space-y-8">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Personal</h1>
+            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de personal</h1>
             <p class="text-gray-500 text-sm mt-1">Administración de trabajadores, encargados y técnicos</p>
         </div>
         <a href="{{ route('personal.create') }}"
            class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-            + Registrar Personal
+            + Registrar personal
         </a>
     </div>
 
@@ -40,7 +40,7 @@
     <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
         <div class="max-w-md">
             <label for="finca_select" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                Seleccionar Finca
+                Seleccionar finca
             </label>
             <select id="finca_select" onchange="filterByFinca(this.value)"
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
@@ -67,7 +67,7 @@
                         <tr>
                             <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Empleado</th>
                             <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Cédula</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Puesto / Cargo</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Puesto / cargo</th>
                             <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Finca</th>
                             <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Contacto</th>
                             <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
@@ -150,7 +150,7 @@
                 @endif
                 <a href="{{ route('personal.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                    + Registrar Empleado
+                    + Registrar empleado
                 </a>
             </div>
         @endif

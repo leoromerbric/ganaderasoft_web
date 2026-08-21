@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-8">
     <!-- Header Card -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center space-x-4">
             @php
                 $st = strtolower($user['status'] ?? 'active');
@@ -65,7 +65,7 @@
                     </div>
                     
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cédula / Documento</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cédula / documento</p>
                         <p class="text-lg font-bold text-gray-900 font-mono">{{ $user['persona']['cedula'] ?? 'N/A' }}</p>
                     </div>
                     
@@ -119,7 +119,7 @@
                                     <div class="flex items-center gap-3">
                                         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">
                                             <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-                                            {{ count($rPerms) }} Permisos asignados
+                                            {{ count($rPerms) }} permisos asignados
                                         </span>
                                         <div class="hidden sm:flex w-10 h-10 rounded-full items-center justify-center bg-white border border-gray-200 text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-all">
                                             <svg class="w-5 h-5 transition-transform duration-300 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">

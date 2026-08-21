@@ -1,12 +1,12 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Servicio Animal')
+@section('title', 'Servicio animal')
 
 @section('content')
 <div>
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🐂 Servicio Animal</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🐂 Servicio animal</h2>
             <p class="text-gray-600 mt-1">Gestión de servicios reproductivos de los animales</p>
         </div>
         <a href="{{ route('servicio-animal.create') }}"
@@ -144,7 +144,7 @@
                 <p class="text-gray-500 mb-6">Comienza registrando el primer servicio animal</p>
                 <a href="{{ route('servicio-animal.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
-                    Nuevo Servicio
+                    Nuevo servicio
                 </a>
             </div>
         @endif

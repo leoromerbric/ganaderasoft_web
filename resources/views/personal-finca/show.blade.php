@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Detalle de Personal de Finca')
+@section('title', 'Detalle de personal de finca')
 
 @section('content')
     @php
@@ -20,7 +20,7 @@
     @endphp
     <div class="max-w-4xl mx-auto space-y-6">
         <!-- Header -->
-        <div class="flex items-center justify-between bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
                 <div
                     class="w-14 h-14 rounded-2xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl font-bold text-ganaderasoft-azul">
@@ -61,29 +61,29 @@
                     <h3 class="text-lg font-bold text-ganaderasoft-negro flex items-center pb-2 border-b border-gray-100">
                         <span
                             class="w-8 h-8 rounded-lg bg-ganaderasoft-celeste/15 flex items-center justify-center mr-3 text-base">📄</span>
-                        Datos Personales
+                        Datos personales
                     </h3>
 
                     <div class="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Nombre Completo</p>
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Nombre completo</p>
                             <p class="font-bold text-gray-900">{{ $nombreEmp }}</p>
                         </div>
                         <div>
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cédula /
-                                Identificación</p>
+                                identificación</p>
                             <p class="font-bold text-gray-900">{{ $cedulaEmp }}</p>
                         </div>
                         <div>
                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Cargo /
-                                Especialidad</p>
+                                especialidad</p>
                             <span
                                 class="px-3 py-1 text-xs font-semibold rounded-full bg-ganaderasoft-celeste/15 text-ganaderasoft-azul border border-ganaderasoft-celeste/30">
                                 {{ $tipoNombre }}
                             </span>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">ID Registro</p>
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">ID registro</p>
                             <p class="font-bold text-gray-900">#{{ $pId }}</p>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                     <h3 class="text-lg font-bold text-ganaderasoft-negro flex items-center pb-2 border-b border-gray-100">
                         <span
                             class="w-8 h-8 rounded-lg bg-ganaderasoft-verde/20 flex items-center justify-center mr-3 text-base">📞</span>
-                        Información de Contacto
+                        Información de contacto
                     </h3>
 
                     <div class="grid grid-cols-2 gap-4 text-sm">
@@ -102,7 +102,7 @@
                             <p class="font-bold text-gray-900">📞 {{ $telefonoEmp }}</p>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Correo Electrónico
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Correo electrónico
                             </p>
                             <p class="font-bold text-gray-900">✉️ {{ $correoEmp }}</p>
                         </div>
@@ -116,7 +116,7 @@
                     <h3 class="text-lg font-bold text-ganaderasoft-negro flex items-center pb-2 border-b border-gray-100">
                         <span
                             class="w-8 h-8 rounded-lg bg-ganaderasoft-celeste/15 flex items-center justify-center mr-3 text-base">🏡</span>
-                        Finca Asignada
+                        Finca asignada
                     </h3>
 
                     <div class="space-y-3 text-sm">
@@ -125,7 +125,7 @@
                             <p class="font-bold text-gray-900">{{ $fincaNombre }}</p>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tipo de Explotación
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Tipo de explotación
                             </p>
                             <p class="font-semibold text-gray-700">{{ $fincaTipo }}</p>
                         </div>
@@ -135,7 +135,7 @@
                 <!-- Danger Zone -->
                 <div class="bg-white rounded-2xl shadow-sm p-6 border border-red-100 space-y-4">
                     <h3 class="text-sm font-bold text-red-700 uppercase tracking-wider pb-2 border-b border-red-100">
-                        Acciones de Gestión
+                        Acciones de gestión
                     </h3>
 
                     <form action="{{ route('personal-finca.destroy', $pId) }}" method="POST"
@@ -144,7 +144,7 @@
                         @method('DELETE')
                         <button type="submit"
                             class="w-full px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl text-xs transition-colors shadow-sm">
-                            🗑️ Eliminar Registro
+                            🗑️ Eliminar registro
                         </button>
                     </form>
                 </div>

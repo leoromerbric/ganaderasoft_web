@@ -1,18 +1,18 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Nuevo Cambio de Animal')
+@section('title', 'Nuevo cambio de animal')
 
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 📝
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Nuevo Cambio de Animal
+                    Nuevo cambio de animal
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Registra los cambios de desarrollo, etapa y medidas físicas del animal</p>
             </div>
@@ -59,7 +59,7 @@
                 <!-- Card 1: Selección del Animal -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>🐄</span> Selección del Animal
+                        <span>🐄</span> Selección del animal
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -102,7 +102,7 @@
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Etapa Actual del Animal
+                                Etapa actual del animal
                             </label>
                             <input type="text" id="etapa_actual_texto" readonly
                                    class="w-full px-4 py-3 border border-gray-200 bg-gray-50 text-gray-600 rounded-xl text-sm font-semibold"
@@ -116,23 +116,23 @@
                 <!-- Card 2: Datos del Cambio -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>🔄</span> Registro de Etapa
+                        <span>🔄</span> Registro de etapa
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Nombre de la Nueva Etapa <span class="text-red-500">*</span>
+                                Nombre de la nueva etapa <span class="text-red-500">*</span>
                             </label>
                             <input type="text" name="etapa_cambio" id="etapa_cambio" value="{{ old('etapa_cambio') }}" required
-                                   placeholder="Ej: Becerro, Juvenil, Adulto"
+                                   placeholder="Ej: Becerro, juvenil, adulto"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('etapa_cambio') border-red-500 @enderror">
                             @error('etapa_cambio')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Fecha del Cambio <span class="text-red-500">*</span>
+                                Fecha del cambio <span class="text-red-500">*</span>
                             </label>
                             <input type="date" name="fecha_cambio" id="fecha_cambio" value="{{ old('fecha_cambio', date('Y-m-d')) }}" required
                                    max="{{ date('Y-m-d') }}"
@@ -145,20 +145,20 @@
                 <!-- Card 3: Medidas Físicas y Observaciones (Opcional) -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>⚖️</span> Medidas Físicas y Observaciones
+                        <span>⚖️</span> Medidas físicas y observaciones
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Peso Corporal (kg)
+                                Peso corporal (kg)
                             </label>
                             <div class="relative">
                                 <input type="number" name="peso" id="peso" value="{{ old('peso') }}"
                                        step="0.1" min="1" max="2000" placeholder="Ej: 450.0"
                                        class="w-full px-4 py-3 pr-16 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('peso') border-red-500 @enderror">
                                 <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-xs font-bold text-gray-400">
-                                    kg
+                                    Kg
                                 </div>
                             </div>
                             @error('peso')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
@@ -173,7 +173,7 @@
                                        step="0.1" min="10" max="300" placeholder="Ej: 135.0"
                                        class="w-full px-4 py-3 pr-16 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('altura') border-red-500 @enderror">
                                 <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-xs font-bold text-gray-400">
-                                    cm
+                                    Cm
                                 </div>
                             </div>
                             @error('altura')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
@@ -182,12 +182,12 @@
 
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                            Comentarios y Observaciones
+                            Comentarios y observaciones
                         </label>
                         <textarea name="comentario" id="comentario" rows="3" maxlength="500" placeholder="Observaciones sobre el desarrollo del animal..."
                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('comentario') border-red-500 @enderror">{{ old('comentario') }}</textarea>
                         <div class="flex justify-end mt-1">
-                            <span id="comentarioContador" class="text-xs text-gray-400 font-medium">0 / 500 caracteres</span>
+                            <span id="comentarioContador" class="text-xs text-gray-400 font-medium">0 / 500 Caracteres</span>
                         </div>
                         @error('comentario')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                     </div>
@@ -199,17 +199,17 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                         <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span>📋</span> Resumen del Cambio
+                            <span>📋</span> Resumen del cambio
                         </h3>
                     </div>
 
                     <div class="p-6 space-y-5">
                         <!-- Preview Animal -->
                         <div class="p-4 bg-cyan-50/60 border border-cyan-100 rounded-2xl space-y-2">
-                            <span class="text-xs font-bold text-cyan-900 uppercase tracking-wider">Animal Seleccionado:</span>
+                            <span class="text-xs font-bold text-cyan-900 uppercase tracking-wider">Animal seleccionado:</span>
                             <p id="previewAnimalNombre" class="text-base font-bold text-gray-900">No seleccionado</p>
                             <div class="flex items-center gap-2 text-xs font-semibold text-gray-600 mt-1">
-                                <span>Etapa Actual:</span>
+                                <span>Etapa actual:</span>
                                 <span id="previewEtapaActual" class="text-ganaderasoft-azul font-bold">Sin etapa</span>
                             </div>
                         </div>
@@ -217,19 +217,19 @@
                         <!-- Mini Stats Preview -->
                         <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
                             <div class="flex justify-between">
-                                <span>Nueva Etapa:</span>
+                                <span>Nueva etapa:</span>
                                 <span id="previewNuevaEtapa" class="font-extrabold text-emerald-600">No especificada</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>Peso Ingresado:</span>
+                                <span>Peso ingresado:</span>
                                 <span id="previewPeso" class="font-bold text-gray-900">--</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>Altura Ingresada:</span>
+                                <span>Altura ingresada:</span>
                                 <span id="previewAltura" class="font-bold text-gray-900">--</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>Fecha del Registro:</span>
+                                <span>Fecha del registro:</span>
                                 <span id="previewFecha" class="font-semibold text-gray-900">{{ date('d/m/Y') }}</span>
                             </div>
                         </div>
@@ -238,7 +238,7 @@
                         <div class="space-y-3 pt-2">
                             <button type="submit"
                                     class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                                💾 Guardar Cambio
+                                💾 Guardar cambio
                             </button>
                             <a href="{{ route('cambios-animal.index') }}"
                                class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">

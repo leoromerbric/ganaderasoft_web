@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Editar Servicio Animal')
+@section('title', 'Editar servicio animal')
 
 @section('content')
 @php
@@ -30,12 +30,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🐂 Editar Servicio Animal #{{ $id }}</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🐂 Editar servicio animal #{{ $id }}</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Modificar Datos</h3>
+            <h3 class="text-lg font-semibold">Modificar datos</h3>
         </div>
         <form action="{{ route('servicio-animal.update', $id) }}" method="POST" class="p-6">
             @csrf @method('PUT')
@@ -56,7 +56,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Semen / Toro</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Semen / toro</label>
                     <select name="semen_id"
                             class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('semen_id') }}">
                         <option value="">-- Sin semen --</option>
@@ -93,7 +93,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Registro de Celo</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Registro de celo</label>
                     <select name="celo_id"
                             class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('celo_id') }}">
                         <option value="">-- Sin registro de celo --</option>
@@ -112,16 +112,16 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Servicio</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de servicio</label>
                     <input type="text" name="tipo" maxlength="11"
                            value="{{ old('tipo', $tipo) }}"
-                           placeholder="Ej: IA, Natural..."
+                           placeholder="Ej: Ia, natural..."
                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('tipo') }}">
                     @error('tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del Servicio</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del servicio</label>
                     <input type="date" name="fecha"
                            value="{{ $fechaValue }}"
                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $borderClass('fecha') }}">

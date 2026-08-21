@@ -1,19 +1,19 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Gestión de Rebaños')
+@section('title', 'Gestión de rebaños')
 
 @section('content')
     <div class="space-y-8">
         <!-- Header Section -->
         <div
-            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Rebaños</h1>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de rebaños</h1>
                 <p class="text-gray-500 text-sm mt-1">Administración de agrupaciones y lotes de ganado</p>
             </div>
             <a href="{{ route('rebanos.create') }}"
                 class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                + Nuevo Rebaño
+                + Nuevo rebaño
             </a>
         </div>
 
@@ -42,7 +42,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Filtrar por
-                        Finca</label>
+                        finca</label>
                     <select id="filtroFinca"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                         <option value="">Todas las fincas</option>
@@ -59,14 +59,14 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Nombre del
-                        Rebaño</label>
+                        rebaño</label>
                     <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Buscar por nombre..."
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
                 <div>
                     <button onclick="limpiarFiltros()"
                         class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                        Limpiar Filtros
+                        Limpiar filtros
                     </button>
                 </div>
             </div>
@@ -76,7 +76,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Rebaños</p>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total rebaños</p>
                     <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $estadisticas['total'] }}
                     </p>
                 </div>
@@ -86,7 +86,7 @@
             </div>
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Animales Asociados</p>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Animales asociados</p>
                     <p id="statAnimales" class="text-3xl font-extrabold text-ganaderasoft-verde-oscuro">
                         {{ $estadisticas['totalAnimales'] }}</p>
                 </div>
@@ -133,18 +133,18 @@
                                 <!-- Details -->
                                 <div class="space-y-2 py-3 border-t border-b border-gray-100 text-xs">
                                     <div class="flex items-center justify-between">
-                                        <span class="text-gray-500">ID Rebaño:</span>
+                                        <span class="text-gray-500">ID rebaño:</span>
                                         <span class="font-bold text-gray-900">#{{ $rebanoId }}</span>
                                     </div>
                                     <div class="flex items-center justify-between">
-                                        <span class="text-gray-500">Tipo Explotación:</span>
+                                        <span class="text-gray-500">Tipo explotación:</span>
                                         <span
                                             class="px-2.5 py-0.5 rounded-full bg-ganaderasoft-celeste/10 text-ganaderasoft-azul font-semibold">
                                             {{ $fincaTipo }}
                                         </span>
                                     </div>
                                     <div class="flex items-center justify-between">
-                                        <span class="text-gray-500">Total Animales:</span>
+                                        <span class="text-gray-500">Total animales:</span>
                                         <span
                                             class="px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 font-bold badge-animales">
                                             {{ $animalesCount }}
@@ -157,7 +157,7 @@
                             <div class="flex items-center space-x-2 mt-6 pt-2">
                                 <a href="{{ route('animales.index', ['rebano_id' => $rebanoId]) }}"
                                     class="flex-1 px-4 py-2.5 bg-ganaderasoft-celeste/15 hover:bg-ganaderasoft-celeste text-ganaderasoft-azul hover:text-white rounded-xl text-xs font-bold text-center transition-all duration-200">
-                                    Ver Animales
+                                    Ver animales
                                 </a>
                                 <a href="{{ route('rebanos.edit', $rebanoId) }}"
                                     class="px-3 py-2.5 border border-gray-200 hover:border-gray-300 text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition-colors">
@@ -177,7 +177,7 @@
                     <p class="text-gray-500 text-sm mb-6">Comienza agregando un nuevo rebaño a la finca</p>
                     <a href="{{ route('rebanos.create') }}"
                         class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                        + Nuevo Rebaño
+                        + Nuevo rebaño
                     </a>
                 </div>
             @endif

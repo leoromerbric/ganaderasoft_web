@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Períodos de Lactancia')
+@section('title', 'Períodos de lactancia')
 
 @section('content')
 @php
@@ -13,17 +13,17 @@
 
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                🐄 Períodos de Lactancia
+                🐄 Períodos de lactancia
             </h1>
             <p class="text-gray-500 text-sm mt-1">Gestión y seguimiento de los ciclos de lactancia de las hembras del rebaño</p>
         </div>
         <div>
             <a href="{{ route('lactancia.create') }}"
                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center text-sm gap-1.5">
-                <span class="text-base font-bold">+</span> Nuevo Período
+                <span class="text-base font-bold">+</span> Nuevo período
             </a>
         </div>
     </div>
@@ -50,7 +50,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Períodos</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total períodos</p>
                 <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ count($lactancias) }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
@@ -59,7 +59,7 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Lactancias Activas</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Lactancias activas</p>
                 <p id="statActivas" class="text-3xl font-extrabold text-emerald-600">{{ $totalActivas }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl">
@@ -68,7 +68,7 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Lactancias Finalizadas</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Lactancias finalizadas</p>
                 <p id="statFinalizadas" class="text-3xl font-extrabold text-gray-600">{{ $totalFinalizadas }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-2xl">
@@ -93,7 +93,7 @@
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Animal (Hembra)</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Animal (hembra)</label>
                 <select id="filtroAnimal" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todas las hembras</option>
                     @foreach($animales as $animal)
@@ -115,16 +115,16 @@
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Estado Ciclo</label>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Estado ciclo</label>
                 <select id="filtroEstado" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todos los estados</option>
-                    <option value="1">🟢 Solo Activas</option>
-                    <option value="0">⚪ Solo Finalizadas</option>
+                    <option value="1">🟢 Solo activas</option>
+                    <option value="0">⚪ Solo finalizadas</option>
                 </select>
             </div>
             <div>
                 <a href="{{ route('lactancia.index') }}" onclick="limpiarFiltros(event)" class="w-full px-4 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                    Limpiar Filtros
+                    Limpiar filtros
                 </a>
             </div>
         </div>
@@ -137,9 +137,9 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Animal / Hembra</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha Inicio</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha Fin / Secado</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Animal / hembra</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha inicio</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Fecha fin / secado</th>
                             <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Estado</th>
                             <th class="px-6 py-3.5 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
@@ -166,7 +166,7 @@
                                     </div>
                                     <div>
                                         <p class="font-bold text-gray-900">{{ $animalNombre }}</p>
-                                        <p class="text-xs text-gray-500 font-mono">ID Lactancia: #{{ $lactanciaId }}</p>
+                                        <p class="text-xs text-gray-500 font-mono">ID lactancia: #{{ $lactanciaId }}</p>
                                     </div>
                                 </div>
                             </td>
@@ -245,7 +245,7 @@
                 <p class="text-gray-500 text-sm mb-6">Comienza registrando el primer período de lactancia de una hembra</p>
                 <a href="{{ route('lactancia.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg text-sm">
-                    + Nuevo Período
+                    + Nuevo período
                 </a>
             </div>
         @endif

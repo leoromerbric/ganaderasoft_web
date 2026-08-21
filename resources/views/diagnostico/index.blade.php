@@ -144,7 +144,7 @@
                 <p class="text-gray-500 mb-6">Comienza registrando el primer diagnóstico</p>
                 <a href="{{ route('diagnostico.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
-                    Nuevo Diagnóstico
+                    Nuevo diagnóstico
                 </a>
             </div>
         @endif

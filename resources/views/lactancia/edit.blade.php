@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Editar Lactancia')
+@section('title', 'Editar lactancia')
 
 @section('content')
 @php
@@ -20,14 +20,14 @@
 
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 ✏️
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Editar Período de Lactancia #{{ $lactanciaId ?? 'N/A' }}
+                    Editar período de lactancia #{{ $lactanciaId ?? 'N/A' }}
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Actualiza las fechas de inicio, fin o secado del ciclo productivo</p>
             </div>
@@ -39,7 +39,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                 </svg>
-                Ver Detalle
+                Ver detalle
             </a>
             <a href="{{ route('lactancia.index') }}" 
                class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
@@ -87,7 +87,7 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
                     <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                         <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                            <span>🐄</span> Animal Asociado
+                            <span>🐄</span> Animal asociado
                         </h3>
                         <span class="text-xs font-semibold px-3 py-1 bg-gray-100 text-gray-600 rounded-full border border-gray-200">
                             🔒 Hembra inmutable
@@ -113,13 +113,13 @@
                 <!-- Card 2: Campos Modificables -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>📅</span> Modificar Fechas del Ciclo
+                        <span>📅</span> Modificar fechas del ciclo
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Fecha de Inicio <span class="text-red-500">*</span>
+                                Fecha de inicio <span class="text-red-500">*</span>
                             </label>
                             <input type="date" name="fecha_inicio" required value="{{ $vFechaInicio }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('fecha_inicio') border-red-500 @enderror">
@@ -127,7 +127,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Fecha de Fin (Opcional)</label>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Fecha de fin (opcional)</label>
                             <input type="date" name="fecha_fin" value="{{ $vFechaFin }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('fecha_fin') border-red-500 @enderror">
                             <p class="text-xs text-gray-400 mt-1">Vacío si está activa.</p>
@@ -135,7 +135,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Fecha de Secado (Opcional)</label>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Fecha de secado (opcional)</label>
                             <input type="date" name="secado" value="{{ $vSecado }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('secado') border-red-500 @enderror">
                             <p class="text-xs text-gray-400 mt-1">Preparación de secado.</p>
@@ -150,22 +150,22 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                         <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span>⚙️</span> Actualizar Registro
+                            <span>⚙️</span> Actualizar registro
                         </h3>
                     </div>
 
                     <div class="p-6 space-y-4">
                         <div class="text-xs text-gray-500 space-y-2 border-b border-gray-100 pb-4">
                             <div class="flex justify-between">
-                                <span>ID Lactancia:</span>
+                                <span>ID lactancia:</span>
                                 <span class="font-bold text-gray-900 font-mono">#{{ $lactanciaId }}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>Fecha Registro:</span>
+                                <span>Fecha registro:</span>
                                 <span class="font-semibold text-gray-800">{{ isset($lactancia['created_at']) ? date('d/m/Y H:i', strtotime($lactancia['created_at'])) : 'N/A' }}</span>
                             </div>
                             <div class="flex justify-between items-center pt-1">
-                                <span>Estado Ciclo:</span>
+                                <span>Estado ciclo:</span>
                                 @if($isActiva)
                                     <span class="font-bold text-emerald-600">🟢 Activa</span>
                                 @else
@@ -178,7 +178,7 @@
                         <div class="space-y-3 pt-2">
                             <button type="submit"
                                     class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                                💾 Actualizar Lactancia
+                                💾 Actualizar lactancia
                             </button>
 
                             <a href="{{ route('lactancia.index') }}"

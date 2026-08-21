@@ -18,7 +18,7 @@
                 <h2 class="text-2xl sm:text-4xl font-black text-ganaderasoft-negro tracking-tight mb-1">
                     Ganadera<span class="text-ganaderasoft-azul">Soft</span>
                 </h2>
-                <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-ganaderasoft-azul mb-2 sm:mb-3">Facultad de Agronomía</p>
+                <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-ganaderasoft-azul mb-2 sm:mb-3">Facultad de agronomía</p>
                 <p class="text-xs sm:text-sm text-gray-600 leading-relaxed max-w-sm">
                     Sistema para el control y gestión de la producción bovina, registros de leche, genealogía y rebaños.
                 </p>
@@ -117,9 +117,9 @@
                 <a href="https://drive.google.com/file/d/19g-CpAm9VyXjgKSWMgS8L8zHcl66gvdg/view?usp=drive_link" 
                    target="_blank"
                    class="text-ganaderasoft-azul font-semibold hover:underline">
-                    Descargar app Android (APK)
+                    Descargar app android (apk)
                 </a>
-                <span class="text-gray-400 text-[10px] sm:text-[11px]">&copy; {{ date('Y') }} GanaderaSoft</span>
+                <span class="text-gray-400 text-[10px] sm:text-[11px]">&Copy; {{ date('Y') }} GanaderaSoft</span>
             </div>
         </div>
 

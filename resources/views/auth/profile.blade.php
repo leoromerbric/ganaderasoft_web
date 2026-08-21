@@ -56,7 +56,7 @@
             <div class="space-y-0.5 sm:space-y-1">
                 <h3 class="text-sm sm:text-base font-bold text-rose-900">Cuenta suspendida</h3>
                 <p class="text-xs text-rose-700 leading-relaxed">
-                    Tu cuenta de usuario se encuentra suspendida temporalmente. No tienes acceso a los módulos operativos de la plataforma (rebaños, fincas, producción, reportes). Contacta a la administración de la Facultad de Agronomía para reactivar tus accesos.
+                    Tu cuenta de usuario se encuentra suspendida temporalmente. No tienes acceso a los módulos operativos de la plataforma (rebaños, fincas, producción, reportes). Contacta a la administración de la facultad de agronomía para reactivar tus accesos.
                 </p>
             </div>
         </div>
@@ -393,7 +393,7 @@
                                         <div class="flex items-center gap-3">
                                             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">
                                                 <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-                                                {{ count($rPerms) }} Permisos asignados
+                                                {{ count($rPerms) }} permisos asignados
                                             </span>
                                             <div class="hidden sm:flex w-10 h-10 rounded-full items-center justify-center bg-white border border-gray-200 text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-all">
                                                 <svg class="w-5 h-5 transition-transform duration-300 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -525,7 +525,7 @@
                         </svg>
                         Seleccionar imagen desde tu dispositivo
                     </span>
-                    <span class="block text-[10px] text-gray-400 mt-0.5">JPG, PNG o WEBP (Máx. 5MB)</span>
+                    <span class="block text-[10px] text-gray-400 mt-0.5">Jpg, png o webp (máx. 5MB)</span>
                     <input type="file" name="foto" id="fotoInput" accept="image/jpeg,image/png,image/jpg,image/webp" class="hidden" required onchange="handleModalFileSelect(this)">
                 </label>
             </div>

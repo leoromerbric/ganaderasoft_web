@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 ✏️
@@ -59,13 +59,13 @@
                             @error('laboratorio')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="marca_comercial" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Marca Comercial <span class="text-red-500">*</span></label>
+                            <label for="marca_comercial" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Marca comercial <span class="text-red-500">*</span></label>
                             <input type="text" id="marca_comercial" name="marca_comercial" value="{{ old('marca_comercial', $item['marca_comercial'] ?? '') }}" required 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('marca_comercial')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="activa" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado (Activa)</label>
+                            <label for="activa" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado (activa)</label>
                             <select id="activa" name="activa" required 
                                     class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                                 <option value="1" {{ old('activa', $item['activa'] ?? true) ? 'selected' : '' }}>Activo</option>
@@ -102,12 +102,12 @@
                         <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
 
                             <div class="flex justify-between">
-                                <span>Marca Comercial:</span>
-                                <span id="previewMarca_comercial" class="font-bold text-gray-900">N/A</span>
+                                <span>Marca comercial:</span>
+                                <span id="previewMarca_comercial" class="font-bold text-gray-900">N/a</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>Estado (Activa):</span>
-                                <span id="previewActiva" class="font-bold text-gray-900">N/A</span>
+                                <span>Estado (activa):</span>
+                                <span id="previewActiva" class="font-bold text-gray-900">N/a</span>
                             </div>
                         </div>
 

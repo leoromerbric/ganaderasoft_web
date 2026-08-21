@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Detalle Palpación')
+@section('title', 'Detalle palpación')
 
 @section('content')
 @php
@@ -45,11 +45,11 @@
                 </p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Tipo de Palpación</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Tipo de palpación</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $tipo }}</p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de Palpación</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de palpación</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
                     {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                 </p>

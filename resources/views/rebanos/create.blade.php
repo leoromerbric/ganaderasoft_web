@@ -1,13 +1,13 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Crear Rebaño')
+@section('title', 'Crear rebaño')
 
 @section('content')
     <div class="max-w-2xl mx-auto space-y-6">
         <!-- Header & Breadcrumb -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Crear Nuevo Rebaño</h1>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Crear nuevo rebaño</h1>
                 <p class="text-sm text-gray-500 mt-1">Registre un grupo o lote de ganado</p>
             </div>
             <a href="{{ route('rebanos.index') }}"
@@ -15,7 +15,7 @@
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Volver a Rebaños
+                Volver a rebaños
             </a>
         </div>
 
@@ -45,7 +45,7 @@
                     🐄
                 </div>
                 <div>
-                    <h3 class="text-lg font-bold text-ganaderasoft-negro">Información del Rebaño</h3>
+                    <h3 class="text-lg font-bold text-ganaderasoft-negro">Información del rebaño</h3>
                     <p class="text-xs text-gray-500">Seleccione la finca y nombre del rebaño</p>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                 <!-- Selector de Finca -->
                 <div>
                     <label for="finca_id" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                        Finca Destino <span class="text-red-500">*</span>
+                        Finca destino <span class="text-red-500">*</span>
                     </label>
                     <select name="finca_id" id="finca_id" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
@@ -78,10 +78,10 @@
                 <!-- Nombre -->
                 <div>
                     <label for="nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                        Nombre del Rebaño <span class="text-red-500">*</span>
+                        Nombre del rebaño <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="nombre" id="nombre" required value="{{ old('nombre') }}"
-                        placeholder="Ej: Rebaño Vacas Lecheras, Rebaño Norte, Lote Engorde"
+                        placeholder="Ej: Rebaño vacas lecheras, rebaño norte, lote engorde"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <p class="text-xs text-gray-500 mt-1">Nombre distintivo para identificar y agrupar los animales</p>
                 </div>
@@ -94,7 +94,7 @@
                     </a>
                     <button type="submit"
                         class="px-8 py-3 bg-ganaderasoft-verde-oscuro text-white text-sm font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                        Guardar Rebaño
+                        Guardar rebaño
                     </button>
                 </div>
             </form>

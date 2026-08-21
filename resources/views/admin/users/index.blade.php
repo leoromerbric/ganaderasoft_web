@@ -131,7 +131,7 @@
                                                     </span>
                                                 @endforeach
                                             @else
-                                                <span class="text-xs text-gray-400">N/A</span>
+                                                <span class="text-xs text-gray-400">N/a</span>
                                             @endif
                                         </div>
                                     </td>

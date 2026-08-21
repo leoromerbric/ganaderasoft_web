@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Detalle Tratamiento')
+@section('title', 'Detalle tratamiento')
 
 @section('content')
 @php
@@ -47,19 +47,19 @@
                 </p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de Inicio</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de inicio</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
                     {{ $fechaIni ? date('d/m/Y', strtotime($fechaIni)) : 'N/A' }}
                 </p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de Fin</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de fin</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
                     {{ $fechaFin ? date('d/m/Y', strtotime($fechaFin)) : 'N/A' }}
                 </p>
             </div>
             <div class="md:col-span-2">
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Plan de Tratamiento</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Plan de tratamiento</p>
                 <p class="text-base text-ganaderasoft-negro mt-1">{{ $plan }}</p>
             </div>
         </div>

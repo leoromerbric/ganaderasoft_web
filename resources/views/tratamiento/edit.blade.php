@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Editar Tratamiento')
+@section('title', 'Editar tratamiento')
 
 @section('content')
 @php
@@ -17,12 +17,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">💊 Editar Tratamiento #{{ $id }}</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">💊 Editar tratamiento #{{ $id }}</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Modificar Datos</h3>
+            <h3 class="text-lg font-semibold">Modificar datos</h3>
         </div>
         <form action="{{ route('tratamiento.update', $id) }}" method="POST" class="p-6">
             @csrf @method('PUT')
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Plan de Tratamiento</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Plan de tratamiento</label>
                     <input type="text" name="plan" maxlength="255"
                            value="{{ old('plan', $plan) }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('plan') border-red-500 @enderror">
@@ -66,7 +66,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Inicio <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de inicio <span class="text-red-500">*</span></label>
                     <input type="date" name="fecha_ini" required
                            value="{{ old('fecha_ini', $fechaIni ? \Carbon\Carbon::parse($fechaIni)->format('Y-m-d') : date('Y-m-d')) }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha_ini') border-red-500 @enderror">
@@ -74,7 +74,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Fin <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de fin <span class="text-red-500">*</span></label>
                     <input type="date" name="fecha_fin" required
                            value="{{ old('fecha_fin', $fechaFin ? \Carbon\Carbon::parse($fechaFin)->format('Y-m-d') : '') }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha_fin') border-red-500 @enderror">

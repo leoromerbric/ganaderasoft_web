@@ -43,7 +43,7 @@
                     </select>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Diagnostico / Animal</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Diagnostico / animal</label>
                     <select name="diagnostico_id" id="filtroAnimal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                         <option value="">Todos</option>
                         @foreach($diagnosticos as $diag)
@@ -94,8 +94,8 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diagnóstico</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Inicio</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Fin</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha inicio</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha fin</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
@@ -148,7 +148,7 @@
                 <p class="text-gray-500 mb-6">Comienza registrando el primer tratamiento</p>
                 <a href="{{ route('tratamiento.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
-                    Nuevo Tratamiento
+                    Nuevo tratamiento
                 </a>
             </div>
         @endif

@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Detalle Registro de Celo')
+@section('title', 'Detalle registro de celo')
 
 @section('content')
 @php
@@ -20,7 +20,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🌡️ Registro de Celo #{{ $id }}</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🌡️ Registro de celo #{{ $id }}</h2>
         </div>
         <a href="{{ route('registro-celo.edit', $id) }}"
            class="px-4 py-2 bg-ganaderasoft-verde text-white rounded-lg hover:bg-ganaderasoft-verde/80 transition-colors">
@@ -43,7 +43,7 @@
                 </p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de Celo</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha de celo</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
                     {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                 </p>

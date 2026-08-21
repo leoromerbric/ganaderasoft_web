@@ -1,17 +1,17 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Semen de Toro')
+@section('title', 'Semen de toro')
 
 @section('content')
 <div>
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🧪 Semen de Toro</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🧪 Semen de toro</h2>
             <p class="text-gray-600 mt-1">Gestión del inventario de semen de toros</p>
         </div>
         <a href="{{ route('semen-toro.create') }}"
            class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-            + Nuevo Registro
+            + Nuevo registro
         </a>
     </div>
 
@@ -141,7 +141,7 @@
                 <p class="text-gray-500 mb-6">Comienza registrando el primer semen de toro</p>
                 <a href="{{ route('semen-toro.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
-                    Nuevo Registro
+                    Nuevo registro
                 </a>
             </div>
         @endif

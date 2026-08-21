@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Detalle de Registro de Leche')
+@section('title', 'Detalle de registro de leche')
 
 @section('content')
 @php
@@ -19,14 +19,14 @@
 
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 🥛
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Detalle de Pesaje #{{ $lecheId ?? 'N/A' }}
+                    Detalle de pesaje #{{ $lecheId ?? 'N/A' }}
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Consulta los detalles del registro de producción lechera</p>
             </div>
@@ -56,18 +56,18 @@
             <!-- Milk Volume Card -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
                 <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                    <span>🥛</span> Volumen de Leche Producido
+                    <span>🥛</span> Volumen de leche producido
                 </h3>
 
                 <div class="p-6 bg-emerald-50/60 border border-emerald-100 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                        <p class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-1">Cantidad Registrada</p>
+                        <p class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-1">Cantidad registrada</p>
                         <p class="text-4xl font-black text-emerald-700">
                             {{ number_format($pesajeTotal, 2) }} <span class="text-2xl font-bold">Litros</span>
                         </p>
                     </div>
                     <div class="text-right">
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Fecha de Pesaje</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Fecha de pesaje</p>
                         <p class="text-lg font-bold text-gray-900">
                             📅 {{ $fechaPesaje ? \Carbon\Carbon::parse($fechaPesaje)->format('d/m/Y') : 'N/A' }}
                         </p>
@@ -78,7 +78,7 @@
             <!-- Animal Card -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
                 <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                    <span>🐄</span> Hembra y Lactancia Asociada
+                    <span>🐄</span> Hembra y lactancia asociada
                 </h3>
 
                 <div class="p-5 bg-pink-50/60 border border-pink-100 rounded-2xl flex items-center justify-between">
@@ -91,7 +91,7 @@
                             @if($animalCodigo)
                                 <p class="text-xs text-gray-500 font-mono mt-0.5">Código: #{{ $animalCodigo }}</p>
                             @endif
-                            <p class="text-xs text-gray-600 font-semibold mt-1">ID Lactancia: #{{ $lactanciaId }}</p>
+                            <p class="text-xs text-gray-600 font-semibold mt-1">ID lactancia: #{{ $lactanciaId }}</p>
                         </div>
                     </div>
 
@@ -99,7 +99,7 @@
                         <div>
                             <a href="{{ route('lactancia.show', $lactanciaId) }}" 
                                class="px-4 py-2 bg-pink-100 hover:bg-pink-200 text-pink-800 font-bold rounded-xl text-xs transition-colors">
-                                Ver Lactancia
+                                Ver lactancia
                             </a>
                         </div>
                     @endif
@@ -112,18 +112,18 @@
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                     <h3 class="text-lg font-bold flex items-center gap-2">
-                        <span>⚙️</span> Información del Sistema
+                        <span>⚙️</span> Información del sistema
                     </h3>
                 </div>
 
                 <div class="p-6 space-y-4">
                     <div class="space-y-3 text-xs text-gray-600">
                         <div class="flex justify-between">
-                            <span>ID Registro Leche:</span>
+                            <span>ID registro leche:</span>
                             <span class="font-bold text-gray-900 font-mono">#{{ $lecheId }}</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>ID Lactancia:</span>
+                            <span>ID lactancia:</span>
                             <span class="font-bold text-gray-900 font-mono">#{{ $lactanciaId }}</span>
                         </div>
                         <div class="flex justify-between">

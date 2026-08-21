@@ -1,14 +1,14 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Gestión de Fincas')
+@section('title', 'Gestión de fincas')
 
 @section('content')
     <div class="space-y-8">
         <!-- Header section -->
         <div
-            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Fincas</h1>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de fincas</h1>
                 <p class="text-gray-500 text-sm mt-1">Administración de fincas y unidades de producción ganadera</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
@@ -18,7 +18,7 @@
                 </a>
                 <a href="{{ route('fincas.create') }}"
                    class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium">
-                    + Nueva Finca
+                    + Nueva finca
                 </a>
             </div>
         </div>
@@ -48,13 +48,13 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar por
-                        Nombre</label>
-                    <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Ej: Finca San José..."
+                        nombre</label>
+                    <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Ej: Finca san josé..."
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Tipo de
-                        Explotación</label>
+                        explotación</label>
                     <select id="filtroTipo"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                         <option value="">Todos los tipos</option>
@@ -66,7 +66,7 @@
                 <div class="flex space-x-2">
                     <button onclick="limpiarFiltros()"
                         class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                        Limpiar Filtros
+                        Limpiar filtros
                     </button>
                 </div>
             </div>
@@ -76,7 +76,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total de Fincas</p>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total de fincas</p>
                     <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ count($fincas) }}</p>
                 </div>
                 <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
@@ -85,7 +85,7 @@
             </div>
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Superficie Total Registrada
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Superficie total registrada
                     </p>
                     <p id="statSuperficie" class="text-3xl font-extrabold text-ganaderasoft-verde-oscuro">
                         @php
@@ -112,9 +112,9 @@
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                     Finca</th>
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Tipo Explotación</th>
+                                    Tipo explotación</th>
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Propietario / Persona</th>
+                                    Propietario / persona</th>
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                     Superficie</th>
                                 <th
@@ -189,7 +189,7 @@
                     <p class="text-gray-500 text-sm mb-6">Comienza registrando la primera finca de tu propiedad</p>
                     <a href="{{ route('fincas.create') }}"
                         class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                        + Nueva Finca
+                        + Nueva finca
                     </a>
                 </div>
             @endif

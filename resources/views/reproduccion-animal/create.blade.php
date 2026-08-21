@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Nueva Reproducción Animal')
+@section('title', 'Nueva reproducción animal')
 
 @section('content')
 <div>
@@ -10,12 +10,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🔬 Nueva Reproducción Animal</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🔬 Nueva reproducción animal</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Datos de la Reproducción</h3>
+            <h3 class="text-lg font-semibold">Datos de la reproducción</h3>
         </div>
         <form action="{{ route('reproduccion-animal.store') }}" method="POST" class="p-6">
             @csrf
@@ -56,18 +56,18 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Reproducción</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de reproducción</label>
                     <select name="tipo"
                             class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('tipo') ? 'border-red-500' : 'border-gray-300' }}">
                         <option value="">Seleccione un tipo</option>
                         <option value="Natural" {{ old('tipo') == 'Natural' ? 'selected' : '' }}>Natural</option>
-                        <option value="IA" {{ old('tipo') == 'IA' ? 'selected' : '' }}>IA</option>
+                        <option value="IA" {{ old('tipo') == 'IA' ? 'selected' : '' }}>Ia</option>
                     </select>
                     @error('tipo')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Reproducción <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de reproducción <span class="text-red-500">*</span></label>
                     <input type="date" name="fecha" required
                            value="{{ old('fecha', date('Y-m-d')) }}"
                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste {{ $errors->has('fecha') ? 'border-red-500' : 'border-gray-300' }}">

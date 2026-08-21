@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Editar Diagnóstico')
+@section('title', 'Editar diagnóstico')
 
 @section('content')
 @php
@@ -28,12 +28,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🏥 Editar Diagnóstico #{{ $id }}</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🏥 Editar diagnóstico #{{ $id }}</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Modificar Datos</h3>
+            <h3 class="text-lg font-semibold">Modificar datos</h3>
         </div>
         <form action="{{ route('diagnostico.update', $id) }}" method="POST" class="p-6">
             @csrf @method('PUT')
@@ -61,7 +61,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Diagnóstico</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de diagnóstico</label>
                     <input type="text" name="tipo" maxlength="30"
                            value="{{ old('tipo', $tipo) }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('tipo') border-red-500 @enderror">
@@ -69,7 +69,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del Diagnóstico</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del diagnóstico</label>
                     <input type="date" name="fecha"
                            value="{{ $fechaValue }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha') border-red-500 @enderror">

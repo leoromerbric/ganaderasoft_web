@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Bienvenido a GanaderaSoft - Facultad de Agronomía')
+@section('title', 'Bienvenido a GanaderaSoft - facultad de agronomía')
 
 @section('content')
 <div class="min-h-screen bg-slate-50 text-gray-800 flex flex-col justify-between selection:bg-ganaderasoft-celeste selection:text-white">
@@ -16,7 +16,7 @@
                     </div>
                     <div class="flex flex-col">
                         <span class="text-xs sm:text-2xl font-black tracking-tight text-ganaderasoft-negro">Ganadera<span class="text-ganaderasoft-azul">Soft</span></span>
-                        <span class="text-[9px] sm:text-xs text-gray-500 font-medium">Facultad de Agronomía</span>
+                        <span class="text-[9px] sm:text-xs text-gray-500 font-medium">Facultad de agronomía</span>
                     </div>
                 </a>
 
@@ -71,11 +71,11 @@
                     
                     <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 sm:px-4 sm:py-2 rounded-full bg-ganaderasoft-celeste/10 border border-ganaderasoft-celeste/30 text-ganaderasoft-azul text-[10px] sm:text-sm font-bold shadow-sm">
                         <span class="flex h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-ganaderasoft-azul"></span>
-                        <span>Sistema de la Facultad de Agronomía</span>
+                        <span>Sistema de la facultad de agronomía</span>
                     </div>
 
                     <h1 class="text-xl sm:text-5xl lg:text-6xl font-extrabold text-ganaderasoft-negro tracking-tight leading-tight">
-                        Control integral de la <span class="bg-clip-text text-transparent bg-gradient-to-r from-ganaderasoft-azul to-ganaderasoft-celeste">producción bovina</span> y rebaños.
+                        Control integral de la <span class="bg-clip-text text-transparent bg-gradient-to-r from-ganaderasoft-azul to-ganaderasoft-celeste">Producción bovina</span> Y rebaños.
                     </h1>
 
                     <p class="text-xs sm:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
@@ -91,7 +91,7 @@
 
                         <a href="#app-movil" 
                            class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 sm:px-7 sm:py-4 text-xs sm:text-base font-semibold text-ganaderasoft-azul bg-white border border-gray-200 rounded-lg sm:rounded-2xl shadow-md hover:bg-gray-50 hover:border-ganaderasoft-celeste transition-all duration-300">
-                            Descargar app Android
+                            Descargar app android
                         </a>
                     </div>
 
@@ -106,7 +106,7 @@
                             <p class="text-[9px] sm:text-xs text-gray-500 font-medium">Producción lechera</p>
                         </div>
                         <div>
-                            <p class="text-sm sm:text-2xl font-bold text-ganaderasoft-azul">API Gateway</p>
+                            <p class="text-sm sm:text-2xl font-bold text-ganaderasoft-azul">API gateway</p>
                             <p class="text-[9px] sm:text-xs text-gray-500 font-medium">Soporte institucional</p>
                         </div>
                     </div>
@@ -278,7 +278,7 @@
                     </div>
                     <h4 class="text-sm sm:text-xl font-bold text-gray-900 mb-1.5 sm:mb-3">Reportes y exportación</h4>
                     <p class="text-gray-600 text-[11px] sm:text-sm leading-relaxed">
-                        Generación de reportes institucionales en PDF y Excel para análisis técnico e investigación agrícola.
+                        Generación de reportes institucionales en PDF y excel para análisis técnico e investigación agrícola.
                     </p>
                 </div>
 
@@ -295,7 +295,7 @@
                 <div class="space-y-2.5 sm:space-y-4 max-w-2xl text-center md:text-left">
                     <span class="px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[9px] sm:text-xs font-bold tracking-wide uppercase">Aplicación móvil</span>
                     <h3 class="text-xl sm:text-4xl font-extrabold tracking-tight">
-                        Registro de datos en campo con la aplicación Android
+                        Registro de datos en campo con la aplicación android
                     </h3>
                     <p class="text-white/80 text-[11px] sm:text-lg">
                         Facilita la toma de datos directamente en el potrero para eventos sanitarios, pesaje y control de ordeño.
@@ -306,7 +306,7 @@
                     <a href="https://drive.google.com/file/d/19g-CpAm9VyXjgKSWMgS8L8zHcl66gvdg/view?usp=drive_link" 
                        target="_blank"
                        class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 sm:px-8 sm:py-4 bg-white text-ganaderasoft-azul rounded-lg sm:rounded-2xl font-bold text-xs sm:text-base shadow-xl hover:bg-slate-100 hover:scale-105 transition-all duration-300">
-                        Descargar APK Android
+                        Descargar apk android
                     </a>
                 </div>
 
@@ -335,7 +335,7 @@
                 </div>
 
                 <p class="text-[9px] sm:text-sm text-center md:text-right">
-                    &copy; {{ date('Y') }} GanaderaSoft - Facultad de Agronomía. Todos los derechos reservados.
+                    &Copy; {{ date('Y') }} GanaderaSoft - facultad de agronomía. Todos los derechos reservados.
                 </p>
 
             </div>

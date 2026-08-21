@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Detalle Servicio Animal')
+@section('title', 'Detalle servicio animal')
 
 @section('content')
 @php
@@ -24,7 +24,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🐂 Servicio Animal #{{ $id }}</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🐂 Servicio animal #{{ $id }}</h2>
         </div>
         <a href="{{ route('servicio-animal.edit', $id) }}"
            class="px-4 py-2 bg-ganaderasoft-verde text-white rounded-lg hover:bg-ganaderasoft-verde/80 transition-colors">
@@ -41,17 +41,17 @@
                 </p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Tipo de Servicio</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Tipo de servicio</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">{{ $tipo }}</p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha del Servicio</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Fecha del servicio</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
                     {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                 </p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Semen / Toro</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Semen / toro</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
                     {{ $semenNombre }}
                 </p>
@@ -63,7 +63,7 @@
                 </p>
             </div>
             <div>
-                <p class="text-sm text-gray-500 uppercase tracking-wider">Registro de Celo</p>
+                <p class="text-sm text-gray-500 uppercase tracking-wider">Registro de celo</p>
                 <p class="text-lg font-semibold text-ganaderasoft-negro mt-1">
                     {{ $celoId ? ('Celo #'.$celoId) : '-' }}
                 </p>

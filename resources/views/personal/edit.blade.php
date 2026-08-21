@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Editar Personal')
+@section('title', 'Editar personal')
 
 @section('content')
     @php
@@ -22,7 +22,7 @@
         <!-- Header & Breadcrumb -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Editar Personal</h1>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Editar personal</h1>
                 <p class="text-sm text-gray-500 mt-1">Actualice la información del empleado #{{ $pId }}</p>
             </div>
             <a href="{{ route('personal.index') }}"
@@ -30,7 +30,7 @@
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Volver al Personal
+                Volver al personal
             </a>
         </div>
 
@@ -55,7 +55,7 @@
                     👤
                 </div>
                 <div>
-                    <h3 class="text-lg font-bold text-ganaderasoft-negro">Actualizar Datos de Personal</h3>
+                    <h3 class="text-lg font-bold text-ganaderasoft-negro">Actualizar datos de personal</h3>
                     <p class="text-xs text-gray-500">ID del recurso: #{{ $pId }}</p>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                 <!-- ID Read-Only -->
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">ID
-                        Empleado</label>
+                        empleado</label>
                     <input type="text" value="#{{ $pId }}" disabled
                         class="w-full px-4 py-2.5 border border-gray-200 bg-gray-50 rounded-xl text-sm font-bold text-gray-600">
                 </div>
@@ -79,7 +79,7 @@
                 <!-- Cedula -->
                 <div>
                     <label for="cedula" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                        Cédula / Identificación <span class="text-red-500">*</span>
+                        Cédula / identificación <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="cedula" id="cedula" required value="{{ old('cedula', $cedulaEmp) }}"
                         placeholder="Ej: V12345678"
@@ -90,7 +90,7 @@
                 <div>
                     <label for="tipo_trabajador_id"
                         class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                        Tipo de Trabajador <span class="text-red-500">*</span>
+                        Tipo de trabajador <span class="text-red-500">*</span>
                     </label>
                     <select name="tipo_trabajador_id" id="tipo_trabajador_id" required
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
@@ -130,7 +130,7 @@
                 <!-- Telefono -->
                 <div>
                     <label for="telefono" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                        Teléfono de Contacto <span class="text-red-500">*</span>
+                        Teléfono de contacto <span class="text-red-500">*</span>
                     </label>
                     <input type="text" name="telefono" id="telefono" required value="{{ old('telefono', $telefonoEmp) }}"
                         placeholder="Ej: 04141234567"
@@ -140,7 +140,7 @@
                 <!-- Correo -->
                 <div>
                     <label for="correo" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                        Correo Electrónico <span class="text-red-500">*</span>
+                        Correo electrónico <span class="text-red-500">*</span>
                     </label>
                     <input type="email" name="correo" id="correo" required value="{{ old('correo', $correoEmp) }}"
                         placeholder="Ej: carlos.rodriguez@email.com"
@@ -156,7 +156,7 @@
                 </a>
                 <button type="submit"
                     class="px-8 py-3 bg-ganaderasoft-verde-oscuro text-white text-sm font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                    Actualizar Personal
+                    Actualizar personal
                 </button>
             </div>
         </form>

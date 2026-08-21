@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Detalle de Lactancia')
+@section('title', 'Detalle de lactancia')
 
 @section('content')
 @php
@@ -22,14 +22,14 @@
 
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 🐄
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Detalle de Lactancia #{{ $lactanciaId ?? 'N/A' }}
+                    Detalle de lactancia #{{ $lactanciaId ?? 'N/A' }}
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Consulta los datos del ciclo productivo y cronología del animal</p>
             </div>
@@ -59,7 +59,7 @@
             <!-- Animal Card -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
                 <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                    <span>🐄</span> Hembra Asociada
+                    <span>🐄</span> Hembra asociada
                 </h3>
 
                 <div class="p-5 bg-pink-50/60 border border-pink-100 rounded-2xl flex items-center justify-between">
@@ -87,19 +87,19 @@
             <!-- Cronología Card -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                 <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                    <span>📅</span> Cronología del Ciclo Productivo
+                    <span>📅</span> Cronología del ciclo productivo
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="p-5 bg-emerald-50/60 border border-emerald-100 rounded-2xl space-y-2">
-                        <p class="text-xs font-bold text-emerald-900 uppercase tracking-wider">Fecha de Inicio</p>
+                        <p class="text-xs font-bold text-emerald-900 uppercase tracking-wider">Fecha de inicio</p>
                         <p class="text-lg font-bold text-gray-900">
                             📅 {{ $fechaInicio ? \Carbon\Carbon::parse($fechaInicio)->format('d/m/Y') : 'N/A' }}
                         </p>
                     </div>
 
                     <div class="p-5 bg-blue-50/60 border border-blue-100 rounded-2xl space-y-2">
-                        <p class="text-xs font-bold text-blue-900 uppercase tracking-wider">Fecha de Fin</p>
+                        <p class="text-xs font-bold text-blue-900 uppercase tracking-wider">Fecha de fin</p>
                         <p class="text-lg font-bold text-gray-900">
                             @if($fechaFin)
                                 🏁 {{ \Carbon\Carbon::parse($fechaFin)->format('d/m/Y') }}
@@ -110,7 +110,7 @@
                     </div>
 
                     <div class="p-5 bg-amber-50/60 border border-amber-100 rounded-2xl space-y-2">
-                        <p class="text-xs font-bold text-amber-900 uppercase tracking-wider">Fecha de Secado</p>
+                        <p class="text-xs font-bold text-amber-900 uppercase tracking-wider">Fecha de secado</p>
                         <p class="text-lg font-bold text-gray-900">
                             @if($secado)
                                 🍂 {{ \Carbon\Carbon::parse($secado)->format('d/m/Y') }}
@@ -128,14 +128,14 @@
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                     <h3 class="text-lg font-bold flex items-center gap-2">
-                        <span>⚙️</span> Estado del Sistema
+                        <span>⚙️</span> Estado del sistema
                     </h3>
                 </div>
 
                 <div class="p-6 space-y-4">
                     <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
                         <div class="flex justify-between items-center">
-                            <span>Estado del Ciclo:</span>
+                            <span>Estado del ciclo:</span>
                             @if($isActiva)
                                 <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                                     🟢 Activa
@@ -147,7 +147,7 @@
                             @endif
                         </div>
                         <div class="flex justify-between">
-                            <span>ID Lactancia:</span>
+                            <span>ID lactancia:</span>
                             <span class="font-bold text-gray-900 font-mono">#{{ $lactanciaId }}</span>
                         </div>
                         <div class="flex justify-between">
@@ -164,7 +164,7 @@
                         <div class="pt-2">
                             <a href="{{ route('leche.index', ['lactancia_id' => $lactanciaId]) }}" 
                                class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                                🥛 Ver Registros de Leche
+                                🥛 Ver registros de leche
                             </a>
                         </div>
                     @endif

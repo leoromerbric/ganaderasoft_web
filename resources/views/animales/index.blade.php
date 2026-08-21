@@ -1,13 +1,13 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Gestión de Animales')
+@section('title', 'Gestión de animales')
 
 @section('content')
     <div class="space-y-8">
         <!-- Header section -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de Animales</h1>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de animales</h1>
                 <p class="text-gray-500 text-sm mt-1">Administración del inventario de ganado y registro por rebaños</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
@@ -17,7 +17,7 @@
                 </a>
                 <a href="{{ route('animales.create') }}"
                    class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium">
-                    + Nuevo Animal
+                    + Nuevo animal
                 </a>
             </div>
         </div>
@@ -82,20 +82,20 @@
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
                     <select id="filtroArchivado" onchange="cambiarFiltroArchivado(this.value)"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                        <option value="activos" {{ ($archivado ?? 'activos') === 'activos' ? 'selected' : '' }}>Solo Activos</option>
-                        <option value="archivados" {{ ($archivado ?? '') === 'archivados' ? 'selected' : '' }}>Solo Archivados</option>
+                        <option value="activos" {{ ($archivado ?? 'activos') === 'activos' ? 'selected' : '' }}>Solo activos</option>
+                        <option value="archivados" {{ ($archivado ?? '') === 'archivados' ? 'selected' : '' }}>Solo archivados</option>
                         <option value="todos" {{ ($archivado ?? '') === 'todos' ? 'selected' : '' }}>Todos los animales</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Nombre / Código</label>
-                    <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Ej: Lola, BOV-01..."
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Nombre / código</label>
+                    <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Ej: Lola, bov-01..."
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
                 <div>
                     <a href="{{ route('animales.index') }}"
                        class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                        Limpiar Filtros
+                        Limpiar filtros
                     </a>
                 </div>
             </div>
@@ -105,7 +105,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Listados</p>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total listados</p>
                     <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $estadisticas['total'] }}</p>
                 </div>
                 <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
@@ -152,7 +152,7 @@
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Código</th>
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Sexo</th>
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rebaño</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nacimiento / Edad</th>
+                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nacimiento / edad</th>
                                 <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
                                 <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                             </tr>
@@ -251,7 +251,7 @@
                     <p class="text-gray-500 text-sm mb-6">Comienza agregando tu primer animal al sistema</p>
                     <a href="{{ route('animales.create') }}"
                        class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                        + Nuevo Animal
+                        + Nuevo animal
                     </a>
                 </div>
             @endif

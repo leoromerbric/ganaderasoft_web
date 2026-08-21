@@ -1,13 +1,13 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Nueva Finca')
+@section('title', 'Nueva finca')
 
 @section('content')
     <div class="max-w-4xl mx-auto space-y-6">
         <!-- Header & Breadcrumb -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Registrar Nueva Finca</h1>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Registrar nueva finca</h1>
                 <p class="text-sm text-gray-500 mt-1">Complete los datos de la unidad de producción</p>
             </div>
             <a href="{{ route('fincas.index') }}"
@@ -15,7 +15,7 @@
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Volver a la Lista
+                Volver a la lista
             </a>
         </div>
 
@@ -39,23 +39,23 @@
                 <h3 class="text-lg font-bold text-ganaderasoft-negro flex items-center pb-2 border-b border-gray-100">
                     <span
                         class="w-8 h-8 rounded-lg bg-ganaderasoft-celeste/15 flex items-center justify-center mr-3 text-lg">🏡</span>
-                    Información General
+                    Información general
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="Nombre" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Nombre de la Finca <span class="text-red-500">*</span>
+                            Nombre de la finca <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="Nombre" id="Nombre" required value="{{ old('Nombre') }}"
-                            placeholder="Ej: Finca La Esperanza"
+                            placeholder="Ej: Finca la esperanza"
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     </div>
 
                     <div>
                         <label for="Explotacion_Tipo"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Tipo de Explotación <span class="text-red-500">*</span>
+                            Tipo de explotación <span class="text-red-500">*</span>
                         </label>
                         <select name="Explotacion_Tipo" id="Explotacion_Tipo" required
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
@@ -78,7 +78,7 @@
                 <h3 class="text-lg font-bold text-ganaderasoft-negro flex items-center pb-2 border-b border-gray-100">
                     <span
                         class="w-8 h-8 rounded-lg bg-ganaderasoft-verde/20 flex items-center justify-center mr-3 text-lg">🌱</span>
-                    Información del Terreno
+                    Información del terreno
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -95,7 +95,7 @@
                     <div>
                         <label for="Relieve"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Tipo de Relieve <span class="text-red-500">*</span>
+                            Tipo de relieve <span class="text-red-500">*</span>
                         </label>
                         <select name="Relieve" id="Relieve" required
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
@@ -114,7 +114,7 @@
                     <div>
                         <label for="Suelo_Textura"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Textura del Suelo <span class="text-red-500">*</span>
+                            Textura del suelo <span class="text-red-500">*</span>
                         </label>
                         <select name="Suelo_Textura" id="Suelo_Textura" required
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
@@ -133,7 +133,7 @@
                     <div>
                         <label for="ph_Suelo"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            pH del Suelo <span class="text-red-500">*</span>
+                            pH del suelo <span class="text-red-500">*</span>
                         </label>
                         <select name="ph_Suelo" id="ph_Suelo" required
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
@@ -153,7 +153,7 @@
                     <div>
                         <label for="Precipitacion"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Precipitación Anual (mm) <span class="text-red-500">*</span>
+                            Precipitación anual (mm) <span class="text-red-500">*</span>
                         </label>
                         <input type="number" name="Precipitacion" id="Precipitacion" step="0.01" required
                             value="{{ old('Precipitacion') }}" placeholder="Ej: 1200"
@@ -163,7 +163,7 @@
                     <div>
                         <label for="Velocidad_Viento"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Velocidad Viento (km/h) <span class="text-red-500">*</span>
+                            Velocidad viento (km/h) <span class="text-red-500">*</span>
                         </label>
                         <input type="number" name="Velocidad_Viento" id="Velocidad_Viento" step="0.01" required
                             value="{{ old('Velocidad_Viento') }}" placeholder="Ej: 15"
@@ -177,14 +177,14 @@
                 <h3 class="text-lg font-bold text-ganaderasoft-negro flex items-center pb-2 border-b border-gray-100">
                     <span
                         class="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-800 flex items-center justify-center mr-3 text-lg">☀️</span>
-                    Información Climática
+                    Información climática
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div>
                         <label for="Temp_Anual"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Temp. Anual (°C) <span class="text-red-500">*</span>
+                            Temp. Anual (°c) <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="Temp_Anual" id="Temp_Anual" required value="{{ old('Temp_Anual') }}"
                             placeholder="Ej: 28"
@@ -194,7 +194,7 @@
                     <div>
                         <label for="Temp_Min"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Temp. Mínima (°C) <span class="text-red-500">*</span>
+                            Temp. Mínima (°c) <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="Temp_Min" id="Temp_Min" required value="{{ old('Temp_Min') }}"
                             placeholder="Ej: 22"
@@ -204,7 +204,7 @@
                     <div>
                         <label for="Temp_Max"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Temp. Máxima (°C) <span class="text-red-500">*</span>
+                            Temp. Máxima (°c) <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="Temp_Max" id="Temp_Max" required value="{{ old('Temp_Max') }}"
                             placeholder="Ej: 34"
@@ -214,7 +214,7 @@
                     <div>
                         <label for="Radiacion"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Radiación Solar <span class="text-red-500">*</span>
+                            Radiación solar <span class="text-red-500">*</span>
                         </label>
                         <input type="number" name="Radiacion" id="Radiacion" step="0.01" required
                             value="{{ old('Radiacion') }}" placeholder="Ej: 4.5"
@@ -228,14 +228,14 @@
                 <h3 class="text-lg font-bold text-ganaderasoft-negro flex items-center pb-2 border-b border-gray-100">
                     <span
                         class="w-8 h-8 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center mr-3 text-lg">💧</span>
-                    Recursos Hídricos y Riego
+                    Recursos hídricos y riego
                 </h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                         <label for="Fuente_Agua"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Fuente de Agua <span class="text-red-500">*</span>
+                            Fuente de agua <span class="text-red-500">*</span>
                         </label>
                         <select name="Fuente_Agua" id="Fuente_Agua" required
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
@@ -254,7 +254,7 @@
                     <div>
                         <label for="Caudal_Disponible"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Caudal Disponible (L/día) <span class="text-red-500">*</span>
+                            Caudal disponible (l/día) <span class="text-red-500">*</span>
                         </label>
                         <input type="number" name="Caudal_Disponible" id="Caudal_Disponible" required
                             value="{{ old('Caudal_Disponible') }}" placeholder="Ej: 5000"
@@ -264,7 +264,7 @@
                     <div>
                         <label for="Riego_Metodo"
                             class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                            Método de Riego <span class="text-red-500">*</span>
+                            Método de riego <span class="text-red-500">*</span>
                         </label>
                         <select name="Riego_Metodo" id="Riego_Metodo" required
                             class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
@@ -290,7 +290,7 @@
                 </a>
                 <button type="submit"
                     class="px-8 py-3 bg-ganaderasoft-verde-oscuro text-white text-sm font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                    Guardar Finca
+                    Guardar finca
                 </button>
             </div>
         </form>

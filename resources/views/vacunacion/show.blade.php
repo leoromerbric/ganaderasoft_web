@@ -31,7 +31,7 @@
 
 <div class="space-y-8">
     <!-- Header Card -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-2xl shadow-sm border border-blue-100">
                 💉
@@ -80,7 +80,7 @@
                     </div>
                     
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Código Identificador</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Código identificador</p>
                         <p class="text-lg font-bold text-gray-900 font-mono">{{ $animalCodigo }}</p>
                     </div>
                     
@@ -90,7 +90,7 @@
                     </div>
                     
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rebaño / Finca</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rebaño / finca</p>
                         <p class="text-lg font-bold text-gray-900">{{ $rebanoNombre }} @if($fincaNombre) • {{ $fincaNombre }} @endif</p>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
                     </div>
 
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Número de Lote</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Número de lote</p>
                         <p class="text-lg font-bold text-gray-900 font-mono">{{ $lote ?: 'N/A' }}</p>
                     </div>
 
@@ -129,7 +129,7 @@
                     </div>
 
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Aplicador / Veterinario</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Aplicador / veterinario</p>
                         <p class="text-lg font-bold text-gray-900">{{ $aplicadorNombre ?: 'No especificado' }}</p>
                     </div>
                 </div>
@@ -159,13 +159,13 @@
                 </div>
                 <div class="p-6 space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Estado de Aplicación</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Estado de aplicación</label>
                         <span class="inline-flex px-3 py-1 text-base font-bold rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
                             Aplicada
                         </span>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Estado del Animal</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Estado del animal</label>
                         @if($isArchivado)
                             <span class="inline-flex px-3 py-1 text-base font-bold rounded-full bg-red-50 text-red-800 border border-red-200">
                                 Archivado

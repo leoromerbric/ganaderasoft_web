@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-verde/15 text-ganaderasoft-verde-oscuro flex items-center justify-center font-bold text-2xl shadow-sm border border-ganaderasoft-verde/20">
                 💉
@@ -102,7 +102,7 @@
                             <label for="lote" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                                 Número de lote
                             </label>
-                            <input type="text" id="lote" name="lote" value="{{ old('lote') }}" placeholder="Ej: LOTE-2026-X"
+                            <input type="text" id="lote" name="lote" value="{{ old('lote') }}" placeholder="Ej: Lote-2026-X"
                                    class="w-full px-4 py-3 border @error('lote') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('lote')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
@@ -116,7 +116,7 @@
                             <span>🐮</span> Animales a vacunar <span class="text-red-500">*</span>
                         </h3>
                         <span id="selected-badge" class="px-3 py-1 bg-ganaderasoft-verde/15 text-ganaderasoft-verde-oscuro font-bold rounded-full text-xs">
-                            0 seleccionados
+                            0 Seleccionados
                         </span>
                     </div>
 
@@ -174,7 +174,7 @@
                             <thead class="sticky top-0 bg-gray-50">
                                 <tr>
                                     <th class="w-12 px-4 py-3 text-left">
-                                        <input type="checkbox" id="check-all" class="w-4 h-4 rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde" title="Marcar/Desmarcar todos">
+                                        <input type="checkbox" id="check-all" class="w-4 h-4 rounded border-gray-300 text-ganaderasoft-verde focus:ring-ganaderasoft-verde" title="Marcar/desmarcar todos">
                                     </th>
                                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Animal</th>
                                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Código</th>
@@ -212,9 +212,9 @@
 
                     <div class="space-y-4">
                         <div class="p-4 bg-ganaderasoft-celeste/10 rounded-xl border border-ganaderasoft-celeste/20 text-center">
-                            <p class="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Costo Total Estimado</p>
+                            <p class="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Costo total estimado</p>
                             <p id="monto-total-label" class="text-3xl font-extrabold text-ganaderasoft-azul font-mono">0,00 $</p>
-                            <p id="animales-count-label" class="text-xs text-gray-500 mt-1">0 animales seleccionados</p>
+                            <p id="animales-count-label" class="text-xs text-gray-500 mt-1">0 Animales seleccionados</p>
                         </div>
 
                         <div class="space-y-2 text-sm text-gray-600 border-t border-gray-100 pt-4">

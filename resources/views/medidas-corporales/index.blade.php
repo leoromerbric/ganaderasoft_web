@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Medidas Corporales')
+@section('title', 'Medidas corporales')
 
 @section('content')
 @php
@@ -9,17 +9,17 @@
 
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                📏 Medidas Corporales (Morfometría)
+                📏 Medidas corporales (morfometría)
             </h1>
             <p class="text-gray-500 text-sm mt-1">Evaluación biométrica y desarrollo morfológico por animal</p>
         </div>
         <div>
             <a href="{{ route('medidas-corporales.create', ['animal_id' => $animalId]) }}"
                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center text-sm gap-1.5">
-                <span class="text-base font-bold">+</span> Nuevo Registro
+                <span class="text-base font-bold">+</span> Nuevo registro
             </a>
         </div>
     </div>
@@ -46,7 +46,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total Mediciones</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total mediciones</p>
                 <p id="statTotalCount" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $countRegistros }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
@@ -55,7 +55,7 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Altura Prom. (HC)</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Altura prom. (Hc)</p>
                 <p id="statPromAltura" class="text-3xl font-extrabold text-emerald-600">{{ $estadisticas['altura_promedio'] }} cm</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl">
@@ -64,7 +64,7 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Longitud Prom. (LC)</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Longitud prom. (Lc)</p>
                 <p id="statPromLongitud" class="text-3xl font-extrabold text-cyan-600">{{ $estadisticas['largura_promedio'] }} cm</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center text-2xl">
@@ -73,7 +73,7 @@
         </div>
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Perímetro Prom. (PT)</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Perímetro prom. (Pt)</p>
                 <p id="statPromPerimetro" class="text-3xl font-extrabold text-purple-600">{{ $estadisticas['circunferencia_promedio'] }} cm</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-2xl">
@@ -125,7 +125,7 @@
             <div>
                 <a href="{{ route('medidas-corporales.index') }}" onclick="limpiarFiltros(event)"
                    class="w-full px-4 py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                    Limpiar Filtros
+                    Limpiar filtros
                 </a>
             </div>
         </div>
@@ -139,9 +139,9 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Animal</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Alturas (Cruz / Grupa)</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Perímetros (Torácico / Caña)</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Longitudes (Corporal / Grupa)</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Alturas (cruz / grupa)</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Perímetros (torácico / caña)</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Longitudes (corporal / grupa)</th>
                             <th class="px-6 py-3.5 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
@@ -181,30 +181,30 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="space-y-1">
                                     <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 inline-block">
-                                        HC: {{ $alturaHc > 0 ? number_format($alturaHc, 1).' cm' : '-' }}
+                                        Hc: {{ $alturaHc > 0 ? number_format($alturaHc, 1).' cm' : '-' }}
                                     </span>
                                     <span class="text-xs text-gray-500 block">
-                                        HG: {{ $alturaHg > 0 ? number_format($alturaHg, 1).' cm' : '-' }}
+                                        Hg: {{ $alturaHg > 0 ? number_format($alturaHg, 1).' cm' : '-' }}
                                     </span>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="space-y-1">
                                     <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-purple-50 text-purple-700 border border-purple-200 inline-block">
-                                        PT: {{ $perimetroPt > 0 ? number_format($perimetroPt, 1).' cm' : '-' }}
+                                        Pt: {{ $perimetroPt > 0 ? number_format($perimetroPt, 1).' cm' : '-' }}
                                     </span>
                                     <span class="text-xs text-gray-500 block">
-                                        PCA: {{ $perimetroPca > 0 ? number_format($perimetroPca, 1).' cm' : '-' }}
+                                        Pca: {{ $perimetroPca > 0 ? number_format($perimetroPca, 1).' cm' : '-' }}
                                     </span>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="space-y-1">
                                     <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-cyan-50 text-cyan-700 border border-cyan-200 inline-block">
-                                        LC: {{ $longitudLc > 0 ? number_format($longitudLc, 1).' cm' : '-' }}
+                                        Lc: {{ $longitudLc > 0 ? number_format($longitudLc, 1).' cm' : '-' }}
                                     </span>
                                     <span class="text-xs text-gray-500 block">
-                                        LG: {{ $longitudLg > 0 ? number_format($longitudLg, 1).' cm' : '-' }}
+                                        Lg: {{ $longitudLg > 0 ? number_format($longitudLg, 1).' cm' : '-' }}
                                     </span>
                                 </div>
                             </td>
@@ -253,7 +253,7 @@
                 <p class="text-gray-500 text-sm mb-6">Comienza evaluando la morfometría física de los animales del rebaño</p>
                 <a href="{{ route('medidas-corporales.create', ['animal_id' => $animalId]) }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg text-sm">
-                    + Nuevo Registro
+                    + Nuevo registro
                 </a>
             </div>
         @endif

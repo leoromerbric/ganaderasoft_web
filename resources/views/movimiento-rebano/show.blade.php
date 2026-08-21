@@ -1,11 +1,11 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Detalle Movimiento de Rebaño')
+@section('title', 'Detalle movimiento de rebaño')
 
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 🔄
@@ -55,12 +55,12 @@
             <!-- Origen y Destino -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <h3 class="text-xl font-bold text-ganaderasoft-negro mb-6 flex items-center gap-2">
-                    <span>🏡</span> Ubicaciones del Traslado
+                    <span>🏡</span> Ubicaciones del traslado
                 </h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Origen del Movimiento</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Origen del movimiento</p>
                         <div class="space-y-2">
                             <div>
                                 <span class="text-xs text-gray-500">Rebaño:</span>
@@ -78,7 +78,7 @@
                     </div>
 
                     <div class="p-4 bg-blue-50/60 rounded-2xl border border-blue-100">
-                        <p class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Destino del Movimiento</p>
+                        <p class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Destino del movimiento</p>
                         <div class="space-y-2">
                             <div>
                                 <span class="text-xs text-blue-600">Rebaño:</span>
@@ -104,7 +104,7 @@
                     $totalAnimales = count($animales);
                 @endphp
                 <h3 class="text-xl font-bold text-ganaderasoft-negro mb-6 flex items-center gap-2">
-                    <span>🐄</span> Animales Movidos <span class="text-sm px-3 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200">Total: {{ $totalAnimales }}</span>
+                    <span>🐄</span> Animales movidos <span class="text-sm px-3 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-200">Total: {{ $totalAnimales }}</span>
                 </h3>
 
                 @if($totalAnimales > 0)
@@ -113,8 +113,8 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Nombre del Animal</th>
-                                    <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Código Identificador</th>
+                                    <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Nombre del animal</th>
+                                    <th class="px-6 py-3.5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Código identificador</th>
                                     <th class="px-6 py-3.5 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Acciones</th>
                                 </tr>
                             </thead>
@@ -162,7 +162,7 @@
             <!-- Observaciones y Comentarios -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <h3 class="text-xl font-bold text-ganaderasoft-negro mb-4 flex items-center gap-2">
-                    <span>💬</span> Comentarios u Observaciones
+                    <span>💬</span> Comentarios u observaciones
                 </h3>
                 @if(!empty($movimiento['comentario']))
                     <div class="p-4 bg-gray-50 border-l-4 border-ganaderasoft-celeste rounded-xl text-gray-700 text-sm leading-relaxed">
@@ -180,31 +180,31 @@
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                     <h3 class="text-lg font-bold flex items-center gap-2">
-                        <span>⚙️</span> Registro del Sistema
+                        <span>⚙️</span> Registro del sistema
                     </h3>
                 </div>
                 <div class="p-6 space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">ID del Movimiento</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">ID del movimiento</label>
                         <p class="text-sm font-bold font-mono text-gray-900">
                             #{{ $movimiento['id'] ?? 'N/A' }}
                         </p>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de Registro</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de registro</label>
                         <p class="text-sm font-semibold text-gray-900">
                             {{ isset($movimiento['created_at']) ? date('d/m/Y H:i', strtotime($movimiento['created_at'])) : 'N/A' }}
                         </p>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Última Modificación</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Última modificación</label>
                         <p class="text-sm font-semibold text-gray-900">
                             {{ isset($movimiento['updated_at']) ? date('d/m/Y H:i', strtotime($movimiento['updated_at'])) : 'N/A' }}
                         </p>
                     </div>
                     @if(isset($movimiento['created_at']))
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Antigüedad del Registro</label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Antigüedad del registro</label>
                         <p class="text-sm font-semibold text-gray-900">
                             {{ \Carbon\Carbon::parse($movimiento['created_at'])->diffForHumans() }}
                         </p>

@@ -1,18 +1,18 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Nuevo Período de Lactancia')
+@section('title', 'Nuevo período de lactancia')
 
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 🐄
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Nuevo Período de Lactancia
+                    Nuevo período de lactancia
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Registra el inicio de un nuevo ciclo de producción láctea para una hembra</p>
             </div>
@@ -59,13 +59,13 @@
                 <!-- Card 1: Selección de Hembra -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>🐄</span> Seleccionar Hembra del Rebaño
+                        <span>🐄</span> Seleccionar hembra del rebaño
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Animal Hembra <span class="text-red-500">*</span>
+                                Animal hembra <span class="text-red-500">*</span>
                             </label>
                             <select name="animal_id" id="animal_id" required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('animal_id') border-red-500 @enderror">
@@ -83,7 +83,7 @@
 
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Etapa Actual Activa <span class="text-red-500">*</span>
+                                Etapa actual activa <span class="text-red-500">*</span>
                             </label>
                             <select name="etapa_id" id="etapa_id" required
                                     class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('etapa_id') border-red-500 @enderror">
@@ -98,13 +98,13 @@
                 <!-- Card 2: Fechas del Ciclo -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>📅</span> Fechas del Período de Lactancia
+                        <span>📅</span> Fechas del período de lactancia
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Fecha de Inicio <span class="text-red-500">*</span>
+                                Fecha de inicio <span class="text-red-500">*</span>
                             </label>
                             <input type="date" name="fecha_inicio" id="fecha_inicio" required value="{{ old('fecha_inicio', date('Y-m-d')) }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('fecha_inicio') border-red-500 @enderror">
@@ -112,7 +112,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Fecha de Fin (Opcional)</label>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Fecha de fin (opcional)</label>
                             <input type="date" name="fecha_fin" id="fecha_fin" value="{{ old('fecha_fin') }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('fecha_fin') border-red-500 @enderror">
                             <p class="text-xs text-gray-400 mt-1">Vacío si está activa.</p>
@@ -120,7 +120,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Fecha de Secado (Opcional)</label>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Fecha de secado (opcional)</label>
                             <input type="date" name="secado" id="secado" value="{{ old('secado') }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('secado') border-red-500 @enderror">
                             <p class="text-xs text-gray-400 mt-1">Preparación para el próximo parto.</p>
@@ -135,14 +135,14 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                         <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span>📋</span> Resumen del Registro
+                            <span>📋</span> Resumen del registro
                         </h3>
                     </div>
 
                     <div class="p-6 space-y-5">
                         <!-- Preview Animal -->
                         <div class="p-4 bg-pink-50/60 border border-pink-100 rounded-2xl space-y-2">
-                            <span class="text-xs font-bold text-pink-900 uppercase tracking-wider">Hembra Seleccionada:</span>
+                            <span class="text-xs font-bold text-pink-900 uppercase tracking-wider">Hembra seleccionada:</span>
                             <p id="previewAnimalNombre" class="text-base font-bold text-gray-900">No seleccionada</p>
                             <p id="previewAnimalCodigo" class="text-xs text-gray-500 font-mono">-</p>
                         </div>
@@ -153,11 +153,11 @@
                                 <span id="previewEtapa" class="font-semibold text-gray-900">-</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>Fecha Inicio:</span>
+                                <span>Fecha inicio:</span>
                                 <span id="previewFechaInicio" class="font-semibold text-gray-900">{{ date('d/m/Y') }}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span>Estado Ciclo:</span>
+                                <span>Estado ciclo:</span>
                                 <span id="previewEstado" class="font-bold text-emerald-600">🟢 Activa</span>
                             </div>
                         </div>
@@ -166,7 +166,7 @@
                         <div class="space-y-3 pt-2">
                             <button type="submit"
                                     class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                                💾 Guardar Lactancia
+                                💾 Guardar lactancia
                             </button>
                             <a href="{{ route('lactancia.index') }}"
                                class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">

@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Nuevo Registro de Celo')
+@section('title', 'Nuevo registro de celo')
 
 @section('content')
 <div>
@@ -10,12 +10,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🌡️ Nuevo Registro de Celo</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🌡️ Nuevo registro de celo</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Datos del Registro de Celo</h3>
+            <h3 class="text-lg font-semibold">Datos del registro de celo</h3>
         </div>
         <form action="{{ route('registro-celo.store') }}" method="POST" class="p-6">
             @csrf
@@ -59,7 +59,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Celo <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de celo <span class="text-red-500">*</span></label>
                     <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha') border-red-500 @enderror">
                     @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror

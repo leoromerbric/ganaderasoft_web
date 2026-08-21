@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header Card -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl">
                 👤
@@ -63,7 +63,7 @@
                             @error('apellido')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="cedula" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Cédula / Documento <span class="text-red-500">*</span></label>
+                            <label for="cedula" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Cédula / documento <span class="text-red-500">*</span></label>
                             <input type="text" id="cedula" name="cedula" value="{{ old('cedula') }}" required placeholder="Ej: V12345678"
                                    class="w-full px-4 py-3 border @error('cedula') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all uppercase">
                             @error('cedula')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
@@ -122,7 +122,7 @@
                         <div id="roles-warning" class="hidden mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-xl flex items-start gap-3 transition-all duration-300">
                             <span class="text-yellow-600 text-lg leading-none">⚠️</span>
                             <p class="text-xs text-yellow-800 leading-relaxed font-medium">
-                                Has seleccionado rol de <strong>Administrador</strong> y <strong>Propietario</strong>. 
+                                Has seleccionado rol de <strong>Administrador</strong> Y <strong>Propietario</strong>. 
                                 Si el usuario crea fincas, no se le podrá quitar el rol de propietario posteriormente para evitar inconsistencias de datos, solo se le podrá remover el rol de administrador.
                             </p>
                         </div>
@@ -147,7 +147,7 @@
                             </div>
                             <div>
                                 <p id="previewNombre" class="text-base font-bold text-gray-900">Sin nombre</p>
-                                <p id="previewCorreo" class="text-xs text-gray-500">sin@correo.com</p>
+                                <p id="previewCorreo" class="text-xs text-gray-500">Sin@correo.Com</p>
                             </div>
                         </div>
 

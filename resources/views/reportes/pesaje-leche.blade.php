@@ -30,10 +30,10 @@
                 <thead>
                     <tr class="border-b border-gray-200 bg-gray-50/80 text-xs font-bold text-gray-600 uppercase tracking-wider">
                         <th class="py-3 px-4">Fecha pesaje</th>
-                        <th class="py-3 px-4">Rebaño / Lote</th>
-                        <th class="py-3 px-4">Ordeño mañana (Lts)</th>
-                        <th class="py-3 px-4">Ordeño tarde (Lts)</th>
-                        <th class="py-3 px-4 text-right">Total día (Lts)</th>
+                        <th class="py-3 px-4">Rebaño / lote</th>
+                        <th class="py-3 px-4">Ordeño mañana (lts)</th>
+                        <th class="py-3 px-4">Ordeño tarde (lts)</th>
+                        <th class="py-3 px-4 text-right">Total día (lts)</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">

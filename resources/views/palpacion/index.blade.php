@@ -1,12 +1,12 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Palpación Animal')
+@section('title', 'Palpación animal')
 
 @section('content')
 <div>
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🩺 Palpación Animal</h2>
+            <h2 class="text-3xl font-bold text-ganaderasoft-negro">🩺 Palpación animal</h2>
             <p class="text-gray-600 mt-1">Gestión de registros de palpación de los animales</p>
         </div>
         <a href="{{ route('palpacion.create') }}"
@@ -63,7 +63,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
-                    <input type="text" name="tipo" value="{{ $tipo }}" maxlength="11" placeholder="Preñez, Revision..."
+                    <input type="text" name="tipo" value="{{ $tipo }}" maxlength="11" placeholder="Preñez, revision..."
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
                 </div>
                 <div class="flex-none">
@@ -147,7 +147,7 @@
                 <p class="text-gray-500 mb-6">Comienza registrando la primera palpación</p>
                 <a href="{{ route('palpacion.create') }}"
                    class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200">
-                    Nueva Palpación
+                    Nueva palpación
                 </a>
             </div>
         @endif

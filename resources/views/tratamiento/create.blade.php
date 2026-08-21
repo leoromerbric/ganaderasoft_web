@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Nuevo Tratamiento')
+@section('title', 'Nuevo tratamiento')
 
 @section('content')
 <div>
@@ -10,12 +10,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">💊 Nuevo Tratamiento</h2>
+        <h2 class="text-3xl font-bold text-ganaderasoft-negro">💊 Nuevo tratamiento</h2>
     </div>
 
     <div class="bg-white rounded-xl shadow-md">
         <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Datos del Tratamiento</h3>
+            <h3 class="text-lg font-semibold">Datos del tratamiento</h3>
         </div>
         <form action="{{ route('tratamiento.store') }}" method="POST" class="p-6">
             @csrf
@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Plan de Tratamiento</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Plan de tratamiento</label>
                     <input type="text" name="plan" value="{{ old('plan') }}" maxlength="255"
                            placeholder="Descripción del plan de tratamiento..."
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('plan') border-red-500 @enderror">
@@ -59,14 +59,14 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Inicio <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de inicio <span class="text-red-500">*</span></label>
                     <input type="date" name="fecha_ini" required value="{{ old('fecha_ini', date('Y-m-d')) }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha_ini') border-red-500 @enderror">
                     @error('fecha_ini')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Fin <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de fin <span class="text-red-500">*</span></label>
                     <input type="date" name="fecha_fin" required value="{{ old('fecha_fin') }}"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha_fin') border-red-500 @enderror">
                     @error('fecha_fin')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
