@@ -32,6 +32,11 @@ class VacunacionController extends Controller
             return [];
         }
 
+        // Si la respuesta indica un fallo en la API, retornamos un array vacío
+        if (is_array($response) && isset($response['success']) && !$response['success']) {
+            return [];
+        }
+
         // Si ya es una lista indexada de objetos/arrays [0 => [...], 1 => [...]]
         if (is_array($response) && array_is_list($response)) {
             return $response;
@@ -84,7 +89,12 @@ class VacunacionController extends Controller
         ]);
 
         $response = $this->service->getList($filters);
-        $vacunaciones = $this->extractData($response);
+        if (!($response['success'] ?? false)) {
+            session()->now('error', $this->apiMessage($response, 'No se pudieron cargar los registros de vacunación.'));
+            $vacunaciones = [];
+        } else {
+            $vacunaciones = $this->extractData($response);
+        }
 
         $vacunas = $this->extractData($this->vacunaService->getAll());
         $rebanos = $this->extractData($this->rebanoService->getRebanos());
