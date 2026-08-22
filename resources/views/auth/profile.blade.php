@@ -3,7 +3,7 @@
 @section('title', 'Mi perfil')
 
 @section('content')
-<div class="max-w-6xl mx-auto space-y-4 sm:space-y-6">
+<div class="space-y-4 sm:space-y-6">
 
     <!-- Header Section -->
     <div>
