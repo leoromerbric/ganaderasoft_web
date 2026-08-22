@@ -122,7 +122,7 @@
 
                 <div>
                     <a href="{{ route('vacunacion.index') }}"
-                       class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[46px]">
+                       class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[42px]">
                         Limpiar filtros
                     </a>
                 </div>
@@ -189,13 +189,13 @@
                                 data-archivado="{{ $animalEstado }}">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 shrink-0 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg border border-blue-100">
-                                            🐮
+                                        <div class="w-10 h-10 shrink-0 rounded-xl {{ $animalSexo === 'M' ? 'bg-blue-50 text-blue-600 border border-blue-100' : 'bg-pink-50 text-pink-600 border border-pink-100' }} flex items-center justify-center font-bold text-lg">
+                                            {{ $animalSexo === 'M' ? '🐂' : '🐄' }}
                                         </div>
-                                        <div>
-                                            <p class="font-bold text-gray-900">{{ $animalCodigo }} - {{ $animalNombre }}</p>
+                                        <div class="overflow-hidden">
+                                            <p class="font-bold text-gray-900 truncate">{{ $animalNombre }}</p>
                                             <p class="text-xs text-gray-400">
-                                                {{ $animalSexo === 'H' ? 'Hembra' : ($animalSexo === 'M' ? 'Macho' : '') }}
+                                                ID: #{{ $animalId }} • Código: {{ $animalCodigo }}
                                                 @if($rebanoNombre) • {{ $rebanoNombre }} @endif
                                                 @if($fincaNombre) ({{ $fincaNombre }}) @endif
                                             </p>

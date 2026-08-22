@@ -27,25 +27,28 @@
     @endif
 
     <!-- Filtros -->
-    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 mb-6">
         <form method="GET" action="{{ route('servicio-animal.index') }}">
-            <div class="flex flex-nowrap gap-3 items-end">
-                <div class="flex-1 min-w-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Finca</label>
-                    <select id="filtroFinca" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-4 items-end">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
+                    <select id="filtroFinca"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                         <option value="">Todas las fincas</option>
                     </select>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Rebano</label>
-                    <select id="filtroRebano" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
-                        <option value="">Todos los rebanos</option>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño</label>
+                    <select id="filtroRebano"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                        <option value="">Todos los rebaños</option>
                     </select>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Animal</label>
-                    <select name="animal_id" id="filtroAnimal" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
-                        <option value="">Todos</option>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Animal</label>
+                    <select name="animal_id" id="filtroAnimal"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                        <option value="">Todos los animales</option>
                         @foreach($animales as $animal)
                             @php
                                 $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
@@ -61,22 +64,30 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
-                    <input type="text" name="tipo" value="{{ $tipo }}" maxlength="11" placeholder="Tipo de servicio..."
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Tipo</label>
+                    <input type="text" name="tipo" value="{{ $tipo }}" placeholder="Tipo..."
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
-                <div class="flex-none">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Desde</label>
-                    <input type="date" name="fecha_inicio" value="{{ $fechaInicio }}" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Desde</label>
+                    <input type="date" name="fecha_inicio" value="{{ $fechaInicio }}"
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
-                <div class="flex-none">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Hasta</label>
-                    <input type="date" name="fecha_fin" value="{{ $fechaFin }}" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Hasta</label>
+                    <input type="date" name="fecha_fin" value="{{ $fechaFin }}"
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
-                <div class="flex-none flex gap-2">
-                    <button type="submit" class="px-4 py-2 bg-ganaderasoft-celeste text-white rounded-lg hover:bg-ganaderasoft-azul transition-colors">Filtrar</button>
-                    <a href="{{ route('servicio-animal.index') }}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">Limpiar</a>
+                <div class="flex gap-2 w-full">
+                    <button type="submit"
+                            class="flex-1 px-4 py-2.5 bg-ganaderasoft-celeste text-white rounded-xl hover:bg-ganaderasoft-azul font-medium transition-colors text-sm h-[42px] flex items-center justify-center">
+                        Filtrar
+                    </button>
+                    <a href="{{ route('servicio-animal.index') }}"
+                       class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-medium transition-colors text-sm h-[42px] flex items-center justify-center text-center">
+                        Limpiar
+                    </a>
                 </div>
             </div>
         </form>
@@ -88,12 +99,11 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Animal</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Observación</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Animal</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tipo</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Observación</th>
+                            <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -102,33 +112,69 @@
                             $sId = $servicio['id'] ?? $servicio['servicio_id'] ?? null;
                             $animalId = $servicio['animal_id'] ?? $servicio['servicio_id_Animal'] ?? data_get($servicio, 'etapa_animal.animal_id') ?? '';
                             $animalRefId = data_get($servicio, 'animal.id') ?? data_get($servicio, 'animal.id_Animal') ?? $animalId;
-                            $animalNombre = data_get($servicio, 'animal.Nombre') ?? ('Animal #'.$animalId);
+                            $animalNombre = data_get($servicio, 'animal.Nombre') ?? data_get($servicio, 'animal.nombre') ?? ('Animal #'.$animalId);
                             $tipo = $servicio['tipo'] ?? $servicio['servicio_tipo'] ?? '-';
                             $fecha = $servicio['fecha'] ?? $servicio['servicio_fecha'] ?? null;
                             $observacion = $servicio['observacion'] ?? $servicio['servicio_observacion'] ?? '-';
+                            
+                            $sexoVal = data_get($servicio, 'animal.sexo') ?? data_get($servicio, 'animal.Sexo') ?? 'H';
+                            $isMacho = in_array(strtoupper((string)$sexoVal), ['M', 'MACHO', 'MASCULINO']);
                         @endphp
                         <tr class="hover:bg-gray-50 transition-colors" data-animal-id="{{ $animalRefId }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $sId ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $animalNombre }}
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 shrink-0 rounded-xl {{ $isMacho ? 'bg-blue-50 text-blue-600 border border-blue-100' : 'bg-pink-50 text-pink-600 border border-pink-100' }} flex items-center justify-center font-bold text-lg">
+                                        {{ $isMacho ? '🐂' : '🐄' }}
+                                    </div>
+                                    <div class="overflow-hidden">
+                                        <p class="font-bold text-gray-900 truncate">{{ $animalNombre }}</p>
+                                        <p class="text-xs text-gray-400">ID: #{{ $animalRefId }}</p>
+                                    </div>
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $tipo }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 {{ $fecha ? date('d/m/Y', strtotime($fecha)) : 'N/A' }}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500">{{ $observacion }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex space-x-2">
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                                <div class="flex justify-center space-x-2">
+                                    <!-- Botón de Ver Detalles -->
                                     <a href="{{ route('servicio-animal.show', $sId) }}"
-                                       class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul">Ver</a>
-                                    <span class="text-gray-300">|</span>
+                                       class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-celeste/10 text-ganaderasoft-celeste hover:bg-ganaderasoft-celeste hover:text-white transition-colors"
+                                       title="Ver detalle">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                    </a>
+                                    
+                                    <!-- Botón de Editar -->
                                     <a href="{{ route('servicio-animal.edit', $sId) }}"
-                                       class="text-ganaderasoft-verde hover:text-green-700">Editar</a>
-                                    <span class="text-gray-300">|</span>
-                                    <form method="POST" action="{{ route('servicio-animal.destroy', $sId) }}" class="inline"
-                                          onsubmit="return confirm('¿Está seguro de que desea eliminar este registro?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-700">Eliminar</button>
+                                       class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-azul/10 text-ganaderasoft-azul hover:bg-ganaderasoft-azul hover:text-white transition-colors"
+                                       title="Editar registro">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </a>
+
+                                    <!-- Botón de Eliminar con Modal -->
+                                    <form method="POST" action="{{ route('servicio-animal.destroy', $sId) }}" class="inline-block" id="form-delete-servicio-{{ $sId }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" onclick="openGenericConfirmModal({
+                                            formId: 'form-delete-servicio-{{ $sId }}',
+                                            intent: 'danger',
+                                            title: 'Eliminar servicio animal',
+                                            message: '¿Estás seguro de que deseas eliminar este servicio reproductivo? Esta acción no se puede deshacer.',
+                                            confirmText: 'Sí, eliminar'
+                                        })"
+                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                                           title="Eliminar registro">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                        </button>
                                     </form>
                                 </div>
                             </td>
@@ -150,6 +196,9 @@
         @endif
     </div>
 </div>
+
+<x-ui.confirm-modal />
+
     <script>
     (function(){
         var f=document.getElementById('filtroFinca'),r=document.getElementById('filtroRebano'),a=document.getElementById('filtroAnimal');
