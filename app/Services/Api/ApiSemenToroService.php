@@ -13,11 +13,15 @@ class ApiSemenToroService extends BaseApiService implements SemenToroServiceInte
      * @param bool|null $activo
      * @return array
      */
-    public function getList(?int $toroId = null, ?bool $activo = null): array
+    public function getList(?int $toroId = null, ?bool $activo = null, ?string $fechaInicio = null, ?string $fechaFin = null, ?int $fincaId = null, ?int $rebanoId = null): array
     {
         $params = [
-            'toro_id' => $toroId,
-            'activo'  => $activo !== null ? ($activo ? '1' : '0') : null,
+            'toro_id'      => $toroId,
+            'activo'       => $activo !== null ? ($activo ? '1' : '0') : null,
+            'fecha_inicio' => $fechaInicio,
+            'fecha_fin'    => $fechaFin,
+            'finca_id'     => $fincaId,
+            'rebano_id'    => $rebanoId,
         ];
 
         return $this->get('/semen-toro' . $this->buildQuery($params, true));

@@ -3,29 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\SemenToroServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
+use App\Services\Contracts\RebanosServiceInterface;
 use Illuminate\Http\Request;
 
 class SemenToroController extends Controller
 {
-    public function __construct(protected SemenToroServiceInterface $service) {}
+    public function __construct(
+        protected SemenToroServiceInterface $service,
+        protected FincasServiceInterface $fincasService,
+        protected RebanosServiceInterface $rebanosService
+    ) {}
 
-    public function index(Request $request)
+    private function isMale(array $animal): bool
     {
-        $toroId  = $request->query('toro_id');
-        $activo  = $request->query('activo');
+        $sexo = strtoupper((string) ($animal['Sexo'] ?? $animal['sexo'] ?? ''));
+        if ($sexo !== '') {
+            return in_array($sexo, ['M', 'MACHO', 'MASCULINO'], true);
+        }
 
-        $response = $this->service->getList($toroId, $activo !== null ? (bool)$activo : null);
-        $data = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
-        $semenToros = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
-        $toros    = $this->service->getToros();
-
-        return view('semen-toro.index', compact('semenToros', 'toros', 'toroId', 'activo'));
+        $label = strtolower(trim((string) ($animal['sexo_label'] ?? $animal['genero'] ?? '')));
+        return in_array($label, ['masculino', 'macho'], true);
     }
 
-    public function create()
+    private function filterMaleAnimals(array $animales): array
     {
-        $toros = $this->service->getToros();
-        return view('semen-toro.create', compact('toros'));
+        $filtered = array_values(array_filter($animales, fn (array $animal) => $this->isMale($animal)));
+        return !empty($filtered) ? $filtered : $animales;
     }
 
     private function apiMessage(array $response, string $fallback): string
@@ -50,6 +54,54 @@ class SemenToroController extends Controller
         return $fallback;
     }
 
+    public function index(Request $request)
+    {
+        $toroId      = $request->query('toro_id');
+        $activo      = $request->query('activo');
+        $fincaId     = $request->query('finca_id');
+        $rebanoId    = $request->query('rebano_id');
+        $fechaInicio = $request->query('fecha_inicio');
+        $fechaFin    = $request->query('fecha_fin');
+
+        $response   = $this->service->getList(
+            $toroId ? (int)$toroId : null,
+            $activo !== null && $activo !== '' ? (bool)$activo : null,
+            $fechaInicio,
+            $fechaFin,
+            $fincaId ? (int)$fincaId : null,
+            $rebanoId ? (int)$rebanoId : null
+        );
+        $data       = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
+        $semenToros = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
+        $toros      = $this->filterMaleAnimals($this->service->getToros());
+
+        $fincasRes  = $this->fincasService->getFincas();
+        $fincas     = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        return view('semen-toro.index', compact(
+            'semenToros', 'toros', 'fincas', 'rebanos',
+            'toroId', 'activo', 'fincaId', 'rebanoId', 'fechaInicio', 'fechaFin'
+        ));
+    }
+
+    public function create(Request $request)
+    {
+        $toros = $this->filterMaleAnimals($this->service->getToros());
+
+        $fincasRes  = $this->fincasService->getFincas();
+        $fincas     = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        $presetAnimalId = $request->query('animal_id') ?? $request->query('toro_id');
+
+        return view('semen-toro.create', compact('toros', 'fincas', 'rebanos', 'presetAnimalId'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -57,12 +109,12 @@ class SemenToroController extends Controller
             'estado'    => 'nullable',
             'fecha'     => 'nullable|date',
         ], [
-            'animal_id.required' => 'El toro es requerido.',
+            'animal_id.required' => 'El toro donante es requerido.',
         ]);
 
         $data = $request->only(['animal_id', 'estado', 'fecha']);
         if (!isset($data['estado']) || $data['estado'] === '') {
-            $data['estado'] = false;
+            $data['estado'] = true;
         } else {
             $data['estado'] = filter_var($data['estado'], FILTER_VALIDATE_BOOLEAN);
         }
@@ -91,17 +143,26 @@ class SemenToroController extends Controller
         if (!($response['success'] ?? false)) {
             return redirect()->route('semen-toro.index')->with('error', 'Registro no encontrado.');
         }
-        $semen = $response['data'];
-        $toros = $this->service->getToros();
-        return view('semen-toro.edit', compact('semen', 'toros'));
+        $semen   = $response['data'];
+        $toros   = $this->filterMaleAnimals($this->service->getToros());
+
+        $fincasRes  = $this->fincasService->getFincas();
+        $fincas     = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        return view('semen-toro.edit', compact('semen', 'toros', 'fincas', 'rebanos'));
     }
 
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'animal_id' => 'nullable|integer',
+            'animal_id' => 'required|integer',
             'estado'    => 'nullable',
             'fecha'     => 'nullable|date',
+        ], [
+            'animal_id.required' => 'El toro donante es requerido.',
         ]);
 
         $data = $request->only(['animal_id', 'estado', 'fecha']);
@@ -122,8 +183,8 @@ class SemenToroController extends Controller
     {
         $response = $this->service->eliminar($id);
         if ($response['success'] ?? false) {
-            return redirect()->route('semen-toro.index')->with('success', 'Registro de semen eliminado.');
+            return redirect()->route('semen-toro.index')->with('success', 'Registro de semen eliminado exitosamente.');
         }
-        return redirect()->route('semen-toro.index')->with('error', $response['message'] ?? 'Error al eliminar.');
+        return redirect()->route('semen-toro.index')->with('error', $this->apiMessage($response, 'Error al eliminar.'));
     }
 }
