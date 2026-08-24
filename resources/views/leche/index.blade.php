@@ -110,13 +110,13 @@
         @if(count($registrosLeche) > 0)
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200" id="tablaContenedor">
-                    <thead class="bg-gray-50">
-                        <tr class="flex justify-between items-center w-full">
-                            <th class="w-1/5 px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Ejemplar</th>
-                            <th class="w-1/5 px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha pesaje</th>
-                            <th class="w-1/5 px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Volumen registrado</th>
-                            <th class="w-1/5 px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Lactancia</th>
-                            <th class="w-1/5 px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                    <thead class="bg-gray-50/80">
+                        <tr>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Ejemplar</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha pesaje</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Volumen registrado</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Lactancia</th>
+                            <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-100 text-sm" id="tablaLeche">
@@ -129,49 +129,56 @@
                             $fechaPesaje = $registro['fecha_pesaje'] ?? null;
                             $pesajeTotal = (float)($registro['pesaje_total'] ?? 0);
                         @endphp
-                        <tr class="hover:bg-gray-50/80 transition-colors fila-leche flex justify-between items-center w-full"
+                        <tr class="hover:bg-gray-50/80 transition-colors fila-leche"
                             data-lactancia-id="{{ $lactanciaIdReg }}"
                             data-nombre="{{ strtolower($animalNombre) }}"
                             data-codigo="{{ strtolower($animalCodigo) }}"
                             data-fecha="{{ $fechaPesaje ? substr($fechaPesaje, 0, 10) : '' }}"
                             data-volumen="{{ $pesajeTotal }}">
-                            <td class="w-1/5 px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 shrink-0 rounded-xl bg-pink-50 border border-pink-100 text-pink-600 font-bold flex items-center justify-center text-lg">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center space-x-3.5">
+                                    <div class="w-10 h-10 shrink-0 rounded-2xl bg-pink-50 border border-pink-100 text-pink-600 font-bold flex items-center justify-center text-lg shadow-xs">
                                         🐄
                                     </div>
                                     <div class="overflow-hidden">
                                         <p class="font-bold text-gray-900 truncate">{{ $animalNombre }}</p>
                                         <p class="text-xs text-gray-400 font-mono">
-                                            {{ $animalCodigo ? '#'.$animalCodigo : 'Lactancia: #'.$lactanciaIdReg }}
+                                            {{ $animalCodigo ? '#'.$animalCodigo : 'ID #'.$lecheId }}
                                         </p>
                                     </div>
                                 </div>
                             </td>
-                            <td class="w-1/5 px-6 py-4 whitespace-nowrap text-gray-700 font-medium">
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-medium">
                                 {{ $fechaPesaje ? \Carbon\Carbon::parse($fechaPesaje)->format('d/m/Y') : '--/--/----' }}
                             </td>
-                            <td class="w-1/5 px-6 py-4 whitespace-nowrap">
-                                <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs">
                                     🥛 {{ number_format($pesajeTotal, 2, ',', '.') }} L
                                 </span>
                             </td>
-                            <td class="w-1/5 px-6 py-4 whitespace-nowrap text-gray-600 font-medium">
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 @if($lactanciaIdReg)
-                                    <a href="{{ route('lactancia.show', $lactanciaIdReg) }}" class="inline-flex items-center gap-1 text-ganaderasoft-azul hover:underline text-xs font-mono">
-                                        Ciclo #{{ $lactanciaIdReg }}
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                    <a href="{{ route('lactancia.show', $lactanciaIdReg) }}" 
+                                       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200/80 text-purple-800 text-xs font-bold transition-all shadow-xs hover:shadow-sm group"
+                                       title="Ver ciclo de lactancia #{{ $lactanciaIdReg }}">
+                                        <span>🥛</span>
+                                        <span class="font-mono">Ciclo #{{ $lactanciaIdReg }}</span>
+                                        <svg class="w-3.5 h-3.5 text-purple-400 group-hover:text-purple-700 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
                                     </a>
                                 @else
-                                    <span class="text-gray-400 text-xs">Sin asignar</span>
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-50 border border-gray-200 text-gray-400 text-xs font-medium">
+                                        Sin asignar
+                                    </span>
                                 @endif
                             </td>
-                            <td class="w-1/5 px-6 py-4 whitespace-nowrap text-center text-sm">
+                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
                                 <div class="flex justify-center space-x-2">
                                     @if($lecheId)
                                         <!-- Botón de Ver Detalles -->
                                         <a href="{{ route('leche.show', $lecheId) }}" 
-                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-celeste/10 text-ganaderasoft-celeste hover:bg-ganaderasoft-celeste hover:text-white transition-colors"
+                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-celeste/10 text-ganaderasoft-celeste hover:bg-ganaderasoft-celeste hover:text-white transition-colors shadow-xs"
                                            title="Ver detalle del pesaje">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -181,7 +188,7 @@
 
                                         <!-- Botón de Editar -->
                                         <a href="{{ route('leche.edit', $lecheId) }}" 
-                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-azul/10 text-ganaderasoft-azul hover:bg-ganaderasoft-azul hover:text-white transition-colors"
+                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-azul/10 text-ganaderasoft-azul hover:bg-ganaderasoft-azul hover:text-white transition-colors shadow-xs"
                                            title="Editar pesaje">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -199,7 +206,7 @@
                                                 message: '¿Estás seguro de que deseas eliminar este pesaje de leche? Esta acción no se puede deshacer.',
                                                 confirmText: 'Sí, eliminar'
                                             })"
-                                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                                               class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors shadow-xs"
                                                title="Eliminar pesaje">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
