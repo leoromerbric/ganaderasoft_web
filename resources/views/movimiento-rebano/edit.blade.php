@@ -61,51 +61,72 @@
             <div class="lg:col-span-2 space-y-6">
                 <!-- Resumen Inmutable de Ubicaciones -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
-                    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-                        <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                            <span>🚚</span> Ubicaciones del traslado
-                        </h3>
-                        <span class="text-xs font-semibold px-3 py-1 bg-gray-100 text-gray-600 rounded-full border border-gray-200 inline-flex items-center gap-1">
-                            🔒 Inmutables por trazabilidad
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-100 pb-3">
+                        <div>
+                            <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                                <span>🚚</span> Ubicaciones del traslado
+                            </h3>
+                            <p class="text-xs text-gray-500 mt-0.5">Información de procedencia y destino del movimiento</p>
+                        </div>
+                        <span class="px-3.5 py-1.5 bg-gray-100 text-gray-700 font-semibold rounded-full border border-gray-200 text-xs inline-flex items-center gap-1.5 self-start sm:self-auto shadow-xs">
+                            <span>🔒</span> Inmutables por trazabilidad
                         </span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Origen Card -->
-                        <div class="p-5 bg-amber-50/60 border border-amber-100 rounded-2xl space-y-3">
-                            <p class="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
-                                <span>🏡</span> Ubicación de origen
-                            </p>
-                            <div>
-                                <span class="text-xs text-gray-500">Rebaño:</span>
-                                <p class="text-base font-bold text-gray-900">
-                                    🐄 {{ data_get($movimiento, 'rebano_origen.nombre') ?? 'N/A' }}
-                                </p>
+                        <div class="p-6 bg-amber-50/70 border border-amber-200/80 rounded-2xl space-y-4 shadow-xs">
+                            <div class="flex items-center justify-between border-b border-amber-200/60 pb-3">
+                                <span class="text-xs font-bold text-amber-950 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="text-base">🏡</span> Ubicación de origen
+                                </span>
+                                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
+                                    Procedencia
+                                </span>
                             </div>
-                            <div>
-                                <span class="text-xs text-gray-500">Finca:</span>
-                                <p class="text-sm font-semibold text-gray-700">
-                                    🏡 {{ data_get($movimiento, 'finca_origen.nombre') ?? 'N/A' }}
-                                </p>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-amber-900/70 uppercase tracking-wider mb-1">Rebaño emisor</label>
+                                    <p class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                        <span>🐄</span> {{ data_get($movimiento, 'rebano_origen.nombre') ?? 'N/A' }}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-amber-900/70 uppercase tracking-wider mb-1">Finca asociada</label>
+                                    <p class="text-base font-semibold text-gray-800 flex items-center gap-2">
+                                        <span>🏡</span> {{ data_get($movimiento, 'finca_origen.nombre') ?? 'N/A' }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Destino Card -->
-                        <div class="p-5 bg-blue-50/60 border border-blue-100 rounded-2xl space-y-3">
-                            <p class="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-                                <span>🎯</span> Ubicación de destino
-                            </p>
-                            <div>
-                                <span class="text-xs text-blue-600">Rebaño:</span>
-                                <p class="text-base font-bold text-ganaderasoft-azul">
-                                    🐄 {{ data_get($movimiento, 'rebano_destino_rel.nombre') ?? $movimiento['rebano_destino'] ?? 'N/A' }}
-                                </p>
+                        <div class="p-6 bg-blue-50/70 border border-blue-200/80 rounded-2xl space-y-4 shadow-xs">
+                            <div class="flex items-center justify-between border-b border-blue-200/60 pb-3">
+                                <span class="text-xs font-bold text-blue-950 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="text-base">🎯</span> Ubicación de destino
+                                </span>
+                                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-900 border border-blue-200">
+                                    Recepción
+                                </span>
                             </div>
-                            <div>
-                                <span class="text-xs text-blue-600">Finca:</span>
-                                <p class="text-sm font-semibold text-blue-900">
-                                    🏡 {{ data_get($movimiento, 'finca_destino.nombre') ?? 'N/A' }}
-                                </p>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-blue-900/70 uppercase tracking-wider mb-1">Rebaño receptor</label>
+                                    <p class="text-lg font-bold text-ganaderasoft-azul flex items-center gap-2">
+                                        <span>🐄</span> {{ data_get($movimiento, 'rebano_destino_rel.nombre') ?? $movimiento['rebano_destino'] ?? 'N/A' }}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-blue-900/70 uppercase tracking-wider mb-1">Finca receptora</label>
+                                    <p class="text-base font-semibold text-blue-900 flex items-center gap-2">
+                                        <span>🏡</span> {{ data_get($movimiento, 'finca_destino.nombre') ?? 'N/A' }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>

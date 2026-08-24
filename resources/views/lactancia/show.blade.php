@@ -71,25 +71,31 @@
                     <span>🐄</span> Hembra asociada
                 </h3>
 
-                <div class="p-4 bg-gray-50 border border-gray-100 rounded-2xl flex items-center justify-between">
+                <div class="p-5 bg-gray-50/90 border border-gray-200/80 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 rounded-xl bg-pink-50 border border-pink-100 text-pink-600 font-bold flex items-center justify-center text-2xl shadow-xs">
+                        <div class="w-14 h-14 rounded-2xl bg-pink-50 border border-pink-100 text-pink-600 font-bold flex items-center justify-center text-3xl shadow-xs shrink-0">
                             🐄
                         </div>
                         <div>
-                            <p class="text-lg font-bold text-gray-900">{{ $animalNombre }}</p>
-                            @if($animalCodigo)
-                                <p class="text-xs text-gray-500 font-mono">Código: #{{ $animalCodigo }}</p>
-                            @endif
-                            <p class="text-xs text-gray-500 font-semibold mt-0.5">Etapa: {{ $etapaNombre }}</p>
+                            <p class="text-xl font-bold text-gray-900">{{ $animalNombre }}</p>
+                            <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                                @if($animalCodigo)
+                                    <span class="text-xs font-mono text-gray-600 bg-white px-2.5 py-0.5 rounded-md border border-gray-200 font-semibold">
+                                        #{{ $animalCodigo }}
+                                    </span>
+                                @endif
+                                <span class="text-xs font-semibold text-pink-700 bg-pink-50 px-2.5 py-0.5 rounded-full border border-pink-100">
+                                    Etapa: {{ $etapaNombre }}
+                                </span>
+                            </div>
                         </div>
                     </div>
 
                     @if($animalId)
                         <div>
                             <a href="{{ route('animales.show', $animalId) }}"
-                               class="px-4 py-2 bg-white hover:bg-gray-100 border border-gray-200 text-gray-700 font-semibold rounded-xl text-xs flex items-center gap-1.5 transition-colors shadow-xs">
-                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="px-5 py-2.5 bg-white hover:bg-gray-100 border border-gray-300 text-gray-800 font-semibold rounded-xl text-sm inline-flex items-center gap-2 transition-all shadow-xs hover:shadow-sm">
+                                <svg class="w-4 h-4 text-ganaderasoft-azul" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                 </svg>
@@ -102,9 +108,11 @@
 
             <!-- Card 2: Cronología del Ciclo Productivo -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
-                <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                    <span>📅</span> Cronología del ciclo productivo
-                </h3>
+                <div class="border-b border-gray-100 pb-3">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                        <span>📅</span> Cronología del ciclo productivo
+                    </h3>
+                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-1">
@@ -158,41 +166,70 @@
             </div>
         </div>
 
-        <!-- Columna Derecha: Panel de Estado y Metadatos (1 Tercio) -->
+        <!-- Columna Derecha: Tarjetas de Estado y Metadatos (1 Tercio) -->
         <div class="space-y-6">
+            <!-- Ficha del Ciclo Card -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="bg-slate-50 border-b border-gray-100 px-6 py-4">
-                    <h3 class="text-base font-bold text-ganaderasoft-negro flex items-center gap-2">
-                        <span>⚙️</span> Estado del sistema
+                <div class="bg-ganaderasoft-verde-oscuro text-white px-6 py-4">
+                    <h3 class="text-lg font-semibold flex items-center gap-2">
+                        <span>📋</span> Ficha de lactancia
                     </h3>
                 </div>
-
                 <div class="p-6 space-y-4">
-                    <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500">Estado del ciclo:</span>
-                            @if($isActiva)
-                                <span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                    🟢 Activa
-                                </span>
-                            @else
-                                <span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-gray-100 text-gray-700 border border-gray-200">
-                                    ⚪ Finalizada
-                                </span>
-                            @endif
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">ID lactancia:</span>
-                            <span class="font-bold text-gray-900 font-mono">#{{ $lactanciaId }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Fecha de registro:</span>
-                            <span class="font-semibold text-gray-800">{{ isset($lactancia['created_at']) ? date('d/m/Y H:i', strtotime($lactancia['created_at'])) : 'N/A' }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Última actualización:</span>
-                            <span class="font-semibold text-gray-800">{{ isset($lactancia['updated_at']) ? date('d/m/Y H:i', strtotime($lactancia['updated_at'])) : 'N/A' }}</span>
-                        </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Estado del ciclo</label>
+                        @if($isActiva)
+                            <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                🟢 Período activo
+                            </span>
+                        @else
+                            <span class="inline-flex px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-700 border border-gray-200">
+                                ⚪ Período finalizado
+                            </span>
+                        @endif
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Etapa evaluada</label>
+                        <p class="text-sm font-bold text-gray-900">{{ $etapaNombre }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de inicio</label>
+                        <p class="text-sm font-semibold text-gray-900">{{ $fechaInicio ? \Carbon\Carbon::parse($fechaInicio)->format('d/m/Y') : 'N/A' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registro del Sistema Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <span>⚙️</span> Registro del sistema
+                    </h3>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">ID de lactancia</label>
+                        <p class="text-sm font-bold text-gray-900 font-mono">
+                            ID #{{ $lactanciaId ?? 'N/A' }}
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Identificador del animal</label>
+                        <p class="text-sm font-bold text-gray-900 font-mono">
+                            Animal ID #{{ $animalId ?? 'N/A' }}
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fecha de registro</label>
+                        <p class="text-sm font-semibold text-gray-900">
+                            {{ isset($lactancia['created_at']) ? date('d/m/Y H:i', strtotime($lactancia['created_at'])) : (isset($lactancia['fecha_registro']) ? date('d/m/Y H:i', strtotime($lactancia['fecha_registro'])) : 'N/A') }}
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Última actualización</label>
+                        <p class="text-sm font-semibold text-gray-900">
+                            {{ isset($lactancia['updated_at']) ? date('d/m/Y H:i', strtotime($lactancia['updated_at'])) : 'N/A' }}
+                        </p>
                     </div>
                 </div>
             </div>

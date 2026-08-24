@@ -167,18 +167,18 @@
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-100 pb-4">
                         <div>
                             <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                                <span>🐄</span> Selección de animales
+                                <span>🐄</span> Selección de animales <span class="text-red-500">*</span>
                             </h3>
                             <p class="text-xs text-gray-500 mt-0.5">Selecciona los ejemplares que formarán parte de este traslado</p>
                         </div>
 
                         <!-- Search Animal Input -->
-                        <div class="w-full sm:w-64">
+                        <div class="w-full sm:w-72">
                             <div class="relative">
                                 <input type="text" id="buscarAnimalInput" placeholder="Filtrar por nombre o código..."
-                                       class="w-full px-3.5 py-2 pl-9 border border-gray-300 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                       class="w-full px-4 py-2.5 pl-10 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                     </svg>
                                 </div>
@@ -187,12 +187,12 @@
                     </div>
 
                     <!-- Master Checkbox & Count Bar -->
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
-                        <label class="inline-flex items-center space-x-2.5 cursor-pointer">
+                    <div class="flex items-center justify-between p-4 bg-gray-50/90 rounded-xl border border-gray-200/80">
+                        <label class="inline-flex items-center space-x-3 cursor-pointer">
                             <input type="checkbox" id="selectAllAnimales" class="rounded border-gray-300 text-ganaderasoft-verde-oscuro focus:ring-ganaderasoft-verde-oscuro h-4 w-4">
-                            <span class="text-xs font-bold text-gray-700 select-none">Seleccionar todos los visibles</span>
+                            <span class="text-sm font-bold text-gray-800 select-none">Seleccionar todos los visibles</span>
                         </label>
-                        <span id="labelAnimalesVisibles" class="text-xs text-gray-500 font-medium">
+                        <span id="labelAnimalesVisibles" class="text-xs font-semibold px-3 py-1 bg-white text-gray-600 rounded-full border border-gray-200 shadow-xs">
                             0 animales disponibles
                         </span>
                     </div>
@@ -214,14 +214,14 @@
                                 $isSelected = in_array((string)$aId, array_map('strval', $oldSelected), true);
                             @endphp
                             @if($aId)
-                                <label class="animal-item flex items-center justify-between p-3 border border-gray-200 hover:border-ganaderasoft-celeste hover:bg-ganaderasoft-celeste/5 rounded-xl cursor-pointer transition-all duration-150"
+                                <label class="animal-item flex items-center justify-between p-3.5 bg-white border border-gray-200 hover:border-ganaderasoft-celeste hover:bg-ganaderasoft-celeste/5 rounded-xl cursor-pointer transition-all duration-150 shadow-xs"
                                        data-rebano-id="{{ $aRebanoId }}"
                                        data-search="{{ strtolower($aNombre.' '.$aCodigo.' #'.$aId) }}"
                                        style="display: none;">
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex items-center space-x-3.5">
                                         <input type="checkbox" name="animales[]" value="{{ $aId }}" {{ $isSelected ? 'checked' : '' }}
                                                class="animal-checkbox rounded border-gray-300 text-ganaderasoft-verde-oscuro focus:ring-ganaderasoft-verde-oscuro h-4 w-4">
-                                        <div class="w-8 h-8 rounded-lg {{ $aSexo === 'M' ? 'bg-blue-50 text-blue-600' : 'bg-pink-50 text-pink-600' }} font-bold flex items-center justify-center text-sm">
+                                        <div class="w-10 h-10 rounded-xl {{ $aSexo === 'M' ? 'bg-blue-50 text-blue-600 border border-blue-100' : 'bg-pink-50 text-pink-600 border border-pink-100' }} font-bold flex items-center justify-center text-lg shrink-0">
                                             {{ $aSexo === 'M' ? '🐂' : '🐄' }}
                                         </div>
                                         <div>
@@ -231,8 +231,8 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="flex items-center space-x-2.5">
-                                        <span class="text-xs font-mono font-semibold text-gray-400">ID #{{ $aId }}</span>
+                                    <div class="flex items-center space-x-3">
+                                        <span class="text-xs font-mono font-semibold text-gray-500 bg-gray-50 px-2.5 py-0.5 rounded-md border border-gray-200">ID #{{ $aId }}</span>
                                         <a href="{{ route('animales.show', $aId) }}" target="_blank"
                                            onclick="event.stopPropagation();"
                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-celeste/10 text-ganaderasoft-celeste hover:bg-ganaderasoft-celeste hover:text-white transition-colors shrink-0"
@@ -248,14 +248,20 @@
                         @endforeach
 
                         <!-- Empty Placeholder when no rebano selected -->
-                        <div id="noRebanoSelectedPlaceholder" class="p-8 text-center bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
-                            <span class="text-3xl mb-2 block">👈</span>
-                            <p class="text-sm font-bold text-gray-700">Selecciona el rebaño de origen</p>
-                            <p class="text-xs text-gray-500 mt-1">Los animales asociados al rebaño de origen se cargarán automáticamente aquí.</p>
+                        <div id="noRebanoSelectedPlaceholder" class="p-12 text-center bg-slate-50/60 rounded-2xl border-2 border-dashed border-slate-200">
+                            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200/80 flex items-center justify-center text-3xl shadow-xs">
+                                🐄
+                            </div>
+                            <h4 class="text-base font-bold text-ganaderasoft-negro mb-1">Selecciona el rebaño de origen</h4>
+                            <p class="text-sm text-gray-500 max-w-md mx-auto">Elige la finca y el rebaño de origen en el panel superior para listar automáticamente los animales disponibles para el traslado.</p>
                         </div>
 
                         <!-- Zero Search Results -->
-                        <div id="noAnimalMatchesPlaceholder" class="hidden p-6 text-center bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+                        <div id="noAnimalMatchesPlaceholder" class="hidden p-10 text-center bg-slate-50/60 rounded-2xl border-2 border-dashed border-slate-200">
+                            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gray-100 text-gray-500 flex items-center justify-center text-2xl">
+                                🔍
+                            </div>
+                            <h4 class="text-sm font-bold text-gray-700 mb-1">Sin coincidencias</h4>
                             <p class="text-xs text-gray-500">No hay animales que coincidan con la búsqueda en este rebaño.</p>
                         </div>
                     </div>
