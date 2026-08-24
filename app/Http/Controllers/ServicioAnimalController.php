@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\ServicioAnimalServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
+use App\Services\Contracts\RebanosServiceInterface;
+use App\Services\Contracts\EtapaServiceInterface;
 use Illuminate\Http\Request;
 
 class ServicioAnimalController extends Controller
 {
-    public function __construct(protected ServicioAnimalServiceInterface $service) {}
+    public function __construct(
+        protected ServicioAnimalServiceInterface $service,
+        protected FincasServiceInterface $fincasService,
+        protected RebanosServiceInterface $rebanosService,
+        protected EtapaServiceInterface $etapaService
+    ) {}
 
     private function isFemale(array $animal): bool
     {
@@ -64,32 +72,69 @@ class ServicioAnimalController extends Controller
     public function index(Request $request)
     {
         $animalId    = $request->query('animal_id');
+        $fincaId     = $request->query('finca_id');
+        $rebanoId    = $request->query('rebano_id');
         $tipo        = $request->query('tipo');
         $fechaInicio = $request->query('fecha_inicio');
         $fechaFin    = $request->query('fecha_fin');
 
-        $response  = $this->service->getList($animalId, $tipo, $fechaInicio, $fechaFin);
+        $response  = $this->service->getList(
+            $animalId ? (int)$animalId : null,
+            $tipo,
+            $fechaInicio,
+            $fechaFin,
+            $fincaId ? (int)$fincaId : null,
+            $rebanoId ? (int)$rebanoId : null
+        );
         $data      = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $servicios = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $animales  = $this->filterFemaleAnimals($this->service->getAnimales());
 
-        return view('servicio-animal.index', compact('servicios', 'animales', 'animalId', 'tipo', 'fechaInicio', 'fechaFin'));
+        $fincasRes = $this->fincasService->getFincas();
+        $fincas = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        $etapasRes = $this->etapaService->getAll();
+        $etapas = ($etapasRes['success'] ?? false) ? ($etapasRes['data']['data'] ?? $etapasRes['data'] ?? []) : [];
+
+        return view('servicio-animal.index', compact(
+            'servicios', 'animales', 'fincas', 'rebanos', 'etapas',
+            'animalId', 'fincaId', 'rebanoId', 'tipo', 'fechaInicio', 'fechaFin'
+        ));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $animales    = $this->filterFemaleAnimals($this->service->getAnimales());
-        $semenToros  = $this->service->getSemenToros();
-        $personal    = $this->filterVetTechStaff($this->service->getPersonalFinca());
+        $animales      = $this->filterFemaleAnimals($this->service->getAnimales());
+        $semenToros    = $this->service->getSemenToros();
+        $personal      = $this->filterVetTechStaff($this->service->getPersonalFinca());
         $registrosCelo = $this->service->getRegistrosCelo();
-        return view('servicio-animal.create', compact('animales', 'semenToros', 'personal', 'registrosCelo'));
+
+        $fincasRes = $this->fincasService->getFincas();
+        $fincas = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        $etapasRes = $this->etapaService->getAll();
+        $etapas = ($etapasRes['success'] ?? false) ? ($etapasRes['data']['data'] ?? $etapasRes['data'] ?? []) : [];
+
+        $presetAnimalId = $request->query('animal_id');
+        $presetCeloId   = $request->query('registro_celo_id');
+
+        return view('servicio-animal.create', compact(
+            'animales', 'semenToros', 'personal', 'registrosCelo',
+            'fincas', 'rebanos', 'etapas', 'presetAnimalId', 'presetCeloId'
+        ));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'animal_id'   => 'required|integer',
-            'tipo'        => 'nullable|string|max:11',
+            'tipo'        => 'nullable|string|max:25',
             'fecha'       => 'nullable|date',
             'observacion' => 'nullable|string|max:100',
         ], [
@@ -109,9 +154,9 @@ class ServicioAnimalController extends Controller
         $response = $this->service->create($data);
 
         if ($response['success'] ?? false) {
-            return redirect()->route('servicio-animal.index')->with('success', 'Servicio animal registrado exitosamente.');
+            return redirect()->route('servicio-animal.index')->with('success', 'Servicio reproductivo registrado exitosamente.');
         }
-        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al crear el registro.'));
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al registrar el servicio.'));
     }
 
     public function show(int $id)
@@ -121,7 +166,11 @@ class ServicioAnimalController extends Controller
             return redirect()->route('servicio-animal.index')->with('error', 'Registro no encontrado.');
         }
         $servicio = $response['data'];
-        return view('servicio-animal.show', compact('servicio'));
+
+        $etapasRes = $this->etapaService->getAll();
+        $etapas = ($etapasRes['success'] ?? false) ? ($etapasRes['data']['data'] ?? $etapasRes['data'] ?? []) : [];
+
+        return view('servicio-animal.show', compact('servicio', 'etapas'));
     }
 
     public function edit(int $id)
@@ -130,17 +179,23 @@ class ServicioAnimalController extends Controller
         if (!($response['success'] ?? false)) {
             return redirect()->route('servicio-animal.index')->with('error', 'Registro no encontrado.');
         }
-        $servicio   = $response['data'];
-        $semenToros = $this->service->getSemenToros();
-        $personal   = $this->filterVetTechStaff($this->service->getPersonalFinca());
+        $servicio      = $response['data'];
+        $semenToros    = $this->service->getSemenToros();
+        $personal      = $this->filterVetTechStaff($this->service->getPersonalFinca());
         $registrosCelo = $this->service->getRegistrosCelo();
-        return view('servicio-animal.edit', compact('servicio', 'semenToros', 'personal', 'registrosCelo'));
+
+        $etapasRes = $this->etapaService->getAll();
+        $etapas = ($etapasRes['success'] ?? false) ? ($etapasRes['data']['data'] ?? $etapasRes['data'] ?? []) : [];
+
+        return view('servicio-animal.edit', compact(
+            'servicio', 'semenToros', 'personal', 'registrosCelo', 'etapas'
+        ));
     }
 
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'tipo'        => 'nullable|string|max:11',
+            'tipo'        => 'nullable|string|max:25',
             'fecha'       => 'nullable|date',
             'observacion' => 'nullable|string|max:100',
         ]);
@@ -156,16 +211,16 @@ class ServicioAnimalController extends Controller
 
         $response = $this->service->update($id, $data);
         if ($response['success'] ?? false) {
-            return redirect()->route('servicio-animal.index')->with('success', 'Servicio animal actualizado exitosamente.');
+            return redirect()->route('servicio-animal.index')->with('success', 'Servicio reproductivo actualizado exitosamente.');
         }
-        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al actualizar.'));
+        return back()->withInput()->with('error', $this->apiMessage($response, 'Error al actualizar el servicio.'));
     }
 
     public function destroy(int $id)
     {
         $response = $this->service->eliminar($id);
         if ($response['success'] ?? false) {
-            return redirect()->route('servicio-animal.index')->with('success', 'Servicio animal eliminado.');
+            return redirect()->route('servicio-animal.index')->with('success', 'Servicio reproductivo eliminado exitosamente.');
         }
         return redirect()->route('servicio-animal.index')->with('error', $this->apiMessage($response, 'Error al eliminar.'));
     }
