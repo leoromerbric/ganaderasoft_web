@@ -156,8 +156,8 @@
                     </div>
                     @if(count($tratamientos) > 0)
                         <a href="{{ route('tratamiento.create') }}" 
-                           class="px-4 py-2.5 bg-ganaderasoft-verde-oscuro text-white text-xs font-bold rounded-xl hover:bg-opacity-90 transition-all shadow-xs inline-flex items-center gap-2 self-start sm:self-auto">
-                            <span>+</span> Registrar tratamiento
+                           class="px-5 py-2.5 bg-ganaderasoft-verde-oscuro text-white text-sm font-semibold rounded-xl hover:bg-opacity-90 transition-all shadow-xs inline-flex items-center gap-1.5 self-start sm:self-auto">
+                            + Registrar tratamiento
                         </a>
                     @endif
                 </div>
