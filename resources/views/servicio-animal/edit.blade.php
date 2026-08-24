@@ -90,9 +90,9 @@
         @csrf
         @method('PUT')
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Columna Izquierda: Formulario (2 Tercios) -->
-            <div class="lg:col-span-2 space-y-6">
+            <div class="lg:col-span-2 flex flex-col space-y-6">
                 
                 <!-- Card 1: Hembra Receptora -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
