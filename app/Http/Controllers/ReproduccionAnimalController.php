@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\ReproduccionAnimalServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
+use App\Services\Contracts\RebanosServiceInterface;
+use App\Services\Contracts\EtapaServiceInterface;
 use Illuminate\Http\Request;
 
 class ReproduccionAnimalController extends Controller
 {
-    public function __construct(protected ReproduccionAnimalServiceInterface $service) {}
+    public function __construct(
+        protected ReproduccionAnimalServiceInterface $service,
+        protected FincasServiceInterface $fincasService,
+        protected RebanosServiceInterface $rebanosService,
+        protected EtapaServiceInterface $etapaService
+    ) {}
 
     private function isFemale(array $animal): bool
     {
@@ -28,30 +36,63 @@ class ReproduccionAnimalController extends Controller
     public function index(Request $request)
     {
         $animalId    = $request->query('animal_id');
+        $fincaId     = $request->query('finca_id');
+        $rebanoId    = $request->query('rebano_id');
         $tipo        = $request->query('tipo');
         $fechaInicio = $request->query('fecha_inicio');
         $fechaFin    = $request->query('fecha_fin');
 
-        $response       = $this->service->getList($animalId, $tipo, $fechaInicio, $fechaFin);
+        $response       = $this->service->getList(
+            $animalId ? (int)$animalId : null,
+            $tipo,
+            $fechaInicio,
+            $fechaFin,
+            $fincaId ? (int)$fincaId : null,
+            $rebanoId ? (int)$rebanoId : null
+        );
         $data           = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $reproducciones = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $animales       = $this->filterFemaleAnimals($this->service->getAnimales());
 
-        return view('reproduccion-animal.index', compact('reproducciones', 'animales', 'animalId', 'tipo', 'fechaInicio', 'fechaFin'));
+        $fincasRes  = $this->fincasService->getFincas();
+        $fincas     = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        $etapasRes  = $this->etapaService->getAll();
+        $etapas     = ($etapasRes['success'] ?? false) ? ($etapasRes['data']['data'] ?? $etapasRes['data'] ?? []) : [];
+
+        return view('reproduccion-animal.index', compact(
+            'reproducciones', 'animales', 'fincas', 'rebanos', 'etapas',
+            'animalId', 'fincaId', 'rebanoId', 'tipo', 'fechaInicio', 'fechaFin'
+        ));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $animales = $this->filterFemaleAnimals($this->service->getAnimales());
-        return view('reproduccion-animal.create', compact('animales'));
+
+        $fincasRes  = $this->fincasService->getFincas();
+        $fincas     = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        $etapasRes  = $this->etapaService->getAll();
+        $etapas     = ($etapasRes['success'] ?? false) ? ($etapasRes['data']['data'] ?? $etapasRes['data'] ?? []) : [];
+
+        $presetAnimalId = $request->query('animal_id');
+
+        return view('reproduccion-animal.create', compact('animales', 'fincas', 'rebanos', 'etapas', 'presetAnimalId'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'fecha'       => 'required|date',
-            'tipo'        => 'nullable|string|max:8',
-            'observacion' => 'nullable|string|max:60',
+            'tipo'        => 'nullable|string|max:25',
+            'observacion' => 'nullable|string|max:100',
             'animal_id'   => 'required|integer',
             'etapa_id'    => 'required|integer',
         ], [
@@ -71,7 +112,7 @@ class ReproduccionAnimalController extends Controller
         $response = $this->service->create($data);
 
         if ($response['success'] ?? false) {
-            return redirect()->route('reproduccion-animal.index')->with('success', 'Reproducción registrada exitosamente.');
+            return redirect()->route('reproduccion-animal.index')->with('success', 'Registro reproductivo guardado exitosamente.');
         }
         return back()->withInput()->with('error', $response['message'] ?? 'Error al crear el registro.');
     }
@@ -83,7 +124,11 @@ class ReproduccionAnimalController extends Controller
             return redirect()->route('reproduccion-animal.index')->with('error', 'Registro no encontrado.');
         }
         $reproduccion = $response['data'];
-        return view('reproduccion-animal.show', compact('reproduccion'));
+
+        $etapasRes  = $this->etapaService->getAll();
+        $etapas     = ($etapasRes['success'] ?? false) ? ($etapasRes['data']['data'] ?? $etapasRes['data'] ?? []) : [];
+
+        return view('reproduccion-animal.show', compact('reproduccion', 'etapas'));
     }
 
     public function edit(int $id)
@@ -93,18 +138,26 @@ class ReproduccionAnimalController extends Controller
             return redirect()->route('reproduccion-animal.index')->with('error', 'Registro no encontrado.');
         }
         $reproduccion = $response['data'];
-        $animales = $this->filterFemaleAnimals($this->service->getAnimales());
-        return view('reproduccion-animal.edit', compact('reproduccion', 'animales'));
+        $animales     = $this->filterFemaleAnimals($this->service->getAnimales());
+
+        $fincasRes  = $this->fincasService->getFincas();
+        $fincas     = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        $etapasRes  = $this->etapaService->getAll();
+        $etapas     = ($etapasRes['success'] ?? false) ? ($etapasRes['data']['data'] ?? $etapasRes['data'] ?? []) : [];
+
+        return view('reproduccion-animal.edit', compact('reproduccion', 'animales', 'fincas', 'rebanos', 'etapas'));
     }
 
     public function update(Request $request, int $id)
     {
         $request->validate([
             'fecha'       => 'required|date',
-            'tipo'        => 'nullable|string|max:8',
-            'observacion' => 'nullable|string|max:60',
-        ], [
-            'fecha.required' => 'La fecha de reproducción es requerida.',
+            'tipo'        => 'nullable|string|max:25',
+            'observacion' => 'nullable|string|max:100',
         ]);
 
         $data = [
@@ -114,9 +167,8 @@ class ReproduccionAnimalController extends Controller
         ];
 
         $response = $this->service->update($id, $data);
-
         if ($response['success'] ?? false) {
-            return redirect()->route('reproduccion-animal.index')->with('success', 'Reproducción actualizada exitosamente.');
+            return redirect()->route('reproduccion-animal.index')->with('success', 'Registro reproductivo actualizado exitosamente.');
         }
         return back()->withInput()->with('error', $response['message'] ?? 'Error al actualizar.');
     }
@@ -125,7 +177,7 @@ class ReproduccionAnimalController extends Controller
     {
         $response = $this->service->eliminar($id);
         if ($response['success'] ?? false) {
-            return redirect()->route('reproduccion-animal.index')->with('success', 'Reproducción eliminada.');
+            return redirect()->route('reproduccion-animal.index')->with('success', 'Registro reproductivo eliminado exitosamente.');
         }
         return redirect()->route('reproduccion-animal.index')->with('error', $response['message'] ?? 'Error al eliminar.');
     }

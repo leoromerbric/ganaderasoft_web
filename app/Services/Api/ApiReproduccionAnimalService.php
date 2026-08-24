@@ -15,13 +15,15 @@ class ApiReproduccionAnimalService extends BaseApiService implements Reproduccio
      * @param string|null $fechaFin
      * @return array
      */
-    public function getList(?int $animalId = null, ?string $tipo = null, ?string $fechaInicio = null, ?string $fechaFin = null): array
+    public function getList(?int $animalId = null, ?string $tipo = null, ?string $fechaInicio = null, ?string $fechaFin = null, ?int $fincaId = null, ?int $rebanoId = null): array
     {
         $params = [
             'animal_id'    => $animalId,
             'tipo'         => $tipo,
             'fecha_inicio' => $fechaInicio,
             'fecha_fin'    => $fechaFin,
+            'finca_id'     => $fincaId,
+            'rebano_id'    => $rebanoId,
         ];
 
         return $this->get('/reproduccion-animal' . $this->buildQuery($params, true));
