@@ -56,9 +56,9 @@
     <form method="POST" action="{{ route('servicio-animal.store') }}" id="formServicioAnimal" class="space-y-6">
         @csrf
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             <!-- Columna Izquierda: Formulario (2 Tercios) -->
-            <div class="lg:col-span-2 flex flex-col space-y-6">
+            <div class="lg:col-span-2 space-y-6">
                 
                 <!-- Card 1: Selección de la Hembra Receptora -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">

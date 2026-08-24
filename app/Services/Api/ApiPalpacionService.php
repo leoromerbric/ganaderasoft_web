@@ -13,15 +13,19 @@ class ApiPalpacionService extends BaseApiService implements PalpacionServiceInte
      * @param string|null $tipo
      * @param string|null $fechaInicio
      * @param string|null $fechaFin
+     * @param int|null $fincaId
+     * @param int|null $rebanoId
      * @return array
      */
-    public function getList(?int $animalId = null, ?string $tipo = null, ?string $fechaInicio = null, ?string $fechaFin = null): array
+    public function getList(?int $animalId = null, ?string $tipo = null, ?string $fechaInicio = null, ?string $fechaFin = null, ?int $fincaId = null, ?int $rebanoId = null): array
     {
         $params = [
             'animal_id'    => $animalId,
             'tipo'         => $tipo,
             'fecha_inicio' => $fechaInicio,
             'fecha_fin'    => $fechaFin,
+            'finca_id'     => $fincaId,
+            'rebano_id'    => $rebanoId,
         ];
 
         return $this->get('/palpacion' . $this->buildQuery($params, true));
@@ -90,7 +94,7 @@ class ApiPalpacionService extends BaseApiService implements PalpacionServiceInte
      */
     public function getPersonalFinca(): array
     {
-        $response = $this->get('/personal' . $this->buildQuery([], true));
+        $response = $this->get('/personal-finca' . $this->buildQuery([], true));
         return $this->extractCollection($response);
     }
 }
