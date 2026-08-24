@@ -36,16 +36,25 @@
 
         <!-- Filters Bar -->
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar</label>
-                    <input type="text" id="filtroBuscador" placeholder="Buscar por nombre..."
+                    <input type="text" id="filtroBuscador" placeholder="Buscar por nombre, tipo, pelaje..."
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="document.getElementById('filtroBuscador').value=''; aplicarFiltros();"
-                       class="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[46px]">
-                        Limpiar filtro
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Visibilidad</label>
+                    <select id="filtroVisibilidad"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                        <option value="">Todas las visibilidades</option>
+                        <option value="publica">🌐 Públicas (Globales)</option>
+                        <option value="privada">🔒 Privadas (Finca)</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="button" onclick="document.getElementById('filtroBuscador').value=''; document.getElementById('filtroVisibilidad').value=''; aplicarFiltros();"
+                       class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[42px] cursor-pointer shadow-2xs">
+                        Limpiar filtros
                     </button>
                 </div>
             </div>
@@ -84,13 +93,15 @@
                                     $proposito = $item['proposito'] ?? 'N/A';
                                     $pelaje = $item['pelaje'] ?? 'N/A';
                                     $proporcion = $item['proporcion_raza'] ?? '-';
+                                    $isPrivada = !empty($item['finca_id']);
                                     
                                     $searchable = strtolower($mainVal . ' ' . $siglas . ' ' . $tipoAnimal . ' ' . $proposito . ' ' . $pelaje);
                                     $inicial = strtoupper(substr((string)$mainVal, 0, 1));
                                     if(empty($inicial)) $inicial = '#';
                                 @endphp
                                 <tr class="hover:bg-gray-50/80 transition-colors fila-registro"
-                                    data-search="{{ $searchable }}">
+                                    data-search="{{ $searchable }}"
+                                    data-visibilidad="{{ $isPrivada ? 'privada' : 'publica' }}">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg border border-blue-100">
@@ -197,14 +208,20 @@
     
     <script>
         document.getElementById('filtroBuscador')?.addEventListener('input', aplicarFiltros);
+        document.getElementById('filtroVisibilidad')?.addEventListener('change', aplicarFiltros);
 
         function aplicarFiltros() {
-            const buscador = document.getElementById('filtroBuscador').value.toLowerCase();
+            const buscador = (document.getElementById('filtroBuscador')?.value || '').toLowerCase().trim();
+            const visibilidad = (document.getElementById('filtroVisibilidad')?.value || '').toLowerCase().trim();
 
             document.querySelectorAll('.fila-registro').forEach(function(row) {
-                const searchData = row.getAttribute('data-search') || '';
+                const searchData = (row.getAttribute('data-search') || '').toLowerCase();
+                const rowVis = (row.getAttribute('data-visibilidad') || '').toLowerCase();
+
                 const matchesSearch = !buscador || searchData.includes(buscador);
-                row.style.display = matchesSearch ? '' : 'none';
+                const matchesVis = !visibilidad || rowVis === visibilidad;
+
+                row.style.display = (matchesSearch && matchesVis) ? '' : 'none';
             });
         }
     </script>
