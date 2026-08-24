@@ -112,14 +112,14 @@
                                         #{{ $animalCodigo }}
                                     </span>
                                 @endif
+                                @if($fincaNombre)
+                                    <span class="text-xs font-semibold text-gray-700 bg-white px-2.5 py-0.5 rounded-md border border-gray-200">
+                                        🏡 {{ $fincaNombre }}
+                                    </span>
+                                @endif
                                 @if($rebanoNombre)
                                     <span class="text-xs font-semibold text-gray-700 bg-white px-2.5 py-0.5 rounded-md border border-gray-200">
                                         {{ $rebanoNombre }}
-                                    </span>
-                                @endif
-                                @if($fincaNombre)
-                                    <span class="text-xs text-gray-500">
-                                        • {{ $fincaNombre }}
                                     </span>
                                 @endif
                             </div>

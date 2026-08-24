@@ -1,129 +1,500 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Nuevo registro de celo')
+@section('title', 'Registrar celo')
 
 @section('content')
-<div>
-    <div class="mb-6 flex items-center">
-        <a href="{{ route('registro-celo.index') }}" class="mr-4 text-ganaderasoft-celeste hover:text-ganaderasoft-celeste/80">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-        </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🌡️ Nuevo registro de celo</h2>
-    </div>
+@php
+    $etapasMap = [];
+    foreach($etapas ?? [] as $e) {
+        $eId = (string)($e['id'] ?? $e['etapa_id'] ?? '');
+        $eNom = $e['nombre'] ?? $e['etapa_nombre'] ?? $e['Nombre'] ?? '';
+        if ($eId && $eNom) {
+            $etapasMap[$eId] = $eNom;
+        }
+    }
+@endphp
 
-    <div class="bg-white rounded-xl shadow-md">
-        <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Datos del registro de celo</h3>
+<div class="space-y-6">
+    <!-- Header Card -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-2xl shadow-xs border border-orange-100 shrink-0">
+                🌡️
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                    Registrar nuevo celo
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">Registra la detección de celo de una hembra para planificar servicios reproductivos</p>
+            </div>
         </div>
-        <form action="{{ route('registro-celo.store') }}" method="POST" class="p-6">
-            @csrf
-            @if($errors->any())
-                <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
-                    <ul class="list-disc ml-4">
-                        @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Animal <span class="text-red-500">*</span></label>
-                    <select name="animal_id" id="celo_etapa_anid" required
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('animal_id') border-red-500 @enderror">
-                        <option value="">Seleccione un animal</option>
-                        @foreach($animales as $animal)
-                            @php
-                                $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
-                                $aNombre = $animal['Nombre'] ?? ('Animal #'.$aId);
-                                $etapaId = data_get($animal, 'etapa_actual.etapa_id') ?? data_get($animal, 'etapa_actual.id') ?? '';
-                            @endphp
-                            <option value="{{ $aId }}" {{ old('animal_id') == $aId ? 'selected' : '' }}
-                                    data-etapa="{{ $etapaId }}">
-                                {{ $aNombre }}
-                                @if(isset($animal['Sexo'])) ({{ $animal['Sexo'] === 'F' ? 'Hembra' : 'Macho' }}) @endif
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('animal_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Etapa actual <span class="text-red-500">*</span></label>
-                    <input type="text" id="celo_etapa_texto" readonly
-                           class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600"
-                           placeholder="Se completará al seleccionar el animal">
-                    <input type="hidden" name="etapa_id" id="celo_etapa_etid" value="{{ old('etapa_id') }}">
-                    @error('etapa_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de celo <span class="text-red-500">*</span></label>
-                    <input type="date" name="fecha" required value="{{ old('fecha', date('Y-m-d')) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha') border-red-500 @enderror">
-                    @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-                    <input type="text" name="observacion" value="{{ old('observacion') }}" maxlength="100"
-                           placeholder="Observaciones del celo..."
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('observacion') border-red-500 @enderror">
-                    @error('observacion')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-            </div>
-
-            <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
-                <a href="{{ route('registro-celo.index') }}"
-                   class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</a>
-                <button type="submit"
-                        class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                    Guardar
-                </button>
-            </div>
-        </form>
+        <div>
+            <a href="{{ route('registro-celo.index') }}" 
+               class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver
+            </a>
+        </div>
     </div>
+
+    <!-- Alert Messages -->
+    @if(session('error'))
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm font-medium">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm space-y-1">
+            <div class="flex items-center space-x-2 font-bold mb-1">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm">Por favor corrige los siguientes errores:</p>
+            </div>
+            <ul class="list-disc list-inside text-xs space-y-0.5 ml-5">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Formulario Principal -->
+    <form method="POST" action="{{ route('registro-celo.store') }}" id="formRegistroCelo" class="space-y-6">
+        @csrf
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Columna Izquierda: Formulario (2 Tercios) -->
+            <div class="lg:col-span-2 flex flex-col space-y-6">
+                
+                <!-- Card 1: Selección de la Hembra -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
+                        <span>🐄</span> Selección de la hembra
+                    </h3>
+
+                    <!-- Filtros Auxiliares Finca y Rebaño -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50/80 rounded-2xl border border-gray-200/80">
+                        <div>
+                            <label for="helper_finca" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Filtrar por finca
+                            </label>
+                            <select id="helper_finca"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
+                                <option value="">Todas las fincas</option>
+                                @foreach($fincas as $finca)
+                                    @php
+                                        $fId = $finca['id'] ?? $finca['id_Finca'] ?? '';
+                                        $fNombre = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
+                                    @endphp
+                                    <option value="{{ $fId }}">{{ $fNombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="helper_rebano" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Filtrar por rebaño
+                            </label>
+                            <select id="helper_rebano"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
+                                <option value="">Todos los rebaños</option>
+                                @foreach($rebanos as $rebano)
+                                    @php
+                                        $rId = $rebano['id'] ?? $rebano['id_Rebano'] ?? '';
+                                        $rNombre = $rebano['nombre'] ?? $rebano['Nombre'] ?? ('Rebaño #'.$rId);
+                                        $rFincaId = $rebano['finca_id'] ?? $rebano['id_Finca'] ?? data_get($rebano, 'finca.id') ?? '';
+                                    @endphp
+                                    <option value="{{ $rId }}" data-finca-id="{{ $rFincaId }}">{{ $rNombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Selector Principal del Animal -->
+                    <div>
+                        <label for="celo_etapa_anid" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            Hembra en celo <span class="text-red-500">*</span>
+                        </label>
+                        <select name="animal_id" id="celo_etapa_anid" required
+                                class="w-full px-4 py-3 border @error('animal_id') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
+                            <option value="">-- Seleccionar hembra receptora --</option>
+                            @foreach($animales as $animal)
+                                @php
+                                    $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
+                                    $aNombre = $animal['nombre'] ?? $animal['Nombre'] ?? ('Animal #'.$aId);
+                                    $aCodigo = $animal['codigo_animal'] ?? '';
+                                    $etapaId = (string)(data_get($animal, 'etapa_actual.etapa.id') ?? data_get($animal, 'etapa_actual.etapa_id') ?? data_get($animal, 'etapa_actual.id') ?? data_get($animal, 'etapa_id') ?? '');
+                                    
+                                    $etapaNombre = data_get($animal, 'etapa_actual.etapa.nombre') 
+                                        ?? data_get($animal, 'etapa_actual.etapa.Nombre') 
+                                        ?? data_get($animal, 'etapa_actual.nombre') 
+                                        ?? data_get($animal, 'etapa_actual.etapa_nombre') 
+                                        ?? data_get($animal, 'etapa.nombre') 
+                                        ?? ($etapaId && isset($etapasMap[$etapaId]) ? $etapasMap[$etapaId] : '');
+
+                                    $rId = (string) (data_get($animal, 'rebano.id') ?? data_get($animal, 'rebano.id_Rebano') ?? data_get($animal, 'rebano_id') ?? '');
+                                    $rNombre = data_get($animal, 'rebano.nombre') ?? data_get($animal, 'rebano.Nombre') ?? '';
+                                    $fId = (string) (data_get($animal, 'rebano.finca.id') ?? data_get($animal, 'rebano.finca.id_Finca') ?? data_get($animal, 'rebano.finca_id') ?? data_get($animal, 'finca_id') ?? '');
+                                    $fNombre = data_get($animal, 'rebano.finca.nombre') ?? data_get($animal, 'rebano.finca.Nombre') ?? '';
+                                @endphp
+                                <option value="{{ $aId }}"
+                                        data-nombre="{{ $aNombre }}"
+                                        data-codigo="{{ $aCodigo }}"
+                                        data-etapa-id="{{ $etapaId }}"
+                                        data-etapa-nombre="{{ $etapaNombre }}"
+                                        data-rebano-id="{{ $rId }}"
+                                        data-rebano-nombre="{{ $rNombre }}"
+                                        data-finca-id="{{ $fId }}"
+                                        data-finca-nombre="{{ $fNombre }}"
+                                        {{ (string)old('animal_id') === (string)$aId ? 'selected' : '' }}>
+                                    {{ $aNombre }} {{ $aCodigo ? '(#'.$aCodigo.')' : '' }} {{ $rNombre ? '• '.$rNombre : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('animal_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+
+                <!-- Card 2: Datos del Celo (Expande verticalmente para igualar la derecha) -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col flex-1 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
+                        <span>🌡️</span> Datos del ciclo de celo
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Fecha de Detección -->
+                        <div>
+                            <label for="fecha" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Fecha de detección <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="fecha" id="fecha" required 
+                                   value="{{ old('fecha', date('Y-m-d')) }}"
+                                   class="w-full px-4 py-3 border @error('fecha') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium">
+                            @error('fecha')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <!-- Etapa Productiva (Display & Hidden ID) -->
+                        <div>
+                            <label for="celo_etapa_texto" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Etapa productiva <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="celo_etapa_texto" readonly
+                                   class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-700 text-sm font-semibold cursor-not-allowed"
+                                   placeholder="Se completará al seleccionar la hembra">
+                            <input type="hidden" name="etapa_id" id="celo_etapa_etid" value="{{ old('etapa_id') }}">
+                            @error('etapa_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="flex-1 flex flex-col">
+                        <label for="observacion" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            Observaciones y signos de celo detectados <span class="text-xs font-normal text-gray-400 normal-case">(opcional)</span>
+                        </label>
+                        <textarea name="observacion" id="observacion" rows="13" maxlength="100"
+                                  placeholder="ej. Reflejo de inmovilidad positivo, abundante moco cristalino, vulva congestionada..."
+                                  class="w-full flex-1 min-h-[360px] px-4 py-3 border @error('observacion') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white leading-relaxed">{{ old('observacion') }}</textarea>
+                        <div class="flex justify-between items-center mt-1">
+                            @error('observacion')
+                                <p class="text-xs text-red-600 font-medium">{{ $message }}</p>
+                            @else
+                                <span></span>
+                            @enderror
+                            <span class="text-[11px] text-gray-400">Máx. 100 caracteres</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Resumen de Ficha en Vivo (1 Tercio) -->
+            <div class="space-y-6">
+                <!-- Card 1: Resumen y Acciones -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span>📋</span> Resumen del registro
+                        </h3>
+                    </div>
+
+                    <div class="p-6 space-y-5">
+                        <!-- Preview Avatar e Identificación -->
+                        <div class="p-4 bg-pink-50/70 border border-pink-100 rounded-2xl flex items-center space-x-3">
+                            <div id="previewIcono" class="w-12 h-12 rounded-xl bg-white border border-pink-200 text-pink-700 font-bold flex items-center justify-center text-2xl shadow-xs shrink-0">
+                                🐄
+                            </div>
+                            <div class="overflow-hidden">
+                                <p id="previewNombre" class="text-base font-bold text-gray-900 truncate">Sin seleccionar</p>
+                                <p id="previewCodigo" class="text-xs text-gray-500 font-mono">Código: #---</p>
+                            </div>
+                        </div>
+
+                        <!-- Mini Stats Preview -->
+                        <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-gray-500">Ubicación:</span>
+                                <span id="previewUbicacion" class="font-bold text-gray-900 text-right truncate">No especificada</span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-gray-500">Etapa:</span>
+                                <span id="previewEtapa" class="font-bold text-gray-900 text-right">No seleccionada</span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-gray-500">Fecha detección:</span>
+                                <span id="previewFecha" class="font-bold text-gray-900 text-right">Hoy</span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-gray-500">Próximo celo (+21d):</span>
+                                <span id="previewProximoCelo" class="font-bold text-purple-700 font-mono text-right">—</span>
+                            </div>
+                        </div>
+
+                        <!-- Mensaje de Ciclo y Preñez -->
+                        <div class="p-3.5 bg-purple-50/70 border border-purple-100 rounded-xl space-y-1 text-xs text-purple-900 leading-relaxed">
+                            <strong class="block font-bold">Ciclo estral y preñez:</strong>
+                            <p>Si la hembra <strong>no queda preñada</strong> tras el servicio o inseminación, se proyecta su siguiente celo en aproximadamente <strong>21 días</strong> para un nuevo servicio.</p>
+                        </div>
+
+                        <!-- Action Buttons en el Sidebar -->
+                        <div class="space-y-3 pt-2">
+                            <button type="submit"
+                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
+                                💾 Guardar registro de celo
+                            </button>
+                            <a href="{{ route('registro-celo.index') }}"
+                               class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                                Cancelar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Guía Reproductiva y Recomendaciones Clínicas -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-4">
+                    <h4 class="text-sm font-bold text-gray-900 flex items-center gap-2">
+                        <span>💡</span> Recomendaciones de servicio
+                    </h4>
+                    
+                    <div class="p-3.5 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-1 leading-relaxed">
+                        <strong class="block font-bold">Regla AM / PM:</strong>
+                        <p>• Celo detectado en la <strong>mañana</strong>: Servir o inseminar en la <strong>tarde</strong> del mismo día.</p>
+                        <p>• Celo detectado en la <strong>tarde</strong>: Servir o inseminar en la <strong>mañana</strong> del día siguiente.</p>
+                    </div>
+
+                    <div class="space-y-1.5 pt-1">
+                        <span class="text-xs font-semibold text-gray-600 block uppercase tracking-wider">Signos de celo activo:</span>
+                        <ul class="list-disc list-inside space-y-1 text-xs text-gray-500 leading-relaxed">
+                            <li>Reflejo de inmovilidad / aceptación de la monta.</li>
+                            <li>Descarga de moco cristalino transparente.</li>
+                            <li>Vulva enrojecida o edematosa.</li>
+                            <li>Hiperactividad y disminución de apetito.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const animalSelect = document.getElementById('celo_etapa_anid');
-    const etapaInput = document.getElementById('celo_etapa_etid');
-    const etapaTexto = document.getElementById('celo_etapa_texto');
-    const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
+    const fHelper = document.getElementById('helper_finca');
+    const rHelper = document.getElementById('helper_rebano');
+    const aSelect = document.getElementById('celo_etapa_anid');
 
-    function renderStage(option, fetchedStage) {
-        const etapaNode = fetchedStage?.etapa || fetchedStage;
-        const etapaId = etapaNode?.id || etapaNode?.etapa_id || fetchedStage?.etan_etapa_id || option?.dataset.etapa || '';
-        const etapaNombre = etapaNode?.nombre || etapaNode?.etapa_nombre || etapaNode?.Nombre || etapaNode?.descripcion || '';
-        etapaInput.value = etapaId;
-        etapaTexto.value = etapaId ? (etapaNombre || ('Etapa #' + etapaId)) : 'Animal sin etapa activa';
+    const previewNombre   = document.getElementById('previewNombre');
+    const previewCodigo   = document.getElementById('previewCodigo');
+    const previewUbicacion = document.getElementById('previewUbicacion');
+    const previewEtapa    = document.getElementById('previewEtapa');
+    const previewFecha    = document.getElementById('previewFecha');
+    const previewProximo  = document.getElementById('previewProximoCelo');
+
+    const etapaIdHidden   = document.getElementById('celo_etapa_etid');
+    const etapaTextoInput = document.getElementById('celo_etapa_texto');
+    const fechaInput      = document.getElementById('fecha');
+
+    const rebanosData   = @json($rebanos ?? []);
+    const etapasCatalog = @json($etapasMap ?? []);
+    const rebanoFincaMap = {};
+    rebanosData.forEach(r => {
+        const rid = String(r.id || r.id_Rebano || '');
+        const fid = String(r.finca_id || r.id_Finca || (r.finca && r.finca.id) || '');
+        if (rid) rebanoFincaMap[rid] = fid;
+    });
+
+    function poblarRebanosHelper() {
+        const selFinca = fHelper ? fHelper.value : '';
+        if (!rHelper) return;
+
+        Array.from(rHelper.options).forEach(opt => {
+            if (!opt.value) return;
+            const rFid = opt.dataset.fincaId || rebanoFincaMap[opt.value] || '';
+            if (!selFinca || rFid === selFinca) {
+                opt.hidden = false;
+            } else {
+                opt.hidden = true;
+            }
+        });
+
+        if (rHelper.selectedOptions[0] && rHelper.selectedOptions[0].hidden) {
+            rHelper.value = '';
+        }
     }
 
-    async function updateStage() {
-        const option = animalSelect.options[animalSelect.selectedIndex];
-        if (!animalSelect.value) {
-            etapaInput.value = '';
-            etapaTexto.value = '';
+    function filtrarAnimales() {
+        const sf = fHelper ? fHelper.value : '';
+        const sr = rHelper ? rHelper.value : '';
+
+        if (!aSelect) return;
+
+        Array.from(aSelect.options).forEach(opt => {
+            if (!opt.value) return;
+            const anFid = opt.dataset.fincaId || '';
+            const anRid = opt.dataset.rebanoId || '';
+
+            let visible = true;
+            if (sf && anFid !== sf) visible = false;
+            if (sr && anRid !== sr) visible = false;
+
+            opt.hidden = !visible;
+        });
+
+        if (aSelect.selectedOptions[0] && aSelect.selectedOptions[0].hidden) {
+            aSelect.value = '';
+            actualizarPreview();
+        }
+    }
+
+    function actualizarPreview() {
+        // 1. Fecha y Proyección
+        if (fechaInput && fechaInput.value) {
+            try {
+                const parts = fechaInput.value.split('-');
+                if (parts.length === 3) {
+                    previewFecha.textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+                const f = new Date(fechaInput.value + 'T00:00:00');
+                f.setDate(f.getDate() + 21);
+                const dia = String(f.getDate()).padStart(2, '0');
+                const mes = String(f.getMonth() + 1).padStart(2, '0');
+                const anio = f.getFullYear();
+                if (previewProximo) previewProximo.textContent = `${dia}/${mes}/${anio}`;
+            } catch (e) {
+                if (previewProximo) previewProximo.textContent = '—';
+            }
+        } else {
+            if (previewFecha) previewFecha.textContent = 'No especificada';
+            if (previewProximo) previewProximo.textContent = '—';
+        }
+
+        // 2. Animal
+        if (!aSelect || !aSelect.value) {
+            if (previewNombre) previewNombre.textContent = 'Sin seleccionar';
+            if (previewCodigo) previewCodigo.textContent = 'Código: #---';
+            if (previewUbicacion) previewUbicacion.textContent = 'No especificada';
+            if (previewEtapa) previewEtapa.textContent = 'No seleccionada';
+            if (etapaIdHidden) etapaIdHidden.value = '';
+            if (etapaTextoInput) etapaTextoInput.value = '';
             return;
         }
 
-        renderStage(option, null);
-        if (etapaInput.value) return;
+        const opt = aSelect.selectedOptions[0];
+        if (!opt) return;
 
-        try {
-            const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
-            const payload = await response.json();
-            const animal = payload?.data?.animal || payload?.data || {};
-            const etapaActual = payload?.data?.etapa_actual || payload?.data?.etapaActual || animal?.etapa_actual || animal?.etapaActual || null;
-            renderStage(option, etapaActual);
-        } catch (error) {
-            etapaTexto.value = 'No se pudo obtener la etapa actual';
+        const nombre = opt.dataset.nombre || 'Ejemplar';
+        const codigo = opt.dataset.codigo ? `#${opt.dataset.codigo}` : 'S/C';
+        const rebano = opt.dataset.rebanoNombre || '';
+        const finca = opt.dataset.fincaNombre || '';
+        const etapaId = opt.dataset.etapaId || '';
+        const etapaNombre = opt.dataset.etapaNombre 
+            || (etapaId && etapasCatalog[etapaId]) 
+            || (etapaId ? `Etapa #${etapaId}` : 'En producción');
+
+        if (previewNombre) previewNombre.textContent = nombre;
+        if (previewCodigo) previewCodigo.textContent = `Código: ${codigo}`;
+        if (previewUbicacion) {
+            const loc = [finca, rebano].filter(Boolean).join(' • ');
+            previewUbicacion.textContent = loc || 'No asignada';
+        }
+        if (previewEtapa) previewEtapa.textContent = etapaNombre;
+
+        if (etapaIdHidden) etapaIdHidden.value = etapaId;
+        if (etapaTextoInput) etapaTextoInput.value = etapaNombre;
+
+        // Fetch fallback de etapa si no viene precargada
+        if (!etapaId && aSelect.value) {
+            fetch('{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}'.replace('__ID__', aSelect.value), {
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(payload => {
+                const etapaNode = payload?.data?.etapa_actual || payload?.data?.etapa || payload?.data;
+                const fetchedId = etapaNode?.id || etapaNode?.etapa_id || '';
+                const fetchedNombre = etapaNode?.nombre 
+                    || etapaNode?.etapa_nombre 
+                    || (fetchedId && etapasCatalog[fetchedId]) 
+                    || '';
+                if (fetchedId) {
+                    opt.dataset.etapaId = fetchedId;
+                    if (etapaIdHidden) etapaIdHidden.value = fetchedId;
+                }
+                if (fetchedNombre) {
+                    opt.dataset.etapaNombre = fetchedNombre;
+                    if (previewEtapa) previewEtapa.textContent = fetchedNombre;
+                    if (etapaTextoInput) etapaTextoInput.value = fetchedNombre;
+                }
+            })
+            .catch(() => {});
+        }
+
+        // Sincronizar Finca y Rebaño en los helpers si están vacíos
+        const anFid = opt.dataset.fincaId || '';
+        const anRid = opt.dataset.rebanoId || '';
+        if (anFid && fHelper && !fHelper.value) {
+            fHelper.value = anFid;
+            poblarRebanosHelper();
+        }
+        if (anRid && rHelper && !rHelper.value) {
+            rHelper.value = anRid;
         }
     }
 
-    animalSelect.addEventListener('change', updateStage);
-    updateStage();
+    if (fHelper) {
+        fHelper.addEventListener('change', () => {
+            poblarRebanosHelper();
+            filtrarAnimales();
+        });
+    }
+
+    if (rHelper) {
+        rHelper.addEventListener('change', () => {
+            const selReb = rHelper.value;
+            if (selReb && fHelper) {
+                const fid = rHelper.selectedOptions[0]?.dataset.fincaId || rebanoFincaMap[selReb] || '';
+                if (fid && fHelper.value !== fid) {
+                    fHelper.value = fid;
+                    poblarRebanosHelper();
+                    rHelper.value = selReb;
+                }
+            }
+            filtrarAnimales();
+        });
+    }
+
+    if (aSelect) {
+        aSelect.addEventListener('change', actualizarPreview);
+    }
+
+    if (fechaInput) {
+        fechaInput.addEventListener('change', actualizarPreview);
+    }
+
+    poblarRebanosHelper();
+    actualizarPreview();
 });
 </script>
 @endsection

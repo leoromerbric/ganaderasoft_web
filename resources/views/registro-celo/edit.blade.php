@@ -5,8 +5,6 @@
 @section('content')
 @php
     $id = $registro['id'] ?? $registro['celo_id'] ?? null;
-    $animalId = $registro['animal_id'] ?? $registro['celo_etapa_anid'] ?? data_get($registro, 'etapa_animal.animal_id');
-    $animalNombre = data_get($registro, 'animal.Nombre') ?? ('Animal #'.$animalId);
     $fechaRaw = old('fecha', $registro['fecha'] ?? $registro['celo_fecha'] ?? null);
     $fechaValue = '';
     if (!empty($fechaRaw)) {
@@ -16,64 +14,310 @@
             $fechaValue = '';
         }
     }
-    $observacion = $registro['observacion'] ?? $registro['celo_observacon'] ?? '';
+    $observacion = old('observacion', $registro['observacion'] ?? $registro['celo_observacon'] ?? '');
+
+    // Etapas Map
+    $etapasMap = [];
+    foreach($etapas ?? [] as $e) {
+        $eId = (string)($e['id'] ?? $e['etapa_id'] ?? '');
+        $eNom = $e['nombre'] ?? $e['etapa_nombre'] ?? $e['Nombre'] ?? '';
+        if ($eId && $eNom) {
+            $etapasMap[$eId] = $eNom;
+        }
+    }
+
+    // Animal
+    $animalId = $registro['animal_id'] ?? $registro['celo_etapa_anid'] ?? data_get($registro, 'etapa_animal.animal_id') ?? '';
+    $animalRefId = data_get($registro, 'animal.id') ?? data_get($registro, 'animal.id_Animal') ?? data_get($registro, 'etapa_animal.animal.id') ?? $animalId;
+    $animalNombre = data_get($registro, 'etapa_animal.animal.nombre') ?? data_get($registro, 'etapa_animal.animal.Nombre') ?? data_get($registro, 'animal.Nombre') ?? data_get($registro, 'animal.nombre') ?? ('Animal #'.$animalId);
+    $animalCodigo = data_get($registro, 'etapa_animal.animal.codigo_animal') ?? data_get($registro, 'animal.codigo_animal') ?? '';
+
+    // Etapa
+    $etapaId = (string)($registro['etapa_id'] ?? $registro['celo_etapa_etid'] ?? data_get($registro, 'etapa_animal.etapa.id') ?? data_get($registro, 'etapa_animal.etapa_id') ?? '');
+    $etapaNombre = data_get($registro, 'etapa_animal.etapa.nombre') 
+        ?? data_get($registro, 'etapa_animal.etapa.Nombre') 
+        ?? data_get($registro, 'etapa_animal.etapa.etapa_nombre') 
+        ?? data_get($registro, 'etapa.nombre') 
+        ?? ($etapaId && isset($etapasMap[$etapaId]) ? $etapasMap[$etapaId] : 'En producción');
+
+    // Ubicación
+    $rebanoNombre = data_get($registro, 'etapa_animal.animal.rebano.nombre') ?? data_get($registro, 'etapa_animal.animal.rebano.Nombre') ?? data_get($registro, 'animal.rebano.Nombre') ?? data_get($registro, 'animal.rebano.nombre') ?? '';
+    $fincaNombre = data_get($registro, 'etapa_animal.animal.rebano.finca.nombre') ?? data_get($registro, 'etapa_animal.animal.rebano.finca.Nombre') ?? data_get($registro, 'animal.rebano.finca.Nombre') ?? data_get($registro, 'animal.rebano.finca.nombre') ?? '';
 @endphp
-<div>
-    <div class="mb-6 flex items-center">
-        <a href="{{ route('registro-celo.index') }}" class="mr-4 text-ganaderasoft-celeste hover:text-ganaderasoft-celeste/80">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-        </a>
-        <h2 class="text-3xl font-bold text-ganaderasoft-negro">🌡️ Editar registro de celo #{{ $id }}</h2>
-    </div>
 
-    <div class="bg-white rounded-xl shadow-md">
-        <div class="bg-ganaderasoft-celeste text-white px-6 py-4 rounded-t-xl">
-            <h3 class="text-lg font-semibold">Modificar datos</h3>
+<div class="space-y-6">
+    <!-- Header Card -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-2xl shadow-xs border border-orange-100 shrink-0">
+                🌡️
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                    Editar registro de celo #{{ $id }}
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">Actualiza la fecha de detección u observaciones clínicas del celo</p>
+            </div>
         </div>
-        <form action="{{ route('registro-celo.update', $id) }}" method="POST" class="p-6">
-            @csrf @method('PUT')
-            @if($errors->any())
-                <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded mb-6">
-                    <ul class="list-disc ml-4">
-                        @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
-                    </ul>
-                </div>
-            @endif
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Animal</label>
-                    <input type="text" readonly
-                           value="{{ $animalNombre }}"
-                           class="w-full border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 text-gray-600">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de celo <span class="text-red-500">*</span></label>
-                    <input type="date" name="fecha" required
-                           value="{{ $fechaValue }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste @error('fecha') ring-2 ring-red-500 @enderror">
-                    @error('fecha')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Observación</label>
-                    <input type="text" name="observacion" maxlength="100"
-                           value="{{ old('observacion', $observacion) }}"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-ganaderasoft-celeste">
-                </div>
-            </div>
-
-            <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
-                <a href="{{ route('registro-celo.index') }}"
-                   class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">Cancelar</a>
-                <button type="submit"
-                        class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                    Actualizar
-                </button>
-            </div>
-        </form>
+        <div>
+            <a href="{{ route('registro-celo.index') }}" 
+               class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm inline-flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver
+            </a>
+        </div>
     </div>
+
+    <!-- Alert Messages -->
+    @if(session('error'))
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm font-medium">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm space-y-1">
+            <div class="flex items-center space-x-2 font-bold mb-1">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm">Por favor corrige los siguientes errores:</p>
+            </div>
+            <ul class="list-disc list-inside text-xs space-y-0.5 ml-5">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Formulario Principal -->
+    <form method="POST" action="{{ route('registro-celo.update', $id) }}" id="formEditRegistroCelo" class="space-y-6">
+        @csrf
+        @method('PUT')
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Columna Izquierda: Formulario (2 Tercios) -->
+            <div class="lg:col-span-2 flex flex-col space-y-6">
+                
+                <!-- Card 1: Hembra Vinculada -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
+                        <span>🐄</span> Hembra receptora
+                    </h3>
+
+                    <div class="p-5 bg-gray-50/90 border border-gray-200/80 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 rounded-2xl bg-pink-50 text-pink-600 border border-pink-100 font-bold flex items-center justify-center text-3xl shadow-xs shrink-0">
+                                🐄
+                            </div>
+                            <div>
+                                <p class="text-xl font-bold text-gray-900">{{ $animalNombre }}</p>
+                                <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                                    @if($animalCodigo)
+                                        <span class="text-xs font-mono text-gray-600 bg-white px-2.5 py-0.5 rounded-md border border-gray-200 font-semibold">
+                                            #{{ $animalCodigo }}
+                                        </span>
+                                    @endif
+                                    <span class="text-xs font-bold text-pink-800 bg-pink-50 px-2.5 py-0.5 rounded-md border border-pink-200">
+                                        {{ $etapaNombre }}
+                                    </span>
+                                    @if($fincaNombre)
+                                        <span class="text-xs font-semibold text-gray-700 bg-white px-2.5 py-0.5 rounded-md border border-gray-200">
+                                            🏡 {{ $fincaNombre }}
+                                        </span>
+                                    @endif
+                                    @if($rebanoNombre)
+                                        <span class="text-xs font-semibold text-gray-700 bg-white px-2.5 py-0.5 rounded-md border border-gray-200">
+                                            {{ $rebanoNombre }}
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        @if($animalRefId)
+                            <div>
+                                <a href="{{ route('animales.show', $animalRefId) }}"
+                                   class="px-5 py-2.5 bg-white hover:bg-gray-100 border border-gray-300 text-gray-800 font-semibold rounded-xl text-sm inline-flex items-center gap-2 transition-all shadow-xs hover:shadow-sm">
+                                    <svg class="w-4 h-4 text-ganaderasoft-azul" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    Ver ficha
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Card 2: Datos del Celo (Expande verticalmente) -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col flex-1 space-y-6">
+                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
+                        <span>🌡️</span> Datos del ciclo de celo
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Fecha de Celo -->
+                        <div>
+                            <label for="fecha" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Fecha de detección <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" name="fecha" id="fecha" required 
+                                   value="{{ $fechaValue }}"
+                                   class="w-full px-4 py-3 border @error('fecha') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium">
+                            @error('fecha')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <!-- Etapa Actual Display -->
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Etapa productiva
+                            </label>
+                            <input type="text" readonly value="{{ $etapaNombre }}"
+                                   class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-700 text-sm font-semibold cursor-not-allowed">
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="flex-1 flex flex-col">
+                        <label for="observacion" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            Observaciones y signos de celo detectados <span class="text-xs font-normal text-gray-400 normal-case">(opcional)</span>
+                        </label>
+                        <textarea name="observacion" id="observacion" rows="13" maxlength="100"
+                                  placeholder="ej. Reflejo de inmovilidad positivo, abundante moco cristalino, vulva congestionada..."
+                                  class="w-full flex-1 min-h-[360px] px-4 py-3 border @error('observacion') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white leading-relaxed">{{ $observacion }}</textarea>
+                        <div class="flex justify-between items-center mt-1">
+                            @error('observacion')
+                                <p class="text-xs text-red-600 font-medium">{{ $message }}</p>
+                            @else
+                                <span></span>
+                            @enderror
+                            <span class="text-[11px] text-gray-400">Máx. 100 caracteres</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Resumen de Ficha en Vivo (1 Tercio) -->
+            <div class="space-y-6">
+                <!-- Card 1: Resumen y Acciones -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span>📋</span> Resumen del registro
+                        </h3>
+                    </div>
+
+                    <div class="p-6 space-y-5">
+                        <!-- Preview Avatar e Identificación -->
+                        <div class="p-4 bg-pink-50/70 border border-pink-100 rounded-2xl flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-xl bg-white border border-pink-200 text-pink-700 font-bold flex items-center justify-center text-2xl shadow-xs shrink-0">
+                                🐄
+                            </div>
+                            <div class="overflow-hidden">
+                                <p class="text-base font-bold text-gray-900 truncate">{{ $animalNombre }}</p>
+                                <p class="text-xs text-gray-500 font-mono">Código: {{ $animalCodigo ? '#'.$animalCodigo : 'S/C' }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Mini Stats Preview -->
+                        <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-gray-500">Ubicación:</span>
+                                <span class="font-bold text-gray-900 text-right truncate">
+                                    {{ [ $fincaNombre, $rebanoNombre ] ? implode(' • ', array_filter([$fincaNombre, $rebanoNombre])) : 'No asignada' }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-gray-500">Etapa:</span>
+                                <span class="font-bold text-gray-900 text-right">{{ $etapaNombre }}</span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-gray-500">Fecha detección:</span>
+                                <span id="previewFecha" class="font-bold text-gray-900 text-right">
+                                    {{ $fechaValue ? date('d/m/Y', strtotime($fechaValue)) : 'No especificada' }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-gray-500">Próximo celo (+21d):</span>
+                                <span id="previewProximoCelo" class="font-bold text-purple-700 font-mono text-right">—</span>
+                            </div>
+                        </div>
+
+                        <!-- Mensaje de Ciclo y Preñez -->
+                        <div class="p-3.5 bg-purple-50/70 border border-purple-100 rounded-xl space-y-1 text-xs text-purple-900 leading-relaxed">
+                            <strong class="block font-bold">Ciclo estral y preñez:</strong>
+                            <p>Si la hembra <strong>no queda preñada</strong> tras el servicio o inseminación, se proyecta su siguiente celo en aproximadamente <strong>21 días</strong> para un nuevo servicio.</p>
+                        </div>
+
+                        <!-- Action Buttons en el Sidebar -->
+                        <div class="space-y-3 pt-2">
+                            <button type="submit"
+                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
+                                💾 Actualizar registro de celo
+                            </button>
+                            <a href="{{ route('registro-celo.index') }}"
+                               class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                                Cancelar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta de Guía Reproductiva y Recomendaciones Clínicas -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-4">
+                    <h4 class="text-sm font-bold text-gray-900 flex items-center gap-2">
+                        <span>💡</span> Recomendaciones de servicio
+                    </h4>
+                    
+                    <div class="p-3.5 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-1 leading-relaxed">
+                        <strong class="block font-bold">Regla AM / PM:</strong>
+                        <p>• Celo detectado en la <strong>mañana</strong>: Servir o inseminar en la <strong>tarde</strong> del mismo día.</p>
+                        <p>• Celo detectado en la <strong>tarde</strong>: Servir o inseminar en la <strong>mañana</strong> del día siguiente.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const fechaInput     = document.getElementById('fecha');
+    const previewFecha   = document.getElementById('previewFecha');
+    const previewProximo = document.getElementById('previewProximoCelo');
+
+    function actualizarPreview() {
+        if (!fechaInput || !fechaInput.value) {
+            if (previewFecha) previewFecha.textContent = 'No especificada';
+            if (previewProximo) previewProximo.textContent = '—';
+            return;
+        }
+
+        try {
+            const parts = fechaInput.value.split('-');
+            if (parts.length === 3) {
+                previewFecha.textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            const f = new Date(fechaInput.value + 'T00:00:00');
+            f.setDate(f.getDate() + 21);
+            const dia = String(f.getDate()).padStart(2, '0');
+            const mes = String(f.getMonth() + 1).padStart(2, '0');
+            const anio = f.getFullYear();
+            if (previewProximo) previewProximo.textContent = `${dia}/${mes}/${anio}`;
+        } catch (e) {
+            if (previewProximo) previewProximo.textContent = '—';
+        }
+    }
+
+    if (fechaInput) {
+        fechaInput.addEventListener('change', actualizarPreview);
+    }
+    actualizarPreview();
+});
+</script>
 @endsection

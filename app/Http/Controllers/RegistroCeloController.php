@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\RegistroCeloServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
+use App\Services\Contracts\RebanosServiceInterface;
+use App\Services\Contracts\EtapaServiceInterface;
 use Illuminate\Http\Request;
 
 class RegistroCeloController extends Controller
 {
-    public function __construct(protected RegistroCeloServiceInterface $service) {}
+    public function __construct(
+        protected RegistroCeloServiceInterface $service,
+        protected FincasServiceInterface $fincasService,
+        protected RebanosServiceInterface $rebanosService,
+        protected EtapaServiceInterface $etapaService
+    ) {}
 
     private function isFemale(array $animal): bool
     {
@@ -36,13 +44,28 @@ class RegistroCeloController extends Controller
         $registros = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $animales  = $this->filterFemaleAnimals($this->service->getAnimales());
 
-        return view('registro-celo.index', compact('registros', 'animales', 'animalId', 'fechaInicio', 'fechaFin'));
+        $fincasRes  = $this->fincasService->getFincas();
+        $fincas     = $fincasRes['data'] ?? [];
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos    = $rebanosRes['data'] ?? [];
+        $etapasRes  = $this->etapaService->getAll();
+        $etapas     = $etapasRes['data']['data'] ?? $etapasRes['data'] ?? [];
+
+        return view('registro-celo.index', compact('registros', 'animales', 'animalId', 'fechaInicio', 'fechaFin', 'fincas', 'rebanos', 'etapas'));
     }
 
     public function create()
     {
         $animales = $this->filterFemaleAnimals($this->service->getAnimales());
-        return view('registro-celo.create', compact('animales'));
+        
+        $fincasRes  = $this->fincasService->getFincas();
+        $fincas     = $fincasRes['data'] ?? [];
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos    = $rebanosRes['data'] ?? [];
+        $etapasRes  = $this->etapaService->getAll();
+        $etapas     = $etapasRes['data']['data'] ?? $etapasRes['data'] ?? [];
+
+        return view('registro-celo.create', compact('animales', 'fincas', 'rebanos', 'etapas'));
     }
 
     public function store(Request $request)
@@ -51,11 +74,10 @@ class RegistroCeloController extends Controller
             'fecha'       => 'required|date',
             'observacion' => 'nullable|string|max:100',
             'animal_id'   => 'required|integer',
-            'etapa_id'    => 'required|integer',
+            'etapa_id'    => 'nullable|integer',
         ], [
             'fecha.required'     => 'La fecha de celo es requerida.',
             'animal_id.required' => 'El animal es requerido.',
-            'etapa_id.required'  => 'La etapa del animal es requerida.',
         ]);
 
         $response = $this->service->create($request->only(['fecha', 'observacion', 'animal_id', 'etapa_id']));
@@ -73,7 +95,9 @@ class RegistroCeloController extends Controller
             return redirect()->route('registro-celo.index')->with('error', 'Registro no encontrado.');
         }
         $registro = $response['data'];
-        return view('registro-celo.show', compact('registro'));
+        $etapasRes = $this->etapaService->getAll();
+        $etapas = $etapasRes['data']['data'] ?? $etapasRes['data'] ?? [];
+        return view('registro-celo.show', compact('registro', 'etapas'));
     }
 
     public function edit(int $id)
@@ -84,7 +108,15 @@ class RegistroCeloController extends Controller
         }
         $registro = $response['data'];
         $animales = $this->filterFemaleAnimals($this->service->getAnimales());
-        return view('registro-celo.edit', compact('registro', 'animales'));
+
+        $fincasRes  = $this->fincasService->getFincas();
+        $fincas     = $fincasRes['data'] ?? [];
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos    = $rebanosRes['data'] ?? [];
+        $etapasRes  = $this->etapaService->getAll();
+        $etapas     = $etapasRes['data']['data'] ?? $etapasRes['data'] ?? [];
+
+        return view('registro-celo.edit', compact('registro', 'animales', 'fincas', 'rebanos', 'etapas'));
     }
 
     public function update(Request $request, int $id)
