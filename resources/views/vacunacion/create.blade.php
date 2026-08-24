@@ -111,56 +111,62 @@
 
                 <!-- Card 2: Selección de Animales -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
-                    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-                        <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                            <span>🐮</span> Animales a vacunar <span class="text-red-500">*</span>
-                        </h3>
-                        <span id="selected-badge" class="px-3 py-1 bg-ganaderasoft-verde/15 text-ganaderasoft-verde-oscuro font-bold rounded-full text-xs">
-                            0 Seleccionados
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-100 pb-3">
+                        <div>
+                            <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                                <span>🐮</span> Animales a vacunar <span class="text-red-500">*</span>
+                            </h3>
+                            <p class="text-xs text-gray-500 mt-0.5">Filtra por finca, rebaño o sexo y marca los ejemplares que recibirán la dosis</p>
+                        </div>
+                        <span id="selected-badge" class="px-3.5 py-1.5 bg-ganaderasoft-verde/15 text-ganaderasoft-verde-oscuro font-bold rounded-full text-xs self-start sm:self-auto border border-ganaderasoft-verde/20">
+                            0 seleccionados
                         </span>
                     </div>
 
-                    <!-- Filtros reactivos de selección de animales -->
-                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-200/70 space-y-3">
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Filtros rápidos de selección</p>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">Finca</label>
-                                <select id="filtro_finca" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-ganaderasoft-celeste bg-white">
-                                    <option value="">Todas las fincas</option>
-                                    @foreach($fincas as $finca)
-                                        @php
-                                            $fId = (string) ($finca['id'] ?? $finca['id_Finca'] ?? '');
-                                            $fNombre = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
-                                        @endphp
-                                        <option value="{{ $fId }}">{{ $fNombre }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                    <!-- Filtros reactivos de selección de animales a tamaño estándar -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div>
+                            <label for="filtro_finca" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Finca <span class="text-xs font-normal text-gray-400 normal-case">(opcional)</span>
+                            </label>
+                            <select id="filtro_finca" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
+                                <option value="">Todas las fincas</option>
+                                @foreach($fincas as $finca)
+                                    @php
+                                        $fId = (string) ($finca['id'] ?? $finca['id_Finca'] ?? '');
+                                        $fNombre = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
+                                    @endphp
+                                    <option value="{{ $fId }}">{{ $fNombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">Rebaño</label>
-                                <select id="filtro_rebano" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-ganaderasoft-celeste bg-white">
-                                    <option value="">Todos los rebaños</option>
-                                    @foreach($rebanos as $rebano)
-                                        @php
-                                            $rId = (string) ($rebano['id'] ?? $rebano['id_Rebano'] ?? '');
-                                            $rNombre = $rebano['nombre'] ?? $rebano['Nombre'] ?? ('Rebaño #'.$rId);
-                                            $rFinca = (string) (data_get($rebano, 'finca_id') ?? data_get($rebano, 'finca.id') ?? data_get($rebano, 'id_Finca') ?? '');
-                                        @endphp
-                                        <option value="{{ $rId }}" data-finca-id="{{ $rFinca }}" data-finca="{{ $rFinca }}">{{ $rNombre }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        <div>
+                            <label for="filtro_rebano" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Rebaño <span class="text-xs font-normal text-gray-400 normal-case">(opcional)</span>
+                            </label>
+                            <select id="filtro_rebano" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
+                                <option value="">Todos los rebaños</option>
+                                @foreach($rebanos as $rebano)
+                                    @php
+                                        $rId = (string) ($rebano['id'] ?? $rebano['id_Rebano'] ?? '');
+                                        $rNombre = $rebano['nombre'] ?? $rebano['Nombre'] ?? ('Rebaño #'.$rId);
+                                        $rFinca = (string) (data_get($rebano, 'finca_id') ?? data_get($rebano, 'finca.id') ?? data_get($rebano, 'id_Finca') ?? '');
+                                    @endphp
+                                    <option value="{{ $rId }}" data-finca-id="{{ $rFinca }}" data-finca="{{ $rFinca }}">{{ $rNombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">Sexo</label>
-                                <select id="filtro_sexo" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-ganaderasoft-celeste bg-white">
-                                    <option value="">Todos</option>
-                                    <option value="H">Hembras</option>
-                                    <option value="M">Machos</option>
-                                </select>
-                            </div>
+                        <div>
+                            <label for="filtro_sexo" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Sexo
+                            </label>
+                            <select id="filtro_sexo" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
+                                <option value="">Todos los sexos</option>
+                                <option value="H">Hembras</option>
+                                <option value="M">Machos</option>
+                            </select>
                         </div>
                     </div>
 
