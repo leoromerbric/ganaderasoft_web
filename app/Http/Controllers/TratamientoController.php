@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\TratamientoServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
+use App\Services\Contracts\RebanosServiceInterface;
 use Illuminate\Http\Request;
 
 class TratamientoController extends Controller
 {
-    public function __construct(protected TratamientoServiceInterface $service) {}
+    public function __construct(
+        protected TratamientoServiceInterface $service,
+        protected FincasServiceInterface $fincasService,
+        protected RebanosServiceInterface $rebanosService
+    ) {}
 
     public function index(Request $request)
     {
@@ -20,13 +26,23 @@ class TratamientoController extends Controller
         $tratamientos = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $diagnosticos = $this->service->getDiagnosticos();
 
-        return view('tratamiento.index', compact('tratamientos', 'diagnosticos', 'diagnosticoId', 'fechaInicio', 'fechaFin'));
+        $fincasRes  = $this->fincasService->getFincas();
+        $fincas     = $fincasRes['data'] ?? [];
+        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanos    = $rebanosRes['data'] ?? [];
+
+        return view('tratamiento.index', compact('tratamientos', 'diagnosticos', 'fincas', 'rebanos', 'diagnosticoId', 'fechaInicio', 'fechaFin'));
     }
 
     public function create()
     {
         $diagnosticos = $this->service->getDiagnosticos();
-        return view('tratamiento.create', compact('diagnosticos'));
+        $fincasRes    = $this->fincasService->getFincas();
+        $fincas       = $fincasRes['data'] ?? [];
+        $rebanosRes   = $this->rebanosService->getRebanos();
+        $rebanos      = $rebanosRes['data'] ?? [];
+
+        return view('tratamiento.create', compact('diagnosticos', 'fincas', 'rebanos'));
     }
 
     public function store(Request $request)
@@ -73,7 +89,12 @@ class TratamientoController extends Controller
         }
         $tratamiento  = $response['data'];
         $diagnosticos = $this->service->getDiagnosticos();
-        return view('tratamiento.edit', compact('tratamiento', 'diagnosticos'));
+        $fincasRes    = $this->fincasService->getFincas();
+        $fincas       = $fincasRes['data'] ?? [];
+        $rebanosRes   = $this->rebanosService->getRebanos();
+        $rebanos      = $rebanosRes['data'] ?? [];
+
+        return view('tratamiento.edit', compact('tratamiento', 'diagnosticos', 'fincas', 'rebanos'));
     }
 
     public function update(Request $request, int $id)
