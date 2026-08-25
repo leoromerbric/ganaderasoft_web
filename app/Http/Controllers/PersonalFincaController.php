@@ -26,7 +26,7 @@ class PersonalFincaController extends Controller
     {
         $fincaId = $request->query('finca_id') ?? $request->query('id_finca');
         
-        $response = $this->personalFincaService->getPersonalFinca($fincaId ? (int)$fincaId : null);
+        $response = $this->personalFincaService->getPersonalFinca();
         
         if (isset($response['success']) && !$response['success']) {
             return redirect()->route('dashboard')->with('error', $response['message'] ?? 'Error al obtener el personal');
@@ -43,19 +43,17 @@ class PersonalFincaController extends Controller
         $personalFinca = $response['data']['data'] ?? $response['data'] ?? [];
 
         // Calculate statistics
-        $estadisticas = [
-            'total_personal' => count($personalFinca),
-            'por_tipo' => [],
-        ];
+        $totalPersonal = count($personalFinca);
+        $personalActivo = count(array_filter($personalFinca, fn($p) => ($p['status'] ?? true) == true));
+        $fincasConPersonal = count(array_unique(array_filter(array_map(fn($p) => $p['finca_id'] ?? data_get($p, 'finca.id'), $personalFinca))));
+        $totalTipos = count($tiposTrabajador);
 
-        // Count by tipo
-        foreach ($personalFinca as $persona) {
-            $tipo = $persona['tipo_trabajador']['nombre'] ?? 'Sin especificar';
-            if (!isset($estadisticas['por_tipo'][$tipo])) {
-                $estadisticas['por_tipo'][$tipo] = 0;
-            }
-            $estadisticas['por_tipo'][$tipo]++;
-        }
+        $estadisticas = [
+            'total_personal' => $totalPersonal,
+            'personal_activo' => $personalActivo,
+            'fincas_con_personal' => $fincasConPersonal,
+            'total_tipos' => $totalTipos,
+        ];
 
         return view('personal-finca.index', compact('personalFinca', 'fincas', 'fincaId', 'estadisticas', 'tiposTrabajador'));
     }
@@ -86,6 +84,7 @@ class PersonalFincaController extends Controller
             'apellido' => 'required|string|max:25',
             'telefono' => 'required|string|max:15',
             'correo' => 'required|string|email|max:40',
+            'fecha_nacimiento' => 'nullable|date',
             'tipo_trabajador_id' => 'required|integer',
         ], [
             'cedula.regex' => 'La cédula debe comenzar con V, E, J, P o G seguido de números (ej: V12345678).',
@@ -99,6 +98,7 @@ class PersonalFincaController extends Controller
             'apellido' => trim((string)$request->input('apellido')),
             'telefono' => trim((string)$request->input('telefono')),
             'correo' => trim((string)$request->input('correo')),
+            'fecha_nacimiento' => $request->input('fecha_nacimiento') ?: null,
             'tipo_trabajador_id' => (int)$request->input('tipo_trabajador_id'),
         ];
 
@@ -171,6 +171,7 @@ class PersonalFincaController extends Controller
             'apellido' => 'required|string|max:25',
             'telefono' => 'required|string|max:15',
             'correo' => 'required|string|email|max:40',
+            'fecha_nacimiento' => 'nullable|date',
             'tipo_trabajador_id' => 'required|integer',
         ], [
             'cedula.regex' => 'La cédula debe comenzar con V, E, J, P o G seguido de números (ej: V12345678).',
@@ -184,6 +185,7 @@ class PersonalFincaController extends Controller
             'apellido' => trim((string)$request->input('apellido')),
             'telefono' => trim((string)$request->input('telefono')),
             'correo' => trim((string)$request->input('correo')),
+            'fecha_nacimiento' => $request->input('fecha_nacimiento') ?: null,
             'tipo_trabajador_id' => (int)$request->input('tipo_trabajador_id'),
         ];
 

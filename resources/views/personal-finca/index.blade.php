@@ -3,275 +3,485 @@
 @section('title', 'Personal de finca')
 
 @section('content')
-    <div class="space-y-8">
-        <!-- Header Section -->
-        <div
-            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+@php
+    $totalPersonal = $estadisticas['total_personal'] ?? count($personalFinca);
+    $personalActivo = $estadisticas['personal_activo'] ?? 0;
+    $fincasConPersonal = $estadisticas['fincas_con_personal'] ?? 0;
+    $totalTipos = $estadisticas['total_tipos'] ?? count($tiposTrabajador);
+@endphp
+
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-2xl shadow-xs border border-teal-100 shrink-0">
+                👥
+            </div>
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Personal de finca</h1>
-                <p class="text-gray-500 text-sm mt-1">Gestión del personal asignado a las unidades de producción</p>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                    Personal de finca
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">Gestión de trabajadores, roles y asignación por unidad de producción</p>
             </div>
+        </div>
+        <div>
             <a href="{{ route('personal-finca.create') }}"
-                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                + Registrar personal
+                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-base inline-flex items-center gap-2">
+                <span>+</span> Registrar personal
             </a>
-        </div>
-
-        <!-- Alert Messages -->
-        @if(session('success'))
-            <div
-                class="p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-sm flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <span class="text-lg">✅</span>
-                    <p class="text-sm font-medium">{{ session('success') }}</p>
-                </div>
-            </div>
-        @endif
-        @if(session('error'))
-            <div
-                class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <span class="text-lg">⚠️</span>
-                    <p class="text-sm font-medium">{{ session('error') }}</p>
-                </div>
-            </div>
-        @endif
-
-        <!-- Filters Bar -->
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
-                    <select id="filtroFinca"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                        <option value="">Todas las fincas</option>
-                        @foreach($fincas as $finca)
-                            @php
-                                $fId = $finca['id'] ?? null;
-                                $fNombre = $finca['nombre'] ?? ('Finca #' . $fId);
-                            @endphp
-                            <option value="{{ $fId }}" {{ $fincaId == $fId ? 'selected' : '' }}>
-                                {{ $fNombre }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Tipo de
-                        trabajador</label>
-                    <select id="filtroTipo"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                        <option value="">Todos los tipos</option>
-                        @foreach($tiposTrabajador as $tipo)
-                            @php
-                                $tNombre = $tipo['nombre'] ?? '';
-                            @endphp
-                            <option value="{{ strtolower($tNombre) }}">{{ $tNombre }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar por
-                        nombre</label>
-                    <input type="text" id="filtroNombre" placeholder="Escriba el nombre..."
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                </div>
-                <div>
-                    <button onclick="limpiarFiltros()"
-                        class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                        Limpiar filtros
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Summary KPIs -->
-        @php
-            $pluralizarTipo = function(string $nombre): string {
-                $nombre = trim($nombre);
-                if (empty($nombre)) return '';
-                $ultimaLetra = mb_strtolower(mb_substr($nombre, -1));
-                
-                // Si termina en s o x (ej: Tesis), no cambia
-                if (in_array($ultimaLetra, ['s', 'x'])) {
-                    return $nombre;
-                }
-                // Si termina en z (ej: Capataz -> Capataces)
-                if ($ultimaLetra === 'z') {
-                    return mb_substr($nombre, 0, -1) . 'ces';
-                }
-                // Si termina en vocal
-                if (in_array($ultimaLetra, ['a', 'e', 'i', 'o', 'u', 'á', 'é', 'ó'])) {
-                    return $nombre . 's';
-                }
-                // Si termina en consonante (r, d, l, n, etc. ej: Administrador -> Administradores, Inseminador -> Inseminadores)
-                return $nombre . 'es';
-            };
-        @endphp
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Total Personal Card -->
-            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex flex-col justify-between">
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Total personal</p>
-                <p class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $estadisticas['total_personal'] }}</p>
-            </div>
-
-            <!-- Dynamic KPI Cards from Backend Worker Types -->
-            @foreach(array_slice($tiposTrabajador, 0, 3) as $tipo)
-                @php
-                    $nombreTipo = $tipo['nombre'] ?? '';
-                    $tituloPlural = $pluralizarTipo($nombreTipo);
-                    $count = $estadisticas['por_tipo'][$nombreTipo] ?? 0;
-                @endphp
-                <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex flex-col justify-between">
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 truncate" title="{{ $tituloPlural }}">
-                        {{ $tituloPlural }}
-                    </p>
-                    <p class="text-3xl font-extrabold text-gray-900">{{ $count }}</p>
-                </div>
-            @endforeach
-        </div>
-
-        <!-- Personal Table -->
-        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-            @if(empty($personalFinca))
-                <div class="p-12 text-center">
-                    <div
-                        class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-ganaderasoft-celeste/10 flex items-center justify-center text-4xl">
-                        👥
-                    </div>
-                    <h3 class="text-lg font-bold text-ganaderasoft-negro mb-1">No hay personal registrado</h3>
-                    <p class="text-gray-500 text-sm mb-6">Comienza registrando el personal asignado a tus fincas</p>
-                    <a href="{{ route('personal-finca.create') }}"
-                        class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                        + Registrar personal
-                    </a>
-                </div>
-            @else
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Empleado</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Cédula</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Cargo</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Finca</th>
-                                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Contacto</th>
-                                <th
-                                    class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                    Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-100 text-sm" id="tablaPersonal">
-                            @foreach($personalFinca as $persona)
-                                @php
-                                    $pId = $persona['id'] ?? null;
-
-                                    // Extraer V2 persona
-                                    $personaSub = $persona['persona'] ?? null;
-                                    $nombreEmp = $personaSub ? trim(($personaSub['nombre'] ?? '') . ' ' . ($personaSub['apellido'] ?? '')) : 'Personal';
-                                    $cedulaEmp = $personaSub['cedula'] ?? '-';
-                                    $telefonoEmp = $personaSub['telefono'] ?? '-';
-                                    $correoEmp = $personaSub['correo'] ?? '-';
-
-                                    $tipoObj = $persona['tipo_trabajador'] ?? null;
-                                    $tipoNombre = $tipoObj['nombre'] ?? 'Trabajador';
-
-                                    $fincaObj = $persona['finca'] ?? null;
-                                    $fincaNombre = $fincaObj['nombre'] ?? ('Finca #' . ($persona['finca_id'] ?? 'N/A'));
-                                    $fincaIdAttr = $persona['finca_id'] ?? '';
-                                @endphp
-                                <tr class="hover:bg-gray-50/80 transition-colors registro-personal" data-finca="{{ $fincaIdAttr }}"
-                                    data-tipo="{{ strtolower($tipoNombre) }}" data-nombre="{{ strtolower($nombreEmp) }}">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center space-x-3">
-                                            <div
-                                                class="w-10 h-10 rounded-full bg-ganaderasoft-celeste/15 flex items-center justify-center text-ganaderasoft-azul font-bold text-sm">
-                                                {{ strtoupper(substr($nombreEmp ?: 'P', 0, 1)) }}
-                                            </div>
-                                            <div>
-                                                <p class="font-bold text-gray-900">{{ $nombreEmp }}</p>
-                                                <p class="text-xs text-gray-400">ID: #{{ $pId }}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-700">
-                                        {{ $cedulaEmp }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-3 py-1 text-xs font-semibold rounded-full 
-                                                    @if(in_array(strtolower($tipoNombre), ['veterinario', 'médico'])) bg-green-100 text-green-800
-                                                    @elseif(in_array(strtolower($tipoNombre), ['tecnico', 'técnico'])) bg-blue-100 text-blue-800
-                                                    @elseif(in_array(strtolower($tipoNombre), ['supervisor', 'administrador'])) bg-purple-100 text-purple-800
-                                                    @else bg-gray-100 text-gray-800
-                                                    @endif">
-                                            {{ $tipoNombre }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-gray-600 font-medium">
-                                        {{ $fincaNombre }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-gray-500">
-                                        <p class="font-medium text-gray-900">📞 {{ $telefonoEmp }}</p>
-                                        <p class="text-xs text-gray-400">✉️ {{ $correoEmp }}</p>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        <div class="flex items-center justify-center space-x-3">
-                                            <a href="{{ route('personal-finca.show', $pId) }}"
-                                                class="text-ganaderasoft-celeste hover:text-ganaderasoft-azul font-semibold transition-colors">
-                                                Ver
-                                            </a>
-                                            <a href="{{ route('personal-finca.edit', $pId) }}"
-                                                class="text-ganaderasoft-azul hover:text-ganaderasoft-celeste font-semibold transition-colors">
-                                                Editar
-                                            </a>
-                                            <form action="{{ route('personal-finca.destroy', $pId) }}" method="POST" class="inline"
-                                                onsubmit="return confirm('¿Confirma eliminar a este personal de finca?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="text-red-600 hover:text-red-800 font-semibold transition-colors">
-                                                    Eliminar
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @endif
         </div>
     </div>
 
-    <script>
-        document.getElementById('filtroFinca').addEventListener('change', filtrarRegistros);
-        document.getElementById('filtroTipo').addEventListener('change', filtrarRegistros);
-        document.getElementById('filtroNombre').addEventListener('input', filtrarRegistros);
+    <!-- Alert Messages -->
+    @if(session('success'))
+        <div class="p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">✅</span>
+                <p class="text-sm font-medium">{{ session('success') }}</p>
+            </div>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm font-medium">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
 
-        function filtrarRegistros() {
-            const finca = document.getElementById('filtroFinca').value;
-            const tipo = document.getElementById('filtroTipo').value.toLowerCase();
-            const nombre = document.getElementById('filtroNombre').value.toLowerCase();
+    <!-- Summary KPIs (4 Cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total personal</p>
+                <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $totalPersonal }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl border border-blue-100">
+                👥
+            </div>
+        </div>
 
-            document.querySelectorAll('.registro-personal').forEach(function (row) {
-                const ok = (!finca || row.dataset.finca === finca)
-                    && (!tipo || row.dataset.tipo.includes(tipo))
-                    && (!nombre || row.dataset.nombre.includes(nombre));
-                row.style.display = ok ? '' : 'none';
-            });
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Personal activo</p>
+                <p id="statActivos" class="text-3xl font-extrabold text-emerald-600">{{ $personalActivo }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl border border-emerald-100">
+                🟢
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fincas con personal</p>
+                <p id="statFincas" class="text-3xl font-extrabold text-amber-600">{{ $fincasConPersonal }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100">
+                🏡
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Roles / Cargos</p>
+                <p id="statRoles" class="text-3xl font-extrabold text-purple-600">{{ $totalTipos }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl border border-purple-100">
+                💼
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar (4 Columnas) -->
+    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <!-- Buscar -->
+            <div class="lg:col-span-1">
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar empleado</label>
+                <input type="text" id="filtroNombre" placeholder="Nombre, cédula, correo..."
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+            </div>
+
+            <!-- Filtrar por Finca -->
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
+                <select id="filtroFinca"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                    <option value="">Todas las fincas</option>
+                    @foreach($fincas as $finca)
+                        @php
+                            $fId = $finca['id'] ?? null;
+                            $fNombre = $finca['nombre'] ?? ('Finca #' . $fId);
+                        @endphp
+                        <option value="{{ $fId }}" {{ (string)$fincaId === (string)$fId ? 'selected' : '' }}>
+                            {{ $fNombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Filtrar por Tipo de Trabajador -->
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Cargo / Rol</label>
+                <select id="filtroTipo"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                    <option value="">Todos los cargos</option>
+                    @foreach($tiposTrabajador as $tipo)
+                        @php
+                            $tId = $tipo['id'] ?? null;
+                            $tNombre = $tipo['nombre'] ?? '';
+                        @endphp
+                        <option value="{{ $tId }}">{{ $tNombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Filtrar por Estado -->
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
+                <select id="filtroEstado"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                    <option value="">Todos los estados</option>
+                    <option value="1">🟢 Activos</option>
+                    <option value="0">⚪ Inactivos</option>
+                </select>
+            </div>
+
+            <!-- Botón Limpiar -->
+            <div>
+                <button type="button" onclick="limpiarFiltros()"
+                    class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[42px] cursor-pointer shadow-2xs">
+                    Limpiar filtros
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personal Table -->
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100" id="tableContainer">
+        @if(empty($personalFinca) || count($personalFinca) === 0)
+            <div class="p-12 text-center space-y-4">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-teal-50 text-teal-600 border border-teal-100 flex items-center justify-center text-3xl shadow-xs">
+                    👥
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-lg font-bold text-gray-900">No hay personal registrado</h3>
+                    <p class="text-sm text-gray-500 max-w-md mx-auto">Comienza registrando a los trabajadores, capataces, veterinarios e inseminadores de tus fincas.</p>
+                </div>
+                <div class="pt-2">
+                    <a href="{{ route('personal-finca.create') }}"
+                        class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-xl hover:bg-opacity-90 transition-all font-semibold text-sm shadow-md hover:shadow-lg inline-flex items-center gap-2">
+                        <span>+</span> Registrar nuevo personal
+                    </a>
+                </div>
+            </div>
+        @else
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                Empleado
+                            </th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                Cédula
+                            </th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                Cargo / Rol
+                            </th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                Finca asignada
+                            </th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                Contacto
+                            </th>
+                            <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                Estado
+                            </th>
+                            <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100 text-sm" id="tablaPersonal">
+                        @foreach($personalFinca as $persona)
+                            @php
+                                $pId = $persona['id'] ?? null;
+
+                                // Extraer Persona
+                                $personaSub = $persona['persona'] ?? null;
+                                $nombreEmp = $personaSub ? trim(($personaSub['nombre'] ?? '') . ' ' . ($personaSub['apellido'] ?? '')) : 'Personal';
+                                $cedulaEmp = $personaSub['cedula'] ?? '-';
+                                $telefonoEmp = $personaSub['telefono'] ?? '-';
+                                $correoEmp = $personaSub['correo'] ?? '-';
+
+                                $tipoObj = $persona['tipo_trabajador'] ?? null;
+                                $tipoId = (string)($tipoObj['id'] ?? ($persona['tipo_trabajador_id'] ?? ''));
+                                $tipoNombre = $tipoObj['nombre'] ?? 'Trabajador';
+
+                                $fincaObj = $persona['finca'] ?? null;
+                                $fincaIdAttr = (string)($persona['finca_id'] ?? ($fincaObj['id'] ?? ''));
+                                $fincaNombre = $fincaObj['nombre'] ?? ('Finca #' . ($fincaIdAttr ?: 'N/A'));
+                                $fincaTipo = $fincaObj['explotacion_tipo'] ?? 'General';
+                                
+                                $status = (bool)($persona['status'] ?? true);
+                                $statusVal = $status ? '1' : '0';
+
+                                $inicial = strtoupper(substr($nombreEmp ?: 'P', 0, 1));
+                                
+                                $searchableText = strtolower(implode(' ', array_filter([
+                                    $nombreEmp,
+                                    $cedulaEmp,
+                                    $telefonoEmp,
+                                    $correoEmp,
+                                    $tipoNombre,
+                                    $fincaNombre,
+                                    '#'.$pId,
+                                    (string)$pId
+                                ])));
+                            @endphp
+                            <tr class="hover:bg-gray-50/80 transition-colors registro-personal" 
+                                data-finca="{{ $fincaIdAttr }}"
+                                data-tipo="{{ $tipoId }}" 
+                                data-tipo-nombre="{{ strtolower($tipoNombre) }}"
+                                data-status="{{ $statusVal }}"
+                                data-nombre="{{ $searchableText }}">
+                                
+                                <!-- Empleado -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-100 flex items-center justify-center font-bold text-base shadow-2xs shrink-0">
+                                            {{ $inicial }}
+                                        </div>
+                                        <div class="overflow-hidden">
+                                            <p class="font-bold text-gray-900 leading-tight truncate">{{ $nombreEmp }}</p>
+                                            <p class="text-xs text-gray-400 font-mono mt-0.5">ID: #{{ $pId }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Cédula -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-gray-100 text-gray-800 border border-gray-200">
+                                        {{ $cedulaEmp }}
+                                    </span>
+                                </td>
+
+                                <!-- Cargo -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-100">
+                                        💼 {{ $tipoNombre }}
+                                    </span>
+                                </td>
+
+                                <!-- Finca -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div>
+                                        <p class="font-semibold text-gray-900 flex items-center gap-1.5">
+                                            <span>🏡</span> {{ $fincaNombre }}
+                                        </p>
+                                        <p class="text-xs text-gray-500">{{ $fincaTipo }}</p>
+                                    </div>
+                                </td>
+
+                                <!-- Contacto -->
+                                <td class="px-6 py-4 whitespace-nowrap text-xs">
+                                    <div class="space-y-1">
+                                        @if($telefonoEmp && $telefonoEmp !== '-')
+                                            <p class="text-gray-700 flex items-center gap-1">
+                                                <span class="text-gray-400">📞</span> {{ $telefonoEmp }}
+                                            </p>
+                                        @endif
+                                        @if($correoEmp && $correoEmp !== '-')
+                                            <p class="text-gray-500 flex items-center gap-1 truncate max-w-[180px]" title="{{ $correoEmp }}">
+                                                <span class="text-gray-400">✉️</span> {{ $correoEmp }}
+                                            </p>
+                                        @endif
+                                        @if((!$telefonoEmp || $telefonoEmp === '-') && (!$correoEmp || $correoEmp === '-'))
+                                            <span class="text-gray-400 italic">Sin datos de contacto</span>
+                                        @endif
+                                    </div>
+                                </td>
+
+                                <!-- Estado -->
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    @if($status)
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            🟢 Activo
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-500 border border-gray-200">
+                                            ⚪ Inactivo
+                                        </span>
+                                    @endif
+                                </td>
+
+                                <!-- Acciones -->
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <!-- Ver Detalle -->
+                                        <a href="{{ route('personal-finca.show', $pId) }}"
+                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-celeste/10 text-ganaderasoft-celeste hover:bg-ganaderasoft-celeste hover:text-white transition-colors"
+                                           title="Ver ficha">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                            </svg>
+                                        </a>
+
+                                        <!-- Editar -->
+                                        <a href="{{ route('personal-finca.edit', $pId) }}"
+                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-azul/10 text-ganaderasoft-azul hover:bg-ganaderasoft-azul hover:text-white transition-colors"
+                                           title="Editar personal">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                            </svg>
+                                        </a>
+
+                                        <!-- Eliminar -->
+                                        <form method="POST" action="{{ route('personal-finca.destroy', $pId) }}" class="inline-block" id="form-delete-{{ $pId }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" onclick="openGenericConfirmModal({
+                                                formId: 'form-delete-{{ $pId }}',
+                                                intent: 'danger',
+                                                title: 'Eliminar personal de finca',
+                                                message: '¿Estás seguro de que deseas eliminar este registro de personal? Esta acción no se puede deshacer.',
+                                                confirmText: 'Sí, eliminar'
+                                            })"
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                                                title="Eliminar">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+    </div>
+
+    <!-- Empty filtered state -->
+    <div id="emptyFilteredState" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center space-y-3">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-gray-50 text-gray-500 border border-gray-200 flex items-center justify-center text-2xl shadow-2xs">
+            🔍
+        </div>
+        <div class="space-y-1">
+            <h4 class="text-base font-bold text-gray-900">No se encontró personal</h4>
+            <p class="text-sm text-gray-500 max-w-md mx-auto">No hay trabajadores que coincidan con los filtros aplicados. Intenta con otros criterios de búsqueda.</p>
+        </div>
+        <div class="pt-2">
+            <button type="button" onclick="limpiarFiltros()"
+                    class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-sm transition-colors shadow-2xs">
+                Restablecer filtros
+            </button>
+        </div>
+    </div>
+</div>
+
+<x-ui.confirm-modal />
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const filtroFinca = document.getElementById('filtroFinca');
+    const filtroTipo = document.getElementById('filtroTipo');
+    const filtroEstado = document.getElementById('filtroEstado');
+    const filtroNombre = document.getElementById('filtroNombre');
+    const tableContainer = document.getElementById('tableContainer');
+    const emptyFiltered = document.getElementById('emptyFilteredState');
+
+    function recalcularKpis(visibles) {
+        const statTotal = document.getElementById('statTotal');
+        const statActivos = document.getElementById('statActivos');
+        const statFincas = document.getElementById('statFincas');
+        const statRoles = document.getElementById('statRoles');
+
+        if (!statTotal) return;
+
+        let total = visibles.length;
+        let activos = 0;
+        let fincasSet = new Set();
+        let rolesSet = new Set();
+
+        visibles.forEach(row => {
+            const status = row.getAttribute('data-status');
+            if (status === '1') activos++;
+
+            const fId = row.getAttribute('data-finca');
+            if (fId) fincasSet.add(fId);
+
+            const tId = row.getAttribute('data-tipo');
+            if (tId) rolesSet.add(tId);
+        });
+
+        statTotal.textContent = total;
+        if (statActivos) statActivos.textContent = activos;
+        if (statFincas) statFincas.textContent = fincasSet.size;
+        if (statRoles) statRoles.textContent = rolesSet.size;
+    }
+
+    function aplicarFiltros() {
+        const finca = (filtroFinca ? filtroFinca.value : '').trim();
+        const tipo = (filtroTipo ? filtroTipo.value : '').trim();
+        const estado = (filtroEstado ? filtroEstado.value : '').trim();
+        const nombre = (filtroNombre ? filtroNombre.value : '').toLowerCase().trim();
+
+        let visibleCount = 0;
+        const visibleRows = [];
+
+        document.querySelectorAll('.registro-personal').forEach(function (row) {
+            const rowFinca = (row.getAttribute('data-finca') || '').trim();
+            const rowTipo = (row.getAttribute('data-tipo') || '').trim();
+            const rowEstado = (row.getAttribute('data-status') || '').trim();
+            const rowNombre = (row.getAttribute('data-nombre') || '').toLowerCase().trim();
+
+            const matchFinca = !finca || rowFinca === finca;
+            const matchTipo = !tipo || rowTipo === tipo;
+            const matchEstado = estado === '' || rowEstado === estado;
+            const matchNombre = !nombre || rowNombre.includes(nombre);
+
+            const isVisible = matchFinca && matchTipo && matchEstado && matchNombre;
+
+            row.style.display = isVisible ? '' : 'none';
+            if (isVisible) {
+                visibleCount++;
+                visibleRows.push(row);
+            }
+        });
+
+        if (emptyFiltered) {
+            const totalRows = document.querySelectorAll('.registro-personal').length;
+            if (visibleCount === 0 && totalRows > 0) {
+                emptyFiltered.classList.remove('hidden');
+                if (tableContainer) tableContainer.classList.add('hidden');
+            } else {
+                emptyFiltered.classList.add('hidden');
+                if (tableContainer) tableContainer.classList.remove('hidden');
+            }
         }
 
-        function limpiarFiltros() {
-            document.getElementById('filtroFinca').value = '';
-            document.getElementById('filtroTipo').value = '';
-            document.getElementById('filtroNombre').value = '';
-            document.querySelectorAll('.registro-personal').forEach(r => r.style.display = '');
-        }
-    </script>
+        recalcularKpis(visibleRows);
+    }
+
+    filtroFinca?.addEventListener('change', aplicarFiltros);
+    filtroTipo?.addEventListener('change', aplicarFiltros);
+    filtroEstado?.addEventListener('change', aplicarFiltros);
+    filtroNombre?.addEventListener('input', aplicarFiltros);
+
+    window.limpiarFiltros = function () {
+        if (filtroFinca) filtroFinca.value = '';
+        if (filtroTipo) filtroTipo.value = '';
+        if (filtroEstado) filtroEstado.value = '';
+        if (filtroNombre) filtroNombre.value = '';
+        aplicarFiltros();
+    };
+
+    // Aplicar filtros iniciales
+    aplicarFiltros();
+});
+</script>
 @endsection
