@@ -66,11 +66,10 @@
         @csrf
         @method('PUT')
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-            <!-- Columna Izquierda: Formulario (2 Tercios) -->
-            <div class="lg:col-span-2 space-y-6">
-                
-                <!-- Card 1: Datos del Rebaño -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+            <!-- Columna Izquierda: 2 Cajas Independientes (2 Tercios) -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                <!-- Caja 1: Datos principales -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
                         <span>📋</span> Datos principales
@@ -95,15 +94,15 @@
                             </label>
                             <input type="text" name="nombre" id="nombre" required 
                                    value="{{ old('nombre', $rebanoNombre) }}" maxlength="100"
-                                   placeholder="Ej: Rebaño vacas lecheras"
+                                   placeholder="Ej: Vacas en ordeño, mautas norte, lote de ceba..."
                                    class="w-full px-4 py-3 border @error('nombre') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium">
                             @error('nombre')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                     </div>
                 </div>
 
-                <!-- Card 2: Animales Asignados -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
+                <!-- Caja 2: Animales vinculados al rebaño (Caja separada alineada) -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex-1 flex flex-col justify-between space-y-4">
                     <div class="border-b border-gray-100 pb-3 flex items-center justify-between">
                         <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
                             <span>🐄</span> Animales vinculados al rebaño
@@ -113,32 +112,38 @@
                         </span>
                     </div>
 
-                    @if($animalesCount > 0)
-                        <div class="p-5 bg-emerald-50/70 border border-emerald-100 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <div>
-                                <p class="text-sm font-bold text-emerald-900">Este rebaño tiene {{ $animalesCount }} animales asignados activamente.</p>
-                                <p class="text-xs text-emerald-700 mt-0.5">Puedes consultar la lista detallada, aplicar movimientos o filtrar por etapas.</p>
+                    <div class="flex-1 flex flex-col justify-center">
+                        @if($animalesCount > 0)
+                            <div class="p-5 bg-emerald-50/70 border border-emerald-100 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                <div>
+                                    <p class="text-sm font-bold text-emerald-900">
+                                        {{ $animalesCount === 1 ? 'Este rebaño tiene 1 animal asignado activamente.' : "Este rebaño tiene {$animalesCount} animales asignados activamente." }}
+                                    </p>
+                                    <p class="text-xs text-emerald-700 mt-0.5">Puedes consultar la lista detallada, aplicar movimientos o filtrar por etapas.</p>
+                                </div>
+                                <div class="shrink-0">
+                                    <a href="{{ route('animales.index', ['rebano_id' => $rebanoId]) }}"
+                                       class="px-5 py-2.5 bg-white hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-semibold rounded-xl text-sm inline-flex items-center gap-2 transition-all shadow-xs">
+                                        <span>Ver animales asignados</span>
+                                        <span>➔</span>
+                                    </a>
+                                </div>
                             </div>
-                            <div>
-                                <a href="{{ route('animales.index', ['rebano_id' => $rebanoId]) }}"
-                                   class="px-5 py-2.5 bg-white hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-semibold rounded-xl text-sm inline-flex items-center gap-2 transition-all shadow-xs">
-                                    Ver animales asignados ➔
-                                </a>
+                        @else
+                            <div class="p-5 bg-gray-50 border border-gray-200 rounded-2xl flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-700">No hay animales asignados a este rebaño todavía.</p>
+                                    <p class="text-xs text-gray-400 mt-0.5">Los animales se asignan al registrarlos o mediante movimientos de lote.</p>
+                                </div>
                             </div>
-                        </div>
-                    @else
-                        <div class="p-5 bg-gray-50 border border-gray-200 rounded-2xl text-center space-y-1">
-                            <p class="text-sm font-semibold text-gray-700">No hay animales asignados a este rebaño todavía.</p>
-                            <p class="text-xs text-gray-400">Puedes asignar animales al crear nuevos ejemplares o mediante movimientos de rebaño.</p>
-                        </div>
-                    @endif
+                        @endif
+                    </div>
                 </div>
             </div>
 
             <!-- Columna Derecha: Resumen de Ficha en Vivo (1 Tercio) -->
-            <div class="space-y-6">
-                <!-- Card 1: Resumen y Acciones -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between">
+                <div>
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                         <h3 class="text-lg font-bold flex items-center gap-2">
                             <span>📋</span> Resumen del rebaño
@@ -169,22 +174,22 @@
                             </div>
                             <div class="flex justify-between items-center gap-2">
                                 <span class="text-gray-500">Animales actuales:</span>
-                                <span class="font-bold text-emerald-700 text-right">{{ $animalesCount }} animales</span>
+                                <span class="font-bold text-emerald-700 text-right">{{ $animalesCount }} {{ $animalesCount === 1 ? 'animal' : 'animales' }}</span>
                             </div>
                         </div>
-
-                        <!-- Action Buttons en el Sidebar -->
-                        <div class="space-y-3 pt-2">
-                            <button type="submit"
-                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                                💾 Actualizar rebaño
-                            </button>
-                            <a href="{{ route('rebanos.index') }}"
-                               class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                                Cancelar
-                            </a>
-                        </div>
                     </div>
+                </div>
+
+                <!-- Action Buttons en el fondo de la columna derecha -->
+                <div class="p-6 pt-0 space-y-3">
+                    <button type="submit"
+                            class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
+                        💾 Actualizar rebaño
+                    </button>
+                    <a href="{{ route('rebanos.index') }}"
+                       class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                        Cancelar
+                    </a>
                 </div>
             </div>
         </div>

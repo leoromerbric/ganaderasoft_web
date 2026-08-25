@@ -56,9 +56,9 @@
     <form method="POST" action="{{ route('rebanos.store') }}" id="formCreateRebano" class="space-y-6">
         @csrf
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-            <!-- Columna Izquierda: Formulario (2 Tercios) -->
-            <div class="lg:col-span-2 space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+            <!-- Columna Izquierda: 2 Cajas Independientes (2 Tercios) -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
                 
                 <!-- Card 1: Información Principal del Rebaño -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
@@ -98,7 +98,7 @@
                             </label>
                             <input type="text" name="nombre" id="nombre" required 
                                    value="{{ old('nombre') }}" maxlength="100"
-                                   placeholder="Ej: Lote Vacas en Ordeño, Rebaño Mautas Norte, Lote Ceba #1..."
+                                   placeholder="Ej: Vacas en ordeño, mautas norte, lote de ceba #1..."
                                    class="w-full px-4 py-3 border @error('nombre') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium">
                             @error('nombre')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                             <p class="text-[11px] text-gray-400 mt-1">Nombre distintivo para identificar y organizar el ganado.</p>
@@ -106,35 +106,40 @@
                     </div>
                 </div>
 
-                <!-- Card 2: Buenas Prácticas de Agrupación Ganadera -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-                    <h4 class="text-base font-bold text-gray-900 flex items-center gap-2">
+                <!-- Card 2: Buenas Prácticas de Agrupación Ganadera (Alineada con borde inferior) -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <h4 class="text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
                         <span>💡</span> Criterios recomendados para la creación de rebaños
                     </h4>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                        <div class="p-4 bg-emerald-50/70 border border-emerald-100 rounded-xl space-y-1">
-                            <span class="font-bold text-emerald-900 block">🥛 Etapa productiva:</span>
-                            <p class="text-emerald-800 leading-relaxed">Agrupa animales según su estado de lactancia, secado o engorde para optimizar la ración nutricional.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs flex-1 items-stretch">
+                        <div class="p-4 bg-emerald-50/70 border border-emerald-100 rounded-xl space-y-1 flex flex-col justify-between">
+                            <div>
+                                <span class="font-bold text-emerald-900 block mb-1">🥛 Etapa productiva:</span>
+                                <p class="text-emerald-800 leading-relaxed">Agrupa animales según su estado de lactancia, secado o engorde para optimizar la ración nutricional.</p>
+                            </div>
                         </div>
 
-                        <div class="p-4 bg-blue-50/70 border border-blue-100 rounded-xl space-y-1">
-                            <span class="font-bold text-blue-900 block">⚖️ Peso y edad:</span>
-                            <p class="text-blue-800 leading-relaxed">Mantén lotes homogéneos en tamaño para reducir la dominancia social y competencia en comederos.</p>
+                        <div class="p-4 bg-blue-50/70 border border-blue-100 rounded-xl space-y-1 flex flex-col justify-between">
+                            <div>
+                                <span class="font-bold text-blue-900 block mb-1">⚖️ Peso y edad:</span>
+                                <p class="text-blue-800 leading-relaxed">Mantén lotes homogéneos en tamaño para reducir la dominancia social y competencia en comederos.</p>
+                            </div>
                         </div>
 
-                        <div class="p-4 bg-purple-50/70 border border-purple-100 rounded-xl space-y-1">
-                            <span class="font-bold text-purple-900 block">🧬 Sanidad y origen:</span>
-                            <p class="text-purple-800 leading-relaxed">Separa animales recién ingresados en rebaños de cuarentena antes de integrarlos al lote general.</p>
+                        <div class="p-4 bg-purple-50/70 border border-purple-100 rounded-xl space-y-1 flex flex-col justify-between">
+                            <div>
+                                <span class="font-bold text-purple-900 block mb-1">🧬 Sanidad y origen:</span>
+                                <p class="text-purple-800 leading-relaxed">Separa animales recién ingresados en rebaños de cuarentena antes de integrarlos al lote general.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Columna Derecha: Resumen de Ficha en Vivo (1 Tercio) -->
-            <div class="space-y-6">
-                <!-- Card 1: Resumen y Acciones -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between">
+                <div>
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                         <h3 class="text-lg font-bold flex items-center gap-2">
                             <span>📋</span> Resumen del rebaño
@@ -168,19 +173,19 @@
                                 <span class="font-bold text-emerald-700 text-right">Activo (0 animales)</span>
                             </div>
                         </div>
-
-                        <!-- Action Buttons en el Sidebar -->
-                        <div class="space-y-3 pt-2">
-                            <button type="submit"
-                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                                💾 Guardar rebaño
-                            </button>
-                            <a href="{{ route('rebanos.index') }}"
-                               class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                                Cancelar
-                            </a>
-                        </div>
                     </div>
+                </div>
+
+                <!-- Action Buttons en el fondo de la columna derecha -->
+                <div class="p-6 pt-0 space-y-3">
+                    <button type="submit"
+                            class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
+                        💾 Guardar rebaño
+                    </button>
+                    <a href="{{ route('rebanos.index') }}"
+                       class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                        Cancelar
+                    </a>
                 </div>
             </div>
         </div>
