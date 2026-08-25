@@ -33,15 +33,18 @@ class AnimalesController extends Controller
         $nombre    = $request->query('nombre', '');
         $archivado = $request->query('archivado', 'activos');
 
-        // Mapear filtro de archivado para el servicio API
+        // Mapear filtro de archivado y finca para el servicio API
         $apiFilters = [];
+        if ($idFinca) {
+            $apiFilters['finca_id'] = $idFinca;
+        }
         if ($archivado === 'archivados') {
             $apiFilters['archivado'] = 'true';
         } elseif ($archivado === 'todos') {
             $apiFilters['archivado'] = 'todos';
         }
 
-        // Obtener los animales aplicando rebaño y filtro de archivado
+        // Obtener los animales aplicando rebaño, finca y filtro de archivado
         $response = $this->animalesService->getAnimales($idRebano, $apiFilters);
         $animales = ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
 
@@ -52,8 +55,10 @@ class AnimalesController extends Controller
         $fincasResponse = $this->fincasService->getFincas();
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-        // Construir mapa de Rebaño a Finca para validaciones y filtros en Javascript (UI)
+        // Construir mapas para validaciones, visualización y filtros en Javascript (UI)
         $mapaRebanoFinca = collect($rebanos)->keyBy('id')->map(fn($r) => $r['finca_id'] ?? null)->all();
+        $mapaFincaNombres = collect($fincas)->keyBy('id')->map(fn($f) => $f['nombre'] ?? ('Finca #' . $f['id']))->all();
+        $mapaRebanoNombres = collect($rebanos)->keyBy('id')->map(fn($r) => $r['nombre'] ?? ('Rebaño #' . $r['id']))->all();
 
         // Calcular estadísticas básicas en memoria
         $estadisticas = [
@@ -67,7 +72,7 @@ class AnimalesController extends Controller
         return view('animales.index', compact(
             'animales', 'rebanos', 'fincas',
             'idFinca', 'idRebano', 'sexo', 'nombre', 'archivado',
-            'mapaRebanoFinca', 'estadisticas'
+            'mapaRebanoFinca', 'mapaFincaNombres', 'mapaRebanoNombres', 'estadisticas'
         ));
     }
 
