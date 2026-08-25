@@ -103,7 +103,7 @@
                 <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
                     <span>🧬</span> Distribución por sexo
                 </h3>
-                <span class="text-xs text-gray-400 font-medium">Machos vs Hembras</span>
+                <span class="text-xs text-gray-400 font-medium">Machos vs hembras</span>
             </div>
             @if($totalConSexo > 0)
                 <div class="relative h-64 w-full flex items-center justify-center">

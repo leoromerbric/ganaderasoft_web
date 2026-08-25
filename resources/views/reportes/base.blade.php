@@ -4,14 +4,41 @@
 
 @section('content')
 <style>
+    /* 1. Estilos de pantalla: Contenedor Escritorio y Hoja Tamaño Carta */
+    .letter-preview-desk {
+        background-color: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 1.25rem;
+        padding: 2rem 1rem;
+        overflow-x: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .print-sheet {
+        width: 100%;
+        max-width: 215.9mm; /* Ancho estándar Tamaño Carta (8.5 in) */
+        min-height: 279.4mm; /* Alto estándar Tamaño Carta (11 in) */
+        background-color: #ffffff;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        border-radius: 2px;
+        padding: 16mm 18mm;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
     @media print {
-        /* 1. Eliminar cabeceras y pies por defecto del navegador (Fecha, Título, URL) */
+        /* 2. Configuración de página física a Tamaño Carta */
         @page {
+            size: letter portrait !important;
             margin: 12mm 15mm 15mm 15mm !important;
-            size: A4 portrait;
         }
 
-        /* 2. Ocultar la interfaz de usuario de la web */
+        /* 3. Ocultar la interfaz de usuario de la web */
         header, nav, aside, #sidebar, #sidebar-toggle-wrapper, .no-print {
             display: none !important;
         }
@@ -25,25 +52,29 @@
             overflow: visible !important;
         }
 
-        .print-container {
+        .print-container, .letter-preview-desk {
+            background-color: transparent !important;
+            border: none !important;
             padding: 0 !important;
             margin: 0 !important;
             box-shadow: none !important;
-            border: none !important;
             width: 100% !important;
+            display: block !important;
         }
 
-        /* 3. Hoja A4 limpia con espacio para el footer fijo */
+        /* 4. Hoja Carta limpia sin sombras de pantalla */
         .print-sheet {
             box-shadow: none !important;
             border: none !important;
+            border-radius: 0 !important;
             padding: 0 !important;
             margin: 0 !important;
             width: 100% !important;
+            max-width: 100% !important;
             height: auto !important;
             min-height: 0 !important;
             display: block !important;
-            padding-bottom: 20mm !important; /* Espacio para no sobreponerse con el footer fijo */
+            padding-bottom: 20mm !important; /* Espacio para el footer fijo */
         }
 
         /* Evitar cortar filas de tablas a la mitad entre páginas */
@@ -57,7 +88,7 @@
             display: table-header-group !important;
         }
 
-        /* 4. Repetir el footer al final de CADA PÁGINA del informe */
+        /* 5. Repetir el footer al final de CADA PÁGINA del informe */
         .print-footer {
             position: fixed !important;
             bottom: 0 !important;
@@ -133,37 +164,53 @@
         </div>
     </div>
 
-    <!-- Previsualización del Documento (Hoja Imprimible/PDF) -->
-    <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-4 sm:p-6 md:p-8 max-w-5xl mx-auto print-sheet">
-        <div>
-            <!-- Header Oficial del Documento -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-2 border-ganaderasoft-azul pb-5 mb-5">
-                <div class="flex items-center space-x-4">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 object-contain">
-                    <div>
-                        <h2 class="text-2xl font-black text-ganaderasoft-negro tracking-tight">GanaderaSoft</h2>
-                        <p class="text-xs font-bold text-ganaderasoft-azul uppercase tracking-wider">Sistema de gestión ganadera</p>
-                    </div>
-                </div>
-                <div class="text-left sm:text-right">
-                    <span class="inline-block px-3 py-1 bg-ganaderasoft-azul/10 text-ganaderasoft-azul rounded-lg text-xs font-bold uppercase tracking-wider mb-1">
-                        {{ $titulo ?? 'Reporte oficial' }}
-                    </span>
-                    <p class="text-xs text-gray-500 font-medium">Fecha de emisión: {{ $fechaEmision ?? date('d/m/Y h:i A') }}</p>
-                    <p class="text-xs text-gray-500 font-medium">
-                        Período: {{ $fechaInicio ?? date('01/m/Y') }} - {{ $fechaFin ?? date('d/m/Y') }}
-                    </p>
-                </div>
-            </div>
-
-            <!-- Document Body Slot -->
-            @yield('report_content')
+    <!-- Previsualización del documento en tamaño carta -->
+    <div class="letter-preview-desk">
+        <!-- Indicador de hoja tamaño carta (no-print) -->
+        <div class="no-print w-full max-w-[215.9mm] flex items-center justify-between pb-3 px-1 text-xs text-gray-500 font-medium">
+            <span class="flex items-center gap-1.5 font-semibold text-gray-700">
+                <svg class="w-4 h-4 text-ganaderasoft-azul" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Previsualización de documento
+            </span>
+            <span class="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-md">
+                Tamaño carta (8.5" × 11")
+            </span>
         </div>
 
-        <!-- Footer del Documento (Repetido en cada página al imprimir) -->
-        <div class="mt-8 pt-4 border-t border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-400 print-footer">
-            <p>© {{ date('Y') }} GanaderaSoft. Documento generado oficialmente.</p>
-            <p>Documento oficial del sistema</p>
+        <!-- Hoja carta (imprimible/PDF) -->
+        <div class="print-sheet">
+            <div>
+                <!-- Encabezado oficial del documento -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-2 border-ganaderasoft-azul pb-5 mb-5">
+                    <div class="flex items-center space-x-4">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 object-contain">
+                        <div>
+                            <h2 class="text-2xl font-black text-ganaderasoft-negro tracking-tight">GanaderaSoft</h2>
+                            <p class="text-xs font-bold text-ganaderasoft-azul uppercase tracking-wider">Sistema de gestión ganadera</p>
+                        </div>
+                    </div>
+                    <div class="text-left sm:text-right">
+                        <span class="inline-block px-3 py-1 bg-ganaderasoft-azul/10 text-ganaderasoft-azul rounded-lg text-xs font-bold uppercase tracking-wider mb-1">
+                            {{ $titulo ?? 'Reporte oficial' }}
+                        </span>
+                        <p class="text-xs text-gray-500 font-medium">Fecha de emisión: {{ $fechaEmision ?? date('d/m/Y h:i A') }}</p>
+                        <p class="text-xs text-gray-500 font-medium">
+                            Período: {{ $fechaInicio ?? date('01/m/Y') }} - {{ $fechaFin ?? date('d/m/Y') }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Document Body Slot -->
+                @yield('report_content')
+            </div>
+
+            <!-- Footer del Documento (Repetido en cada página al imprimir) -->
+            <div class="mt-8 pt-4 border-t border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-400 print-footer">
+                <p>© {{ date('Y') }} GanaderaSoft. Documento generado oficialmente.</p>
+                <p>Documento oficial del sistema</p>
+            </div>
         </div>
     </div>
 </div>
