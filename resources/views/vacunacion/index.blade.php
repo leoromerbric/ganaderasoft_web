@@ -133,7 +133,7 @@
     <!-- Tabla de Vacunaciones -->
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
         @if(count($vacunaciones) > 0)
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto" id="tableContainer">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
@@ -270,120 +270,160 @@
                     </tbody>
                 </table>
             </div>
-        @else
-            <div class="p-12 text-center">
-                <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-3xl">
-                    💉
+
+            <!-- Mensaje de Sin Resultados Filtrados -->
+            <div id="sinResultadosFiltro" class="hidden p-12 text-center">
+                <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-2xl shadow-2xs">
+                    🔍
                 </div>
-                <h3 class="text-lg font-bold text-ganaderasoft-negro mb-1">No hay vacunaciones registradas</h3>
-                <p class="text-gray-500 text-sm mb-6">Prueba cambiando los filtros o registra una nueva vacunación.</p>
-                <a href="{{ route('vacunacion.create') }}"
-                   class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                    + Nueva vacunación
-                </a>
+                <h4 class="text-base font-bold text-ganaderasoft-negro mb-1">No se encontraron vacunaciones</h4>
+                <p class="text-gray-500 text-xs mb-4">No hay registros que coincidan con los filtros aplicados.</p>
+                <button type="button" onclick="limpiarFiltros(event)"
+                        class="px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-xs inline-flex items-center gap-1.5 cursor-pointer">
+                    Limpiar filtros
+                </button>
             </div>
-        @endif
+            @else
+                <div class="p-12 text-center">
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-3xl">
+                        💉
+                    </div>
+                    <h3 class="text-lg font-bold text-ganaderasoft-negro mb-1">No hay vacunaciones registradas</h3>
+                    <p class="text-gray-500 text-sm mb-6">Prueba cambiando los filtros o registra una nueva vacunación.</p>
+                    <a href="{{ route('vacunacion.create') }}"
+                       class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
+                        + Nueva vacunación
+                    </a>
+                </div>
+            @endif
+        </div>
     </div>
-</div>
 
-<x-ui.confirm-modal />
+    <x-ui.confirm-modal />
 
-<script>
-    const filtroTexto = document.getElementById('filtroTexto');
-    const filtroVacuna = document.getElementById('filtroVacuna');
-    const filtroFinca = document.getElementById('filtroFinca');
-    const filtroRebano = document.getElementById('filtroRebano');
-    const filtroFechaInicio = document.getElementById('filtroFechaInicio');
-    const filtroFechaFin = document.getElementById('filtroFechaFin');
-    const filtroArchivado = document.getElementById('filtroArchivado');
+    <script>
+        const filtroTexto = document.getElementById('filtroTexto');
+        const filtroVacuna = document.getElementById('filtroVacuna');
+        const filtroFinca = document.getElementById('filtroFinca');
+        const filtroRebano = document.getElementById('filtroRebano');
+        const filtroFechaInicio = document.getElementById('filtroFechaInicio');
+        const filtroFechaFin = document.getElementById('filtroFechaFin');
+        const filtroArchivado = document.getElementById('filtroArchivado');
 
-    // Almacenar las opciones originales de rebaños
-    const listaRebanosOriginal = Array.from(filtroRebano?.options || []).map(opt => ({
-        value: opt.value,
-        text: opt.textContent,
-        fincaId: (opt.dataset.fincaId || '').toString()
-    }));
+        // Almacenar las opciones originales de rebaños
+        const listaRebanosOriginal = Array.from(filtroRebano?.options || []).map(opt => ({
+            value: opt.value,
+            text: opt.textContent,
+            fincaId: (opt.dataset.fincaId || '').toString()
+        }));
 
-    function repopularRebanosPorFinca() {
-        if (!filtroRebano) return;
-        const fincaSeleccionada = (filtroFinca?.value || '').toString();
-        const rebanoActual = filtroRebano.value;
+        function repopularRebanosPorFinca() {
+            if (!filtroRebano) return;
+            const fincaSeleccionada = (filtroFinca?.value || '').toString();
+            const rebanoActual = filtroRebano.value;
 
-        // Limpiar opciones
-        filtroRebano.innerHTML = '';
+            // Limpiar opciones
+            filtroRebano.innerHTML = '';
 
-        listaRebanosOriginal.forEach(r => {
-            if (!r.value || !fincaSeleccionada || r.fincaId === fincaSeleccionada) {
-                const opt = document.createElement('option');
-                opt.value = r.value;
-                opt.textContent = r.text;
-                opt.dataset.fincaId = r.fincaId;
-                if (r.value === rebanoActual) {
-                    opt.selected = true;
+            listaRebanosOriginal.forEach(r => {
+                if (!r.value || !fincaSeleccionada || r.fincaId === fincaSeleccionada) {
+                    const opt = document.createElement('option');
+                    opt.value = r.value;
+                    opt.textContent = r.text;
+                    opt.dataset.fincaId = r.fincaId;
+                    if (r.value === rebanoActual) {
+                        opt.selected = true;
+                    }
+                    filtroRebano.appendChild(opt);
                 }
-                filtroRebano.appendChild(opt);
-            }
-        });
+            });
 
-        // Si la opción seleccionada no pertenece a la finca seleccionada, resetear a todos
-        if (rebanoActual && !Array.from(filtroRebano.options).some(o => o.value === rebanoActual)) {
-            filtroRebano.value = '';
-        }
-    }
-
-    filtroTexto?.addEventListener('input', aplicarFiltros);
-    filtroVacuna?.addEventListener('change', aplicarFiltros);
-    
-    // Al cambiar finca -> filtra los rebaños eliminando del DOM los que no pertenecen
-    filtroFinca?.addEventListener('change', function() {
-        repopularRebanosPorFinca();
-        aplicarFiltros();
-    });
-
-    // Al seleccionar un rebaño -> autoselecciona su finca asociada
-    filtroRebano?.addEventListener('change', function() {
-        if (filtroRebano.value && filtroFinca) {
-            const opt = listaRebanosOriginal.find(r => r.value === filtroRebano.value);
-            if (opt && opt.fincaId && filtroFinca.value !== opt.fincaId) {
-                filtroFinca.value = opt.fincaId;
-                repopularRebanosPorFinca();
+            // Si la opción seleccionada no pertenece a la finca seleccionada, resetear a todos
+            if (rebanoActual && !Array.from(filtroRebano.options).some(o => o.value === rebanoActual)) {
+                filtroRebano.value = '';
             }
         }
-        aplicarFiltros();
-    });
 
-    filtroFechaInicio?.addEventListener('change', aplicarFiltros);
-    filtroFechaFin?.addEventListener('change', aplicarFiltros);
-    filtroArchivado?.addEventListener('change', aplicarFiltros);
-
-    function aplicarFiltros() {
-        const texto = (filtroTexto?.value || '').toLowerCase().trim();
-        const vacuna = (filtroVacuna?.value || '').toString();
-        const finca = (filtroFinca?.value || '').toString();
-        const rebano = (filtroRebano?.value || '').toString();
-        const fechaInicio = filtroFechaInicio?.value || '';
-        const fechaFin = filtroFechaFin?.value || '';
-        const archivado = filtroArchivado?.value || '';
-
-        document.querySelectorAll('.fila-vacunacion').forEach(function(row) {
-            const rowTexto = row.getAttribute('data-texto') || '';
-            const rowVacuna = (row.getAttribute('data-vacuna') || '').toString();
-            const rowFinca = (row.getAttribute('data-finca') || '').toString();
-            const rowRebano = (row.getAttribute('data-rebano') || '').toString();
-            const rowFecha = row.getAttribute('data-fecha') || '';
-            const rowArchivado = row.getAttribute('data-archivado') || '';
-
-            const matchTexto = !texto || rowTexto.includes(texto);
-            const matchVacuna = !vacuna || rowVacuna === vacuna;
-            const matchFinca = !finca || rowFinca === finca;
-            const matchRebano = !rebano || rowRebano === rebano;
-            const matchFechaInicio = !fechaInicio || rowFecha >= fechaInicio;
-            const matchFechaFin = !fechaFin || rowFecha <= fechaFin;
-            const matchArchivado = !archivado || rowArchivado === archivado;
-
-            const matchesAll = matchTexto && matchVacuna && matchFinca && matchRebano && matchFechaInicio && matchFechaFin && matchArchivado;
-            row.style.display = matchesAll ? '' : 'none';
+        filtroTexto?.addEventListener('input', aplicarFiltros);
+        filtroVacuna?.addEventListener('change', aplicarFiltros);
+        
+        // Al cambiar finca -> filtra los rebaños eliminando del DOM los que no pertenecen
+        filtroFinca?.addEventListener('change', function() {
+            repopularRebanosPorFinca();
+            aplicarFiltros();
         });
-    }
-</script>
+
+        // Al seleccionar un rebaño -> autoselecciona su finca asociada
+        filtroRebano?.addEventListener('change', function() {
+            if (filtroRebano.value && filtroFinca) {
+                const opt = listaRebanosOriginal.find(r => r.value === filtroRebano.value);
+                if (opt && opt.fincaId && filtroFinca.value !== opt.fincaId) {
+                    filtroFinca.value = opt.fincaId;
+                    repopularRebanosPorFinca();
+                }
+            }
+            aplicarFiltros();
+        });
+
+        filtroFechaInicio?.addEventListener('change', aplicarFiltros);
+        filtroFechaFin?.addEventListener('change', aplicarFiltros);
+        filtroArchivado?.addEventListener('change', aplicarFiltros);
+
+        function aplicarFiltros() {
+            const texto = (filtroTexto?.value || '').toLowerCase().trim();
+            const vacuna = (filtroVacuna?.value || '').toString();
+            const finca = (filtroFinca?.value || '').toString();
+            const rebano = (filtroRebano?.value || '').toString();
+            const fechaInicio = filtroFechaInicio?.value || '';
+            const fechaFin = filtroFechaFin?.value || '';
+            const archivado = filtroArchivado?.value || '';
+            const sinResultados = document.getElementById('sinResultadosFiltro');
+            const tableContainer = document.getElementById('tableContainer');
+            const filas = document.querySelectorAll('.fila-vacunacion');
+
+            let totalVisibles = 0;
+
+            filas.forEach(function(row) {
+                const rowTexto = row.getAttribute('data-texto') || '';
+                const rowVacuna = (row.getAttribute('data-vacuna') || '').toString();
+                const rowFinca = (row.getAttribute('data-finca') || '').toString();
+                const rowRebano = (row.getAttribute('data-rebano') || '').toString();
+                const rowFecha = row.getAttribute('data-fecha') || '';
+                const rowArchivado = row.getAttribute('data-archivado') || '';
+
+                const matchTexto = !texto || rowTexto.includes(texto);
+                const matchVacuna = !vacuna || rowVacuna === vacuna;
+                const matchFinca = !finca || rowFinca === finca;
+                const matchRebano = !rebano || rowRebano === rebano;
+                const matchFechaInicio = !fechaInicio || rowFecha >= fechaInicio;
+                const matchFechaFin = !fechaFin || rowFecha <= fechaFin;
+                const matchArchivado = !archivado || rowArchivado === archivado;
+
+                const matchesAll = matchTexto && matchVacuna && matchFinca && matchRebano && matchFechaInicio && matchFechaFin && matchArchivado;
+                row.style.display = matchesAll ? '' : 'none';
+                if (matchesAll) totalVisibles++;
+            });
+
+            if (sinResultados) {
+                const isEmpty = totalVisibles === 0 && filas.length > 0;
+                sinResultados.classList.toggle('hidden', !isEmpty);
+                if (tableContainer) {
+                    tableContainer.classList.toggle('hidden', isEmpty);
+                }
+            }
+        }
+
+        window.limpiarFiltros = function(e) {
+            if (e) e.preventDefault();
+            if (filtroTexto) filtroTexto.value = '';
+            if (filtroVacuna) filtroVacuna.value = '';
+            if (filtroFinca) filtroFinca.value = '';
+            repopularRebanosPorFinca();
+            if (filtroRebano) filtroRebano.value = '';
+            if (filtroFechaInicio) filtroFechaInicio.value = '';
+            if (filtroFechaFin) filtroFechaFin.value = '';
+            if (filtroArchivado) filtroArchivado.value = '';
+            aplicarFiltros();
+        };
+    </script>
 @endsection

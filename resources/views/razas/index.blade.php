@@ -63,7 +63,7 @@
         <!-- Tabla -->
         <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
             @if(count($items) > 0)
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto" id="tableContainer">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
@@ -185,6 +185,19 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    <!-- Mensaje de Sin Resultados Filtrados -->
+                    <div id="sinResultadosFiltro" class="hidden p-12 text-center">
+                        <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gray-50 flex items-center justify-center border border-gray-100 text-2xl shadow-2xs">
+                            🔍
+                        </div>
+                        <h4 class="text-base font-bold text-ganaderasoft-negro mb-1">No se encontraron razas</h4>
+                        <p class="text-gray-500 text-xs mb-4">No hay registros que coincidan con los filtros de búsqueda aplicados.</p>
+                        <button type="button" onclick="limpiarFiltros(event)"
+                                class="px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-xs inline-flex items-center gap-1.5 cursor-pointer">
+                            Limpiar filtros
+                        </button>
+                    </div>
                 </div>
             @else
                 <div class="p-12 text-center">
@@ -213,16 +226,40 @@
         function aplicarFiltros() {
             const buscador = (document.getElementById('filtroBuscador')?.value || '').toLowerCase().trim();
             const visibilidad = (document.getElementById('filtroVisibilidad')?.value || '').toLowerCase().trim();
+            const sinResultados = document.getElementById('sinResultadosFiltro');
+            const tableContainer = document.getElementById('tableContainer');
+            const filas = document.querySelectorAll('.fila-registro');
 
-            document.querySelectorAll('.fila-registro').forEach(function(row) {
+            let totalVisibles = 0;
+
+            filas.forEach(function(row) {
                 const searchData = (row.getAttribute('data-search') || '').toLowerCase();
                 const rowVis = (row.getAttribute('data-visibilidad') || '').toLowerCase();
 
                 const matchesSearch = !buscador || searchData.includes(buscador);
                 const matchesVis = !visibilidad || rowVis === visibilidad;
 
-                row.style.display = (matchesSearch && matchesVis) ? '' : 'none';
+                const visible = matchesSearch && matchesVis;
+                row.style.display = visible ? '' : 'none';
+                if (visible) totalVisibles++;
             });
+
+            if (sinResultados) {
+                const isEmpty = totalVisibles === 0 && filas.length > 0;
+                sinResultados.classList.toggle('hidden', !isEmpty);
+                if (tableContainer) {
+                    tableContainer.classList.toggle('hidden', isEmpty);
+                }
+            }
         }
+
+        window.limpiarFiltros = function(e) {
+            if (e) e.preventDefault();
+            const fb = document.getElementById('filtroBuscador');
+            const fv = document.getElementById('filtroVisibilidad');
+            if (fb) fb.value = '';
+            if (fv) fv.value = '';
+            aplicarFiltros();
+        };
     </script>
 @endsection
