@@ -5,22 +5,29 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de animales</h1>
-            <p class="text-gray-500 text-sm mt-1">Administración del inventario de ganado, genealogía y registro por rebaños y fincas</p>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-2xl shadow-xs border border-teal-100 shrink-0">
+                🏷️
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                    Gestión de animales
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">Administración del inventario de ganado, genealogía y registro por rebaños y fincas</p>
+            </div>
         </div>
         <div class="flex flex-wrap items-center gap-3">
             <a href="{{ route('animales.importar', ['finca_id' => $idFinca]) }}"
-               class="px-5 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors shadow-xs inline-flex items-center justify-center gap-2 text-sm">
-                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-2xs font-medium text-base inline-flex items-center justify-center gap-2 min-w-[195px]">
+                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                 </svg>
                 Importar CSV / TXT
             </a>
             <a href="{{ route('animales.create') }}"
-               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-semibold text-sm gap-2">
-                <span>+</span> Nuevo animal
+               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-base inline-flex items-center justify-center gap-2 min-w-[195px]">
+                <span>+</span> Registrar animal
             </a>
         </div>
     </div>
