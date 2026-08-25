@@ -71,10 +71,9 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/fincas/plantilla-csv', [FincasController::class, 'descargarPlantilla'])->name('fincas.importar.plantilla');
     Route::get('/fincas/create', [FincasController::class, 'create'])->name('fincas.create');
     Route::post('/fincas', [FincasController::class, 'store'])->name('fincas.store');
+    Route::get('/fincas/{id}', [FincasController::class, 'show'])->name('fincas.show');
     Route::get('/fincas/{id}/edit', [FincasController::class, 'edit'])->name('fincas.edit');
     Route::put('/fincas/{id}', [FincasController::class, 'update'])->name('fincas.update');
-    Route::get('/fincas/{id}/select', [FincasController::class, 'select'])->name('fincas.select');
-    Route::get('/fincas/clear-selection', [FincasController::class, 'clearSelection'])->name('fincas.clear-selection');
     
     // Rebaños routes
     Route::get('/rebanos', [RebanosController::class, 'index'])->name('rebanos.index');

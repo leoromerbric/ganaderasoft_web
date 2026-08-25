@@ -42,30 +42,20 @@ class FincasController extends Controller
         return view('fincas.index', compact('fincas', 'tipos', 'nombre', 'tipoFiltro'));
     }
 
-
     /**
-     * Select finca into session and redirect back
+     * Display details of a specific finca
      */
-    public function select($id)
+    public function show($id)
     {
         $response = $this->fincasService->getFinca((int)$id);
 
-        if (isset($response['success']) && $response['success'] && !empty($response['data'])) {
-            session(['selected_finca' => $response['data']]);
-            $nombreFinca = $response['data']['nombre'] ?? 'Finca';
-            return redirect()->back()->with('success', "Finca \"{$nombreFinca}\" seleccionada como activa");
+        if (!isset($response['success']) || !$response['success'] || empty($response['data'])) {
+            return redirect()->route('fincas.index')->with('error', 'Finca no encontrada');
         }
 
-        return redirect()->route('fincas.index')->with('error', 'Finca no encontrada');
-    }
+        $finca = $response['data'];
 
-    /**
-     * Clear the active finca from session
-     */
-    public function clearSelection()
-    {
-        session()->forget('selected_finca');
-        return redirect()->route('fincas.index')->with('success', 'Contexto de finca liberado');
+        return view('fincas.show', compact('finca'));
     }
 
     /**
