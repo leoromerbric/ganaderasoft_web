@@ -88,9 +88,9 @@
                                     } else {
                                         $edad = 'Todas las edades';
                                     }
-                                    $sexo = $item['sexo'] ?? 'Cualquiera';
+                                    $sexo = !empty($item['sexo']) ? $item['sexo'] : 'Cualquiera';
                                     if($sexo == 'M') $sexo = 'Macho';
-                                    if($sexo == 'F' || $sexo == 'H') $sexo = 'Hembra';
+                                    if($sexo == 'H') $sexo = 'Hembra';
 
                                     $searchable = strtolower($mainVal . ' ' . $tipoAnimal . ' ' . $edad . ' ' . $sexo);
                                     $inicial = strtoupper(substr((string)$mainVal, 0, 1));

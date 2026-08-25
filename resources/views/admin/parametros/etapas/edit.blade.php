@@ -63,13 +63,13 @@
                             <label for="tipo_animal_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Tipo de animal <span class="text-red-500">*</span></label>
                             <select id="tipo_animal_id" name="tipo_animal_id" required class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
                                 <option value="">Seleccione un tipo de animal</option>
-                                @if(Isset($tiposanimal) && (is_array($tiposanimal) || is_object($tiposanimal)))
+                                @if(isset($tiposAnimal) && (is_array($tiposAnimal) || is_object($tiposAnimal)))
                                     @foreach($tiposAnimal as $tipo)
-                                        @php 
-                                            $tId = is_array($tipo) ? ($tipo['id'] ?? '') : $tipo->id;
-                                            $tNombre = is_array($tipo) ? ($tipo['nombre'] ?? '') : $tipo->nombre;
-                                        @endphp
-                                        <option value="{{ $tId }}" {{ old('tipo_animal_id', $item['tipo_animal_id'] ?? '') == $tId ? 'selected' : '' }}>{{ $tNombre }}</option>
+                                         @php 
+                                             $tId = is_array($tipo) ? ($tipo['id'] ?? '') : $tipo->id;
+                                             $tNombre = is_array($tipo) ? ($tipo['nombre'] ?? '') : $tipo->nombre;
+                                         @endphp
+                                         <option value="{{ $tId }}" {{ old('tipo_animal_id', $item['tipo_animal_id'] ?? '') == $tId ? 'selected' : '' }}>{{ $tNombre }}</option>
                                     @endforeach
                                 @endif
                             </select>
@@ -99,7 +99,7 @@
                             <select id="sexo" name="sexo" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
                                 <option value="">Cualquiera</option>
                                 <option value="M" {{ old('sexo', $item['sexo'] ?? '') == 'M' ? 'selected' : '' }}>Macho</option>
-                                <option value="F" {{ old('sexo', $item['sexo'] ?? '') == 'F' ? 'selected' : '' }}>Hembra</option>
+                                <option value="H" {{ old('sexo', $item['sexo'] ?? '') == 'H' ? 'selected' : '' }}>Hembra</option>
                             </select>
                             @error('sexo')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
@@ -155,16 +155,12 @@
 document.addEventListener('DOMContentLoaded', function () {
     const nombreInput = document.getElementById('nombre');
     const previewNombre = document.getElementById('previewNombre');
-    
-    const previewNombre = document.getElementById('previewNombre');
     const previewIcono  = document.getElementById('previewIcono');
 
     function updatePreview() {
-
         const nombreVal = nombreInput?.value.trim() || '';
         if (previewNombre) previewNombre.textContent = nombreVal || 'Sin registro';
         if (previewIcono) previewIcono.textContent = nombreVal ? nombreVal.charAt(0).toUpperCase() : '#';
-
     }
 
     nombreInput?.addEventListener('input', updatePreview);

@@ -57,7 +57,7 @@ class EtapaController extends Controller
             'nombre' => 'required|string|max:40',
             'edad_ini' => 'nullable|integer|min:0',
             'edad_fin' => 'nullable|integer|min:0',
-            'sexo' => 'nullable|string|in:M,F,H',
+            'sexo' => 'nullable|string|in:M,H',
             'tipo_animal_id' => 'required|integer',
         ]);
 
@@ -92,7 +92,7 @@ class EtapaController extends Controller
             'nombre' => 'required|string|max:40',
             'edad_ini' => 'nullable|integer|min:0',
             'edad_fin' => 'nullable|integer|min:0',
-            'sexo' => 'nullable|string|in:M,F,H',
+            'sexo' => 'nullable|string|in:M,H',
             'tipo_animal_id' => 'required|integer',
         ]);
 
