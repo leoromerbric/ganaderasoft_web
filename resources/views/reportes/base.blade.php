@@ -4,13 +4,21 @@
 
 @section('content')
 <style>
-    /* 1. Estilos de pantalla: Contenedor Escritorio y Hoja Tamaño Carta */
+    /* 1. Estilos de pantalla: Contenedor Escritorio y Hojas Tamaño Carta */
     .letter-preview-desk {
         background-color: #f1f5f9;
         border: 1px solid #e2e8f0;
         border-radius: 1.25rem;
-        padding: 2rem 1rem;
+        padding: 2.5rem 1rem;
         overflow-x: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .page-wrapper {
+        width: 100%;
+        max-width: 215.9mm;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -21,10 +29,10 @@
         max-width: 215.9mm; /* Ancho estándar Tamaño Carta (8.5 in) */
         min-height: 279.4mm; /* Alto estándar Tamaño Carta (11 in) */
         background-color: #ffffff;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
         border: 1px solid #e5e7eb;
         border-radius: 2px;
-        padding: 16mm 18mm;
+        padding: 14mm 16mm; /* Margen cómodo y amplio para tablas y gráficos */
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
@@ -32,10 +40,17 @@
     }
 
     @media print {
-        /* 2. Configuración de página física a Tamaño Carta */
+        /* Forzar renderizado exacto de colores de fondo, gráficos y barras en la impresión/PDF */
+        *, *::before, *::after {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        /* 2. Configuración de página física a tamaño carta con márgenes amplios */
         @page {
             size: letter portrait !important;
-            margin: 12mm 15mm 15mm 15mm !important;
+            margin: 12mm 15mm 15mm 15mm !important; /* Margen de impresión amplio */
         }
 
         /* 3. Ocultar la interfaz de usuario de la web */
@@ -62,7 +77,20 @@
             display: block !important;
         }
 
-        /* 4. Hoja Carta limpia sin sombras de pantalla */
+        .page-wrapper {
+            max-width: 100% !important;
+            width: 100% !important;
+            display: block !important;
+            page-break-after: always !important;
+            break-after: page !important;
+        }
+
+        .page-wrapper:last-child {
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+
+        /* 4. Hoja carta limpia sin sombras de pantalla */
         .print-sheet {
             box-shadow: none !important;
             border: none !important;
@@ -73,12 +101,13 @@
             max-width: 100% !important;
             height: auto !important;
             min-height: 0 !important;
-            display: block !important;
-            padding-bottom: 20mm !important; /* Espacio para el footer fijo */
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
         }
 
-        /* Evitar cortar filas de tablas a la mitad entre páginas */
-        tr, .no-break {
+        /* Evitar cortar filas de tablas, gráficos, tarjetas y notas a la mitad entre páginas */
+        tr, td, th, canvas, svg, .chart-container, .no-break, .rounded-xl, .rounded-2xl, .p-4, .p-5, .p-6 {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
@@ -88,14 +117,9 @@
             display: table-header-group !important;
         }
 
-        /* 5. Repetir el footer al final de CADA PÁGINA del informe */
+        /* 5. Pie de página en cada hoja */
         .print-footer {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            margin-top: 0 !important;
+            margin-top: auto !important;
             padding-top: 0.75rem !important;
             border-top: 1px solid #e5e7eb !important;
             background-color: #ffffff !important;
@@ -118,7 +142,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-3 w-full md:w-auto">
-                <button onclick="window.print()" class="w-full md:w-auto px-5 py-4 bg-ganaderasoft-azul hover:bg-opacity-90 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2">
+                <button type="button" onclick="descargarReportePdf()" class="w-full md:w-auto px-5 py-4 bg-ganaderasoft-azul hover:bg-opacity-90 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                     </svg>
@@ -164,54 +188,249 @@
         </div>
     </div>
 
-    <!-- Previsualización del documento en tamaño carta -->
-    <div class="letter-preview-desk">
-        <!-- Indicador de hoja tamaño carta (no-print) -->
-        <div class="no-print w-full max-w-[215.9mm] flex items-center justify-between pb-3 px-1 text-xs text-gray-500 font-medium">
-            <span class="flex items-center gap-1.5 font-semibold text-gray-700">
-                <svg class="w-4 h-4 text-ganaderasoft-azul" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                Previsualización de documento
-            </span>
-            <span class="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-md">
-                Tamaño carta (8.5" × 11")
-            </span>
-        </div>
+    <!-- Contenedor fuente original invisible -->
+    <div id="reporteRawContent" class="hidden">
+        @yield('report_content')
+    </div>
 
-        <!-- Hoja carta (imprimible/PDF) -->
-        <div class="print-sheet">
-            <div>
-                <!-- Encabezado oficial del documento -->
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-2 border-ganaderasoft-azul pb-5 mb-5">
-                    <div class="flex items-center space-x-4">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 object-contain">
-                        <div>
-                            <h2 class="text-2xl font-black text-ganaderasoft-negro tracking-tight">GanaderaSoft</h2>
-                            <p class="text-xs font-bold text-ganaderasoft-azul uppercase tracking-wider">Sistema de gestión ganadera</p>
-                        </div>
-                    </div>
-                    <div class="text-left sm:text-right">
-                        <span class="inline-block px-3 py-1 bg-ganaderasoft-azul/10 text-ganaderasoft-azul rounded-lg text-xs font-bold uppercase tracking-wider mb-1">
-                            {{ $titulo ?? 'Reporte oficial' }}
-                        </span>
-                        <p class="text-xs text-gray-500 font-medium">Fecha de emisión: {{ $fechaEmision ?? date('d/m/Y h:i A') }}</p>
-                        <p class="text-xs text-gray-500 font-medium">
-                            Período: {{ $fechaInicio ?? date('01/m/Y') }} - {{ $fechaFin ?? date('d/m/Y') }}
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Document Body Slot -->
-                @yield('report_content')
-            </div>
-
-            <!-- Footer del Documento (Repetido en cada página al imprimir) -->
-            <div class="mt-8 pt-4 border-t border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-400 print-footer">
-                <p>© {{ date('Y') }} GanaderaSoft. Documento generado oficialmente.</p>
-                <p>Documento oficial del sistema</p>
-            </div>
-        </div>
+    <!-- Previsualización de Hojas Tamaño Carta (Generadas automáticamente) -->
+    <div id="reportePagesDesk" class="letter-preview-desk space-y-8">
+        <!-- Renderizado dinámico de hojas carta -->
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function obtenerElementosSemanticos(root) {
+        const resultado = [];
+        function extraerHijos(nodo) {
+            const hijos = Array.from(nodo.children);
+            for (let hijo of hijos) {
+                // Si es un div estructural sin borde/fondo y contiene varios elementos, desempaquetar
+                const esContenedorPuro = hijo.tagName === 'DIV' && 
+                                         !hijo.classList.contains('p-4') && 
+                                         !hijo.classList.contains('p-5') && 
+                                         !hijo.classList.contains('p-6') && 
+                                         !hijo.classList.contains('bg-gray-50') && 
+                                         !hijo.classList.contains('border') && 
+                                         !hijo.classList.contains('grid') && 
+                                         !hijo.classList.contains('overflow-x-auto') && 
+                                         !hijo.querySelector('canvas') && 
+                                         hijo.children.length > 1;
+
+                if (esContenedorPuro) {
+                    extraerHijos(hijo);
+                } else {
+                    resultado.push(hijo);
+                }
+            }
+        }
+        extraerHijos(root);
+        return resultado;
+    }
+
+    function renderizarHojasReporte() {
+        const rawContainer = document.getElementById('reporteRawContent');
+        const deskContainer = document.getElementById('reportePagesDesk');
+        if (!rawContainer || !deskContainer) return;
+
+        deskContainer.innerHTML = '';
+
+        const titulo = @json($titulo ?? 'Reporte oficial');
+        const fechaEmision = @json($fechaEmision ?? date('d/m/Y h:i A'));
+        const fechaInicio = @json($fechaInicio ?? date('01/m/Y'));
+        const fechaFin = @json($fechaFin ?? date('d/m/Y'));
+        const logoUrl = @json(asset('images/logo.png'));
+
+        // Encabezado de Página 1 (Oficial completo)
+        const headerPagina1 = `
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b-2 border-ganaderasoft-azul pb-5 mb-5 shrink-0">
+                <div class="flex items-center space-x-4">
+                    <img src="${logoUrl}" alt="Logo" class="w-12 h-12 object-contain">
+                    <div>
+                        <h2 class="text-2xl font-black text-ganaderasoft-negro tracking-tight">GanaderaSoft</h2>
+                        <p class="text-xs font-bold text-ganaderasoft-azul uppercase tracking-wider">Sistema de gestión ganadera</p>
+                    </div>
+                </div>
+                <div class="text-left sm:text-right">
+                    <span class="inline-block px-3 py-1 bg-ganaderasoft-azul/10 text-ganaderasoft-azul rounded-lg text-xs font-bold uppercase tracking-wider mb-1">
+                        ${titulo}
+                    </span>
+                    <p class="text-xs text-gray-500 font-medium">Fecha de emisión: ${fechaEmision}</p>
+                    <p class="text-xs text-gray-500 font-medium">Período: ${fechaInicio} - ${fechaFin}</p>
+                </div>
+            </div>
+        `;
+
+        // Encabezado de Páginas 2+ (Continuación compacto)
+        const headerPaginaSiguiente = `
+            <div class="flex items-center justify-between border-b border-gray-200 pb-3 mb-5 shrink-0">
+                <div class="flex items-center space-x-3">
+                    <img src="${logoUrl}" alt="Logo" class="w-8 h-8 object-contain">
+                    <div>
+                        <h2 class="text-base font-bold text-gray-900 leading-none">GanaderaSoft</h2>
+                        <p class="text-[11px] text-gray-500 mt-0.5">${titulo} (continuación)</p>
+                    </div>
+                </div>
+                <span class="text-xs text-gray-500 font-medium">Período: ${fechaInicio} - ${fechaFin}</span>
+            </div>
+        `;
+
+        const maxSheetContentHeight = 800; // Altura útil en px con márgenes amplios de 14mm/16mm
+        const paginas = [];
+
+        function crearNuevaHoja(numPagina) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'page-wrapper';
+
+            const badgeBar = document.createElement('div');
+            badgeBar.className = 'no-print w-full flex items-center justify-between pb-2 px-1 text-xs text-gray-500 font-medium';
+            badgeBar.innerHTML = `
+                <span class="flex items-center gap-1.5 font-semibold text-gray-700">
+                    <svg class="w-4 h-4 text-ganaderasoft-azul" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="page-badge-text">Página ${numPagina}</span>
+                </span>
+                <span class="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-md">
+                    Tamaño carta (8.5" × 11")
+                </span>
+            `;
+
+            const sheet = document.createElement('div');
+            sheet.className = 'print-sheet';
+
+            const topSection = document.createElement('div');
+            topSection.className = 'sheet-content-top flex-1';
+            topSection.innerHTML = numPagina === 1 ? headerPagina1 : headerPaginaSiguiente;
+
+            const bodySlot = document.createElement('div');
+            bodySlot.className = 'sheet-body space-y-5';
+            topSection.appendChild(bodySlot);
+
+            const footer = document.createElement('div');
+            footer.className = 'mt-8 pt-4 border-t border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-400 print-footer shrink-0';
+            footer.innerHTML = `
+                <p>© ${new Date().getFullYear()} GanaderaSoft. Documento generado oficialmente.</p>
+                <p class="page-footer-num">Página ${numPagina}</p>
+            `;
+
+            sheet.appendChild(topSection);
+            sheet.appendChild(footer);
+            wrapper.appendChild(badgeBar);
+            wrapper.appendChild(sheet);
+
+            deskContainer.appendChild(wrapper);
+
+            return {
+                wrapper: wrapper,
+                sheet: sheet,
+                body: bodySlot,
+                footerNum: footer.querySelector('.page-footer-num'),
+                badgeText: badgeBar.querySelector('.page-badge-text')
+            };
+        }
+
+        let hojaActual = crearNuevaHoja(1);
+        paginas.push(hojaActual);
+
+        // Extraer elementos semánticos (desempaquetando contenedores generales)
+        const elementos = obtenerElementosSemanticos(rawContainer);
+
+        for (let el of elementos) {
+            const tabla = el.tagName === 'TABLE' ? el : el.querySelector('table');
+
+            if (tabla) {
+                const thead = tabla.querySelector('thead');
+                const tbody = tabla.querySelector('tbody');
+                const filas = tbody ? Array.from(tbody.querySelectorAll('tr')) : [];
+
+                let tablaClone = el.cloneNode(true);
+                let tablaInterna = tablaClone.tagName === 'TABLE' ? tablaClone : tablaClone.querySelector('table');
+                let tbodyInterno = tablaInterna.querySelector('tbody');
+                if (tbodyInterno) tbodyInterno.innerHTML = '';
+
+                hojaActual.body.appendChild(tablaClone);
+
+                for (let fila of filas) {
+                    const filaClone = fila.cloneNode(true);
+                    tbodyInterno.appendChild(filaClone);
+
+                    if (hojaActual.body.offsetHeight > maxSheetContentHeight && tbodyInterno.children.length > 1) {
+                        tbodyInterno.removeChild(filaClone);
+
+                        hojaActual = crearNuevaHoja(paginas.length + 1);
+                        paginas.push(hojaActual);
+
+                        tablaClone = el.cloneNode(true);
+                        tablaInterna = tablaClone.tagName === 'TABLE' ? tablaClone : tablaClone.querySelector('table');
+                        tbodyInterno = tablaInterna.querySelector('tbody');
+                        if (tbodyInterno) tbodyInterno.innerHTML = '';
+                        tbodyInterno.appendChild(filaClone);
+                        hojaActual.body.appendChild(tablaClone);
+                    }
+                }
+            } else {
+                // Para tarjetas, notas, gráficos o resúmenes KPI
+                const clone = el.cloneNode(true);
+
+                // Si contiene canvas original, copiar su contenido gráfico
+                const originalCanvases = el.querySelectorAll('canvas');
+                const clonedCanvases = clone.querySelectorAll('canvas');
+                if (el.tagName === 'CANVAS' && clone.tagName === 'CANVAS') {
+                    const ctx = clone.getContext('2d');
+                    ctx.drawImage(el, 0, 0);
+                } else if (originalCanvases.length > 0) {
+                    originalCanvases.forEach((origCanvas, i) => {
+                        const targetCanvas = clonedCanvases[i];
+                        if (targetCanvas) {
+                            const ctx = targetCanvas.getContext('2d');
+                            ctx.drawImage(origCanvas, 0, 0);
+                        }
+                    });
+                }
+
+                hojaActual.body.appendChild(clone);
+
+                // Si excede la hoja y ya hay contenido previo, mover el bloque entero a la nueva hoja
+                if (hojaActual.body.offsetHeight > maxSheetContentHeight && hojaActual.body.children.length > 1) {
+                    hojaActual.body.removeChild(clone);
+
+                    hojaActual = crearNuevaHoja(paginas.length + 1);
+                    paginas.push(hojaActual);
+
+                    hojaActual.body.appendChild(clone);
+                }
+            }
+        }
+
+        const totalHojas = paginas.length;
+        paginas.forEach((pag, idx) => {
+            const n = idx + 1;
+            if (pag.badgeText) pag.badgeText.textContent = `Página ${n} de ${totalHojas}`;
+            if (pag.footerNum) pag.footerNum.textContent = `Página ${n} de ${totalHojas}`;
+        });
+
+        // Disparar evento para scripts complementarios (como gráficos que requieran re-inicializar)
+        window.dispatchEvent(new CustomEvent('ganaderasoft:reporte-paginado', { detail: { totalPaginas: totalHojas } }));
+    }
+
+    function descargarReportePdf() {
+        const titulo = @json($titulo ?? 'reporte');
+        const tituloLimpio = titulo.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        const fechaHoy = @json(date('d-m-Y'));
+        const nombreArchivo = `${tituloLimpio || 'reporte'}-${fechaHoy}`;
+
+        const tituloOriginal = document.title;
+        document.title = nombreArchivo;
+        window.print();
+
+        setTimeout(function () {
+            document.title = tituloOriginal;
+        }, 2000);
+    }
+
+    document.addEventListener('DOMContentLoaded', renderizarHojasReporte);
+</script>
+@endpush
 @endsection
