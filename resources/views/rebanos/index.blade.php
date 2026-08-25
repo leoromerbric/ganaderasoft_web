@@ -3,221 +3,369 @@
 @section('title', 'Gestión de rebaños')
 
 @section('content')
-    <div class="space-y-8">
-        <!-- Header Section -->
-        <div
-            class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+@php
+    $totalRebanos = count($rebanos);
+    $totalAnimales = array_sum(array_map(fn($r) => (int)($r['total_animales'] ?? count($r['animales'] ?? [])), $rebanos));
+    $rebanosConAnimales = count(array_filter($rebanos, function($r) {
+        return (int)($r['total_animales'] ?? count($r['animales'] ?? [])) > 0;
+    }));
+    
+    // Fincas únicas
+    $fincasUnicas = count(array_unique(array_filter(array_map(function($r) {
+        return $r['finca_id'] ?? data_get($r, 'finca.id') ?? $r['id_Finca'] ?? null;
+    }, $rebanos))));
+@endphp
+
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-2xl shadow-xs border border-teal-100 shrink-0">
+                🐄
+            </div>
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de rebaños</h1>
-                <p class="text-gray-500 text-sm mt-1">Administración de agrupaciones y lotes de ganado</p>
+                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                    Gestión de rebaños
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">Administración de agrupaciones, lotes y distribución de ganado por finca</p>
             </div>
+        </div>
+        <div>
             <a href="{{ route('rebanos.create') }}"
-                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                + Nuevo rebaño
+                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-base inline-flex items-center gap-2">
+                <span>+</span> Nuevo rebaño
             </a>
-        </div>
-
-        <!-- Alert Messages -->
-        @if(session('success'))
-            <div
-                class="p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-sm flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <span class="text-lg">✅</span>
-                    <p class="text-sm font-medium">{{ session('success') }}</p>
-                </div>
-            </div>
-        @endif
-        @if(session('error'))
-            <div
-                class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <span class="text-lg">⚠️</span>
-                    <p class="text-sm font-medium">{{ session('error') }}</p>
-                </div>
-            </div>
-        @endif
-
-        <!-- Filter Bar -->
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Filtrar por
-                        finca</label>
-                    <select id="filtroFinca"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                        <option value="">Todas las fincas</option>
-                        @foreach($fincas as $finca)
-                            @php
-                                $fId = $finca['id'] ?? null;
-                                $fNombre = $finca['nombre'] ?? ('Finca #' . $fId);
-                            @endphp
-                            <option value="{{ $fId }}" {{ (string) $fincaId === (string) $fId ? 'selected' : '' }}>
-                                {{ $fNombre }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Nombre del
-                        rebaño</label>
-                    <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Buscar por nombre..."
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                </div>
-                <div>
-                    <button onclick="limpiarFiltros()"
-                        class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                        Limpiar filtros
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Summary KPIs -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total rebaños</p>
-                    <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $estadisticas['total'] }}
-                    </p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
-                    🐄
-                </div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Animales asociados</p>
-                    <p id="statAnimales" class="text-3xl font-extrabold text-ganaderasoft-verde-oscuro">
-                        {{ $estadisticas['totalAnimales'] }}</p>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-ganaderasoft-verde/20 flex items-center justify-center text-2xl">
-                    📋
-                </div>
-            </div>
-        </div>
-
-        <!-- Grid / Cards List -->
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-            @if(count($rebanos) > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gridRebanos">
-                    @foreach($rebanos as $rebano)
-                        @php
-                            $rebanoId = $rebano['id'] ?? null;
-                            $rebanoNombre = $rebano['nombre'] ?? 'Rebaño';
-                            $fincaObj = $rebano['finca'] ?? null;
-                            $fincaIdAttr = (string)($rebano['finca_id'] ?? ($fincaObj['id'] ?? ''));
-                            $fincaNombre = $fincaObj['nombre'] ?? ('Finca #' . ($fincaIdAttr ?: 'N/A'));
-                            $fincaTipo = $fincaObj['explotacion_tipo'] ?? '-';
-                            $animalesCount = count($rebano['animales'] ?? []);
-                        @endphp
-                        <div class="group border border-gray-200 hover:border-ganaderasoft-celeste rounded-2xl p-6 hover:shadow-lg transition-all duration-200 flex flex-col justify-between fila-rebano"
-                            data-finca="{{ $fincaIdAttr }}" data-nombre="{{ strtolower($rebanoNombre) }}">
-                            <div>
-                                <!-- Header with icon -->
-                                <div class="flex items-start justify-between mb-4">
-                                    <div class="flex-1 pr-2">
-                                        <h3
-                                            class="text-xl font-bold text-ganaderasoft-negro group-hover:text-ganaderasoft-azul transition-colors">
-                                            {{ $rebanoNombre }}
-                                        </h3>
-                                        <p class="text-xs text-gray-500 mt-1 flex items-center">
-                                            <span class="mr-1">🏡</span> {{ $fincaNombre }}
-                                        </p>
-                                    </div>
-                                    <div
-                                        class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
-                                        🐄
-                                    </div>
-                                </div>
-
-                                <!-- Details -->
-                                <div class="space-y-2 py-3 border-t border-b border-gray-100 text-xs">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-500">ID rebaño:</span>
-                                        <span class="font-bold text-gray-900">#{{ $rebanoId }}</span>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-500">Tipo explotación:</span>
-                                        <span
-                                            class="px-2.5 py-0.5 rounded-full bg-ganaderasoft-celeste/10 text-ganaderasoft-azul font-semibold">
-                                            {{ $fincaTipo }}
-                                        </span>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-500">Total animales:</span>
-                                        <span
-                                            class="px-2.5 py-0.5 rounded-full bg-green-50 text-green-700 font-bold badge-animales">
-                                            {{ $animalesCount }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Actions -->
-                            <div class="flex items-center space-x-2 mt-6 pt-2">
-                                <a href="{{ route('animales.index', ['rebano_id' => $rebanoId]) }}"
-                                    class="flex-1 px-4 py-2.5 bg-ganaderasoft-celeste/15 hover:bg-ganaderasoft-celeste text-ganaderasoft-azul hover:text-white rounded-xl text-xs font-bold text-center transition-all duration-200">
-                                    Ver animales
-                                </a>
-                                <a href="{{ route('rebanos.edit', $rebanoId) }}"
-                                    class="px-3 py-2.5 border border-gray-200 hover:border-gray-300 text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition-colors">
-                                    ✏️
-                                </a>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @else
-                <div class="p-12 text-center">
-                    <div
-                        class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-ganaderasoft-celeste/10 flex items-center justify-center text-4xl">
-                        🐄
-                    </div>
-                    <h3 class="text-lg font-bold text-ganaderasoft-negro mb-1">No hay rebaños registrados</h3>
-                    <p class="text-gray-500 text-sm mb-6">Comienza agregando un nuevo rebaño a la finca</p>
-                    <a href="{{ route('rebanos.create') }}"
-                        class="inline-block px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg">
-                        + Nuevo rebaño
-                    </a>
-                </div>
-            @endif
         </div>
     </div>
 
-    <script>
-        document.getElementById('filtroFinca').addEventListener('change', aplicarFiltros);
-        document.getElementById('filtroNombre').addEventListener('input', aplicarFiltros);
+    <!-- Alert Messages -->
+    @if(session('success'))
+        <div class="p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">✅</span>
+                <p class="text-sm font-medium">{{ session('success') }}</p>
+            </div>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg">⚠️</span>
+                <p class="text-sm font-medium">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
 
-        function aplicarFiltros() {
-            const finca = (document.getElementById('filtroFinca').value || '').trim();
-            const nombre = (document.getElementById('filtroNombre').value || '').toLowerCase().trim();
+    <!-- Summary KPIs (4 Cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total rebaños</p>
+                <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $totalRebanos }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl border border-blue-100">
+                📊
+            </div>
+        </div>
 
-            let total = 0, totalAnimales = 0;
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Animales asociados</p>
+                <p id="statAnimales" class="text-3xl font-extrabold text-emerald-600">{{ $totalAnimales }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl border border-emerald-100">
+                🐄
+            </div>
+        </div>
 
-            document.querySelectorAll('.fila-rebano').forEach(function (row) {
-                const rowFinca = (row.dataset.finca || '').trim();
-                const rowNombre = (row.dataset.nombre || '').toLowerCase().trim();
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Rebaños con animales</p>
+                <p id="statConAnimales" class="text-3xl font-extrabold text-purple-600">{{ $rebanosConAnimales }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl border border-purple-100">
+                🏷️
+            </div>
+        </div>
 
-                const matchFinca = !finca || rowFinca === finca;
-                const matchNombre = !nombre || rowNombre.includes(nombre);
-                const ok = matchFinca && matchNombre;
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fincas con rebaños</p>
+                <p id="statFincas" class="text-3xl font-extrabold text-amber-600">{{ $fincasUnicas }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100">
+                🏡
+            </div>
+        </div>
+    </div>
 
-                row.style.display = ok ? '' : 'none';
-                if (ok) {
-                    total++;
-                    const badge = row.querySelector('.badge-animales');
-                    if (badge) totalAnimales += parseInt(badge.textContent.trim()) || 0;
-                }
-            });
+    <!-- Filter Bar (4 Columnas) -->
+    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <!-- Buscar -->
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar rebaño</label>
+                <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Nombre o código del rebaño..."
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+            </div>
 
-            document.getElementById('statTotal').textContent = total;
-            document.getElementById('statAnimales').textContent = totalAnimales;
+            <!-- Filtrar por Finca -->
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
+                <select id="filtroFinca"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                    <option value="">Todas las fincas</option>
+                    @foreach($fincas as $finca)
+                        @php
+                            $fId = $finca['id'] ?? null;
+                            $fNombre = $finca['nombre'] ?? ('Finca #' . $fId);
+                        @endphp
+                        <option value="{{ $fId }}" {{ (string) $fincaId === (string) $fId ? 'selected' : '' }}>
+                            {{ $fNombre }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Ocupación de Animales -->
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Ocupación</label>
+                <select id="filtroOcupacion"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                    <option value="">Todos los rebaños</option>
+                    <option value="con_animales">Con animales asociados</option>
+                    <option value="sin_animales">Rebaños vacíos</option>
+                </select>
+            </div>
+
+            <!-- Botón Limpiar -->
+            <div>
+                <button type="button" onclick="limpiarFiltros()"
+                    class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[42px] cursor-pointer shadow-2xs">
+                    Limpiar filtros
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid / Cards List -->
+    <div id="cardsContainer">
+        @if(count($rebanos) > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gridRebanos">
+                @foreach($rebanos as $rebano)
+                    @php
+                        $rebanoId = $rebano['id'] ?? $rebano['id_Rebano'] ?? null;
+                        $rebanoNombre = $rebano['nombre'] ?? 'Rebaño';
+                        $fincaObj = $rebano['finca'] ?? null;
+                        $fincaIdAttr = (string)($rebano['finca_id'] ?? data_get($rebano, 'finca.id') ?? $rebano['id_Finca'] ?? '');
+                        $fincaNombre = data_get($rebano, 'finca.nombre') ?? ($fincaObj['nombre'] ?? ('Finca #' . ($fincaIdAttr ?: 'N/A')));
+                        $fincaTipo = data_get($rebano, 'finca.explotacion_tipo') ?? ($fincaObj['explotacion_tipo'] ?? 'General');
+                        $animalesCount = (int)($rebano['total_animales'] ?? count($rebano['animales'] ?? []));
+                        
+                        $searchableText = strtolower(implode(' ', array_filter([
+                            $rebanoNombre,
+                            '#'.$rebanoId,
+                            (string)$rebanoId,
+                            $fincaNombre,
+                            $fincaTipo
+                        ])));
+                    @endphp
+                    <div class="bg-white border border-gray-100 hover:border-ganaderasoft-celeste/60 rounded-2xl p-6 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between fila-rebano group"
+                        data-finca="{{ $fincaIdAttr }}" 
+                        data-nombre="{{ $searchableText }}"
+                        data-animales="{{ $animalesCount }}">
+                        <div>
+                            <!-- Header with icon -->
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1 pr-3">
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="text-xl font-bold text-gray-900 group-hover:text-ganaderasoft-azul transition-colors leading-tight truncate">
+                                            {{ $rebanoNombre }}
+                                        </h3>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1 flex items-center font-medium">
+                                        <span class="mr-1.5">🏡</span> {{ $fincaNombre }}
+                                    </p>
+                                </div>
+                                <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 border border-teal-100 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform shrink-0 shadow-2xs">
+                                    🐄
+                                </div>
+                            </div>
+
+                            <!-- Details -->
+                            <div class="space-y-2.5 py-3.5 border-t border-b border-gray-100 text-xs">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-500">ID del rebaño:</span>
+                                    <span class="font-bold text-gray-900 font-mono">#{{ $rebanoId }}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-500">Explotación finca:</span>
+                                    <span class="px-2.5 py-0.5 rounded-md bg-blue-50 text-blue-700 font-semibold border border-blue-100">
+                                        {{ $fincaTipo }}
+                                    </span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-500">Animales asignados:</span>
+                                    @if($animalesCount > 0)
+                                        <span class="px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 badge-animales">
+                                            {{ $animalesCount }} {{ $animalesCount === 1 ? 'animal' : 'animales' }}
+                                        </span>
+                                    @else
+                                        <span class="px-2.5 py-0.5 rounded-md bg-gray-100 text-gray-500 font-semibold badge-animales">
+                                            0 animales
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center space-x-2 mt-5 pt-1">
+                            <a href="{{ route('animales.index', ['rebano_id' => $rebanoId]) }}"
+                                class="flex-1 px-4 py-2.5 bg-ganaderasoft-celeste/10 hover:bg-ganaderasoft-celeste text-ganaderasoft-azul hover:text-white rounded-xl text-xs font-bold text-center transition-all duration-200 shadow-2xs">
+                                Ver animales ({{ $animalesCount }})
+                            </a>
+                            <a href="{{ route('rebanos.edit', $rebanoId) }}"
+                                class="px-3.5 py-2.5 bg-white border border-gray-200 hover:border-gray-300 text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition-colors shadow-2xs"
+                                title="Editar rebaño">
+                                ✏️
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center space-y-4">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-teal-50 text-teal-600 border border-teal-100 flex items-center justify-center text-3xl shadow-xs">
+                    🐄
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-lg font-bold text-gray-900">No hay rebaños registrados</h3>
+                    <p class="text-sm text-gray-500 max-w-md mx-auto">Comienza agregando un nuevo rebaño o lote para organizar los animales en tus fincas.</p>
+                </div>
+                <div class="pt-2">
+                    <a href="{{ route('rebanos.create') }}"
+                        class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-xl hover:bg-opacity-90 transition-all font-semibold text-sm shadow-md hover:shadow-lg inline-flex items-center gap-2">
+                        <span>+</span> Registrar nuevo rebaño
+                    </a>
+                </div>
+            </div>
+        @endif
+    </div>
+
+    <!-- Empty filtered state -->
+    <div id="emptyFilteredState" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center space-y-3">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-gray-50 text-gray-500 border border-gray-200 flex items-center justify-center text-2xl shadow-2xs">
+            🔍
+        </div>
+        <div class="space-y-1">
+            <h4 class="text-base font-bold text-gray-900">No se encontraron rebaños</h4>
+            <p class="text-sm text-gray-500 max-w-md mx-auto">No hay rebaños que coincidan con los filtros aplicados. Intenta con otros criterios de búsqueda.</p>
+        </div>
+        <div class="pt-2">
+            <button type="button" onclick="limpiarFiltros()"
+                    class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-sm transition-colors shadow-2xs">
+                Restablecer filtros
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const filtroFinca = document.getElementById('filtroFinca');
+    const filtroNombre = document.getElementById('filtroNombre');
+    const filtroOcupacion = document.getElementById('filtroOcupacion');
+    const cardsContainer = document.getElementById('cardsContainer');
+    const emptyFiltered = document.getElementById('emptyFilteredState');
+
+    function recalcularKpis(visibles) {
+        const statTotal = document.getElementById('statTotal');
+        const statAnimales = document.getElementById('statAnimales');
+        const statConAnimales = document.getElementById('statConAnimales');
+        const statFincas = document.getElementById('statFincas');
+
+        if (!statTotal) return;
+
+        let totalRebanos = visibles.length;
+        let totalAnimales = 0;
+        let conAnimalesCount = 0;
+        let fincasSet = new Set();
+
+        visibles.forEach(row => {
+            const count = parseInt(row.getAttribute('data-animales')) || 0;
+            totalAnimales += count;
+            if (count > 0) conAnimalesCount++;
+
+            const fId = row.getAttribute('data-finca');
+            if (fId) fincasSet.add(fId);
+        });
+
+        statTotal.textContent = totalRebanos;
+        if (statAnimales) statAnimales.textContent = totalAnimales;
+        if (statConAnimales) statConAnimales.textContent = conAnimalesCount;
+        if (statFincas) statFincas.textContent = fincasSet.size;
+    }
+
+    function aplicarFiltros() {
+        const finca = (filtroFinca ? filtroFinca.value : '').trim();
+        const nombre = (filtroNombre ? filtroNombre.value : '').toLowerCase().trim();
+        const ocupacion = (filtroOcupacion ? filtroOcupacion.value : '').trim();
+
+        let visibleCount = 0;
+        const visibleRows = [];
+
+        document.querySelectorAll('.fila-rebano').forEach(function (row) {
+            const rowFinca = (row.getAttribute('data-finca') || '').trim();
+            const rowNombre = (row.getAttribute('data-nombre') || '').toLowerCase().trim();
+            const rowAnimales = parseInt(row.getAttribute('data-animales')) || 0;
+
+            const matchFinca = !finca || rowFinca === finca;
+            const matchNombre = !nombre || rowNombre.includes(nombre);
+            
+            let matchOcupacion = true;
+            if (ocupacion === 'con_animales') {
+                matchOcupacion = rowAnimales > 0;
+            } else if (ocupacion === 'sin_animales') {
+                matchOcupacion = rowAnimales === 0;
+            }
+
+            const isVisible = matchFinca && matchNombre && matchOcupacion;
+
+            row.style.display = isVisible ? '' : 'none';
+            if (isVisible) {
+                visibleCount++;
+                visibleRows.push(row);
+            }
+        });
+
+        if (emptyFiltered) {
+            const totalRows = document.querySelectorAll('.fila-rebano').length;
+            if (visibleCount === 0 && totalRows > 0) {
+                emptyFiltered.classList.remove('hidden');
+                if (cardsContainer) cardsContainer.classList.add('hidden');
+            } else {
+                emptyFiltered.classList.add('hidden');
+                if (cardsContainer) cardsContainer.classList.remove('hidden');
+            }
         }
 
-        function limpiarFiltros() {
-            document.getElementById('filtroFinca').value = '';
-            document.getElementById('filtroNombre').value = '';
-            aplicarFiltros();
-        }
-    </script>
+        recalcularKpis(visibleRows);
+    }
+
+    filtroFinca?.addEventListener('change', aplicarFiltros);
+    filtroNombre?.addEventListener('input', aplicarFiltros);
+    filtroOcupacion?.addEventListener('change', aplicarFiltros);
+
+    window.limpiarFiltros = function () {
+        if (filtroFinca) filtroFinca.value = '';
+        if (filtroNombre) filtroNombre.value = '';
+        if (filtroOcupacion) filtroOcupacion.value = '';
+        aplicarFiltros();
+    };
+
+    // Aplicar filtros iniciales (si vienen predefinidos en la URL)
+    aplicarFiltros();
+});
+</script>
 @endsection

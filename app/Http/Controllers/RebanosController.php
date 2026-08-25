@@ -32,18 +32,11 @@ class RebanosController extends Controller
         $fincasResponse = $this->fincasService->getFincas();
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-        // Filtrar por finca y nombre (V2 finca_id / nombre)
-        $rebanos = array_values(array_filter($allRebanos, function ($rebano) use ($fincaId, $nombre) {
-            $rebanoFincaId = $rebano['finca_id'] ?? ($rebano['finca']['id'] ?? null);
-            $rebanoNombre  = $rebano['nombre'] ?? '';
+        // Pasar todos los rebaños a la vista para permitir filtrado reactivo en vivo sin recargas
+        $rebanos = $allRebanos;
 
-            if ($fincaId && (string)$rebanoFincaId !== (string)$fincaId) return false;
-            if ($nombre && stripos($rebanoNombre, $nombre) === false) return false;
-            return true;
-        }));
-
-        // Stats
-        $totalAnimales = array_sum(array_map(fn($r) => count($r['animales'] ?? []), $rebanos));
+        // Stats globales iniciales
+        $totalAnimales = array_sum(array_map(fn($r) => (int)($r['total_animales'] ?? count($r['animales'] ?? [])), $rebanos));
         $estadisticas = [
             'total'          => count($rebanos),
             'totalAnimales'  => $totalAnimales,
