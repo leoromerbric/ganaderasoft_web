@@ -201,34 +201,6 @@
 
 @push('scripts')
 <script>
-    function obtenerElementosSemanticos(root) {
-        const resultado = [];
-        function extraerHijos(nodo) {
-            const hijos = Array.from(nodo.children);
-            for (let hijo of hijos) {
-                // Si es un div estructural sin borde/fondo y contiene varios elementos, desempaquetar
-                const esContenedorPuro = hijo.tagName === 'DIV' && 
-                                         !hijo.classList.contains('p-4') && 
-                                         !hijo.classList.contains('p-5') && 
-                                         !hijo.classList.contains('p-6') && 
-                                         !hijo.classList.contains('bg-gray-50') && 
-                                         !hijo.classList.contains('border') && 
-                                         !hijo.classList.contains('grid') && 
-                                         !hijo.classList.contains('overflow-x-auto') && 
-                                         !hijo.querySelector('canvas') && 
-                                         hijo.children.length > 1;
-
-                if (esContenedorPuro) {
-                    extraerHijos(hijo);
-                } else {
-                    resultado.push(hijo);
-                }
-            }
-        }
-        extraerHijos(root);
-        return resultado;
-    }
-
     function renderizarHojasReporte() {
         const rawContainer = document.getElementById('reporteRawContent');
         const deskContainer = document.getElementById('reportePagesDesk');
@@ -334,8 +306,8 @@
         let hojaActual = crearNuevaHoja(1);
         paginas.push(hojaActual);
 
-        // Extraer elementos semánticos (desempaquetando contenedores generales)
-        const elementos = obtenerElementosSemanticos(rawContainer);
+        // Elementos y bloques directos del reporte
+        const elementos = Array.from(rawContainer.children);
 
         for (let el of elementos) {
             const tabla = el.tagName === 'TABLE' ? el : el.querySelector('table');
