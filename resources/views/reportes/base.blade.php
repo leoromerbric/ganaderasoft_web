@@ -4,35 +4,50 @@
 
 @section('content')
 <style>
-    /* 1. Estilos de pantalla: Contenedor Escritorio y Hojas Tamaño Carta */
+    /* 1. Estilos de pantalla: Contenedor Escritorio y Hojas Tamaño Carta con Scroll Horizontal en móvil */
     .letter-preview-desk {
         background-color: #f1f5f9;
         border: 1px solid #e2e8f0;
         border-radius: 1.25rem;
-        padding: 2.5rem 1rem;
+        padding: 1.5rem 0.5rem;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        display: block;
+    }
+
+    .desk-inner-scroller {
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 215.9mm;
+        min-width: 215.9mm;
+        margin: 0 auto;
+        box-sizing: border-box;
     }
 
     .page-wrapper {
-        width: 100%;
+        width: 215.9mm;
+        min-width: 215.9mm;
         max-width: 215.9mm;
         display: flex;
         flex-direction: column;
         align-items: center;
+        box-sizing: border-box;
     }
 
     .print-sheet {
-        width: 100%;
-        max-width: 215.9mm; /* Ancho estándar Tamaño Carta (8.5 in) */
-        min-height: 279.4mm; /* Alto estándar Tamaño Carta (11 in) */
+        width: 215.9mm;
+        min-width: 215.9mm;
+        max-width: 215.9mm;
+        min-height: 279.4mm;
         background-color: #ffffff;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
         border: 1px solid #e5e7eb;
         border-radius: 2px;
-        padding: 14mm 16mm; /* Margen cómodo y amplio para tablas y gráficos */
+        padding: 14mm 16mm;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
@@ -82,18 +97,21 @@
             overflow: visible !important;
         }
 
-        .print-container, .letter-preview-desk {
+        .print-container, .letter-preview-desk, .desk-inner-scroller {
             background-color: transparent !important;
             border: none !important;
             padding: 0 !important;
             margin: 0 !important;
             box-shadow: none !important;
             width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
             display: block !important;
         }
 
         .page-wrapper {
             max-width: 100% !important;
+            min-width: 0 !important;
             width: 100% !important;
             min-height: 246mm !important;
             height: 246mm !important;
@@ -121,6 +139,7 @@
             padding: 0 !important;
             margin: 0 !important;
             width: 100% !important;
+            min-width: 0 !important;
             max-width: 100% !important;
             height: 100% !important;
             min-height: 100% !important;
@@ -189,20 +208,20 @@
 
 <div class="space-y-8 print-container">
     <!-- Header & Filter Unified Panel (no-print) -->
-    <div class="no-print bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-5">
+    <div class="no-print bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
         <!-- Top Row: Title, Subtitle & Print Action -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div class="flex items-center space-x-4">
-                <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-azul/10 text-ganaderasoft-azul flex items-center justify-center text-2xl shrink-0">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-start sm:items-center space-x-3 sm:space-x-4 pl-9 sm:pl-0">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-ganaderasoft-azul/10 text-ganaderasoft-azul flex items-center justify-center text-xl sm:text-2xl shrink-0 mt-0.5 sm:mt-0">
                     {{ $icon ?? '📊' }}
                 </div>
-                <div>
-                    <h1 class="text-3xl font-bold text-ganaderasoft-negro">{{ $titulo ?? 'Reporte' }}</h1>
-                    <p class="text-gray-500 text-sm mt-0.5">{{ $subtitulo ?? 'Generación y consulta de documentos e informes del sistema' }}</p>
+                <div class="min-w-0">
+                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-ganaderasoft-negro leading-tight">{{ $titulo ?? 'Reporte' }}</h1>
+                    <p class="text-gray-500 text-xs sm:text-sm mt-0.5">{{ $subtitulo ?? 'Generación y consulta de documentos e informes del sistema' }}</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-3 w-full md:w-auto">
-                <button type="button" onclick="descargarReportePdf()" class="w-full md:w-auto px-5 py-4 bg-ganaderasoft-azul hover:bg-opacity-90 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer">
+            <div class="w-full sm:w-auto shrink-0">
+                <button type="button" onclick="descargarReportePdf()" class="w-full sm:w-auto px-5 py-3 bg-ganaderasoft-azul hover:bg-opacity-90 text-white font-bold text-xs sm:text-sm rounded-xl shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                     </svg>
@@ -213,13 +232,13 @@
 
         <!-- Integrated Filter Bar Line -->
         <div class="border-t border-gray-100 pt-4">
-            <form method="GET" action="{{ $routeAction ?? '#' }}" class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+            <form method="GET" action="{{ $routeAction ?? '#' }}" class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap items-stretch sm:items-end gap-3.5 flex-1 w-full">
                     @if($mostrarFiltroFinca ?? true)
                         <!-- Selector de Finca -->
-                        <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider shrink-0">Finca:</span>
-                            <select name="finca_id" class="w-full sm:w-auto min-w-[220px] px-3.5 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all bg-white font-medium text-gray-700 cursor-pointer">
+                        <div class="col-span-1 sm:col-span-2 lg:flex-1 lg:min-w-[200px] lg:max-w-xs flex flex-col">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Finca</label>
+                            <select name="finca_id" class="w-full h-10 px-3.5 border border-gray-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all bg-white font-medium text-gray-700 cursor-pointer shadow-2xs">
                                 <option value="" {{ empty($fincaId) ? 'selected' : '' }}>Todas las fincas</option>
                                 @php
                                     $listaFincas = is_array($fincasDisponibles ?? null) ? $fincasDisponibles : (is_array($fincas ?? null) ? $fincas : []);
@@ -237,29 +256,30 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <span class="hidden sm:inline-block text-gray-300">|</span>
                     @endif
 
-                    <!-- Selector de Período -->
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider shrink-0">Período:</span>
-                        <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <input type="date" name="fecha_inicio" value="{{ $fechaInicioInput ?? '' }}" placeholder="Desde el inicio" title="Fecha inicio (vacío para histórico completo)" class="w-full sm:w-auto px-3.5 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all">
-                            <span class="text-gray-400 text-sm font-medium">a</span>
-                            <input type="date" name="fecha_fin" value="{{ $fechaFinInput ?? date('Y-m-d') }}" class="w-full sm:w-auto px-3.5 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all">
-                        </div>
+                    <!-- Fecha Desde -->
+                    <div class="col-span-1 lg:flex-1 lg:min-w-[150px] lg:max-w-xs flex flex-col">
+                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Fecha inicio</label>
+                        <input type="date" name="fecha_inicio" value="{{ $fechaInicioInput ?? '' }}" placeholder="Desde el inicio" title="Fecha inicio (vacío para histórico completo)" class="w-full h-10 px-3 border border-gray-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all bg-white shadow-2xs">
+                    </div>
+
+                    <!-- Fecha Hasta -->
+                    <div class="col-span-1 lg:flex-1 lg:min-w-[150px] lg:max-w-xs flex flex-col">
+                        <label class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Fecha fin</label>
+                        <input type="date" name="fecha_fin" value="{{ $fechaFinInput ?? date('Y-m-d') }}" class="w-full h-10 px-3 border border-gray-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all bg-white shadow-2xs">
                     </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full lg:w-auto justify-end">
-                    <button type="submit" class="w-full sm:w-auto px-5 py-2.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold text-sm rounded-xl transition-all shadow-sm flex items-center justify-center space-x-2 cursor-pointer">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <!-- Botones de Acción (Ocupan el 100% proporcional en móvil/apilado y auto en escritorio) -->
+                <div class="grid grid-cols-3 sm:flex items-center gap-2.5 h-10 shrink-0 w-full lg:w-auto justify-end">
+                    <button type="submit" class="col-span-2 sm:flex-initial h-10 px-5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-sm flex items-center justify-center space-x-1.5 cursor-pointer whitespace-nowrap">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                         <span>Generar reporte</span>
                     </button>
-                    <a href="{{ $routeAction ?? '#' }}" class="w-full sm:w-auto text-center px-4 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-xl hover:bg-gray-200 transition-all">
+                    <a href="{{ $routeAction ?? '#' }}" class="col-span-1 sm:flex-initial h-10 px-4 bg-gray-100 text-gray-700 font-semibold text-xs sm:text-sm rounded-xl hover:bg-gray-200 transition-all flex items-center justify-center whitespace-nowrap">
                         Limpiar
                     </a>
                 </div>
@@ -272,9 +292,17 @@
         @yield('report_content')
     </div>
 
-    <!-- Previsualización de Hojas Tamaño Carta (Generadas automáticamente) -->
-    <div id="reportePagesDesk" class="letter-preview-desk space-y-8">
-        <!-- Renderizado dinámico de hojas carta -->
+    <!-- Previsualización de Hojas Tamaño Carta (Generadas automáticamente con scroll horizontal en móvil) -->
+    <div class="letter-preview-desk">
+        <div class="lg:hidden text-center text-xs text-gray-500 font-semibold pb-3 flex items-center justify-center gap-1.5 no-print">
+            <svg class="w-4 h-4 text-ganaderasoft-azul animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+            </svg>
+            <span>Desliza horizontalmente para navegar por el documento</span>
+        </div>
+        <div id="reportePagesDesk" class="desk-inner-scroller space-y-8">
+            <!-- Renderizado dinámico de hojas carta -->
+        </div>
     </div>
 </div>
 
@@ -332,7 +360,7 @@
 
         function excedeCapacidadHoja(hoja, numPagina) {
             // Altura máxima para el cuerpo según la página (Página 1 tiene cabecera completa de 150px)
-            const maxBodyHeight = numPagina === 1 ? 460 : 660;
+            const maxBodyHeight = numPagina === 1 ? 520 : 660;
             return hoja.body.offsetHeight > maxBodyHeight;
         }
 
