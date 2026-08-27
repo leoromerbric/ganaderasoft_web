@@ -253,8 +253,10 @@ Route::middleware(['mock.auth'])->group(function () {
 
     // ===================== MÓDULO DE REPORTES =====================
     Route::get('/reportes/general', [ReportesController::class, 'indexGeneral'])->name('reportes.general');
+    Route::get('/reportes/lactancias', [ReportesController::class, 'indexLactancias'])->name('reportes.lactancias');
     Route::get('/reportes/reproductivo', [ReportesController::class, 'indexReproductivo'])->name('reportes.reproductivo');
     Route::get('/reportes/pesaje-leche', [ReportesController::class, 'indexPesajeLeche'])->name('reportes.pesaje-leche');
+    Route::get('/reportes/rebanos', [ReportesController::class, 'indexRebanos'])->name('reportes.rebanos');
 });
 
 // ===================== MÓDULO DE ADMINISTRACIÓN =====================

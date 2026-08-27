@@ -172,11 +172,17 @@
             <a href="{{ route('reportes.general') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.general') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <span class="menu-text">Reporte general</span>
             </a>
+            <a href="{{ route('reportes.lactancias') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.lactancias') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <span class="menu-text">Historia de lactancias</span>
+            </a>
             <a href="{{ route('reportes.reproductivo') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.reproductivo') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Reporte reproductivo</span>
+                <span class="menu-text">Historial reproductivo</span>
             </a>
             <a href="{{ route('reportes.pesaje-leche') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.pesaje-leche') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Reporte de pesaje de leche</span>
+                <span class="menu-text">Pesajes de leche</span>
+            </a>
+            <a href="{{ route('reportes.rebanos') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.rebanos') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
+                <span class="menu-text">Resumen de rebaños</span>
             </a>
         </div>
     </div>
