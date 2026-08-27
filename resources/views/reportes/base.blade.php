@@ -47,10 +47,10 @@
             color-adjust: exact !important;
         }
 
-        /* 2. Configuración de página física a tamaño carta con márgenes amplios */
+        /* 2. Configuración de página física a tamaño carta con márgenes estándar de documento */
         @page {
             size: letter portrait !important;
-            margin: 12mm 15mm 15mm 15mm !important; /* Margen de impresión amplio */
+            margin: 12mm 14mm 12mm 14mm !important;
         }
 
         /* 3. Ocultar la interfaz de usuario de la web */
@@ -80,9 +80,15 @@
         .page-wrapper {
             max-width: 100% !important;
             width: 100% !important;
-            display: block !important;
+            min-height: 251mm !important;
+            height: 251mm !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
             page-break-after: always !important;
             break-after: page !important;
+            box-sizing: border-box !important;
+            overflow: visible !important;
         }
 
         .page-wrapper:last-child {
@@ -90,7 +96,7 @@
             break-after: avoid !important;
         }
 
-        /* 4. Hoja carta limpia sin sombras de pantalla */
+        /* 4. Hoja carta limpia sin sombras que ocupa el 100% del alto */
         .print-sheet {
             box-shadow: none !important;
             border: none !important;
@@ -99,11 +105,18 @@
             margin: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
-            height: auto !important;
-            min-height: 0 !important;
+            height: 100% !important;
+            min-height: 100% !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
+            box-sizing: border-box !important;
+        }
+
+        .sheet-content-top {
+            flex: 1 1 auto !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
 
         /* Evitar cortar filas de tablas, gráficos, tarjetas y notas a la mitad entre páginas */
@@ -117,12 +130,25 @@
             display: table-header-group !important;
         }
 
-        /* 5. Pie de página en cada hoja */
+        /* 5. Pie de página fijo al final horizontal de cada hoja con holgura vertical */
         .print-footer {
             margin-top: auto !important;
-            padding-top: 0.75rem !important;
-            border-top: 1px solid #e5e7eb !important;
-            background-color: #ffffff !important;
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+            padding-left: 4px !important;
+            padding-right: 4px !important;
+            border-top: 1px solid #cbd5e1 !important;
+            background-color: transparent !important;
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            width: 100% !important;
+            font-size: 11px !important;
+            line-height: 1.6 !important;
+            color: #64748b !important;
+            box-sizing: border-box !important;
+            overflow: visible !important;
         }
     }
 </style>
@@ -270,7 +296,7 @@
             </div>
         `;
 
-        const maxSheetContentHeight = 800; // Altura útil en px con márgenes amplios de 14mm/16mm
+        const maxSheetContentHeight = 740; // Altura útil en px con márgenes amplios
         const paginas = [];
 
         function crearNuevaHoja(numPagina) {
@@ -303,10 +329,10 @@
             topSection.appendChild(bodySlot);
 
             const footer = document.createElement('div');
-            footer.className = 'mt-8 pt-4 border-t border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between text-xs text-gray-400 print-footer shrink-0';
+            footer.className = 'mt-auto pt-3 pb-2 border-t border-gray-200 flex flex-row items-center justify-between text-xs text-gray-500 print-footer shrink-0 w-full px-2';
             footer.innerHTML = `
-                <p>© ${new Date().getFullYear()} GanaderaSoft. Documento generado oficialmente.</p>
-                <p class="page-footer-num">Página ${numPagina}</p>
+                <span class="text-left font-medium text-gray-500 tracking-normal">© ${new Date().getFullYear()} GanaderaSoft. Documento generado oficialmente.</span>
+                <span class="page-footer-num text-right font-bold text-gray-600">Página ${numPagina}</span>
             `;
 
             sheet.appendChild(topSection);
