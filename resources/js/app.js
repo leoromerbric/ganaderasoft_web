@@ -105,12 +105,15 @@ function initFormSubmitProtection() {
             return;
         }
 
-        // Temporizador de seguridad (10 segundos) por si la petición falla sin recargar la página
+        // Temporizador de seguridad (60s para archivos/carga masiva, 10s para formularios estándar)
+        const esCargaArchivos = form.enctype === 'multipart/form-data' || form.querySelector('input[type="file"]');
+        const tiempoEspera = esCargaArchivos ? 60000 : 10000;
+
         setTimeout(() => {
             if (form.getAttribute('data-submitting') === 'true') {
                 resetFormState(form);
             }
-        }, 10000);
+        }, tiempoEspera);
     }, false); // Fase de burbujeo para verificar e.defaultPrevented
 
     // 3. Restablecer estado si el formulario se limpia/resetea
