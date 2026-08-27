@@ -181,9 +181,6 @@
             <a href="{{ route('reportes.pesaje-leche') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.pesaje-leche') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <span class="menu-text">Pesajes de leche</span>
             </a>
-            <a href="{{ route('reportes.rebanos') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.rebanos') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Resumen de rebaños</span>
-            </a>
         </div>
     </div>
 </x-layouts.sidebar-base>

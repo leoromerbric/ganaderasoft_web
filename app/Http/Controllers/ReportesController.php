@@ -28,8 +28,12 @@ class ReportesController extends Controller
     private function prepareReportData(Request $request, array $reporteData): array
     {
         $selectedFinca = session('selected_finca');
-        $reportFincaId = $reporteData['data']['finca']['id'] ?? null;
-        $fincaId = $reportFincaId ?? ($request->filled('finca_id') ? (int) $request->query('finca_id') : ($selectedFinca['id'] ?? null));
+        
+        if ($request->has('finca_id')) {
+            $fincaId = $request->filled('finca_id') ? (int) $request->query('finca_id') : null;
+        } else {
+            $fincaId = !empty($selectedFinca['id']) ? (int) $selectedFinca['id'] : null;
+        }
 
         $fechaInicioInput = $request->filled('fecha_inicio') ? $request->query('fecha_inicio') : date('Y-m-01');
         $fechaFinInput = $request->filled('fecha_fin') ? $request->query('fecha_fin') : date('Y-m-d');
@@ -42,35 +46,63 @@ class ReportesController extends Controller
         $fincasResponse = $this->fincasService->getFincas();
         $rawFincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
         
-        $fincas = [];
-        if (is_array($rawFincas)) {
+        $fincasDisponibles = [];
+        if (is_array($rawFincas) && !empty($rawFincas)) {
             foreach ($rawFincas as $f) {
                 if (is_array($f) && isset($f['id'], $f['nombre'])) {
-                    $fincas[] = $f;
+                    $fincasDisponibles[] = [
+                        'id'     => (int) $f['id'],
+                        'nombre' => $f['nombre'],
+                    ];
                 }
             }
         }
 
-        // Si se seleccionó una finca válida y difiere de la sesión activa, sincronizarla
-        if (!empty($fincaId) && is_array($fincas)) {
-            foreach ($fincas as $f) {
-                if ($f['id'] == $fincaId && ($selectedFinca['id'] ?? null) != $fincaId) {
-                    session(['selected_finca' => $f]);
+        // Si el servicio de reportes devolvió lista de fincas y fincasDisponibles estaba vacío
+        if (empty($fincasDisponibles) && !empty($reporteData['data']['fincas']) && is_array($reporteData['data']['fincas'])) {
+            foreach ($reporteData['data']['fincas'] as $f) {
+                if (is_array($f) && isset($f['id'], $f['nombre'])) {
+                    $fincasDisponibles[] = [
+                        'id'     => (int) $f['id'],
+                        'nombre' => $f['nombre'],
+                    ];
+                } elseif (is_array($f) && isset($f['finca_id'], $f['nombre'])) {
+                    $fincasDisponibles[] = [
+                        'id'     => (int) $f['finca_id'],
+                        'nombre' => $f['nombre'],
+                    ];
+                }
+            }
+        }
+
+        // Determinar nombre de la finca para encabezados
+        $fincaNombre = 'Todas las fincas';
+        if (!empty($fincaId)) {
+            foreach ($fincasDisponibles as $f) {
+                if ($f['id'] == $fincaId) {
+                    $fincaNombre = $f['nombre'];
+                    if (($selectedFinca['id'] ?? null) != $fincaId) {
+                        session(['selected_finca' => $f]);
+                    }
                     break;
                 }
             }
+        } elseif (!empty($reporteData['data']['finca']['nombre']) && count($fincasDisponibles) === 1) {
+            $fincaNombre = $reporteData['data']['finca']['nombre'];
         }
 
         return [
-            'reporte'          => $reporteData['data'] ?? [],
-            'filters'          => $request->all(),
-            'fincas'           => $fincas,
-            'fincaId'          => $fincaId,
-            'fechaEmision'     => $fechaEmision,
-            'fechaInicio'      => $fechaInicio,
-            'fechaFin'         => $fechaFin,
-            'fechaInicioInput' => $fechaInicioInput,
-            'fechaFinInput'    => $fechaFinInput,
+            'reporte'           => $reporteData['data'] ?? [],
+            'filters'           => $request->all(),
+            'fincasDisponibles' => $fincasDisponibles,
+            'fincas'            => $fincasDisponibles,
+            'fincaId'           => $fincaId,
+            'fincaNombre'       => $fincaNombre,
+            'fechaEmision'      => $fechaEmision,
+            'fechaInicio'       => $fechaInicio,
+            'fechaFin'          => $fechaFin,
+            'fechaInicioInput'  => $fechaInicioInput,
+            'fechaFinInput'     => $fechaFinInput,
         ];
     }
 
@@ -79,13 +111,30 @@ class ReportesController extends Controller
      */
     private function resolveFilters(Request $request): array
     {
-        $filters = array_filter($request->all(), fn($v) => $v !== null && $v !== '');
-        if (empty($filters['finca_id'])) {
+        $filters = [];
+        
+        if ($request->has('finca_id') && $request->filled('finca_id')) {
+            $filters['finca_id'] = (int) $request->query('finca_id');
+        } elseif (!$request->has('finca_id')) {
             $selectedFinca = session('selected_finca');
             if (!empty($selectedFinca['id'])) {
-                $filters['finca_id'] = $selectedFinca['id'];
+                $filters['finca_id'] = (int) $selectedFinca['id'];
             }
         }
+
+        if ($request->filled('fecha_inicio')) {
+            $filters['fecha_inicio'] = $request->query('fecha_inicio');
+        }
+        if ($request->filled('fecha_fin')) {
+            $filters['fecha_fin'] = $request->query('fecha_fin');
+        }
+        if ($request->filled('rebano_id')) {
+            $filters['rebano_id'] = $request->query('rebano_id');
+        }
+        if ($request->filled('animal_id')) {
+            $filters['animal_id'] = $request->query('animal_id');
+        }
+
         return $filters;
     }
 
@@ -127,15 +176,5 @@ class ReportesController extends Controller
         $filters = $this->resolveFilters($request);
         $reporteData = $this->reportesService->getReportePesajeLeche($filters);
         return view('reportes.pesaje-leche', $this->prepareReportData($request, $reporteData));
-    }
-
-    /**
-     * Muestra la vista del Reporte de Rebaños.
-     */
-    public function indexRebanos(Request $request)
-    {
-        $filters = $this->resolveFilters($request);
-        $reporteData = $this->reportesService->getReporteRebanos($filters);
-        return view('reportes.rebanos', $this->prepareReportData($request, $reporteData));
     }
 }
