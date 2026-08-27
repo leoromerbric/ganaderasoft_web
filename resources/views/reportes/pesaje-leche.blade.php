@@ -122,8 +122,8 @@
     @endphp
 
     <!-- Gráfica Visual de Tendencia de Ordeño -->
-    <div class="p-5 bg-slate-50/70 rounded-2xl border border-gray-200">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+    <div class="p-4 bg-slate-50/70 rounded-2xl border border-gray-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-2.5">
             <div>
                 <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider flex items-center gap-1.5">
                     <span>📊</span> Tendencia de producción diaria por lote
@@ -131,23 +131,23 @@
                 <p class="text-[11px] text-gray-500">Volumen diario total ordeñado (Litros / Día)</p>
             </div>
             <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-1 rounded-lg">
-                    <span class="w-2 h-2 rounded-full bg-blue-600"></span> Total diario (Lts)
+                <span class="inline-flex items-center gap-1 text-[10.5px] font-semibold text-blue-700 bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-lg">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span> Total diario (Lts)
                 </span>
             </div>
         </div>
         
         @if(!empty($chartItems) && $maxLitros > 0)
-            <div class="relative pt-6 pb-2">
+            <div class="relative pt-4 pb-1">
                 <!-- Líneas guía de fondo -->
-                <div class="absolute inset-x-0 top-6 bottom-10 flex flex-col justify-between pointer-events-none opacity-40">
-                    <div class="border-b border-dashed border-gray-300 w-full flex justify-end"><span class="text-[9px] text-gray-400 font-mono -mt-3.5 mr-1">{{ $maxEscala }} L</span></div>
-                    <div class="border-b border-dashed border-gray-300 w-full flex justify-end"><span class="text-[9px] text-gray-400 font-mono -mt-3.5 mr-1">{{ round($maxEscala / 2) }} L</span></div>
-                    <div class="border-b border-gray-300 w-full flex justify-end"><span class="text-[9px] text-gray-400 font-mono -mt-3.5 mr-1">0 L</span></div>
+                <div class="absolute inset-x-0 top-4 bottom-8 flex flex-col justify-between pointer-events-none opacity-40">
+                    <div class="border-b border-dashed border-gray-300 w-full flex justify-end"><span class="text-[9px] text-gray-400 font-mono -mt-3 mr-1">{{ $maxEscala }} L</span></div>
+                    <div class="border-b border-dashed border-gray-300 w-full flex justify-end"><span class="text-[9px] text-gray-400 font-mono -mt-3 mr-1">{{ round($maxEscala / 2) }} L</span></div>
+                    <div class="border-b border-gray-300 w-full flex justify-end"><span class="text-[9px] text-gray-400 font-mono -mt-3 mr-1">0 L</span></div>
                 </div>
 
                 <!-- Contenedor de barras centrado -->
-                <div class="relative z-10 flex items-end justify-center gap-4 sm:gap-6 min-h-[180px] px-4">
+                <div class="relative z-10 flex items-end justify-center gap-4 sm:gap-6 min-h-[125px] px-4">
                     @foreach($chartItems as $cItem)
                         @php
                             $litros = (float) ($cItem['total_dia_litros'] ?? 0);
@@ -161,25 +161,22 @@
                         @endphp
                         <div class="flex flex-col items-center justify-end h-full w-20 max-w-[85px] group">
                             <!-- Valor en Litros ARRIBA de la barra -->
-                            <div class="mb-1.5 text-center">
-                                <span class="inline-block px-1.5 py-0.5 text-[11px] font-black text-blue-900 bg-blue-100/80 rounded-md shadow-2xs border border-blue-200/50 group-hover:scale-105 transition-transform">
+                            <div class="mb-1 text-center">
+                                <span class="inline-block px-1.5 py-0.5 text-[10.5px] font-black text-blue-900 bg-blue-100/80 rounded-md border border-blue-200/50">
                                     {{ number_format($litros, 1) }} L
                                 </span>
                             </div>
 
                             <!-- Barra vertical con degradado y sombra -->
-                            <div class="w-12 sm:w-14 rounded-t-lg bg-gradient-to-t from-blue-700 via-blue-600 to-indigo-500 shadow-sm border border-blue-700/30 transition-all duration-300 group-hover:brightness-110 flex flex-col justify-end overflow-hidden" 
-                                 style="height: {{ $pct * 1.3 }}px; min-height: 24px;"
-                                 title="Fecha: {{ $fechaLabel }}&#10;Total: {{ number_format($litros, 1) }} Lts&#10;Mañana: {{ number_format($manana, 1) }} Lts | Tarde: {{ number_format($tarde, 1) }} Lts">
-                                @if($manana > 0 && $tarde > 0)
-                                    <div class="h-1/2 bg-white/10 border-b border-white/20" title="Mañana: {{ number_format($manana, 1) }} L"></div>
-                                @endif
+                            <div class="w-10 sm:w-12 rounded-t-lg bg-gradient-to-t from-blue-700 via-blue-600 to-indigo-500 shadow-xs border border-blue-700/30 flex flex-col justify-end overflow-hidden" 
+                                 style="height: {{ $pct * 0.85 }}px; min-height: 18px;"
+                                 title="Fecha: {{ $fechaLabel }}&#10;Total: {{ number_format($litros, 1) }} Lts">
                             </div>
 
                             <!-- Línea base y Etiquetas ABAJO -->
-                            <div class="mt-2.5 text-center w-full border-t-2 border-gray-300 pt-1.5 flex flex-col items-center">
-                                <span class="text-[11px] font-bold text-gray-700 leading-tight">{{ $fechaCorta }}</span>
-                                <span class="text-[10px] text-gray-500 truncate max-w-[80px]" title="{{ $rebNombre }}">{{ $rebNombre }}</span>
+                            <div class="mt-1.5 text-center w-full border-t-2 border-gray-300 pt-1 flex flex-col items-center">
+                                <span class="text-[10.5px] font-bold text-gray-700 leading-tight">{{ $fechaCorta }}</span>
+                                <span class="text-[9.5px] text-gray-500 truncate max-w-[80px]" title="{{ $rebNombre }}">{{ $rebNombre }}</span>
                             </div>
                         </div>
                     @endforeach
@@ -187,9 +184,9 @@
             </div>
 
             <!-- Leyenda explicativa al pie -->
-            <div class="mt-3 pt-3 border-t border-gray-200/70 flex flex-wrap items-center justify-between text-[11px] text-gray-500 gap-2">
+            <div class="mt-2 pt-2 border-t border-gray-200/70 flex flex-wrap items-center justify-between text-[10px] text-gray-500 gap-2">
                 <span>📍 Mostrando los últimos {{ count($chartItems) }} registro(s) de pesaje consolidado.</span>
-                <span class="font-medium text-gray-600">Pasa el cursor sobre cada barra para ver el desglose mañana/tarde.</span>
+                <span class="font-medium text-gray-600">Promedio general: {{ number_format($promedioDiario, 1) }} Lts/vaca.</span>
             </div>
         @else
             <div class="h-32 flex flex-col items-center justify-center text-gray-400 italic text-xs border border-dashed border-gray-200 rounded-xl bg-white/60">

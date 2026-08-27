@@ -45,9 +45,24 @@
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
         }
 
-        /* 2. Configuración de página física a tamaño carta con márgenes estándar de documento */
+        /* Desactivar cualquier barra de desplazamiento en la impresión */
+        ::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        .overflow-x-auto, .overflow-y-auto, .overflow-auto, .sheet-body, .print-sheet, .page-wrapper {
+            overflow: visible !important;
+            overflow-x: visible !important;
+            overflow-y: visible !important;
+        }
+
+        /* 2. Configuración de página física a tamaño carta con márgenes estándar */
         @page {
             size: letter portrait !important;
             margin: 12mm 14mm 12mm 14mm !important;
@@ -80,15 +95,17 @@
         .page-wrapper {
             max-width: 100% !important;
             width: 100% !important;
-            min-height: 251mm !important;
-            height: 251mm !important;
+            min-height: 246mm !important;
+            height: 246mm !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
             page-break-after: always !important;
             break-after: page !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
             box-sizing: border-box !important;
-            overflow: visible !important;
+            overflow: hidden !important;
         }
 
         .page-wrapper:last-child {
@@ -96,7 +113,7 @@
             break-after: avoid !important;
         }
 
-        /* 4. Hoja carta limpia sin sombras que ocupa el 100% del alto */
+        /* 4. Hoja carta limpia sin sombras */
         .print-sheet {
             box-shadow: none !important;
             border: none !important;
@@ -111,12 +128,25 @@
             flex-direction: column !important;
             justify-content: space-between !important;
             box-sizing: border-box !important;
+            overflow: hidden !important;
         }
 
         .sheet-content-top {
             flex: 1 1 auto !important;
             display: flex !important;
             flex-direction: column !important;
+            overflow: hidden !important;
+        }
+
+        .sheet-body {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1rem !important;
+        }
+
+        .sheet-body > * {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
         }
 
         /* Evitar cortar filas de tablas, gráficos, tarjetas y notas a la mitad entre páginas */
@@ -130,13 +160,13 @@
             display: table-header-group !important;
         }
 
-        /* 5. Pie de página fijo al final horizontal de cada hoja con holgura vertical */
+        /* 5. Pie de página fijado en la base de cada hoja impresa */
         .print-footer {
             margin-top: auto !important;
             padding-top: 8px !important;
-            padding-bottom: 8px !important;
-            padding-left: 4px !important;
-            padding-right: 4px !important;
+            padding-bottom: 2px !important;
+            padding-left: 2px !important;
+            padding-right: 2px !important;
             border-top: 1px solid #cbd5e1 !important;
             background-color: transparent !important;
             display: flex !important;
@@ -144,11 +174,15 @@
             justify-content: space-between !important;
             align-items: center !important;
             width: 100% !important;
-            font-size: 11px !important;
-            line-height: 1.6 !important;
+            font-size: 10.5px !important;
+            line-height: 1.4 !important;
             color: #64748b !important;
             box-sizing: border-box !important;
-            overflow: visible !important;
+            flex-shrink: 0 !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
         }
     }
 </style>
@@ -296,7 +330,12 @@
             </div>
         `;
 
-        const maxSheetContentHeight = 740; // Altura útil en px con márgenes amplios
+        function excedeCapacidadHoja(hoja, numPagina) {
+            // Altura máxima para el cuerpo según la página (Página 1 tiene cabecera completa de 150px)
+            const maxBodyHeight = numPagina === 1 ? 460 : 660;
+            return hoja.body.offsetHeight > maxBodyHeight;
+        }
+
         const paginas = [];
 
         function crearNuevaHoja(numPagina) {
@@ -376,7 +415,7 @@
                     const filaClone = fila.cloneNode(true);
                     tbodyInterno.appendChild(filaClone);
 
-                    if (hojaActual.body.offsetHeight > maxSheetContentHeight && tbodyInterno.children.length > 1) {
+                    if (excedeCapacidadHoja(hojaActual, paginas.length) && tbodyInterno.children.length > 1) {
                         tbodyInterno.removeChild(filaClone);
 
                         hojaActual = crearNuevaHoja(paginas.length + 1);
@@ -413,7 +452,7 @@
                 hojaActual.body.appendChild(clone);
 
                 // Si excede la hoja y ya hay contenido previo, mover el bloque entero a la nueva hoja
-                if (hojaActual.body.offsetHeight > maxSheetContentHeight && hojaActual.body.children.length > 1) {
+                if (excedeCapacidadHoja(hojaActual, paginas.length) && hojaActual.body.children.length > 1) {
                     hojaActual.body.removeChild(clone);
 
                     hojaActual = crearNuevaHoja(paginas.length + 1);
@@ -421,6 +460,19 @@
 
                     hojaActual.body.appendChild(clone);
                 }
+            }
+        }
+
+        // Limpiar hojas vacías si alguna quedara sin contenido útil
+        for (let i = paginas.length - 1; i > 0; i--) {
+            const pag = paginas[i];
+            const filasTabla = pag.body.querySelectorAll('tbody tr').length;
+            const tieneOtros = pag.body.children.length > 0 && !pag.body.querySelector('table');
+            if (filasTabla === 0 && !tieneOtros && pag.body.innerText.trim().length === 0) {
+                if (pag.wrapper && pag.wrapper.parentNode) {
+                    pag.wrapper.parentNode.removeChild(pag.wrapper);
+                }
+                paginas.splice(i, 1);
             }
         }
 
