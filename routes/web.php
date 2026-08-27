@@ -269,7 +269,7 @@ Route::middleware(['mock.auth', 'has.role:global_admin,admin'])->prefix('admin')
     Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-    Route::post('/users/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::match(['POST', 'PATCH'], '/users/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
 
     // Catálogos Maestros (Rutas Limpias e Independientes)
     Route::resource('tipos-trabajador', TipoTrabajadorController::class);
