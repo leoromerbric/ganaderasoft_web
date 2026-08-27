@@ -2,7 +2,8 @@
     'titulo' => 'Reporte general de finca',
     'subtitulo' => 'Resumen ejecutivo consolidado de inventario ganadero, fincas y personal',
     'icon' => '📊',
-    'routeAction' => route('reportes.general')
+    'routeAction' => route('reportes.general'),
+    'mostrarFiltroFinca' => false
 ])
 
 @section('report_content')
@@ -44,8 +45,8 @@
                         <th class="py-2.5 px-3">Finca / Lote</th>
                         <th class="py-2.5 px-3">Categoría</th>
                         <th class="py-2.5 px-3 text-center">Cant. Animales</th>
-                        <th class="py-2.5 px-3">Estado nutricional</th>
-                        <th class="py-2.5 px-3 text-right">Observación</th>
+                        <th class="py-2.5 px-3">Estado de salud</th>
+                        <th class="py-2.5 px-3 text-right">Composición</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -55,8 +56,8 @@
                                 <td class="py-2.5 px-3 font-semibold text-gray-800">{{ $item['finca_nombre'] ?? 'Finca' }}</td>
                                 <td class="py-2.5 px-3 text-gray-600">{{ $item['categoria'] ?? 'General' }}</td>
                                 <td class="py-2.5 px-3 text-center font-bold text-ganaderasoft-azul">{{ $item['cantidad_animales'] ?? 0 }}</td>
-                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 text-xs font-bold bg-green-100 text-green-800 rounded-md">{{ $item['estado_nutricional'] ?? 'Excelente' }}</span></td>
-                                <td class="py-2.5 px-3 text-right text-gray-500 text-xs">{{ $item['observacion'] ?? 'Control sanitario al día' }}</td>
+                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 text-xs font-bold bg-green-100 text-green-800 rounded-md">{{ $item['estado_nutricional'] ?? 'Sano' }}</span></td>
+                                <td class="py-2.5 px-3 text-right text-gray-600 text-xs font-medium">{{ $item['observacion'] ?? '-' }}</td>
                             </tr>
                         @endif
                     @empty
@@ -144,13 +145,5 @@
                 </tbody>
             </table>
         </div>
-    </div>
-
-    <!-- Cuadro de Notas y Resumen -->
-    <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
-        <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Dictamen y estado general</h4>
-        <p class="text-xs text-gray-600 leading-relaxed">
-            Las unidades de producción registran un balance positivo con disponibilidad de forraje y control zoosanitario al 100%. No se reportan incidencias epidemiológicas en los lotes evaluados.
-        </p>
     </div>
 @endsection

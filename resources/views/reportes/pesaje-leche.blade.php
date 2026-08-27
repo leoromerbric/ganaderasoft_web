@@ -42,9 +42,9 @@
                     <tr class="border-b border-gray-200 bg-gray-50/90 text-xs font-bold text-gray-600 uppercase tracking-wider">
                         <th class="py-2.5 px-3">Fecha pesaje</th>
                         <th class="py-2.5 px-3">Rebaño / lote</th>
-                        <th class="py-2.5 px-3">Ordeño mañana</th>
-                        <th class="py-2.5 px-3">Ordeño tarde</th>
-                        <th class="py-2.5 px-3 text-right">Total día</th>
+                        <th class="py-2.5 px-3 text-center">Vacas evaluadas</th>
+                        <th class="py-2.5 px-3 text-right">Promedio / vaca</th>
+                        <th class="py-2.5 px-3 text-right">Total producción</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -53,9 +53,9 @@
                             <tr>
                                 <td class="py-2.5 px-3 font-semibold text-gray-800">{{ $item['fecha_pesaje'] ?? '-' }}</td>
                                 <td class="py-2.5 px-3 text-gray-600">{{ $item['rebano_nombre'] ?? '-' }}</td>
-                                <td class="py-2.5 px-3 text-gray-700">{{ number_format($item['ordeno_manana_litros'] ?? 0, 1) }} lts</td>
-                                <td class="py-2.5 px-3 text-gray-700">{{ number_format($item['ordeno_tarde_litros'] ?? 0, 1) }} lts</td>
-                                <td class="py-2.5 px-3 text-right font-black text-ganaderasoft-azul">{{ number_format($item['total_dia_litros'] ?? 0, 1) }} lts</td>
+                                <td class="py-2.5 px-3 text-center font-medium text-gray-700">{{ $item['vacas_pesadas'] ?? 1 }} vacas</td>
+                                <td class="py-2.5 px-3 text-right text-gray-700">{{ number_format($item['promedio_vaca_litros'] ?? $item['total_dia_litros'] ?? 0, 1) }} Lts</td>
+                                <td class="py-2.5 px-3 text-right font-black text-ganaderasoft-azul">{{ number_format($item['total_dia_litros'] ?? 0, 1) }} Lts</td>
                             </tr>
                         @endif
                     @empty
@@ -90,7 +90,7 @@
                                 <td class="py-2.5 px-3 text-gray-600">{{ $r['lactancia'] ?? 'Lactancia actual' }}</td>
                                 <td class="py-2.5 px-3 text-gray-600">{{ $r['dias_en_ordeno'] ?? 0 }} días</td>
                                 <td class="py-2.5 px-3 font-bold text-ganaderasoft-azul">{{ number_format($r['litros_dia'] ?? 0, 1) }} lts</td>
-                                <td class="py-2.5 px-3 text-right text-emerald-600 font-semibold">{{ $r['variacion'] ?? '+0.0 lts' }}</td>
+                                <td class="py-2.5 px-3 text-right font-semibold {{ str_starts_with($r['variacion'] ?? '', '-') ? 'text-red-600' : 'text-emerald-600' }}">{{ $r['variacion'] ?? '+0.0 lts' }}</td>
                             </tr>
                         @endif
                     @empty
@@ -115,62 +115,89 @@
         </div>
     </div>
 
-    <!-- Gráfica Visual de Tendencia Semanal de Ordeño -->
-    <div class="p-5 bg-gray-50 rounded-2xl border border-gray-200">
-        <div class="flex items-center justify-between mb-4">
+    @php
+        $chartItems = array_slice($items, -10);
+        $maxLitros = !empty($chartItems) ? max(array_map(fn($it) => (float)($it['total_dia_litros'] ?? 0), $chartItems) ?: [0]) : 0;
+        $maxEscala = $maxLitros > 0 ? ceil($maxLitros * 1.15) : 50;
+    @endphp
+
+    <!-- Gráfica Visual de Tendencia de Ordeño -->
+    <div class="p-5 bg-slate-50/70 rounded-2xl border border-gray-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
             <div>
-                <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Tendencia de producción diaria</h3>
-                <p class="text-[11px] text-gray-500">Comportamiento del volumen total en litros por lote</p>
+                <h3 class="text-xs font-bold text-gray-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>📊</span> Tendencia de producción diaria por lote
+                </h3>
+                <p class="text-[11px] text-gray-500">Volumen diario total ordeñado (Litros / Día)</p>
             </div>
-            <span class="text-xs font-bold text-ganaderasoft-azul bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-lg">
-                Monitoreo activo
-            </span>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-1 rounded-lg">
+                    <span class="w-2 h-2 rounded-full bg-blue-600"></span> Total diario (Lts)
+                </span>
+            </div>
         </div>
         
-        <div class="grid grid-cols-7 gap-2 pt-4 items-end h-36 border-b border-gray-200 pb-2">
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-gray-700">Lun</span>
-                <div class="w-full rounded-t-md" style="height: 72%; background-color: #93c5fd;"></div>
-                <span class="text-[10px] text-gray-500 font-medium">384L</span>
-            </div>
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-gray-700">Mar</span>
-                <div class="w-full rounded-t-md" style="height: 94%; background-color: #2563eb;"></div>
-                <span class="text-[10px] text-gray-500 font-medium">753L</span>
-            </div>
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-gray-700">Mié</span>
-                <div class="w-full rounded-t-md" style="height: 68%; background-color: #93c5fd;"></div>
-                <span class="text-[10px] text-gray-500 font-medium">375L</span>
-            </div>
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-gray-700">Jue</span>
-                <div class="w-full rounded-t-md" style="height: 70%; background-color: #93c5fd;"></div>
-                <span class="text-[10px] text-gray-500 font-medium">385L</span>
-            </div>
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-gray-700">Vie</span>
-                <div class="w-full rounded-t-md" style="height: 95%; background-color: #2563eb;"></div>
-                <span class="text-[10px] text-gray-500 font-medium">753L</span>
-            </div>
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-gray-700">Sáb</span>
-                <div class="w-full rounded-t-md" style="height: 98%; background-color: #1d4ed8;"></div>
-                <span class="text-[10px] text-gray-500 font-medium">760L</span>
-            </div>
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-ganaderasoft-azul">Dom</span>
-                <div class="w-full rounded-t-md" style="height: 92%; background-color: #2563eb;"></div>
-                <span class="text-[10px] font-bold text-ganaderasoft-azul">740L</span>
-            </div>
-        </div>
-    </div>
+        @if(!empty($chartItems) && $maxLitros > 0)
+            <div class="relative pt-6 pb-2">
+                <!-- Líneas guía de fondo -->
+                <div class="absolute inset-x-0 top-6 bottom-10 flex flex-col justify-between pointer-events-none opacity-40">
+                    <div class="border-b border-dashed border-gray-300 w-full flex justify-end"><span class="text-[9px] text-gray-400 font-mono -mt-3.5 mr-1">{{ $maxEscala }} L</span></div>
+                    <div class="border-b border-dashed border-gray-300 w-full flex justify-end"><span class="text-[9px] text-gray-400 font-mono -mt-3.5 mr-1">{{ round($maxEscala / 2) }} L</span></div>
+                    <div class="border-b border-gray-300 w-full flex justify-end"><span class="text-[9px] text-gray-400 font-mono -mt-3.5 mr-1">0 L</span></div>
+                </div>
 
-    <!-- Notas y Observaciones Técnicas -->
-    <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
-        <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Observaciones del pesaje lechero</h4>
-        <p class="text-xs text-gray-600 leading-relaxed">
-            Se evidencia estabilidad en los picos de ordeño matutino y vespertino. Mantener la suplementación nutricional y los protocolos de rutina de ordeño para sostener los niveles de producción del lote.
-        </p>
+                <!-- Contenedor de barras centrado -->
+                <div class="relative z-10 flex items-end justify-center gap-4 sm:gap-6 min-h-[180px] px-4">
+                    @foreach($chartItems as $cItem)
+                        @php
+                            $litros = (float) ($cItem['total_dia_litros'] ?? 0);
+                            $pct = min(100, max(12, round(($litros / $maxEscala) * 100)));
+                            $fPesaje = !empty($cItem['fecha_pesaje']) ? \Carbon\Carbon::parse($cItem['fecha_pesaje']) : null;
+                            $fechaLabel = $fPesaje ? $fPesaje->format('d/m/Y') : '-';
+                            $fechaCorta = $fPesaje ? $fPesaje->format('d M') : '-';
+                            $rebNombre = $cItem['rebano_nombre'] ?? 'Lote';
+                            $manana = (float)($cItem['ordeno_manana_litros'] ?? 0);
+                            $tarde = (float)($cItem['ordeno_tarde_litros'] ?? 0);
+                        @endphp
+                        <div class="flex flex-col items-center justify-end h-full w-20 max-w-[85px] group">
+                            <!-- Valor en Litros ARRIBA de la barra -->
+                            <div class="mb-1.5 text-center">
+                                <span class="inline-block px-1.5 py-0.5 text-[11px] font-black text-blue-900 bg-blue-100/80 rounded-md shadow-2xs border border-blue-200/50 group-hover:scale-105 transition-transform">
+                                    {{ number_format($litros, 1) }} L
+                                </span>
+                            </div>
+
+                            <!-- Barra vertical con degradado y sombra -->
+                            <div class="w-12 sm:w-14 rounded-t-lg bg-gradient-to-t from-blue-700 via-blue-600 to-indigo-500 shadow-sm border border-blue-700/30 transition-all duration-300 group-hover:brightness-110 flex flex-col justify-end overflow-hidden" 
+                                 style="height: {{ $pct * 1.3 }}px; min-height: 24px;"
+                                 title="Fecha: {{ $fechaLabel }}&#10;Total: {{ number_format($litros, 1) }} Lts&#10;Mañana: {{ number_format($manana, 1) }} Lts | Tarde: {{ number_format($tarde, 1) }} Lts">
+                                @if($manana > 0 && $tarde > 0)
+                                    <div class="h-1/2 bg-white/10 border-b border-white/20" title="Mañana: {{ number_format($manana, 1) }} L"></div>
+                                @endif
+                            </div>
+
+                            <!-- Línea base y Etiquetas ABAJO -->
+                            <div class="mt-2.5 text-center w-full border-t-2 border-gray-300 pt-1.5 flex flex-col items-center">
+                                <span class="text-[11px] font-bold text-gray-700 leading-tight">{{ $fechaCorta }}</span>
+                                <span class="text-[10px] text-gray-500 truncate max-w-[80px]" title="{{ $rebNombre }}">{{ $rebNombre }}</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Leyenda explicativa al pie -->
+            <div class="mt-3 pt-3 border-t border-gray-200/70 flex flex-wrap items-center justify-between text-[11px] text-gray-500 gap-2">
+                <span>📍 Mostrando los últimos {{ count($chartItems) }} registro(s) de pesaje consolidado.</span>
+                <span class="font-medium text-gray-600">Pasa el cursor sobre cada barra para ver el desglose mañana/tarde.</span>
+            </div>
+        @else
+            <div class="h-32 flex flex-col items-center justify-center text-gray-400 italic text-xs border border-dashed border-gray-200 rounded-xl bg-white/60">
+                <svg class="w-6 h-6 text-gray-300 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span>No hay suficientes registros de pesajes en los filtros seleccionados para graficar la tendencia diaria.</span>
+            </div>
+        @endif
     </div>
 @endsection

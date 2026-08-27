@@ -125,12 +125,4 @@
             </table>
         </div>
     </div>
-
-    <!-- Recomendaciones Reproductivas -->
-    <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
-        <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Recomendaciones del plan reproductivo</h4>
-        <p class="text-xs text-gray-600 leading-relaxed">
-            Programar jornada de palpación para las novillas pendientes de confirmación. Trasladar al potrero de maternidad a los animales con más de 260 días de gestación para monitoreo preparto continuo.
-        </p>
-    </div>
 @endsection

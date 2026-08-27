@@ -27,20 +27,14 @@ class ReportesController extends Controller
      */
     private function prepareReportData(Request $request, array $reporteData): array
     {
-        $selectedFinca = session('selected_finca');
-        
-        if ($request->has('finca_id')) {
-            $fincaId = $request->filled('finca_id') ? (int) $request->query('finca_id') : null;
-        } else {
-            $fincaId = !empty($selectedFinca['id']) ? (int) $selectedFinca['id'] : null;
-        }
+        $fincaId = $request->filled('finca_id') ? (int) $request->query('finca_id') : null;
 
-        $fechaInicioInput = $request->filled('fecha_inicio') ? $request->query('fecha_inicio') : date('Y-m-01');
+        $fechaInicioInput = $request->filled('fecha_inicio') ? $request->query('fecha_inicio') : null;
         $fechaFinInput = $request->filled('fecha_fin') ? $request->query('fecha_fin') : date('Y-m-d');
 
         $fechaEmision = Carbon::now()->format('d/m/Y h:i A');
-        $fechaInicio = Carbon::parse($fechaInicioInput)->format('d/m/Y');
-        $fechaFin = Carbon::parse($fechaFinInput)->format('d/m/Y');
+        $fechaInicio = $fechaInicioInput ? Carbon::parse($fechaInicioInput)->format('d/m/Y') : null;
+        $fechaFin = $fechaFinInput ? Carbon::parse($fechaFinInput)->format('d/m/Y') : Carbon::now()->format('d/m/Y');
 
         // Cargar fincas disponibles para el filtro
         $fincasResponse = $this->fincasService->getFincas();
@@ -81,9 +75,6 @@ class ReportesController extends Controller
             foreach ($fincasDisponibles as $f) {
                 if ($f['id'] == $fincaId) {
                     $fincaNombre = $f['nombre'];
-                    if (($selectedFinca['id'] ?? null) != $fincaId) {
-                        session(['selected_finca' => $f]);
-                    }
                     break;
                 }
             }
@@ -107,19 +98,14 @@ class ReportesController extends Controller
     }
 
     /**
-     * Resuelve los filtros asegurando el finca_id activo si no viene explícito.
+     * Resuelve los filtros asegurando valores limpios desde el request.
      */
     private function resolveFilters(Request $request): array
     {
         $filters = [];
         
-        if ($request->has('finca_id') && $request->filled('finca_id')) {
+        if ($request->filled('finca_id')) {
             $filters['finca_id'] = (int) $request->query('finca_id');
-        } elseif (!$request->has('finca_id')) {
-            $selectedFinca = session('selected_finca');
-            if (!empty($selectedFinca['id'])) {
-                $filters['finca_id'] = (int) $selectedFinca['id'];
-            }
         }
 
         if ($request->filled('fecha_inicio')) {

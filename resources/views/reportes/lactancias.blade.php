@@ -140,40 +140,58 @@
             </span>
         </div>
         
-        <div class="grid grid-cols-5 gap-3 pt-4 items-end h-36 border-b border-gray-200 pb-2">
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-gray-700">100 días</span>
-                <div class="w-full rounded-t-md" style="height: 92%; background-color: #1d4ed8;"></div>
-                <span class="text-[10px] text-gray-500 font-medium">Pico</span>
+        @if($hayLactancias)
+            <div class="relative pt-4 pb-2">
+                <div class="grid grid-cols-5 gap-3 sm:gap-4 pt-2 items-end min-h-[170px] border-b-2 border-gray-300 pb-2">
+                    <div class="flex flex-col items-center gap-1.5 h-full justify-end group">
+                        <span class="px-1.5 py-0.5 text-[10px] font-bold text-blue-900 bg-blue-100 rounded-md">Pico</span>
+                        <div class="w-full max-w-[55px] rounded-t-lg bg-gradient-to-t from-blue-700 to-blue-500 shadow-sm" style="height: 120px;"></div>
+                        <div class="text-center pt-1">
+                            <span class="text-[11px] font-bold text-gray-700 block">100 d</span>
+                            <span class="text-[9px] text-gray-400">Fase 1</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 h-full justify-end group">
+                        <span class="px-1.5 py-0.5 text-[10px] font-bold text-blue-800 bg-blue-100/70 rounded-md">Media</span>
+                        <div class="w-full max-w-[55px] rounded-t-lg bg-gradient-to-t from-blue-600 to-blue-400 shadow-sm" style="height: 105px;"></div>
+                        <div class="text-center pt-1">
+                            <span class="text-[11px] font-bold text-gray-700 block">180 d</span>
+                            <span class="text-[9px] text-gray-400">Fase 2</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 h-full justify-end group">
+                        <span class="px-1.5 py-0.5 text-[10px] font-bold text-sky-800 bg-sky-100 rounded-md">P244</span>
+                        <div class="w-full max-w-[55px] rounded-t-lg bg-gradient-to-t from-sky-600 to-sky-400 shadow-sm" style="height: 90px;"></div>
+                        <div class="text-center pt-1">
+                            <span class="text-[11px] font-bold text-gray-700 block">244 d</span>
+                            <span class="text-[9px] text-gray-400">Fase 3</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 h-full justify-end group">
+                        <span class="px-1.5 py-0.5 text-[10px] font-bold text-cyan-800 bg-cyan-100 rounded-md">P270</span>
+                        <div class="w-full max-w-[55px] rounded-t-lg bg-gradient-to-t from-cyan-600 to-cyan-400 shadow-sm" style="height: 75px;"></div>
+                        <div class="text-center pt-1">
+                            <span class="text-[11px] font-bold text-gray-700 block">270 d</span>
+                            <span class="text-[9px] text-gray-400">Descenso</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 h-full justify-end group">
+                        <span class="px-1.5 py-0.5 text-[10px] font-black text-indigo-900 bg-indigo-100 rounded-md">P305</span>
+                        <div class="w-full max-w-[55px] rounded-t-lg bg-gradient-to-t from-indigo-600 to-indigo-400 shadow-sm" style="height: 60px;"></div>
+                        <div class="text-center pt-1">
+                            <span class="text-[11px] font-bold text-indigo-700 block">305 d</span>
+                            <span class="text-[9px] text-indigo-500 font-medium">Secado</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-gray-700">180 días</span>
-                <div class="w-full rounded-t-md" style="height: 84%; background-color: #2563eb;"></div>
-                <span class="text-[10px] text-gray-500 font-medium">Media</span>
+        @else
+            <div class="h-32 flex flex-col items-center justify-center text-gray-400 italic text-xs border border-dashed border-gray-200 rounded-xl bg-white/60">
+                <svg class="w-6 h-6 text-gray-300 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span>No se registraron lactancias con pesajes en los filtros seleccionados para generar la curva TIM.</span>
             </div>
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-gray-700">244 días</span>
-                <div class="w-full rounded-t-md" style="height: 75%; background-color: #60a5fa;"></div>
-                <span class="text-[10px] text-gray-500 font-medium">P244</span>
-            </div>
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-gray-700">270 días</span>
-                <div class="w-full rounded-t-md" style="height: 68%; background-color: #93c5fd;"></div>
-                <span class="text-[10px] text-gray-500 font-medium">P270</span>
-            </div>
-            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
-                <span class="text-[10px] font-bold text-ganaderasoft-azul">305 días</span>
-                <div class="w-full rounded-t-md" style="height: 58%; background-color: #bfdbfe;"></div>
-                <span class="text-[10px] font-bold text-ganaderasoft-azul">P305</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notas y Observaciones Técnicas -->
-    <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
-        <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Notas y observaciones zootécnicas</h4>
-        <p class="text-xs text-gray-600 leading-relaxed">
-            Las proyecciones TIM calculadas reflejan el índice de persistencia en el lote evaluado. Se sugiere iniciar el protocolo de secado programado a las matrices con más de 270 días de lactancia confirmadas como gestantes.
-        </p>
+        @endif
     </div>
 @endsection

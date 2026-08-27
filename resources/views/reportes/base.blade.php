@@ -155,35 +155,37 @@
         <div class="border-t border-gray-100 pt-4">
             <form method="GET" action="{{ $routeAction ?? '#' }}" class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                    <!-- Selector de Finca -->
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider shrink-0">Finca:</span>
-                        <select name="finca_id" onchange="this.form.submit()" class="w-full sm:w-auto px-3.5 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all bg-white font-medium text-gray-700 cursor-pointer">
-                            <option value="" {{ empty($fincaId) ? 'selected' : '' }}>Todas las fincas</option>
-                            @php
-                                $listaFincas = is_array($fincasDisponibles ?? null) ? $fincasDisponibles : (is_array($fincas ?? null) ? $fincas : []);
-                            @endphp
-                            @foreach($listaFincas as $f)
+                    @if($mostrarFiltroFinca ?? true)
+                        <!-- Selector de Finca -->
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider shrink-0">Finca:</span>
+                            <select name="finca_id" class="w-full sm:w-auto min-w-[220px] px-3.5 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all bg-white font-medium text-gray-700 cursor-pointer">
+                                <option value="" {{ empty($fincaId) ? 'selected' : '' }}>Todas las fincas</option>
                                 @php
-                                    $fId = is_array($f) ? ($f['id'] ?? ($f['finca_id'] ?? null)) : (is_object($f) ? ($f->id ?? null) : null);
-                                    $fNom = is_array($f) ? ($f['nombre'] ?? ($f['nombre_finca'] ?? null)) : (is_object($f) ? ($f->nombre ?? null) : null);
+                                    $listaFincas = is_array($fincasDisponibles ?? null) ? $fincasDisponibles : (is_array($fincas ?? null) ? $fincas : []);
                                 @endphp
-                                @if($fId)
-                                    <option value="{{ $fId }}" {{ ($fincaId == $fId) ? 'selected' : '' }}>
-                                        {{ $fNom ?? ('Finca #' . $fId) }}
-                                    </option>
-                                @endif
-                            @endforeach
-                        </select>
-                    </div>
+                                @foreach($listaFincas as $f)
+                                    @php
+                                        $fId = is_array($f) ? ($f['id'] ?? ($f['finca_id'] ?? null)) : (is_object($f) ? ($f->id ?? null) : null);
+                                        $fNom = is_array($f) ? ($f['nombre'] ?? ($f['nombre_finca'] ?? null)) : (is_object($f) ? ($f->nombre ?? null) : null);
+                                    @endphp
+                                    @if($fId)
+                                        <option value="{{ $fId }}" {{ ($fincaId == $fId) ? 'selected' : '' }}>
+                                            {{ $fNom ?? ('Finca #' . $fId) }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
 
-                    <span class="hidden sm:inline-block text-gray-300">|</span>
+                        <span class="hidden sm:inline-block text-gray-300">|</span>
+                    @endif
 
                     <!-- Selector de Período -->
                     <div class="flex items-center gap-2 w-full sm:w-auto">
                         <span class="text-xs font-bold text-gray-500 uppercase tracking-wider shrink-0">Período:</span>
                         <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <input type="date" name="fecha_inicio" value="{{ $fechaInicioInput ?? date('Y-m-01') }}" class="w-full sm:w-auto px-3.5 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all">
+                            <input type="date" name="fecha_inicio" value="{{ $fechaInicioInput ?? '' }}" placeholder="Desde el inicio" title="Fecha inicio (vacío para histórico completo)" class="w-full sm:w-auto px-3.5 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all">
                             <span class="text-gray-400 text-sm font-medium">a</span>
                             <input type="date" name="fecha_fin" value="{{ $fechaFinInput ?? date('Y-m-d') }}" class="w-full sm:w-auto px-3.5 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste transition-all">
                         </div>
@@ -228,8 +230,9 @@
         const titulo = @json($titulo ?? 'Reporte oficial');
         const fincaNombre = @json($fincaNombre ?? 'Todas las fincas');
         const fechaEmision = @json($fechaEmision ?? date('d/m/Y h:i A'));
-        const fechaInicio = @json($fechaInicio ?? date('01/m/Y'));
+        const fechaInicio = @json($fechaInicio ?? null);
         const fechaFin = @json($fechaFin ?? date('d/m/Y'));
+        const periodoTexto = fechaInicio ? `${fechaInicio} - ${fechaFin}` : `Histórico consolidado (hasta ${fechaFin})`;
         const logoUrl = @json(asset('images/logo.png'));
 
         // Encabezado de Página 1 (Oficial completo)
@@ -248,7 +251,7 @@
                     </span>
                     <p class="text-xs text-gray-700 font-bold">Finca: ${fincaNombre}</p>
                     <p class="text-xs text-gray-500 font-medium">Fecha de emisión: ${fechaEmision}</p>
-                    <p class="text-xs text-gray-500 font-medium">Período: ${fechaInicio} - ${fechaFin}</p>
+                    <p class="text-xs text-gray-500 font-medium">Período: ${periodoTexto}</p>
                 </div>
             </div>
         `;
@@ -263,7 +266,7 @@
                         <p class="text-[11px] text-gray-500 mt-0.5">${titulo} — ${fincaNombre} (continuación)</p>
                     </div>
                 </div>
-                <span class="text-xs text-gray-500 font-medium">Período: ${fechaInicio} - ${fechaFin}</span>
+                <span class="text-xs text-gray-500 font-medium">Período: ${periodoTexto}</span>
             </div>
         `;
 
@@ -421,7 +424,11 @@
         }, 2000);
     }
 
-    document.addEventListener('DOMContentLoaded', renderizarHojasReporte);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderizarHojasReporte);
+    } else {
+        renderizarHojasReporte();
+    }
 </script>
 @endpush
 @endsection
