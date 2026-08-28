@@ -184,8 +184,8 @@
             margin-top: auto !important;
             padding-top: 8px !important;
             padding-bottom: 2px !important;
-            padding-left: 2px !important;
-            padding-right: 2px !important;
+            padding-left: 4px !important;
+            padding-right: 4px !important;
             border-top: 1px solid #cbd5e1 !important;
             background-color: transparent !important;
             display: flex !important;
@@ -403,14 +403,14 @@
             topSection.innerHTML = numPagina === 1 ? headerPagina1 : headerPaginaSiguiente;
 
             const bodySlot = document.createElement('div');
-            bodySlot.className = 'sheet-body space-y-4 mb-4';
+            bodySlot.className = 'sheet-body space-y-4';
             topSection.appendChild(bodySlot);
 
             const footer = document.createElement('div');
-            footer.className = 'mt-auto pt-4 pb-2 border-t border-gray-200 flex flex-row items-center justify-between text-xs text-gray-500 print-footer shrink-0 w-full px-2 mt-6';
+            footer.className = 'mt-auto pt-3 pb-1 border-t border-gray-200 flex flex-row items-center justify-between text-xs text-gray-500 print-footer shrink-0 w-full px-1';
             footer.innerHTML = `
-                <span class="text-left font-medium text-gray-500 tracking-normal">© ${new Date().getFullYear()} GanaderaSoft. Documento generado oficialmente.</span>
-                <span class="page-footer-num text-right font-bold text-gray-600">Página ${numPagina}</span>
+                <span class="text-left font-medium text-gray-500 tracking-normal pl-0.5">© ${new Date().getFullYear()} GanaderaSoft. Documento generado oficialmente.</span>
+                <span class="page-footer-num text-right font-bold text-gray-600 pr-0.5">Página ${numPagina}</span>
             `;
 
             sheet.appendChild(topSection);
