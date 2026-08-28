@@ -147,7 +147,7 @@
                 </div>
 
                 <!-- Contenedor de barras centrado -->
-                <div class="relative z-10 flex items-end justify-center gap-4 sm:gap-6 min-h-[125px] px-4">
+                <div class="relative z-10 flex items-end justify-center gap-4 sm:gap-6 min-h-[160px] px-4">
                     @foreach($chartItems as $cItem)
                         @php
                             $litros = (float) ($cItem['total_dia_litros'] ?? 0);
@@ -161,7 +161,7 @@
                         @endphp
                         <div class="flex flex-col items-center justify-end h-full w-20 max-w-[85px] group">
                             <!-- Valor en Litros ARRIBA de la barra -->
-                            <div class="mb-1 text-center">
+                            <div class="mb-1.5 text-center">
                                 <span class="inline-block px-1.5 py-0.5 text-[10.5px] font-black text-blue-900 bg-blue-100/80 rounded-md border border-blue-200/50">
                                     {{ number_format($litros, 1) }} L
                                 </span>
@@ -169,7 +169,7 @@
 
                             <!-- Barra vertical con degradado y sombra -->
                             <div class="w-10 sm:w-12 rounded-t-lg bg-gradient-to-t from-blue-700 via-blue-600 to-indigo-500 shadow-xs border border-blue-700/30 flex flex-col justify-end overflow-hidden" 
-                                 style="height: {{ $pct * 0.85 }}px; min-height: 18px;"
+                                 style="height: {{ max(24, round($pct * 1.18)) }}px; min-height: 24px;"
                                  title="Fecha: {{ $fechaLabel }}&#10;Total: {{ number_format($litros, 1) }} Lts">
                             </div>
 
@@ -184,7 +184,7 @@
             </div>
 
             <!-- Leyenda explicativa al pie -->
-            <div class="mt-2 pt-2 border-t border-gray-200/70 flex flex-wrap items-center justify-between text-[10px] text-gray-500 gap-2">
+            <div class="mt-2 pt-2 border-t border-gray-200/70 flex flex-wrap items-center justify-between text-[10.5px] text-gray-500 gap-2">
                 <span>📍 Mostrando los últimos {{ count($chartItems) }} registro(s) de pesaje consolidado.</span>
                 <span class="font-medium text-gray-600">Promedio general: {{ number_format($promedioDiario, 1) }} Lts/vaca.</span>
             </div>

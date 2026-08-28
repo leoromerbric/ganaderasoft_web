@@ -359,8 +359,19 @@
         `;
 
         function excedeCapacidadHoja(hoja, numPagina) {
-            // Altura máxima para el cuerpo según la página (Página 1 tiene cabecera completa de 150px)
-            const maxBodyHeight = numPagina === 1 ? 520 : 660;
+            // Medición dinámica basada en la capacidad física de la hoja Letter (279.4mm ≈ 1056px)
+            // Descontamos: paddings (106px), cabecera, pie de página y margen de seguridad
+            const headerEl = hoja.sheet.querySelector('.sheet-content-top > div:first-child');
+            const footerEl = hoja.sheet.querySelector('.print-footer');
+            
+            const headerH = headerEl ? headerEl.offsetHeight : (numPagina === 1 ? 140 : 60);
+            const footerH = footerEl ? footerEl.offsetHeight : 45;
+            const paddingSheet = 106; // 14mm superior + 14mm inferior
+            const sheetTotalH = hoja.sheet.offsetHeight || 1056;
+
+            // Altura útil real disponible para el cuerpo dejando margen de seguridad respecto al pie
+            const maxBodyHeight = sheetTotalH - paddingSheet - headerH - footerH - 45;
+            
             return hoja.body.offsetHeight > maxBodyHeight;
         }
 
@@ -392,11 +403,11 @@
             topSection.innerHTML = numPagina === 1 ? headerPagina1 : headerPaginaSiguiente;
 
             const bodySlot = document.createElement('div');
-            bodySlot.className = 'sheet-body space-y-5';
+            bodySlot.className = 'sheet-body space-y-4 mb-4';
             topSection.appendChild(bodySlot);
 
             const footer = document.createElement('div');
-            footer.className = 'mt-auto pt-3 pb-2 border-t border-gray-200 flex flex-row items-center justify-between text-xs text-gray-500 print-footer shrink-0 w-full px-2';
+            footer.className = 'mt-auto pt-4 pb-2 border-t border-gray-200 flex flex-row items-center justify-between text-xs text-gray-500 print-footer shrink-0 w-full px-2 mt-6';
             footer.innerHTML = `
                 <span class="text-left font-medium text-gray-500 tracking-normal">© ${new Date().getFullYear()} GanaderaSoft. Documento generado oficialmente.</span>
                 <span class="page-footer-num text-right font-bold text-gray-600">Página ${numPagina}</span>
