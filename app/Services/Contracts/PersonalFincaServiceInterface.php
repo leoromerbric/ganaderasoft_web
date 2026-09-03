@@ -7,7 +7,7 @@ interface PersonalFincaServiceInterface
     /**
      * Get list of personal de finca
      */
-    public function getPersonalFinca(?int $fincaId = null): array;
+    public function getPersonalFinca(array|int|null $filters = null): array;
 
     /**
      * Get a single personal de finca record by ID
@@ -28,6 +28,16 @@ interface PersonalFincaServiceInterface
      * Delete a personal de finca record
      */
     public function deletePersonalFinca(int $id): array;
+
+    /**
+     * Enable personal de finca (status = true)
+     */
+    public function enable(int $id): array;
+
+    /**
+     * Disable personal de finca (status = false)
+     */
+    public function disable(int $id): array;
 
     /**
      * Get list of tipos de trabajador

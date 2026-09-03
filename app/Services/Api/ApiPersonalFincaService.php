@@ -12,9 +12,10 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
      * @param int|null $fincaId
      * @return array
      */
-    public function getPersonalFinca(?int $fincaId = null): array
+    public function getPersonalFinca(array|int|null $filters = null): array
     {
-        return $this->get('/personal-finca' . $this->buildQuery(['finca_id' => $fincaId], true));
+        $params = is_array($filters) ? $filters : (is_numeric($filters) ? ['finca_id' => (int)$filters] : []);
+        return $this->get('/personal-finca' . $this->buildQuery($params, true));
     }
 
     /**
@@ -60,6 +61,28 @@ class ApiPersonalFincaService extends BaseApiService implements PersonalFincaSer
     public function deletePersonalFinca(int $id): array
     {
         return $this->delete("/personal-finca/{$id}");
+    }
+
+    /**
+     * Enable personal de finca (status = true).
+     *
+     * @param int $id
+     * @return array
+     */
+    public function enable(int $id): array
+    {
+        return $this->patch("/personal-finca/{$id}/enable");
+    }
+
+    /**
+     * Disable personal de finca (status = false).
+     *
+     * @param int $id
+     * @return array
+     */
+    public function disable(int $id): array
+    {
+        return $this->patch("/personal-finca/{$id}/disable");
     }
 
     /**

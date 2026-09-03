@@ -24,27 +24,50 @@ class PersonalFincaController extends Controller
      */
     public function index(Request $request)
     {
-        $fincaId = $request->query('finca_id') ?? $request->query('id_finca');
-        
-        $response = $this->personalFincaService->getPersonalFinca();
+        $fincaId = (string) $request->query('finca_id', '');
+        $tipoTrabajadorId = (string) $request->query('tipo_trabajador_id', '');
+        $nombre = (string) ($request->query('nombre') ?? $request->query('search') ?? $request->query('q') ?? '');
+        $hasStatusParam = $request->has('status') || $request->has('estado');
+
+        if ($hasStatusParam) {
+            $statusParam = strtolower((string) ($request->query('status') ?? $request->query('estado')));
+            $statusFilter = match ($statusParam) {
+                'inactivo', '0' => 'inactivo',
+                'todos', 'all'  => '',
+                default         => 'activo',
+            };
+        } elseif ($nombre !== '') {
+            // Si busca por nombre o texto sin especificar estado, buscar en todos los estados (activos e inactivos)
+            $statusFilter = '';
+        } else {
+            // Por defecto al ingresar al módulo: solo activos
+            $statusFilter = 'activo';
+        }
+
+        // Cargar todo el personal para permitir filtrado reactivo instantáneo en la vista
+        $response = $this->personalFincaService->getPersonalFinca([
+            'incluir_inactivos' => true,
+        ]);
         
         if (isset($response['success']) && !$response['success']) {
             return redirect()->route('dashboard')->with('error', $response['message'] ?? 'Error al obtener el personal');
         }
 
-        // Get fincas for filter dropdown
+        // Catálogos para los selectores de filtro
         $fincasResponse = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
-        // Get tipos de trabajador from backend API
         $tiposResponse = $this->personalFincaService->getTiposTrabajador();
         $tiposTrabajador = ($tiposResponse['success'] ?? false) ? ($tiposResponse['data']['data'] ?? $tiposResponse['data'] ?? []) : [];
 
         $personalFinca = $response['data']['data'] ?? $response['data'] ?? [];
 
-        // Calculate statistics
+        // Estadísticas
         $totalPersonal = count($personalFinca);
-        $personalActivo = count(array_filter($personalFinca, fn($p) => ($p['status'] ?? true) == true));
+        $personalActivo = count(array_filter($personalFinca, function($p) {
+            $st = $p['status'] ?? 'activo';
+            return is_bool($st) ? $st : in_array(strtolower((string)$st), ['activo', 'active', '1', 'true'], true);
+        }));
         $fincasConPersonal = count(array_unique(array_filter(array_map(fn($p) => $p['finca_id'] ?? data_get($p, 'finca.id'), $personalFinca))));
         $totalTipos = count($tiposTrabajador);
 
@@ -55,7 +78,7 @@ class PersonalFincaController extends Controller
             'total_tipos' => $totalTipos,
         ];
 
-        return view('personal-finca.index', compact('personalFinca', 'fincas', 'fincaId', 'estadisticas', 'tiposTrabajador'));
+        return view('personal-finca.index', compact('personalFinca', 'fincas', 'fincaId', 'tipoTrabajadorId', 'nombre', 'statusFilter', 'estadisticas', 'tiposTrabajador'));
     }
 
     /**
@@ -100,6 +123,8 @@ class PersonalFincaController extends Controller
             'correo' => trim((string)$request->input('correo')),
             'fecha_nacimiento' => $request->input('fecha_nacimiento') ?: null,
             'tipo_trabajador_id' => (int)$request->input('tipo_trabajador_id'),
+            'status' => in_array(strtolower((string)$request->input('status', 'activo')), ['0', 'false', 'inactivo'], true) ? 'inactivo' : 'activo',
+            'fecha_ingreso' => $request->input('fecha_ingreso') ?: null,
         ];
 
         $response = $this->personalFincaService->createPersonalFinca($data);
@@ -189,6 +214,14 @@ class PersonalFincaController extends Controller
             'tipo_trabajador_id' => (int)$request->input('tipo_trabajador_id'),
         ];
 
+        if ($request->has('status')) {
+            $data['status'] = in_array(strtolower((string)$request->input('status')), ['0', 'false', 'inactivo'], true) ? 'inactivo' : 'activo';
+        }
+
+        if ($request->has('fecha_ingreso')) {
+            $data['fecha_ingreso'] = $request->input('fecha_ingreso') ?: null;
+        }
+
         $response = $this->personalFincaService->updatePersonalFinca((int)$id, $data);
 
         if (isset($response['success']) && $response['success']) {
@@ -219,5 +252,33 @@ class PersonalFincaController extends Controller
         }
 
         return redirect()->route('personal-finca.index')->with('error', $response['message'] ?? 'Error al eliminar el personal');
+    }
+
+    /**
+     * Enable personal de finca
+     */
+    public function enable(string $id)
+    {
+        $response = $this->personalFincaService->enable((int)$id);
+
+        if (isset($response['success']) && $response['success']) {
+            return redirect()->back()->with('success', $response['message'] ?? 'Personal de finca activado exitosamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al activar el personal');
+    }
+
+    /**
+     * Disable personal de finca
+     */
+    public function disable(string $id)
+    {
+        $response = $this->personalFincaService->disable((int)$id);
+
+        if (isset($response['success']) && $response['success']) {
+            return redirect()->back()->with('success', $response['message'] ?? 'Personal de finca desactivado exitosamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al desactivar el personal');
     }
 }

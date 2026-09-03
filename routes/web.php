@@ -151,6 +151,8 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/personal-finca/{id}', [PersonalFincaController::class, 'show'])->name('personal-finca.show');
     Route::get('/personal-finca/{id}/edit', [PersonalFincaController::class, 'edit'])->name('personal-finca.edit');
     Route::put('/personal-finca/{id}', [PersonalFincaController::class, 'update'])->name('personal-finca.update');
+    Route::match(['POST', 'PATCH'], '/personal-finca/{id}/enable', [PersonalFincaController::class, 'enable'])->name('personal-finca.enable');
+    Route::match(['POST', 'PATCH'], '/personal-finca/{id}/disable', [PersonalFincaController::class, 'disable'])->name('personal-finca.disable');
     Route::delete('/personal-finca/{id}', [PersonalFincaController::class, 'destroy'])->name('personal-finca.destroy');
     
     // Cambios de Animal routes - Historial de cambios y desarrollo

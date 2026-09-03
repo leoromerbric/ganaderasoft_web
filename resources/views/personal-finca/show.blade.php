@@ -26,7 +26,8 @@
     }
     $fincaTipo = is_array($fincaObj) ? ($fincaObj['explotacion_tipo'] ?? 'General') : 'General';
     
-    $status = (bool)($personalFinca['status'] ?? true);
+    $rawStatus = $personalFinca['status'] ?? 'activo';
+    $status = is_bool($rawStatus) ? $rawStatus : in_array(strtolower((string)$rawStatus), ['activo', 'active', '1', 'true'], true);
     $createdAt = $personalFinca['created_at'] ?? null;
     $fechaIngreso = $personalFinca['fecha_ingreso'] ?? $personalFinca['Fecha_Ingreso'] ?? null;
     $fechaNacimiento = $personaSub['fecha_nacimiento'] ?? $personalFinca['fecha_nacimiento'] ?? $personalFinca['Fecha_Nacimiento'] ?? null;

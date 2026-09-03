@@ -99,7 +99,7 @@
             <!-- Buscar -->
             <div class="lg:col-span-1">
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar empleado</label>
-                <input type="text" id="filtroNombre" placeholder="Nombre, cédula, correo..."
+                <input type="text" id="filtroNombre" placeholder="Nombre, cédula, correo..." value="{{ $nombre ?? '' }}"
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
 
@@ -108,13 +108,13 @@
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
                 <select id="filtroFinca"
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                    <option value="">Todas las fincas</option>
+                    <option value="" {{ ($fincaId === '' || $fincaId === null) ? 'selected' : '' }}>Todas las fincas</option>
                     @foreach($fincas as $finca)
                         @php
                             $fId = $finca['id'] ?? null;
                             $fNombre = $finca['nombre'] ?? ('Finca #' . $fId);
                         @endphp
-                        <option value="{{ $fId }}" {{ (string)$fincaId === (string)$fId ? 'selected' : '' }}>
+                        <option value="{{ $fId }}" {{ ($fincaId !== '' && (string)$fincaId === (string)$fId) ? 'selected' : '' }}>
                             {{ $fNombre }}
                         </option>
                     @endforeach
@@ -126,13 +126,13 @@
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Cargo / Rol</label>
                 <select id="filtroTipo"
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                    <option value="">Todos los cargos</option>
+                    <option value="" {{ ($tipoTrabajadorId === '' || $tipoTrabajadorId === null) ? 'selected' : '' }}>Todos los cargos</option>
                     @foreach($tiposTrabajador as $tipo)
                         @php
                             $tId = $tipo['id'] ?? null;
                             $tNombre = $tipo['nombre'] ?? '';
                         @endphp
-                        <option value="{{ $tId }}">{{ $tNombre }}</option>
+                        <option value="{{ $tId }}" {{ ($tipoTrabajadorId !== '' && (string)$tipoTrabajadorId === (string)$tId) ? 'selected' : '' }}>{{ $tNombre }}</option>
                     @endforeach
                 </select>
             </div>
@@ -142,9 +142,9 @@
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
                 <select id="filtroEstado"
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                    <option value="">Todos los estados</option>
-                    <option value="1">🟢 Activos</option>
-                    <option value="0">⚪ Inactivos</option>
+                    <option value="activo" {{ ($statusFilter ?? 'activo') === 'activo' ? 'selected' : '' }}>🟢 Solo activos</option>
+                    <option value="inactivo" {{ ($statusFilter ?? '') === 'inactivo' ? 'selected' : '' }}>⚪ Solo inactivos</option>
+                    <option value="" {{ ($statusFilter ?? '') === '' ? 'selected' : '' }}>📋 Todos los estados</option>
                 </select>
             </div>
 
@@ -225,8 +225,9 @@
                                 $fincaNombre = $fincaObj['nombre'] ?? ('Finca #' . ($fincaIdAttr ?: 'N/A'));
                                 $fincaTipo = $fincaObj['explotacion_tipo'] ?? 'General';
                                 
-                                $status = (bool)($persona['status'] ?? true);
-                                $statusVal = $status ? '1' : '0';
+                                $rawStatus = strtolower((string)($persona['status'] ?? 'activo'));
+                                $statusStr = in_array($rawStatus, ['inactivo', '0', 'false'], true) ? 'inactivo' : 'activo';
+                                $status = ($statusStr === 'activo');
 
                                 $inicial = strtoupper(substr($nombreEmp ?: 'P', 0, 1));
                                 
@@ -245,7 +246,7 @@
                                 data-finca="{{ $fincaIdAttr }}"
                                 data-tipo="{{ $tipoId }}" 
                                 data-tipo-nombre="{{ strtolower($tipoNombre) }}"
-                                data-status="{{ $statusVal }}"
+                                data-status="{{ $statusStr }}"
                                 data-nombre="{{ $searchableText }}">
                                 
                                 <!-- Empleado -->
@@ -339,22 +340,44 @@
                                             </svg>
                                         </a>
 
-                                        <!-- Eliminar -->
-                                        <form method="POST" action="{{ route('personal-finca.destroy', $pId) }}" class="inline-block" id="form-delete-{{ $pId }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" onclick="openGenericConfirmModal({
-                                                formId: 'form-delete-{{ $pId }}',
-                                                intent: 'danger',
-                                                title: 'Eliminar personal de finca',
-                                                message: '¿Estás seguro de que deseas eliminar este registro de personal? Esta acción no se puede deshacer.',
-                                                confirmText: 'Sí, eliminar'
-                                            })"
-                                                class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
-                                                title="Eliminar">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                            </button>
-                                        </form>
+                                        <!-- Desactivar / Activar (Rutas dedicadas) -->
+                                        @if($status)
+                                            <form method="POST" action="{{ route('personal-finca.disable', $pId) }}" class="inline-block" id="form-toggle-{{ $pId }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="button" onclick="openGenericConfirmModal({
+                                                    formId: 'form-toggle-{{ $pId }}',
+                                                    intent: 'danger',
+                                                    title: 'Desactivar personal de finca',
+                                                    message: '¿Estás seguro de que deseas desactivar a {{ $nombreEmp }} de {{ $fincaNombre }}? Pasará al estado inactivo y no se contabilizará en los indicadores de campo.',
+                                                    confirmText: 'Sí, desactivar'
+                                                })"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                                                    title="Desactivar empleado">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <form method="POST" action="{{ route('personal-finca.enable', $pId) }}" class="inline-block" id="form-toggle-{{ $pId }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="button" onclick="openGenericConfirmModal({
+                                                    formId: 'form-toggle-{{ $pId }}',
+                                                    intent: 'success',
+                                                    title: 'Activar personal de finca',
+                                                    message: '¿Estás seguro de que deseas reactivar a {{ $nombreEmp }} en {{ $fincaNombre }}? Pasará al estado activo.',
+                                                    confirmText: 'Sí, activar'
+                                                })"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-colors"
+                                                    title="Activar empleado">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -409,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         visibles.forEach(row => {
             const status = row.getAttribute('data-status');
-            if (status === '1') activos++;
+            if (status === 'activo') activos++;
 
             const fId = row.getAttribute('data-finca');
             if (fId) fincasSet.add(fId);
@@ -475,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.limpiarFiltros = function () {
         if (filtroFinca) filtroFinca.value = '';
         if (filtroTipo) filtroTipo.value = '';
-        if (filtroEstado) filtroEstado.value = '';
+        if (filtroEstado) filtroEstado.value = 'activo';
         if (filtroNombre) filtroNombre.value = '';
         if (window.history && window.history.replaceState) {
             window.history.replaceState({}, document.title, window.location.pathname);

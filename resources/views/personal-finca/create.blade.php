@@ -66,7 +66,7 @@
                         <span>🏡</span> Asignación de finca y cargo
                     </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Finca Destino -->
                         <div>
                             <label for="finca_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
@@ -88,7 +88,7 @@
                                 @endforeach
                             </select>
                             @error('finca_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
-                            <p class="text-[11px] text-gray-400 mt-1">Finca en la cual laborará el trabajador.</p>
+                            <p class="text-[11px] text-gray-400 mt-1">Finca en la cual laborará.</p>
                         </div>
 
                         <!-- Tipo de Trabajador / Cargo -->
@@ -111,7 +111,19 @@
                                 @endforeach
                             </select>
                             @error('tipo_trabajador_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
-                            <p class="text-[11px] text-gray-400 mt-1">Función principal dentro de la explotación ganadera.</p>
+                            <p class="text-[11px] text-gray-400 mt-1">Función principal.</p>
+                        </div>
+
+                        <!-- Fecha de Ingreso -->
+                        <div>
+                            <label for="fecha_ingreso" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Fecha de ingreso
+                            </label>
+                            <input type="date" name="fecha_ingreso" id="fecha_ingreso" 
+                                   value="{{ old('fecha_ingreso', date('Y-m-d')) }}"
+                                   class="w-full px-4 py-3 border @error('fecha_ingreso') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium text-gray-700">
+                            @error('fecha_ingreso')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                            <p class="text-[11px] text-gray-400 mt-1">Fecha de inicio de labores.</p>
                         </div>
                     </div>
                 </div>
