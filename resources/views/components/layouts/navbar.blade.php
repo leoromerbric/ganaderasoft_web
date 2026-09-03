@@ -46,8 +46,16 @@
                         <span class="text-sm font-bold text-ganaderasoft-negro leading-tight group-hover:text-ganaderasoft-azul transition-colors">
                             {{ session('user.name') ?? 'Usuario' }}
                         </span>
+                        @php
+                            $navUserType = session('user.type_user') ?? (!empty(session('user.roles')) ? session('user.roles')[0] : 'Usuario');
+                            $navRoleLabel = match(strtolower((string)$navUserType)) {
+                                'global_admin', 'global admin', 'admin', 'administrator', 'administrador' => 'Administrador',
+                                'propietario', 'owner' => 'Propietario',
+                                default => ucfirst(str_replace('_', ' ', (string)$navUserType))
+                            };
+                        @endphp
                         <span class="text-xs font-medium {{ $isUserSuspended ? 'text-rose-600 font-bold' : 'text-gray-500' }} leading-tight mt-0.5">
-                            {{ $isUserSuspended ? 'Cuenta suspendida' : (session('user.type_user') ?? (!empty(session('user.roles')) ? ucfirst(session('user.roles')[0]) : 'Usuario')) }}
+                            {{ $isUserSuspended ? 'Cuenta suspendida' : $navRoleLabel }}
                         </span>
                     </div>
                     <svg class="w-4 h-4 text-gray-400 group-hover:text-ganaderasoft-azul group-hover:translate-x-0.5 transition-all hidden sm:block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

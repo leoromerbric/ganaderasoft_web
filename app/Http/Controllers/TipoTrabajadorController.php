@@ -9,7 +9,7 @@ class TipoTrabajadorController extends Controller
 {
     protected TipoTrabajadorServiceInterface $service;
     private string $slug = 'tipos-trabajador';
-    private string $name = 'Tipos de trabajador';
+    private string $name = 'Tipos de trabajadores';
     private string $description = 'Cargos y roles del personal contratado';
 
     public function __construct(TipoTrabajadorServiceInterface $service)

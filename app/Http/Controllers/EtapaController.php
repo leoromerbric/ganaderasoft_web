@@ -12,8 +12,8 @@ class EtapaController extends Controller
     protected TipoAnimalServiceInterface $tipoAnimalService;
 
     private string $slug = 'etapas';
-    private string $name = 'Etapas de desarrollo';
-    private string $description = 'Etapas de crecimiento del ganado';
+    private string $name = 'Etapas de vida';
+    private string $description = 'Etapas de vida y crecimiento del ganado';
 
     public function __construct(
         EtapaServiceInterface $service,

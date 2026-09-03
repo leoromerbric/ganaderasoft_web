@@ -87,7 +87,15 @@
                         @foreach($user['roles'] as $r)
                             @php
                                 $rCode = is_array($r) ? ($r['code'] ?? '') : $r;
-                                $rName = is_array($r) ? ($r['name'] ?? ucfirst($rCode)) : ucfirst($rCode);
+                                $rawRName = is_array($r) ? ($r['name'] ?? ucfirst($rCode)) : ucfirst($rCode);
+                                $rName = match(strtolower((string)$rCode)) {
+                                    'global_admin', 'admin', 'global admin' => 'Administrador',
+                                    'propietario' => 'Propietario de finca',
+                                    default => match(strtolower((string)$rawRName)) {
+                                        'global_admin', 'global admin', 'admin', 'administrador' => 'Administrador',
+                                        default => $rawRName
+                                    }
+                                };
                                 $rPerms = is_array($r) && isset($r['permissions']) ? $r['permissions'] : [];
                                 
                                 $groupedPerms = [];

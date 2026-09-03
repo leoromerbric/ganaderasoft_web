@@ -24,7 +24,7 @@
                 <span class="menu-text">Lista de fincas</span>
             </a>
             <a href="{{ route('personal-finca.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('personal-finca.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Personal de finca</span>
+                <span class="menu-text">Personal de fincas</span>
             </a>
         </div>
     </div>
@@ -45,7 +45,7 @@
         </button>
         <div id="sub-ganado" class="ml-4 pl-3 border-l-2 border-gray-100 my-1 space-y-1 menu-sublist {{ $isGanadoActive ? '' : 'hidden' }}">
             <a href="{{ route('rebanos.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('rebanos.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Rebaños</span>
+                <span class="menu-text">Lista de rebaños</span>
             </a>
             <a href="{{ route('razas.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('razas.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <span class="menu-text">Composición de raza</span>
@@ -54,13 +54,13 @@
                 <span class="menu-text">Lista de animales</span>
             </a>
             <a href="{{ route('cambios-animal.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('cambios-animal.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Cambios de animal</span>
+                <span class="menu-text">Cambios de animales</span>
             </a>
             <a href="{{ route('movimiento-rebano.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('movimiento-rebano.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <span class="menu-text">Movimientos de rebaño</span>
             </a>
             <a href="{{ route('peso-corporal.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('peso-corporal.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Peso corporal</span>
+                <span class="menu-text">Pesos corporales</span>
             </a>
             <a href="{{ route('medidas-corporales.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('medidas-corporales.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <span class="menu-text">Medidas corporales</span>
@@ -84,19 +84,19 @@
         </button>
         <div id="sub-repro" class="ml-4 pl-3 border-l-2 border-gray-100 my-1 space-y-1 menu-sublist {{ $isReproActive ? '' : 'hidden' }}">
             <a href="{{ route('registro-celo.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('registro-celo.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Registro de celo</span>
+                <span class="menu-text">Registros de celo</span>
             </a>
             <a href="{{ route('servicio-animal.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('servicio-animal.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Servicio animal</span>
+                <span class="menu-text">Servicios animales</span>
             </a>
             <a href="{{ route('reproduccion-animal.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reproduccion-animal.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Reproducción</span>
+                <span class="menu-text">Reproducciones</span>
             </a>
             <a href="{{ route('palpacion.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('palpacion.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Palpación</span>
+                <span class="menu-text">Palpaciones</span>
             </a>
             <a href="{{ route('semen-toro.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('semen-toro.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Semen de toro</span>
+                <span class="menu-text">Semen de toros</span>
             </a>
         </div>
     </div>
@@ -120,7 +120,7 @@
                 <span class="menu-text">Períodos de lactancia</span>
             </a>
             <a href="{{ route('leche.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('leche.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Registro de leche</span>
+                <span class="menu-text">Registros de leche</span>
             </a>
         </div>
     </div>
@@ -148,7 +148,7 @@
             </a>
 
             <a href="{{ route('vacunacion.index') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('vacunacion.*') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Vacunación</span>
+                <span class="menu-text">Vacunaciones</span>
             </a>
 
         </div>
@@ -173,7 +173,7 @@
                 <span class="menu-text">Reporte general</span>
             </a>
             <a href="{{ route('reportes.lactancias') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.lactancias') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
-                <span class="menu-text">Historia de lactancias</span>
+                <span class="menu-text">Historial de lactancias</span>
             </a>
             <a href="{{ route('reportes.reproductivo') }}" class="block px-3 py-2 rounded-lg text-[15px] font-medium {{ request()->routeIs('reportes.reproductivo') ? 'bg-ganaderasoft-azul text-white font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900' }}">
                 <span class="menu-text">Historial reproductivo</span>

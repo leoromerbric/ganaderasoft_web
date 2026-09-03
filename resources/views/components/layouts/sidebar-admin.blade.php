@@ -31,10 +31,10 @@
         </button>
         <div id="sub-admin-param" class="ml-4 pl-3 border-l-2 border-gray-100 my-1 space-y-1 menu-sublist {{ $isAdminParamActive ? '' : 'hidden' }}">
             <a href="{{ route('admin.tipos-trabajador.index') }}" class="block px-3 py-2 rounded-lg text-[14px] font-medium {{ request()->routeIs('admin.tipos-trabajador.*') ? 'bg-ganaderasoft-azul text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                <span class="menu-text">Tipos de trabajador</span>
+                <span class="menu-text">Tipos de trabajadores</span>
             </a>
             <a href="{{ route('admin.tipos-animal.index') }}" class="block px-3 py-2 rounded-lg text-[14px] font-medium {{ request()->routeIs('admin.tipos-animal.*') ? 'bg-ganaderasoft-azul text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                <span class="menu-text">Tipos de animal</span>
+                <span class="menu-text">Tipos de animales</span>
             </a>
             <a href="{{ route('admin.razas.index') }}" class="block px-3 py-2 rounded-lg text-[14px] font-medium {{ request()->routeIs('admin.razas.*') ? 'bg-ganaderasoft-azul text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                 <span class="menu-text">Composición de raza</span>

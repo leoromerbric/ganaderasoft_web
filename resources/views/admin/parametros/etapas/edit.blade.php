@@ -53,8 +53,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         <div>
-                            <label for="nombre" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Nombre <span class="text-red-500">*</span></label>
-                            <input type="text" id="nombre" name="nombre" value="{{ old('nombre', $item['nombre'] ?? '') }}" required 
+                            <label for="nombre" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Etapa <span class="text-red-500">*</span></label>
+                            <input type="text" id="nombre" name="nombre" value="{{ old('nombre', $item['nombre'] ?? '') }}" placeholder="Ej: Becerro, Mauta, Novilla..." required 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('nombre')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>

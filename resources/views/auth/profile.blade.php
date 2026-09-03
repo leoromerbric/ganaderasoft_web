@@ -51,7 +51,7 @@
             default => ucfirst(str_replace('_', ' ', $statusStr))
         };
         $roleLabel = match(strtolower($user['roles'][0] ?? $user['type_user'] ?? '')) {
-            'admin', 'administrator', 'administrador', 'global_admin', 'globaladmin', 'superadmin', 'admin_global' => 'Administrador',
+            'admin', 'administrator', 'administrador', 'global_admin', 'globaladmin', 'superadmin', 'admin_global', 'global admin' => 'Administrador',
             'propietario', 'owner' => 'Propietario',
             default => ucfirst(str_replace('_', ' ', $user['roles'][0] ?? $user['type_user'] ?? 'Usuario'))
         };
@@ -395,10 +395,10 @@
                                             <div>
                                                 @php
                                                     $rCode = strtolower($roleDetail['code'] ?? '');
-                                                    $rDisplay = $roleDetail['name'] ?? match($rCode) {
-                                                        'admin', 'administrator', 'administrador', 'global_admin', 'globaladmin', 'superadmin', 'admin_global' => 'Administrador',
-                                                        'propietario', 'owner' => 'Propietario',
-                                                        default => ucfirst(str_replace('_', ' ', $rCode ?: 'Rol'))
+                                                    $rDisplay = match($rCode) {
+                                                        'admin', 'administrator', 'administrador', 'global_admin', 'globaladmin', 'superadmin', 'admin_global', 'global admin' => 'Administrador',
+                                                        'propietario', 'owner' => 'Propietario de finca',
+                                                        default => $roleDetail['name'] ?? ucfirst(str_replace('_', ' ', $rCode ?: 'Rol'))
                                                     };
                                                 @endphp
                                                 <h4 class="font-bold text-gray-900 text-lg">{{ $rDisplay }}</h4>

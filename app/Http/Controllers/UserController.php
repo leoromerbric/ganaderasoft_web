@@ -11,7 +11,7 @@ class UserController extends Controller
     
     protected array $availableRoles = [
         ['code' => 'propietario', 'name' => 'Propietario de finca'],
-        ['code' => 'global_admin', 'name' => 'Administrador del sistema'],
+        ['code' => 'global_admin', 'name' => 'Administrador'],
     ];
 
     public function __construct(UserServiceInterface $userService)

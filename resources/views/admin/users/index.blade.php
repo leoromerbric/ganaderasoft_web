@@ -122,7 +122,14 @@
                                         <div class="flex flex-wrap gap-1">
                                             @if(!empty($user['roles']) && count($user['roles']) > 0)
                                                 @foreach($user['roles'] as $role)
-                                                    @php $roleName = is_array($role) ? ($role['name'] ?? $role['code']) : $role; @endphp
+                                                    @php
+                                                        $rawRole = is_array($role) ? ($role['name'] ?? $role['code'] ?? '') : (string)$role;
+                                                        $roleName = match(strtolower($rawRole)) {
+                                                            'global_admin', 'global admin', 'admin', 'administrator', 'administrador' => 'Administrador',
+                                                            'propietario', 'owner' => 'Propietario',
+                                                            default => ucfirst(str_replace('_', ' ', $rawRole))
+                                                        };
+                                                    @endphp
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
                                                         {{ $roleName }}
                                                     </span>

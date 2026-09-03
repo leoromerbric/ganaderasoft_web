@@ -9,7 +9,7 @@ class TipoAnimalController extends Controller
 {
     protected TipoAnimalServiceInterface $service;
     private string $slug = 'tipos-animal';
-    private string $name = 'Tipos de animal';
+    private string $name = 'Tipos de animales';
     private string $description = 'Especies y clasificaciones de ganado';
 
     public function __construct(TipoAnimalServiceInterface $service)
