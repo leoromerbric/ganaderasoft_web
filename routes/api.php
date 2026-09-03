@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FincasController;
 use App\Http\Controllers\RebanosController;
-use App\Http\Controllers\PersonalController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,7 +27,4 @@ Route::middleware(['mock.auth'])->group(function () {
     
     // Rebaños API
     Route::get('/rebanos', [RebanosController::class, 'apiRebanos'])->name('api.rebanos');
-    
-    // Personal API
-    Route::get('/personal', [PersonalController::class, 'apiPersonal'])->name('api.personal');
 });

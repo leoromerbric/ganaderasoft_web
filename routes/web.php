@@ -4,7 +4,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FincasController;
 use App\Http\Controllers\RebanosController;
-use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\PersonalFincaController;
 use App\Http\Controllers\CambiosAnimalController;
 use App\Http\Controllers\AnimalesController;
@@ -87,13 +86,6 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::match(['POST', 'PATCH'], '/rebanos/{id}/archivar', [RebanosController::class, 'archive'])->name('rebanos.archivar');
     Route::match(['POST', 'PATCH'], '/rebanos/{id}/desarchivar', [RebanosController::class, 'unarchive'])->name('rebanos.desarchivar');
     Route::delete('/rebanos/{id}', [RebanosController::class, 'destroy'])->name('rebanos.destroy');
-    
-    // Personal routes
-    Route::get('/personal', [PersonalController::class, 'index'])->name('personal.index');
-    Route::get('/personal/create', [PersonalController::class, 'create'])->name('personal.create');
-    Route::post('/personal', [PersonalController::class, 'store'])->name('personal.store');
-    Route::get('/personal/{id}/edit', [PersonalController::class, 'edit'])->name('personal.edit');
-    Route::put('/personal/{id}', [PersonalController::class, 'update'])->name('personal.update');
     
     // Árbol genealógico
     Route::get('/animales/{id}/arbol', [ArbolGenController::class, 'show'])->name('arbol-gen.show');
