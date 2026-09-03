@@ -8,7 +8,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Panel administrador</h1>
-            <p class="text-sm text-gray-500 mt-1">Resumen general del sistema y métricas globales</p>
+            <p class="text-sm text-gray-500 mt-1">Resumen general del sistema y métricas globales de registros activos</p>
         </div>
     </div>
 
@@ -22,7 +22,7 @@
                     {{ number_format($kpis['total_users'] ?? 0, 0, ',', '.') }}
                 </h3>
                 <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5 font-medium">
-                    <span class="w-2 h-2 rounded-full bg-purple-500"></span> Cuentas globales
+                    <span class="w-2 h-2 rounded-full bg-purple-500"></span> Cuentas registradas
                 </p>
             </div>
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
@@ -33,12 +33,12 @@
         <!-- KPI: Fincas -->
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-between group">
             <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Fincas</p>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Fincas activas</p>
                 <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                     {{ number_format($kpis['total_fincas'] ?? 0, 0, ',', '.') }}
                 </h3>
                 <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5 font-medium">
-                    <span class="w-2 h-2 rounded-full bg-blue-500"></span> Unidades registradas
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span> Unidades activas
                 </p>
             </div>
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
@@ -49,12 +49,12 @@
         <!-- KPI: Rebaños -->
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-between group">
             <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Rebaños</p>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Rebaños activos</p>
                 <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                     {{ number_format($kpis['total_rebanos'] ?? 0, 0, ',', '.') }}
                 </h3>
                 <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5 font-medium">
-                    <span class="w-2 h-2 rounded-full bg-teal-500"></span> Grupos de manejo
+                    <span class="w-2 h-2 rounded-full bg-teal-500"></span> Grupos de manejo activos
                 </p>
             </div>
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-teal-50 text-teal-600 border border-teal-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
@@ -65,12 +65,12 @@
         <!-- KPI: Animales -->
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-between group">
             <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Animales</p>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Animales activos</p>
                 <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                     {{ number_format($kpis['total_animales'] ?? 0, 0, ',', '.') }}
                 </h3>
                 <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5 font-medium">
-                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> Inventario total
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Inventario activo
                 </p>
             </div>
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform shadow-2xs">

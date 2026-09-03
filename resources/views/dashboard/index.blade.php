@@ -8,7 +8,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Panel general</h1>
-            <p class="text-sm text-gray-500 mt-1">Resumen estadístico del inventario ganadero y métricas productivas</p>
+            <p class="text-sm text-gray-500 mt-1">Resumen estadístico del inventario ganadero activo, fincas y rebaños operativos</p>
         </div>
     </div>
 
@@ -17,12 +17,12 @@
         <!-- KPI: Total Animales -->
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-between group">
             <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total animales</p>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Animales activos</p>
                 <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                     {{ number_format($statistics['data']['resumen']['total_animales'] ?? 0, 0, ',', '.') }}
                 </h3>
                 <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5 font-medium">
-                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> Inventario activo
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Inventario activo
                 </p>
             </div>
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
@@ -33,12 +33,12 @@
         <!-- KPI: Fincas -->
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-between group">
             <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Fincas</p>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Fincas activas</p>
                 <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                     {{ number_format($statistics['data']['resumen']['total_fincas'] ?? 0, 0, ',', '.') }}
                 </h3>
                 <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5 font-medium">
-                    <span class="w-2 h-2 rounded-full bg-blue-500"></span> Unidades registradas
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span> Unidades activas
                 </p>
             </div>
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
@@ -49,12 +49,12 @@
         <!-- KPI: Rebaños -->
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-between group">
             <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Rebaños y lotes</p>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Rebaños activos</p>
                 <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                     {{ number_format($statistics['data']['resumen']['total_rebanos'] ?? 0, 0, ',', '.') }}
                 </h3>
                 <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5 font-medium">
-                    <span class="w-2 h-2 rounded-full bg-teal-500"></span> Grupos de manejo
+                    <span class="w-2 h-2 rounded-full bg-teal-500"></span> Grupos de manejo activos
                 </p>
             </div>
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-teal-50 text-teal-600 border border-teal-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
@@ -65,12 +65,12 @@
         <!-- KPI: Personal -->
         <div class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-between group">
             <div>
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Personal</p>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Personal activo</p>
                 <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                     {{ number_format($statistics['data']['resumen']['total_personal'] ?? 0, 0, ',', '.') }}
                 </h3>
                 <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5 font-medium">
-                    <span class="w-2 h-2 rounded-full bg-purple-500"></span> Trabajadores en campo
+                    <span class="w-2 h-2 rounded-full bg-purple-500"></span> Trabajadores activos
                 </p>
             </div>
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
@@ -103,7 +103,7 @@
                 <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
                     <span>🧬</span> Distribución por sexo
                 </h3>
-                <span class="text-xs text-gray-400 font-medium">Machos vs hembras</span>
+                <span class="text-xs text-gray-400 font-medium">Machos vs hembras (activos)</span>
             </div>
             @if($totalConSexo > 0)
                 <div class="relative h-64 w-full flex items-center justify-center">
@@ -114,8 +114,8 @@
                     <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-2xl border border-gray-100 shadow-2xs">
                         🐄
                     </div>
-                    <p class="text-sm font-semibold text-gray-700">Sin animales registrados</p>
-                    <p class="text-xs text-gray-400 text-center max-w-xs">No hay animales en el inventario para calcular la distribución.</p>
+                    <p class="text-sm font-semibold text-gray-700">Sin animales activos registrados</p>
+                    <p class="text-xs text-gray-400 text-center max-w-xs">No hay animales activos en el inventario para calcular la distribución.</p>
                 </div>
             @endif
         </div>
@@ -126,7 +126,7 @@
                 <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
                     <span>🏷️</span> Animales por rebaño o lote
                 </h3>
-                <span class="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-md">Top 7 por población</span>
+                <span class="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-md">Top 7 rebaños activos</span>
             </div>
             @if(count($rebanosList) > 0 && $totalEnRebanos > 0)
                 <div class="relative h-64 w-full flex items-center justify-center">
@@ -137,8 +137,8 @@
                     <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-2xl border border-gray-100 shadow-2xs">
                         🏷️
                     </div>
-                    <p class="text-sm font-semibold text-gray-700">Sin animales en rebaños</p>
-                    <p class="text-xs text-gray-400 text-center max-w-xs">Asigna animales a tus rebaños para visualizar la distribución.</p>
+                    <p class="text-sm font-semibold text-gray-700">Sin animales en rebaños activos</p>
+                    <p class="text-xs text-gray-400 text-center max-w-xs">Asigna animales a tus rebaños activos para visualizar la distribución.</p>
                 </div>
             @endif
         </div>
@@ -153,10 +153,10 @@
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                            Fincas recientes
+                            Fincas activas recientes
                             <span class="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-md">Últimas 5</span>
                         </h2>
-                        <p class="text-xs text-gray-400 mt-0.5">Mostrando las 5 unidades productivas más recientes registradas</p>
+                        <p class="text-xs text-gray-400 mt-0.5">Mostrando las 5 fincas activas más recientes registradas</p>
                     </div>
                     <a href="{{ route('fincas.index') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-lg border border-gray-200 shadow-2xs transition-all">
                         Ver todas
@@ -199,7 +199,7 @@
                                     </td>
                                     <td class="py-3 px-4 text-right">
                                         @if($fId)
-                                            <a href="{{ route('fincas.show', $fId) }}" class="text-xs font-medium text-purple-700 hover:text-purple-900">
+                                             <a href="{{ route('fincas.show', $fId) }}" class="text-xs font-medium text-purple-700 hover:text-purple-900">
                                                 Detalle
                                             </a>
                                         @else
@@ -210,7 +210,7 @@
                             @empty
                                 <tr>
                                     <td colspan="4" class="py-6 text-center text-gray-400">
-                                        No hay fincas registradas recientemente.
+                                        No hay fincas activas registradas recientemente.
                                     </td>
                                 </tr>
                             @endforelse
@@ -224,10 +224,10 @@
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                            Rebaños recientes
+                            Rebaños activos recientes
                             <span class="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-md">Últimos 5</span>
                         </h2>
-                        <p class="text-xs text-gray-400 mt-0.5">Mostrando los 5 lotes y grupos de manejo más recientes</p>
+                        <p class="text-xs text-gray-400 mt-0.5">Mostrando los 5 lotes y grupos de manejo activos más recientes</p>
                     </div>
                     <a href="{{ route('rebanos.index') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-lg border border-gray-200 shadow-2xs transition-all">
                         Ver todos
