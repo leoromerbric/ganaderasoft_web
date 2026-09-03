@@ -558,6 +558,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filtroFechaInicio) filtroFechaInicio.value = '';
         if (filtroFechaFin) filtroFechaFin.value = '';
         if (filtroArchivado) filtroArchivado.value = '';
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
         repopularRebanosPorFinca();
         aplicarFiltros();
     };

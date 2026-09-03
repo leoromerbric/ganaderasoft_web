@@ -73,27 +73,23 @@ class CambiosAnimalController extends Controller
                 }
             }
 
-            // Filtrar rebaños por la finca seleccionada si existe
-            if ($idFinca) {
-                $rebanos = array_values(array_filter($rebanos, fn ($r) => (int) ($r['finca_id'] ?? 0) === $idFinca));
+            // Inferir finca y rebaño si viene animal_id o rebano_id
+            if ($idAnimal && isset($mapaAnimalesPorId[$idAnimal])) {
+                $an = $mapaAnimalesPorId[$idAnimal];
+                $idRebano = $idRebano ?: (data_get($an, 'rebano_id') ?? data_get($an, 'rebano.id'));
+                $idFinca  = $idFinca ?: (data_get($an, 'rebano.finca_id') ?? data_get($an, 'rebano.finca.id'));
+            }
+            if ($idRebano && !$idFinca) {
+                $rebObj = collect($rebanos)->firstWhere('id', $idRebano);
+                if ($rebObj) {
+                    $idFinca = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+                }
             }
 
-            // Filtrar animales según selección de rebaño o finca
             $animales = $animalesTodos;
-            if ($idRebano) {
-                $animales = array_values(array_filter($animales, fn ($a) => (int) ($a['rebano_id'] ?? 0) === $idRebano));
-            } elseif ($idFinca) {
-                $animales = array_values(array_filter($animales, function ($a) use ($idFinca) {
-                    $fincaId = data_get($a, 'rebano.finca_id') ?? data_get($a, 'rebano.finca.id');
-                    return (int) $fincaId === $idFinca;
-                }));
-            }
 
-            // Colección de IDs de animales autorizados por el filtro de ubicación
-            $idsPermitidos = array_map('intval', array_column($animales, 'id'));
-
-            // Consultar historial de cambios
-            $cambiosTodos = $this->cambiosAnimalService->getList($idAnimal, null);
+            // Consultar historial de cambios completo
+            $cambiosTodos = $this->cambiosAnimalService->getList(null, null);
 
             // Enriquecer cada registro de cambio con su animal completo
             $cambiosEnriquecidos = array_map(function ($c) use ($mapaAnimalesPorId, $mapaAnimalesPorEtapaId) {

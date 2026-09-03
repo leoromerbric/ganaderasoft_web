@@ -59,10 +59,11 @@ class LecheController extends Controller
     {
         try {
             $lactanciaId = $request->query('lactancia_id') ? (int) $request->query('lactancia_id') : null;
-            $fechaInicio = $request->query('fecha_inicio');
-            $fechaFin    = $request->query('fecha_fin');
+            $fincaId     = $request->query('finca_id') ? (int) $request->query('finca_id') : null;
+            $rebanoId    = $request->query('rebano_id') ? (int) $request->query('rebano_id') : null;
+            $fecha       = $request->query('fecha') ?: $request->query('fecha_inicio') ?: null;
 
-            $response = $this->lecheService->getRegistrosLeche($lactanciaId, $fechaInicio, $fechaFin);
+            $response = $this->lecheService->getRegistrosLeche(null, null, null);
 
             if (!($response['success'] ?? false)) {
                 return redirect()->route('dashboard')->with('error', $this->apiMessage($response, 'Error al consultar registros de leche.'));
@@ -93,6 +94,16 @@ class LecheController extends Controller
                 })
                 ->all();
 
+            if ($lactanciaId && isset($lactanciaMap[$lactanciaId])) {
+                $meta = $lactanciaMap[$lactanciaId];
+                if (!$fincaId && !empty($meta['finca_id'])) {
+                    $fincaId = (int) $meta['finca_id'];
+                }
+                if (!$rebanoId && !empty($meta['rebano_id'])) {
+                    $rebanoId = (int) $meta['rebano_id'];
+                }
+            }
+
             $rawRegistros = $response['data'] ?? [];
             $registrosLeche = collect(is_array($rawRegistros) ? array_values(array_filter($rawRegistros, 'is_array')) : [])
                 ->map(function ($registro) use ($lactanciaMap) {
@@ -119,7 +130,7 @@ class LecheController extends Controller
             $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
             $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
 
-            return view('leche.index', compact('registrosLeche', 'lactancias', 'fincas', 'rebanos', 'lactanciaId'));
+            return view('leche.index', compact('registrosLeche', 'lactancias', 'fincas', 'rebanos', 'lactanciaId', 'fincaId', 'rebanoId', 'fecha'));
         } catch (\Exception $e) {
             Log::error('Error en LecheController@index: ' . $e->getMessage());
             return redirect()->route('dashboard')->with('error', 'Error al cargar los registros de producción de leche.');

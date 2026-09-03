@@ -167,9 +167,8 @@
                 <label for="filtroArchivado" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
                 <select id="filtroArchivado"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
-                    <option value="activos" {{ ($archivado ?? 'activos') === 'activos' ? 'selected' : '' }}>🟢 Solo activos</option>
-                    <option value="archivados" {{ ($archivado ?? '') === 'archivados' ? 'selected' : '' }}>⚪ Solo archivados</option>
-                    <option value="todos" {{ ($archivado ?? '') === 'todos' ? 'selected' : '' }}>📋 Todos los animales</option>
+                    <option value="false" {{ ($archivado ?? 'false') === 'false' ? 'selected' : '' }}>🟢 Solo activos</option>
+                    <option value="true" {{ ($archivado ?? '') === 'true' ? 'selected' : '' }}>⚪ Solo archivados</option>
                 </select>
             </div>
 
@@ -215,7 +214,7 @@
                                 data-rebano="{{ $rebanoId }}"
                                 data-finca="{{ $fincaId }}"
                                 data-sexo="{{ $animal['sexo'] ?? '' }}"
-                                data-archivado="{{ $isArchivado ? 'archivados' : 'activos' }}"
+                                data-archivado="{{ $isArchivado ? 'true' : 'false' }}"
                                 data-nombre="{{ strtolower(($animal['nombre'] ?? '').' '.($animal['codigo_animal'] ?? '')) }}">
                                 <!-- Animal -->
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -402,18 +401,18 @@
         fincaSel.innerHTML = '<option value="">Todas las fincas</option>';
         todasLasFincas.forEach(function (finca) {
             const isArchivada = Boolean(finca.archivado);
-            // Si el estado es "activos", mostrar solo activas
-            if (archivado === 'activos' && isArchivada) {
+            // Si el estado es "false", mostrar solo activas
+            if (archivado === 'false' && isArchivada) {
                 return;
             }
-            // Si el estado es "archivados", mostrar solo archivadas
-            if (archivado === 'archivados' && !isArchivada) {
+            // Si el estado es "true", mostrar solo archivadas
+            if (archivado === 'true' && !isArchivada) {
                 return;
             }
 
             const opt = document.createElement('option');
             opt.value = String(finca.id);
-            opt.textContent = '🏡 ' + (finca.nombre || ('Finca #' + finca.id)) + (archivado === 'todos' && isArchivada ? ' (Archivada)' : '');
+            opt.textContent = '🏡 ' + (finca.nombre || ('Finca #' + finca.id));
             if (String(currentFincaVal) === String(finca.id)) {
                 opt.selected = true;
             }
@@ -433,19 +432,19 @@
                 return;
             }
 
-            // Si el estado es "activos", mostrar solo activos
-            if (archivado === 'activos' && isArchivado) {
+            // Si el estado es "false", mostrar solo activos
+            if (archivado === 'false' && isArchivado) {
                 return;
             }
-            // Si el estado es "archivados", mostrar solo archivados
-            if (archivado === 'archivados' && !isArchivado) {
+            // Si el estado es "true", mostrar solo archivados
+            if (archivado === 'true' && !isArchivado) {
                 return;
             }
 
             const opt = document.createElement('option');
             opt.value = String(rebano.id);
             opt.dataset.finca = rFincaId ? String(rFincaId) : '';
-            opt.textContent = '🐄 ' + (rebano.nombre || ('Rebaño #' + rebano.id)) + (archivado === 'todos' && isArchivado ? ' (Archivado)' : '');
+            opt.textContent = '🐄 ' + (rebano.nombre || ('Rebaño #' + rebano.id));
             if (String(currentRebanoVal) === String(rebano.id)) {
                 opt.selected = true;
             }
@@ -497,13 +496,13 @@
             const rowFinca     = row.dataset.finca || '';
             const rowRebano    = row.dataset.rebano || '';
             const rowSexo      = row.dataset.sexo || '';
-            const rowArchivado = row.dataset.archivado || 'activos';
+            const rowArchivado = row.dataset.archivado || 'false';
             const rowNombre    = row.dataset.nombre || '';
 
             const matchFinca     = !fincaId || (String(rowFinca) === String(fincaId));
             const matchRebano    = !rebanoId || (String(rowRebano) === String(rebanoId));
             const matchSexo      = !sexo || (rowSexo.toUpperCase() === sexo.toUpperCase());
-            const matchArchivado = (archivado === 'todos' || rowArchivado === archivado);
+            const matchArchivado = (rowArchivado === archivado);
             const matchNombre    = !nombre || rowNombre.includes(nombre);
 
             const isVisible = matchFinca && matchRebano && matchSexo && matchArchivado && matchNombre;
@@ -512,7 +511,7 @@
 
             if (isVisible) {
                 countTotal++;
-                if (rowArchivado !== 'archivados') countActivos++;
+                if (rowArchivado !== 'true') countActivos++;
                 if (rowSexo.toUpperCase() === 'M') countMachos++;
                 if (rowSexo.toUpperCase() === 'H') countHembras++;
             }
@@ -545,7 +544,7 @@
         document.getElementById('filtroFinca').value = '';
         document.getElementById('filtroRebano').value = '';
         document.getElementById('filtroSexo').value = '';
-        document.getElementById('filtroArchivado').value = 'activos';
+        document.getElementById('filtroArchivado').value = 'false';
         
         if (window.history && window.history.replaceState) {
             window.history.replaceState({}, document.title, window.location.pathname);

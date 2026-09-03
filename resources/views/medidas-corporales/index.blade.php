@@ -52,7 +52,7 @@
                             $fNom = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
                         @endphp
                         @if($fId)
-                            <option value="{{ $fId }}">{{ $fNom }}</option>
+                            <option value="{{ $fId }}" {{ (int)$fId === (int)($fincaId ?? 0) ? 'selected' : '' }}>{{ $fNom }}</option>
                         @endif
                     @endforeach
                 </select>
@@ -68,7 +68,7 @@
                             $rFinca = $rebano['finca_id'] ?? data_get($rebano, 'finca.id') ?? '';
                         @endphp
                         @if($rId)
-                            <option value="{{ $rId }}" data-finca="{{ $rFinca }}">{{ $rNom }}</option>
+                            <option value="{{ $rId }}" data-finca="{{ $rFinca }}" {{ (int)$rId === (int)($rebanoId ?? 0) ? 'selected' : '' }}>{{ $rNom }}</option>
                         @endif
                     @endforeach
                 </select>
@@ -343,8 +343,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (f) f.value = '';
         if (r) r.value = '';
         filterSelectRebanos('');
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
         aplicarFiltros();
     };
+
+    if (f && f.value) {
+        const currentReb = r ? r.value : '';
+        filterSelectRebanos(f.value);
+        if (currentReb && r) r.value = currentReb;
+    }
+
+    aplicarFiltros();
 });
 </script>
 @endsection

@@ -267,6 +267,9 @@
             document.getElementById('filtroNombre').value = '';
             document.getElementById('filtroRole').value = '';
             document.getElementById('filtroStatus').value = '';
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
             aplicarFiltros();
         };
     </script>

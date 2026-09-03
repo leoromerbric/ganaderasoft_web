@@ -60,7 +60,7 @@ class PesoCorporalController extends Controller
         $fechaInicio = $request->query('fecha_inicio') ?: null;
         $fechaFin    = $request->query('fecha_fin') ?: null;
 
-        $response = $this->pesoCorporalService->getPesosCorporales($animalId, $fechaInicio, $fechaFin);
+        $response = $this->pesoCorporalService->getPesosCorporales(null, null, null);
 
         if (!($response['success'] ?? false)) {
             return redirect()->route('dashboard')->with('error', $this->apiMessage($response, 'Error al obtener registros de peso corporal.'));
@@ -110,7 +110,25 @@ class PesoCorporalController extends Controller
         $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
 
-        return view('peso-corporal.index', compact('pesosCorporales', 'animales', 'fincas', 'rebanos', 'animalId', 'fechaInicio', 'fechaFin', 'estadisticas'));
+        $fincaId  = $request->query('finca_id') ? (int) $request->query('finca_id') : null;
+        $rebanoId = $request->query('rebano_id') ? (int) $request->query('rebano_id') : null;
+
+        if ($animalId && $animalesPorId->has($animalId)) {
+            $an = $animalesPorId->get($animalId);
+            if (!$fincaId) {
+                $fincaId = (int) (data_get($an, 'rebano.finca_id') ?? data_get($an, 'rebano.finca.id') ?? 0) ?: null;
+            }
+            if (!$rebanoId) {
+                $rebanoId = (int) ($an['rebano_id'] ?? data_get($an, 'rebano.id') ?? 0) ?: null;
+            }
+        } elseif ($rebanoId && !$fincaId) {
+            $rebObj = collect($rebanos)->firstWhere('id', $rebanoId);
+            if ($rebObj) {
+                $fincaId = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+            }
+        }
+
+        return view('peso-corporal.index', compact('pesosCorporales', 'animales', 'fincas', 'rebanos', 'animalId', 'fincaId', 'rebanoId', 'fechaInicio', 'fechaFin', 'estadisticas'));
     }
 
     /**

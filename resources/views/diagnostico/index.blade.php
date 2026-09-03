@@ -413,6 +413,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filtroRebano) filtroRebano.value = '';
         if (filtroFechaInicio) filtroFechaInicio.value = '';
         if (filtroFechaFin) filtroFechaFin.value = '';
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
 
         repopularRebanosPorFinca();
         aplicarFiltros();

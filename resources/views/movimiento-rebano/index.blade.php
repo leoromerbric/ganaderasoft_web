@@ -427,6 +427,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (filtroFincaDestino && filtroFincaDestino.value) {
         filterSelectRebanos(filtroRebanoDestino, filtroFincaDestino.value);
     }
+    aplicarFiltros();
 });
 </script>
 @endsection

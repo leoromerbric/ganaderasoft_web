@@ -18,10 +18,12 @@ class TratamientoController extends Controller
     public function index(Request $request)
     {
         $diagnosticoId = $request->query('diagnostico_id');
+        $fincaId       = $request->query('finca_id');
+        $rebanoId      = $request->query('rebano_id');
         $fechaInicio   = $request->query('fecha_inicio');
         $fechaFin      = $request->query('fecha_fin');
 
-        $response     = $this->service->getList($diagnosticoId, $fechaInicio, $fechaFin);
+        $response     = $this->service->getList();
         $data         = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $tratamientos = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $diagnosticos = $this->service->getDiagnosticos();
@@ -31,7 +33,14 @@ class TratamientoController extends Controller
         $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos    = $rebanosRes['data'] ?? [];
 
-        return view('tratamiento.index', compact('tratamientos', 'diagnosticos', 'fincas', 'rebanos', 'diagnosticoId', 'fechaInicio', 'fechaFin'));
+        if ($rebanoId && !$fincaId) {
+            $rebObj = collect($rebanos)->firstWhere('id', (int) $rebanoId);
+            if ($rebObj) {
+                $fincaId = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+            }
+        }
+
+        return view('tratamiento.index', compact('tratamientos', 'diagnosticos', 'fincas', 'rebanos', 'diagnosticoId', 'fincaId', 'rebanoId', 'fechaInicio', 'fechaFin'));
     }
 
     public function create()

@@ -58,7 +58,7 @@ class MovimientoRebanoController extends Controller
         $fincaDestinoId  = $request->query('finca_destino_id') ? (int) $request->query('finca_destino_id') : null;
         $rebanoDestinoId = $request->query('rebano_destino_id')? (int) $request->query('rebano_destino_id'): null;
 
-        $response    = $this->service->getList($fincaId, $rebanoId);
+        $response    = $this->service->getList(null, null);
         $rawMovs     = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $movimientos = isset($rawMovs['data']) && is_array($rawMovs['data']) 
             ? $rawMovs['data'] 
@@ -67,15 +67,22 @@ class MovimientoRebanoController extends Controller
         $fincas      = array_values(array_filter($this->service->getFincas(['incluir_archivados' => true]), 'is_array'));
         $rebanos     = array_values(array_filter($this->service->getRebanos(['incluir_archivados' => true]), 'is_array'));
 
+        if ($rebanoId && !$fincaId) {
+            $rebObj = collect($rebanos)->firstWhere('id', $rebanoId);
+            if ($rebObj) {
+                $fincaId = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+            }
+        }
+
+        if ($rebanoDestinoId && !$fincaDestinoId) {
+            $rebDestObj = collect($rebanos)->firstWhere('id', $rebanoDestinoId);
+            if ($rebDestObj) {
+                $fincaDestinoId = $rebDestObj['finca_id'] ?? data_get($rebDestObj, 'finca.id') ?? null;
+            }
+        }
+
         $mapaFincas  = collect($fincas)->keyBy('id')->map(fn($f) => is_array($f) ? ($f['nombre'] ?? '') : '')->all();
         $mapaRebanos = collect($rebanos)->keyBy('id')->map(fn($r) => is_array($r) ? ($r['nombre'] ?? '') : '')->all();
-
-        if ($fincaDestinoId) {
-            $movimientos = array_values(array_filter($movimientos, fn($m) => is_array($m) && (int) ($m['finca_destino_id'] ?? 0) === $fincaDestinoId));
-        }
-        if ($rebanoDestinoId) {
-            $movimientos = array_values(array_filter($movimientos, fn($m) => is_array($m) && (int) ($m['rebano_destino_id'] ?? 0) === $rebanoDestinoId));
-        }
 
         return view('movimiento-rebano.index', compact(
             'movimientos', 'fincas', 'rebanos',

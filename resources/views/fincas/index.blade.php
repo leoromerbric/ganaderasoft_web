@@ -136,9 +136,8 @@
                 <label for="filtroArchivado" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
                 <select id="filtroArchivado"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
-                    <option value="activos" {{ ($archivado ?? 'activos') === 'activos' ? 'selected' : '' }}>🟢 Solo activas</option>
-                    <option value="archivados" {{ ($archivado ?? '') === 'archivados' ? 'selected' : '' }}>⚪ Solo archivadas</option>
-                    <option value="todos" {{ ($archivado ?? '') === 'todos' ? 'selected' : '' }}>📋 Todas las fincas</option>
+                    <option value="false" {{ ($archivado ?? 'false') === 'false' ? 'selected' : '' }}>🟢 Solo activas</option>
+                    <option value="true" {{ ($archivado ?? '') === 'true' ? 'selected' : '' }}>⚪ Solo archivadas</option>
                 </select>
             </div>
 
@@ -186,7 +185,7 @@
                             <tr class="hover:bg-gray-50/80 transition-colors fila-finca {{ $isArchivado ? 'bg-gray-50/40' : '' }}"
                                 data-nombre="{{ strtolower($nombreFinca) }}" 
                                 data-tipo="{{ $tipoExp }}"
-                                data-archivado="{{ $isArchivado ? 'archivados' : 'activos' }}"
+                                data-archivado="{{ $isArchivado ? 'true' : 'false' }}"
                                 data-superficie="{{ $superficie }}">
                                 <!-- Finca -->
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -368,12 +367,12 @@
         rows.forEach(function (row) {
             const rowNombre = row.dataset.nombre || '';
             const rowTipo = row.dataset.tipo || '';
-            const rowArchivado = row.dataset.archivado || 'activos';
+            const rowArchivado = row.dataset.archivado || 'false';
             const rowSuperficie = parseFloat(row.dataset.superficie) || 0;
 
             const matchNombre = (!nombre || rowNombre.includes(nombre));
             const matchTipo = (!tipo || rowTipo === tipo);
-            const matchArchivado = (archivado === 'todos' || rowArchivado === archivado);
+            const matchArchivado = (rowArchivado === archivado);
 
             const ok = matchNombre && matchTipo && matchArchivado;
 
@@ -413,12 +412,14 @@
     function limpiarFiltros() {
         document.getElementById('filtroNombre').value = '';
         document.getElementById('filtroTipo').value = '';
-        document.getElementById('filtroArchivado').value = 'activos';
+        document.getElementById('filtroArchivado').value = 'false';
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
         aplicarFiltros();
     }
 
     // Aplicar filtros iniciales
     document.addEventListener('DOMContentLoaded', aplicarFiltros);
-    aplicarFiltros();
 </script>
 @endsection

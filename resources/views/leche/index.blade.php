@@ -89,7 +89,7 @@
                             $fNom = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
                         @endphp
                         @if($fId)
-                            <option value="{{ $fId }}">{{ $fNom }}</option>
+                            <option value="{{ $fId }}" {{ (int)$fId === (int)($fincaId ?? 0) ? 'selected' : '' }}>{{ $fNom }}</option>
                         @endif
                     @endforeach
                 </select>
@@ -105,14 +105,14 @@
                             $rFinca = $rebano['finca_id'] ?? data_get($rebano, 'finca.id') ?? '';
                         @endphp
                         @if($rId)
-                            <option value="{{ $rId }}" data-finca="{{ $rFinca }}">{{ $rNom }}</option>
+                            <option value="{{ $rId }}" data-finca="{{ $rFinca }}" {{ (int)$rId === (int)($rebanoId ?? 0) ? 'selected' : '' }}>{{ $rNom }}</option>
                         @endif
                     @endforeach
                 </select>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Fecha pesaje</label>
-                <input type="date" id="filtroFecha"
+                <input type="date" id="filtroFecha" value="{{ $fecha ?? '' }}"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
             </div>
             <div>
@@ -405,6 +405,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         aplicarFiltros();
     };
+
+    if (f && f.value) {
+        const currentReb = r ? r.value : '';
+        filterSelectRebanos(f.value);
+        if (currentReb && r) r.value = currentReb;
+    }
+
+    aplicarFiltros();
 });
 </script>
 @endsection

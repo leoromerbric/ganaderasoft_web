@@ -90,7 +90,7 @@ class LactanciaController extends Controller
             $animalId = $request->query('animal_id') ? (int) $request->query('animal_id') : null;
             $activa   = $request->query('activa') !== null ? (bool) $request->query('activa') : null;
 
-            $response = $this->lactanciaService->getLactancias($animalId, $activa);
+            $response = $this->lactanciaService->getLactancias(null, null);
 
             if (!($response['success'] ?? false)) {
                 return redirect()->route('dashboard')->with('error', $this->apiMessage($response, 'Error al consultar lactancias.'));
@@ -129,7 +129,25 @@ class LactanciaController extends Controller
             $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
             $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
 
-            return view('lactancia.index', compact('lactancias', 'animales', 'fincas', 'rebanos', 'animalId'));
+            $fincaId  = $request->query('finca_id') ? (int) $request->query('finca_id') : null;
+            $rebanoId = $request->query('rebano_id') ? (int) $request->query('rebano_id') : null;
+
+            if ($animalId && $animalesPorId->has($animalId)) {
+                $an = $animalesPorId->get($animalId);
+                if (!$fincaId) {
+                    $fincaId = (int) (data_get($an, 'rebano.finca_id') ?? data_get($an, 'rebano.finca.id') ?? 0) ?: null;
+                }
+                if (!$rebanoId) {
+                    $rebanoId = (int) ($an['rebano_id'] ?? data_get($an, 'rebano.id') ?? 0) ?: null;
+                }
+            } elseif ($rebanoId && !$fincaId) {
+                $rebObj = collect($rebanos)->firstWhere('id', $rebanoId);
+                if ($rebObj) {
+                    $fincaId = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+                }
+            }
+
+            return view('lactancia.index', compact('lactancias', 'animales', 'fincas', 'rebanos', 'animalId', 'fincaId', 'rebanoId', 'activa'));
         } catch (\Exception $e) {
             Log::error('Error en LactanciaController@index: ' . $e->getMessage());
             return redirect()->route('dashboard')->with('error', 'Error al cargar los períodos de lactancia.');

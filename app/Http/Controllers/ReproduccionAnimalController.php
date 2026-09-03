@@ -42,14 +42,7 @@ class ReproduccionAnimalController extends Controller
         $fechaInicio = $request->query('fecha_inicio');
         $fechaFin    = $request->query('fecha_fin');
 
-        $response       = $this->service->getList(
-            $animalId ? (int)$animalId : null,
-            $tipo,
-            $fechaInicio,
-            $fechaFin,
-            $fincaId ? (int)$fincaId : null,
-            $rebanoId ? (int)$rebanoId : null
-        );
+        $response       = $this->service->getList();
         $data           = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $reproducciones = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $animales       = $this->filterFemaleAnimals($this->service->getAnimales(['incluir_archivados' => true]));
@@ -59,6 +52,19 @@ class ReproduccionAnimalController extends Controller
 
         $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        if ($animalId) {
+            $an = collect($animales)->firstWhere('id', (int) $animalId);
+            if ($an) {
+                $rebanoId = $rebanoId ?: (data_get($an, 'rebano_id') ?? data_get($an, 'rebano.id'));
+                $fincaId  = $fincaId ?: (data_get($an, 'rebano.finca_id') ?? data_get($an, 'rebano.finca.id'));
+            }
+        } elseif ($rebanoId && !$fincaId) {
+            $rebObj = collect($rebanos)->firstWhere('id', (int) $rebanoId);
+            if ($rebObj) {
+                $fincaId = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+            }
+        }
 
         $etapasRes  = $this->etapaService->getAll();
         $etapas     = ($etapasRes['success'] ?? false) ? ($etapasRes['data']['data'] ?? $etapasRes['data'] ?? []) : [];

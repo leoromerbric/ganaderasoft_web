@@ -36,10 +36,12 @@ class RegistroCeloController extends Controller
     public function index(Request $request)
     {
         $animalId    = $request->query('animal_id');
+        $fincaId     = $request->query('finca_id');
+        $rebanoId    = $request->query('rebano_id');
         $fechaInicio = $request->query('fecha_inicio');
         $fechaFin    = $request->query('fecha_fin');
 
-        $response  = $this->service->getList($animalId, $fechaInicio, $fechaFin);
+        $response  = $this->service->getList();
         $data      = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $registros = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $animales  = $this->filterFemaleAnimals($this->service->getAnimales(['incluir_archivados' => true]));
@@ -52,7 +54,20 @@ class RegistroCeloController extends Controller
         $etapasRes  = $this->etapaService->getAll();
         $etapas     = $etapasRes['data']['data'] ?? $etapasRes['data'] ?? [];
 
-        return view('registro-celo.index', compact('registros', 'animales', 'animalId', 'fechaInicio', 'fechaFin', 'fincas', 'rebanos', 'etapas'));
+        if ($animalId) {
+            $an = collect($animales)->firstWhere('id', (int) $animalId);
+            if ($an) {
+                $rebanoId = $rebanoId ?: (data_get($an, 'rebano_id') ?? data_get($an, 'rebano.id'));
+                $fincaId  = $fincaId ?: (data_get($an, 'rebano.finca_id') ?? data_get($an, 'rebano.finca.id'));
+            }
+        } elseif ($rebanoId && !$fincaId) {
+            $rebObj = collect($rebanos)->firstWhere('id', (int) $rebanoId);
+            if ($rebObj) {
+                $fincaId = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+            }
+        }
+
+        return view('registro-celo.index', compact('registros', 'animales', 'animalId', 'fechaInicio', 'fechaFin', 'fincas', 'rebanos', 'etapas', 'fincaId', 'rebanoId'));
     }
 
     public function create()

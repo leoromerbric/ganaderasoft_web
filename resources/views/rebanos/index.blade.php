@@ -146,9 +146,8 @@
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
                 <select id="filtroArchivado"
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                    <option value="activos" {{ ($archivado ?? 'activos') === 'activos' ? 'selected' : '' }}>🟢 Solo activos</option>
-                    <option value="archivados" {{ ($archivado ?? '') === 'archivados' ? 'selected' : '' }}>⚪ Solo archivados</option>
-                    <option value="todos" {{ ($archivado ?? '') === 'todos' ? 'selected' : '' }}>📋 Todos los rebaños</option>
+                    <option value="false" {{ ($archivado ?? 'false') === 'false' ? 'selected' : '' }}>🟢 Solo activos</option>
+                    <option value="true" {{ ($archivado ?? '') === 'true' ? 'selected' : '' }}>⚪ Solo archivados</option>
                 </select>
             </div>
 
@@ -188,7 +187,7 @@
                     <div class="bg-white border border-gray-100 hover:border-ganaderasoft-celeste/60 rounded-2xl p-6 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between fila-rebano group {{ $isArchivado ? 'bg-gray-50/40' : '' }}"
                         data-finca="{{ $fincaIdAttr }}" 
                         data-nombre="{{ $searchableText }}"
-                        data-archivado="{{ $isArchivado ? 'archivados' : 'activos' }}"
+                        data-archivado="{{ $isArchivado ? 'true' : 'false' }}"
                         data-animales="{{ $animalesCount }}">
                         <div>
                             <!-- Header with icon -->
@@ -249,7 +248,7 @@
 
                         <!-- Actions -->
                         <div class="flex items-center gap-2 mt-5 pt-3 border-t border-gray-100">
-                            <a href="{{ route('animales.index', array_filter(['rebano_id' => $rebanoId, 'finca_id' => $fincaIdAttr])) }}"
+                            <a href="{{ route('animales.index', array_filter(['rebano_id' => $rebanoId, 'finca_id' => $fincaIdAttr, 'archivado' => $isArchivado ? 'true' : 'false'])) }}"
                                 class="flex-1 px-3 py-2.5 bg-ganaderasoft-celeste/15 hover:bg-ganaderasoft-azul text-ganaderasoft-azul hover:text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 shadow-2xs">
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -358,23 +357,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function actualizarDesplegableFincas() {
         if (!filtroFinca) return;
-        const archivado = (filtroArchivado ? filtroArchivado.value : 'activos').trim();
+        const archivado = (filtroArchivado ? filtroArchivado.value : 'false').trim();
         const currentVal = filtroFinca.value;
 
         filtroFinca.innerHTML = '<option value="">Todas las fincas</option>';
         todasLasFincas.forEach(function (finca) {
             const isArchivada = Boolean(finca.archivado);
-            // Si el estado es "activos", mostrar solo activas
-            if (archivado === 'activos' && isArchivada) {
+            // Si el estado es "false", mostrar solo activas
+            if (archivado === 'false' && isArchivada) {
                 return;
             }
-            // Si el estado es "archivados", mostrar solo archivadas
-            if (archivado === 'archivados' && !isArchivada) {
+            // Si el estado es "true", mostrar solo archivadas
+            if (archivado === 'true' && !isArchivada) {
                 return;
             }
             const opt = document.createElement('option');
             opt.value = finca.id;
-            opt.textContent = (finca.nombre || ('Finca #' + finca.id)) + (archivado === 'todos' && isArchivada ? ' (Archivada)' : '');
+            opt.textContent = finca.nombre || ('Finca #' + finca.id);
             if (String(currentVal) === String(finca.id)) {
                 opt.selected = true;
             }
@@ -414,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const finca = (filtroFinca ? filtroFinca.value : '').trim();
         const nombre = (filtroNombre ? filtroNombre.value : '').toLowerCase().trim();
         const ocupacion = (filtroOcupacion ? filtroOcupacion.value : '').trim();
-        const archivado = (filtroArchivado ? filtroArchivado.value : 'activos').trim();
+        const archivado = (filtroArchivado ? filtroArchivado.value : 'false').trim();
 
         let visibleCount = 0;
         const visibleRows = [];
@@ -422,12 +421,12 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.fila-rebano').forEach(function (row) {
             const rowFinca = (row.getAttribute('data-finca') || '').trim();
             const rowNombre = (row.getAttribute('data-nombre') || '').toLowerCase().trim();
-            const rowArchivado = (row.getAttribute('data-archivado') || 'activos').trim();
+            const rowArchivado = (row.getAttribute('data-archivado') || 'false').trim();
             const rowAnimales = parseInt(row.getAttribute('data-animales')) || 0;
 
             const matchFinca = !finca || rowFinca === finca;
             const matchNombre = !nombre || rowNombre.includes(nombre);
-            const matchArchivado = (archivado === 'todos' || rowArchivado === archivado);
+            const matchArchivado = (rowArchivado === archivado);
             
             let matchOcupacion = true;
             if (ocupacion === 'con_animales') {
@@ -471,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filtroFinca) filtroFinca.value = '';
         if (filtroNombre) filtroNombre.value = '';
         if (filtroOcupacion) filtroOcupacion.value = '';
-        if (filtroArchivado) filtroArchivado.value = 'activos';
+        if (filtroArchivado) filtroArchivado.value = 'false';
         if (window.history && window.history.replaceState) {
             window.history.replaceState({}, document.title, window.location.pathname);
         }

@@ -477,6 +477,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filtroTipo) filtroTipo.value = '';
         if (filtroEstado) filtroEstado.value = '';
         if (filtroNombre) filtroNombre.value = '';
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
         aplicarFiltros();
     };
 

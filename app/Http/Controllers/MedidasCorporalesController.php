@@ -60,7 +60,7 @@ class MedidasCorporalesController extends Controller
         try {
             $animalId = $request->query('animal_id') ? (int) $request->query('animal_id') : null;
 
-            $response = $this->medidasCorporalesService->getMedidasCorporales($animalId);
+            $response = $this->medidasCorporalesService->getMedidasCorporales(null);
 
             if (!($response['success'] ?? false)) {
                 return redirect()->route('dashboard')->with('error', $this->apiMessage($response, 'Error al consultar medidas corporales.'));
@@ -113,7 +113,25 @@ class MedidasCorporalesController extends Controller
             $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
             $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
 
-            return view('medidas-corporales.index', compact('medidasCorporales', 'animales', 'fincas', 'rebanos', 'animalId', 'estadisticas'));
+            $fincaId  = $request->query('finca_id') ? (int) $request->query('finca_id') : null;
+            $rebanoId = $request->query('rebano_id') ? (int) $request->query('rebano_id') : null;
+
+            if ($animalId && $animalesPorId->has($animalId)) {
+                $an = $animalesPorId->get($animalId);
+                if (!$fincaId) {
+                    $fincaId = (int) (data_get($an, 'rebano.finca_id') ?? data_get($an, 'rebano.finca.id') ?? 0) ?: null;
+                }
+                if (!$rebanoId) {
+                    $rebanoId = (int) ($an['rebano_id'] ?? data_get($an, 'rebano.id') ?? 0) ?: null;
+                }
+            } elseif ($rebanoId && !$fincaId) {
+                $rebObj = collect($rebanos)->firstWhere('id', $rebanoId);
+                if ($rebObj) {
+                    $fincaId = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+                }
+            }
+
+            return view('medidas-corporales.index', compact('medidasCorporales', 'animales', 'fincas', 'rebanos', 'animalId', 'fincaId', 'rebanoId', 'estadisticas'));
         } catch (\Exception $e) {
             Log::error('Error en MedidasCorporalesController@index: ' . $e->getMessage());
             return redirect()->route('dashboard')->with('error', 'Error al cargar los registros de medidas corporales.');

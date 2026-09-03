@@ -52,7 +52,7 @@
                             $fNom = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
                         @endphp
                         @if($fId)
-                            <option value="{{ $fId }}">{{ $fNom }}</option>
+                            <option value="{{ $fId }}" {{ (int)$fId === (int)($fincaId ?? 0) ? 'selected' : '' }}>{{ $fNom }}</option>
                         @endif
                     @endforeach
                 </select>
@@ -68,7 +68,7 @@
                             $rFinca = $rebano['finca_id'] ?? data_get($rebano, 'finca.id') ?? '';
                         @endphp
                         @if($rId)
-                            <option value="{{ $rId }}" data-finca="{{ $rFinca }}">{{ $rNom }}</option>
+                            <option value="{{ $rId }}" data-finca="{{ $rFinca }}" {{ (int)$rId === (int)($rebanoId ?? 0) ? 'selected' : '' }}>{{ $rNom }}</option>
                         @endif
                     @endforeach
                 </select>
@@ -77,8 +77,8 @@
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado del ciclo</label>
                 <select id="filtroEstado" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                     <option value="">Todos los estados</option>
-                    <option value="1">🟢 Solo activas</option>
-                    <option value="0">⚪ Solo finalizadas</option>
+                    <option value="1" {{ ($activa ?? null) === true ? 'selected' : '' }}>🟢 Solo activas</option>
+                    <option value="0" {{ ($activa ?? null) === false ? 'selected' : '' }}>⚪ Solo finalizadas</option>
                 </select>
             </div>
             <div>
@@ -355,8 +355,19 @@ document.addEventListener('DOMContentLoaded', function () {
         if (r) r.value = '';
         if (est) est.value = '';
         filterSelectRebanos('');
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
         aplicarFiltros();
     };
+
+    if (f && f.value) {
+        const currentReb = r ? r.value : '';
+        filterSelectRebanos(f.value);
+        if (currentReb && r) r.value = currentReb;
+    }
+
+    aplicarFiltros();
 });
 </script>
 @endsection

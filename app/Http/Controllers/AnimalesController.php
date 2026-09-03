@@ -31,7 +31,14 @@ class AnimalesController extends Controller
         $idRebano  = $request->query('rebano_id') ? (int) $request->query('rebano_id') : null;
         $sexo      = $request->query('sexo', '');
         $nombre    = $request->query('nombre', '');
-        $archivado = $request->query('archivado', 'activos');
+        
+        $rawArchivado = $request->query('archivado');
+        if ($rawArchivado !== null) {
+            $norm = strtolower(trim((string)$rawArchivado));
+            $archivado = in_array($norm, ['true', '1', 'archivados'], true) ? 'true' : 'false';
+        } else {
+            $archivado = null;
+        }
 
         // Cargar todos los animales (activos y archivados) para permitir filtrado reactivo e instantáneo en la vista
         $response = $this->animalesService->getAnimales(null, ['incluir_archivados' => true]);
@@ -49,6 +56,27 @@ class AnimalesController extends Controller
             $rebanoObj = collect($rebanos)->firstWhere('id', $idRebano);
             if ($rebanoObj) {
                 $idFinca = $rebanoObj['finca_id'] ?? data_get($rebanoObj, 'finca.id') ?? ($rebanoObj['id_Finca'] ?? null);
+            }
+        }
+
+        // Si no se pasó explícitamente el parámetro 'archivado', inferirlo según el rebaño o finca consultados
+        if ($archivado === null) {
+            if ($idRebano) {
+                $rebanoObj = collect($rebanos)->firstWhere('id', $idRebano);
+                if ($rebanoObj && !empty($rebanoObj['archivado'])) {
+                    $archivado = 'true';
+                } else {
+                    $archivado = 'false';
+                }
+            } elseif ($idFinca) {
+                $fincaObj = collect($fincas)->firstWhere('id', $idFinca);
+                if ($fincaObj && !empty($fincaObj['archivado'])) {
+                    $archivado = 'true';
+                } else {
+                    $archivado = 'false';
+                }
+            } else {
+                $archivado = 'false';
             }
         }
 

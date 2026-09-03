@@ -88,7 +88,7 @@ class VacunacionController extends Controller
             'fecha_fin',
         ]);
 
-        $response = $this->service->getList($filters);
+        $response = $this->service->getList(['incluir_archivados' => true]);
         if (!($response['success'] ?? false)) {
             session()->now('error', $this->apiMessage($response, 'No se pudieron cargar los registros de vacunación.'));
             $vacunaciones = [];
@@ -99,6 +99,13 @@ class VacunacionController extends Controller
         $vacunas = $this->extractData($this->vacunaService->getAll());
         $rebanos = $this->extractData($this->rebanoService->getRebanos(['incluir_archivados' => true]));
         $fincas  = $this->extractData($this->fincaService->getFincas(['incluir_archivados' => true]));
+
+        if (!empty($filters['rebano_id']) && empty($filters['finca_id'])) {
+            $rebObj = collect($rebanos)->firstWhere('id', (int) $filters['rebano_id']);
+            if ($rebObj) {
+                $filters['finca_id'] = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+            }
+        }
 
         return view('vacunacion.index', compact('vacunaciones', 'vacunas', 'rebanos', 'fincas', 'filters'));
     }

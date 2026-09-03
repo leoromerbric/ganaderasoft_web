@@ -26,7 +26,14 @@ class FincasController extends Controller
     {
         $nombre     = $request->query('nombre', '');
         $tipoFiltro = $request->query('tipo', '');
-        $archivado  = $request->query('archivado', 'activos');
+        
+        $rawArchivado = $request->query('archivado');
+        if ($rawArchivado !== null) {
+            $norm = strtolower(trim((string)$rawArchivado));
+            $archivado = in_array($norm, ['true', '1', 'archivados'], true) ? 'true' : 'false';
+        } else {
+            $archivado = 'false';
+        }
 
         // Cargar todas las fincas (activas y archivadas) para permitir filtrado reactivo e instantáneo en la vista
         $response = $this->fincasService->getFincas(['incluir_archivados' => true]);

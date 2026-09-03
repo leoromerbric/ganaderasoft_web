@@ -20,7 +20,14 @@ class RebanosController extends Controller
     {
         $fincaId   = $request->query('finca_id') ?? $request->query('id_finca');
         $nombre    = $request->query('nombre', '');
-        $archivado = $request->query('archivado', 'activos');
+        
+        $rawArchivado = $request->query('archivado');
+        if ($rawArchivado !== null) {
+            $norm = strtolower(trim((string)$rawArchivado));
+            $archivado = in_array($norm, ['true', '1', 'archivados'], true) ? 'true' : 'false';
+        } else {
+            $archivado = 'false';
+        }
 
         // Cargar todos los rebaños (activos y archivados) para permitir filtrado reactivo e instantáneo en la vista
         $response = $this->rebanosService->getRebanos(['incluir_archivados' => true]);

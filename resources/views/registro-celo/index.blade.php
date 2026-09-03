@@ -540,6 +540,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (selectRebano) selectRebano.value = '';
         if (fechaDesdeInput) fechaDesdeInput.value = '';
         if (fechaHastaInput) fechaHastaInput.value = '';
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
         poblarRebanosSegunFinca();
         aplicarFiltros();
     };

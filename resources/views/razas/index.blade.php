@@ -259,6 +259,9 @@
             const fv = document.getElementById('filtroVisibilidad');
             if (fb) fb.value = '';
             if (fv) fv.value = '';
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
             aplicarFiltros();
         };
     </script>

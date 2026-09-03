@@ -435,6 +435,27 @@ document.addEventListener('DOMContentLoaded', function () {
     inputFechaIni?.addEventListener('change', filtrarFilas);
     inputFechaFin?.addEventListener('change', filtrarFilas);
 
+    window.limpiarFiltros = function (e) {
+        if (e && e.preventDefault) e.preventDefault();
+        if (inputBusqueda) inputBusqueda.value = '';
+        if (selectFinca) selectFinca.value = '';
+        if (selectRebano) selectRebano.value = '';
+        if (inputFechaIni) inputFechaIni.value = '';
+        if (inputFechaFin) inputFechaFin.value = '';
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+        repopularRebanosPorFinca('');
+        filtrarFilas();
+    };
+
+    const btnReset = document.getElementById('btnResetFilters');
+    if (btnReset) {
+        btnReset.addEventListener('click', function(e) {
+            window.limpiarFiltros(e);
+        });
+    }
+
     // Filtrado inicial
     filtrarFilas();
 });

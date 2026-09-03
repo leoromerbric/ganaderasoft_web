@@ -63,14 +63,7 @@ class SemenToroController extends Controller
         $fechaInicio = $request->query('fecha_inicio');
         $fechaFin    = $request->query('fecha_fin');
 
-        $response   = $this->service->getList(
-            $toroId ? (int)$toroId : null,
-            $activo !== null && $activo !== '' ? (bool)$activo : null,
-            $fechaInicio,
-            $fechaFin,
-            $fincaId ? (int)$fincaId : null,
-            $rebanoId ? (int)$rebanoId : null
-        );
+        $response   = $this->service->getList();
         $data       = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $semenToros = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $toros      = $this->filterMaleAnimals($this->service->getToros(['incluir_archivados' => true]));
@@ -80,6 +73,19 @@ class SemenToroController extends Controller
 
         $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        if ($toroId) {
+            $t = collect($toros)->firstWhere('id', (int) $toroId);
+            if ($t) {
+                $rebanoId = $rebanoId ?: (data_get($t, 'rebano_id') ?? data_get($t, 'rebano.id'));
+                $fincaId  = $fincaId ?: (data_get($t, 'rebano.finca_id') ?? data_get($t, 'rebano.finca.id'));
+            }
+        } elseif ($rebanoId && !$fincaId) {
+            $rebObj = collect($rebanos)->firstWhere('id', (int) $rebanoId);
+            if ($rebObj) {
+                $fincaId = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+            }
+        }
 
         return view('semen-toro.index', compact(
             'semenToros', 'toros', 'fincas', 'rebanos',

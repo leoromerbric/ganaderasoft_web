@@ -18,11 +18,13 @@ class DiagnosticoController extends Controller
     public function index(Request $request)
     {
         $animalId    = $request->query('animal_id');
+        $fincaId     = $request->query('finca_id');
+        $rebanoId    = $request->query('rebano_id');
         $tipo        = $request->query('tipo');
         $fechaInicio = $request->query('fecha_inicio');
         $fechaFin    = $request->query('fecha_fin');
 
-        $response     = $this->service->getList($animalId, $tipo, $fechaInicio, $fechaFin);
+        $response     = $this->service->getList();
         $data         = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $diagnosticos = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $animales     = $this->service->getAnimales(['incluir_archivados' => true]);
@@ -33,7 +35,20 @@ class DiagnosticoController extends Controller
         $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
 
-        return view('diagnostico.index', compact('diagnosticos', 'animales', 'fincas', 'rebanos', 'animalId', 'tipo', 'fechaInicio', 'fechaFin'));
+        if ($animalId) {
+            $an = collect($animales)->firstWhere('id', (int) $animalId);
+            if ($an) {
+                $rebanoId = $rebanoId ?: (data_get($an, 'rebano_id') ?? data_get($an, 'rebano.id'));
+                $fincaId  = $fincaId ?: (data_get($an, 'rebano.finca_id') ?? data_get($an, 'rebano.finca.id'));
+            }
+        } elseif ($rebanoId && !$fincaId) {
+            $rebObj = collect($rebanos)->firstWhere('id', (int) $rebanoId);
+            if ($rebObj) {
+                $fincaId = $rebObj['finca_id'] ?? data_get($rebObj, 'finca.id') ?? null;
+            }
+        }
+
+        return view('diagnostico.index', compact('diagnosticos', 'animales', 'fincas', 'rebanos', 'animalId', 'fincaId', 'rebanoId', 'tipo', 'fechaInicio', 'fechaFin'));
     }
 
     public function create()
