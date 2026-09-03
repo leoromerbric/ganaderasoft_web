@@ -178,43 +178,46 @@
                             <div id="previewIcono" class="w-12 h-12 rounded-xl bg-white border border-blue-200 text-blue-700 font-bold flex items-center justify-center text-2xl shadow-xs uppercase">
                                 #
                             </div>
-                            <div>
-                                <p id="previewNombre" class="text-base font-bold text-gray-900">Sin registro</p>
+                            <div class="overflow-hidden">
+                                <p id="previewNombre" class="text-base font-bold text-gray-900 truncate">Sin registro</p>
                                 <p class="text-xs text-gray-500">Nuevo registro</p>
                             </div>
                         </div>
 
                         <!-- Mini Stats Preview -->
                         <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
-                            <div class="flex justify-between">
-                                <span class="font-semibold">Siglas:</span>
-                                <span id="previewSiglas" class="text-right">-</span>
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-500">Siglas:</span>
+                                <span id="previewSiglas" class="font-bold text-gray-900 text-right">-</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="font-semibold">Tipo de animal:</span>
-                                <span id="previewTipoAnimal" class="text-right">Seleccione...</span>
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-500">Tipo de animal:</span>
+                                <span id="previewTipoAnimal" class="font-bold text-gray-900 text-right">No seleccionado</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="font-semibold">Propósito:</span>
-                                <span id="previewProposito" class="text-right">Seleccione...</span>
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-500">Propósito:</span>
+                                <span id="previewProposito" class="font-bold text-gray-900 text-right">No seleccionado</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="font-semibold">Tipo de raza:</span>
-                                <span id="previewTipoRaza" class="text-right">-</span>
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-500">Tipo de raza:</span>
+                                <span id="previewTipoRaza" class="font-bold text-gray-900 text-right">-</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="font-semibold">Visibilidad:</span>
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-500">Proporción:</span>
+                                <span id="previewProporcion" class="font-bold text-gray-900 text-right">-</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-500">Visibilidad:</span>
                                 <span id="previewFinca" class="text-right font-medium text-blue-600">
                                     🌐 Pública
                                 </span>
                             </div>
                         </div>
-                        </div>
 
                         <!-- Action Buttons -->
                         <div class="space-y-3 pt-2">
                             <button type="submit"
-                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
+                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
                                 💾 Guardar
                             </button>
                             <a href="{{ route('admin.'.$catalog['slug'].'.index') }}"
@@ -238,6 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tipoAnimalInput = document.getElementById('tipo_animal_id');
     const propositoInput = document.getElementById('proposito');
     const tipoRazaInput = document.getElementById('tipo_raza');
+    const proporcionInput = document.getElementById('proporcion_raza');
     const fincaInput = document.getElementById('finca_id');
 
     function updatePreview() {
@@ -251,19 +255,25 @@ document.addEventListener('DOMContentLoaded', function () {
         const previewTipoAnimal = document.getElementById('previewTipoAnimal');
         if (previewTipoAnimal && tipoAnimalInput) {
             const selectedText = tipoAnimalInput.options[tipoAnimalInput.selectedIndex]?.text;
-            previewTipoAnimal.textContent = selectedText !== 'Seleccione un tipo...' ? selectedText : '-';
+            previewTipoAnimal.textContent = (tipoAnimalInput.value && selectedText && selectedText !== 'Seleccione un tipo...') ? selectedText : 'No seleccionado';
         }
 
         const previewProposito = document.getElementById('previewProposito');
         if (previewProposito && propositoInput) {
             const selectedText = propositoInput.options[propositoInput.selectedIndex]?.text;
-            previewProposito.textContent = selectedText !== 'Seleccione...' ? selectedText : '-';
+            previewProposito.textContent = (propositoInput.value && selectedText && selectedText !== 'Seleccione...') ? selectedText : 'No seleccionado';
         }
 
         const previewTipoRaza = document.getElementById('previewTipoRaza');
         if (previewTipoRaza && tipoRazaInput) {
             const selectedText = tipoRazaInput.options[tipoRazaInput.selectedIndex]?.text;
-            previewTipoRaza.textContent = selectedText !== 'Seleccione...' ? selectedText : '-';
+            previewTipoRaza.textContent = (tipoRazaInput.value && selectedText && selectedText !== 'Seleccione...') ? selectedText : '-';
+        }
+
+        const previewProporcion = document.getElementById('previewProporcion');
+        if (previewProporcion && proporcionInput) {
+            const selectedText = proporcionInput.options[proporcionInput.selectedIndex]?.text;
+            previewProporcion.textContent = (proporcionInput.value && selectedText && selectedText !== 'Seleccione...') ? selectedText : '-';
         }
 
         const previewFinca = document.getElementById('previewFinca');
@@ -278,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    const inputs = [nombreInput, siglasInput, tipoAnimalInput, propositoInput, tipoRazaInput, fincaInput];
+    const inputs = [nombreInput, siglasInput, tipoAnimalInput, propositoInput, tipoRazaInput, proporcionInput, fincaInput];
     inputs.forEach(input => {
         if(input) {
             input.addEventListener('input', updatePreview);
