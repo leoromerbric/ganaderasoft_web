@@ -48,7 +48,7 @@
             'active', 'activo' => 'Activo',
             'suspended', 'suspendido' => 'Suspendido',
             'inactive', 'inactivo' => 'Inactivo',
-            default => ucfirst($statusStr)
+            default => ucfirst(str_replace('_', ' ', $statusStr))
         };
         $roleLabel = match(strtolower($user['roles'][0] ?? $user['type_user'] ?? '')) {
             'admin', 'administrator', 'administrador', 'global_admin', 'globaladmin', 'superadmin', 'admin_global' => 'Administrador',
