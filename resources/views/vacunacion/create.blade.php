@@ -211,7 +211,7 @@
 
             <!-- Columna Derecha: Resumen de la Jornada (1 Tercio) -->
             <div class="space-y-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6 sticky top-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6 sticky top-24">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
                         <span>📊</span> Resumen de jornada
                     </h3>

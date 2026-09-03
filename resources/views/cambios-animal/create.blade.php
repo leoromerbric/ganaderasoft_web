@@ -218,7 +218,7 @@
 
             <!-- Columna Derecha: Sidebar Resumen (1 Tercio) -->
             <div class="space-y-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
                     <div class="bg-gray-50/80 border-b border-gray-100 px-6 py-4">
                         <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
                             <span>📋</span> Resumen del cambio

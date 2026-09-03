@@ -151,7 +151,7 @@
 
             <!-- Columna Derecha: Panel Lateral de Guardado (1 Tercio) -->
             <div class="space-y-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                         <h3 class="text-lg font-bold flex items-center gap-2">
                             <span>⚙️</span> Guardar cambios

@@ -144,7 +144,7 @@
 
             <!-- Columna Derecha: Panel de Guardado (1 Tercio) -->
             <div class="space-y-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
                     <div class="bg-slate-50 border-b border-gray-100 px-6 py-4">
                         <h3 class="text-base font-bold text-ganaderasoft-negro flex items-center gap-2">
                             <span>⚙️</span> Actualizar registro
