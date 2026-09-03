@@ -23,12 +23,7 @@ class RebanosController extends Controller
         $archivado = $request->query('archivado', 'activos');
 
         // Cargar todos los rebaños (activos y archivados) para permitir filtrado reactivo e instantáneo en la vista
-        $apiFilters = ['incluir_archivados' => true];
-        if ($fincaId) {
-            $apiFilters['finca_id'] = $fincaId;
-        }
-
-        $response = $this->rebanosService->getRebanos($apiFilters);
+        $response = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         
         $allRebanos = [];
         if (isset($response['success']) && $response['success']) {

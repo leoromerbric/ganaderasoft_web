@@ -34,13 +34,7 @@ class AnimalesController extends Controller
         $archivado = $request->query('archivado', 'activos');
 
         // Cargar todos los animales (activos y archivados) para permitir filtrado reactivo e instantáneo en la vista
-        $apiFilters = ['incluir_archivados' => true];
-        if ($idFinca) {
-            $apiFilters['finca_id'] = $idFinca;
-        }
-
-        // Obtener los animales aplicando rebaño y finca
-        $response = $this->animalesService->getAnimales($idRebano, $apiFilters);
+        $response = $this->animalesService->getAnimales(null, ['incluir_archivados' => true]);
         $animales = ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
 
         // Cargar catálogos auxiliares (rebaños y fincas completos)
@@ -50,16 +44,27 @@ class AnimalesController extends Controller
         $fincasResponse = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
+        // Si se especificó un rebaño pero no la finca, inferir automáticamente la finca correspondiente
+        if ($idRebano && !$idFinca) {
+            $rebanoObj = collect($rebanos)->firstWhere('id', $idRebano);
+            if ($rebanoObj) {
+                $idFinca = $rebanoObj['finca_id'] ?? data_get($rebanoObj, 'finca.id') ?? ($rebanoObj['id_Finca'] ?? null);
+            }
+        }
+
         // Construir mapas para validaciones, visualización y filtros en Javascript (UI)
-        $mapaRebanoFinca = collect($rebanos)->keyBy('id')->map(fn($r) => $r['finca_id'] ?? null)->all();
+        $mapaRebanoFinca = collect($rebanos)->mapWithKeys(function ($r) {
+            $fId = $r['finca_id'] ?? data_get($r, 'finca.id') ?? ($r['id_Finca'] ?? null);
+            return [$r['id'] => $fId];
+        })->all();
         $mapaFincaNombres = collect($fincas)->keyBy('id')->map(fn($f) => $f['nombre'] ?? ('Finca #' . $f['id']))->all();
         $mapaRebanoNombres = collect($rebanos)->keyBy('id')->map(fn($r) => $r['nombre'] ?? ('Rebaño #' . $r['id']))->all();
 
-        // Calcular estadísticas básicas en memoria
+        // Calcular estadísticas básicas en memoria sobre todos los animales
         $estadisticas = [
             'total'     => count($animales),
-            'machos'    => count(array_filter($animales, fn($a) => ($a['sexo'] ?? '') === 'M')),
-            'hembras'   => count(array_filter($animales, fn($a) => ($a['sexo'] ?? '') === 'H')),
+            'machos'    => count(array_filter($animales, fn($a) => strtoupper((string)($a['sexo'] ?? '')) === 'M')),
+            'hembras'   => count(array_filter($animales, fn($a) => strtoupper((string)($a['sexo'] ?? '')) === 'H')),
             'activos'   => count(array_filter($animales, fn($a) => !($a['archivado'] ?? false))),
             'archivados'=> count(array_filter($animales, fn($a) => (bool)($a['archivado'] ?? false))),
         ];

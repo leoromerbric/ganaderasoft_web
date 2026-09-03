@@ -249,7 +249,7 @@
 
                         <!-- Actions -->
                         <div class="flex items-center gap-2 mt-5 pt-3 border-t border-gray-100">
-                            <a href="{{ route('animales.index', ['rebano_id' => $rebanoId]) }}"
+                            <a href="{{ route('animales.index', array_filter(['rebano_id' => $rebanoId, 'finca_id' => $fincaIdAttr])) }}"
                                 class="flex-1 px-3 py-2.5 bg-ganaderasoft-celeste/15 hover:bg-ganaderasoft-azul text-ganaderasoft-azul hover:text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 shadow-2xs">
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -472,6 +472,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filtroNombre) filtroNombre.value = '';
         if (filtroOcupacion) filtroOcupacion.value = '';
         if (filtroArchivado) filtroArchivado.value = 'activos';
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
         actualizarDesplegableFincas();
         aplicarFiltros();
     };

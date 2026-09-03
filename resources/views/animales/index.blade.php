@@ -390,13 +390,13 @@
     const todasLasFincas  = @json($fincas);
     const todosLosRebanos = @json($rebanos);
 
-    function actualizarDesplegables() {
+    function actualizarDesplegables(targetRebanoVal = null) {
         const fincaSel   = document.getElementById('filtroFinca');
         const rebanoSel  = document.getElementById('filtroRebano');
         const archivado  = document.getElementById('filtroArchivado').value;
 
         const currentFincaVal = fincaSel.value;
-        const currentRebanoVal = rebanoSel.value;
+        const currentRebanoVal = targetRebanoVal !== null ? String(targetRebanoVal) : rebanoSel.value;
 
         // 1. Reconstruir opciones de Fincas según Estado
         fincaSel.innerHTML = '<option value="">Todas las fincas</option>';
@@ -412,7 +412,7 @@
             }
 
             const opt = document.createElement('option');
-            opt.value = finca.id;
+            opt.value = String(finca.id);
             opt.textContent = '🏡 ' + (finca.nombre || ('Finca #' + finca.id)) + (archivado === 'todos' && isArchivada ? ' (Archivada)' : '');
             if (String(currentFincaVal) === String(finca.id)) {
                 opt.selected = true;
@@ -443,8 +443,8 @@
             }
 
             const opt = document.createElement('option');
-            opt.value = rebano.id;
-            opt.dataset.finca = rFincaId || '';
+            opt.value = String(rebano.id);
+            opt.dataset.finca = rFincaId ? String(rFincaId) : '';
             opt.textContent = '🐄 ' + (rebano.nombre || ('Rebaño #' + rebano.id)) + (archivado === 'todos' && isArchivado ? ' (Archivado)' : '');
             if (String(currentRebanoVal) === String(rebano.id)) {
                 opt.selected = true;
@@ -463,7 +463,19 @@
         aplicarFiltros();
     });
 
-    document.getElementById('filtroRebano').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroRebano').addEventListener('change', function () {
+        const rebVal = this.value;
+        if (rebVal && mapaRebanoFinca && mapaRebanoFinca[rebVal]) {
+            const fincaIdOfReb = String(mapaRebanoFinca[rebVal]);
+            const fincaSel = document.getElementById('filtroFinca');
+            if (fincaSel && fincaSel.value !== fincaIdOfReb) {
+                fincaSel.value = fincaIdOfReb;
+                actualizarDesplegables(rebVal);
+            }
+        }
+        aplicarFiltros();
+    });
+
     document.getElementById('filtroSexo').addEventListener('change', aplicarFiltros);
     document.getElementById('filtroNombre').addEventListener('input', aplicarFiltros);
 
@@ -488,8 +500,8 @@
             const rowArchivado = row.dataset.archivado || 'activos';
             const rowNombre    = row.dataset.nombre || '';
 
-            const matchFinca     = !fincaId || (rowFinca === fincaId);
-            const matchRebano    = !rebanoId || (rowRebano === rebanoId);
+            const matchFinca     = !fincaId || (String(rowFinca) === String(fincaId));
+            const matchRebano    = !rebanoId || (String(rowRebano) === String(rebanoId));
             const matchSexo      = !sexo || (rowSexo.toUpperCase() === sexo.toUpperCase());
             const matchArchivado = (archivado === 'todos' || rowArchivado === archivado);
             const matchNombre    = !nombre || rowNombre.includes(nombre);
@@ -535,6 +547,10 @@
         document.getElementById('filtroSexo').value = '';
         document.getElementById('filtroArchivado').value = 'activos';
         
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
         actualizarDesplegables();
         aplicarFiltros();
     }
@@ -543,8 +559,5 @@
         actualizarDesplegables();
         aplicarFiltros();
     });
-
-    actualizarDesplegables();
-    aplicarFiltros();
 </script>
 @endsection
