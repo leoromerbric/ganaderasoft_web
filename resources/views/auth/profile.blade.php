@@ -44,6 +44,17 @@
     @php
         $statusStr = strtolower($user['status'] ?? 'active');
         $isSuspended = in_array($statusStr, ['suspended', 'inactive', 'suspendido', 'inactivo'], true);
+        $statusLabel = match($statusStr) {
+            'active', 'activo' => 'Activo',
+            'suspended', 'suspendido' => 'Suspendido',
+            'inactive', 'inactivo' => 'Inactivo',
+            default => ucfirst($statusStr)
+        };
+        $roleLabel = match(strtolower($user['roles'][0] ?? $user['type_user'] ?? '')) {
+            'admin', 'administrator', 'administrador', 'global_admin', 'globaladmin', 'superadmin', 'admin_global' => 'Administrador',
+            'propietario', 'owner' => 'Propietario',
+            default => ucfirst(str_replace('_', ' ', $user['roles'][0] ?? $user['type_user'] ?? 'Usuario'))
+        };
     @endphp
 
     @if($isSuspended)
@@ -141,15 +152,15 @@
             <div class="space-y-1">
                 <div class="flex flex-wrap items-center gap-2">
                     <h2 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">{{ $user['name'] ?? 'Usuario' }}</h2>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium capitalize {{ $isSuspended ? 'bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-600/20' : 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20' }}">
-                        {{ $isSuspended ? 'Suspendido' : ucfirst($user['status'] ?? 'activo') }}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium {{ $isSuspended ? 'bg-rose-50 text-rose-700 ring-1 ring-inset ring-rose-600/20' : 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20' }}">
+                        {{ $statusLabel }}
                     </span>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-y-1 gap-x-3 sm:gap-x-4 text-xs sm:text-sm text-gray-500">
                     <span class="flex items-center text-gray-600">
                         <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 text-ganaderasoft-azul shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                         {{ $user['email'] ?? 'No especificado' }}
                     </span>
@@ -178,7 +189,7 @@
             </div>
             <div>
                 <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400">Estado de cuenta</p>
-                <p class="text-sm sm:text-lg font-bold {{ $isSuspended ? 'text-rose-600' : 'text-emerald-600' }} capitalize">{{ $isSuspended ? 'Suspendido' : ucfirst($user['status'] ?? 'activo') }}</p>
+                <p class="text-sm sm:text-lg font-bold {{ $isSuspended ? 'text-rose-600' : 'text-emerald-600' }}">{{ $statusLabel }}</p>
             </div>
         </div>
 
@@ -192,11 +203,7 @@
             <div>
                 <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400">Rol principal</p>
                 <p class="text-sm sm:text-lg font-bold text-gray-900 truncate">
-                    @if(!empty($user['roles']))
-                        {{ ucfirst(str_replace('_', ' ', $user['roles'][0])) }}
-                    @else
-                        {{ ucfirst($user['type_user'] ?? 'Usuario') }}
-                    @endif
+                    {{ $roleLabel }}
                 </p>
             </div>
         </div>
@@ -211,7 +218,7 @@
             <div>
                 <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400">Miembro desde</p>
                 <p class="text-sm sm:text-lg font-bold text-gray-900">
-                    {{ isset($user['created_at']) ? \Carbon\Carbon::parse($user['created_at'])->format('d M, Y') : 'N/A' }}
+                    {{ isset($user['created_at']) ? \Carbon\Carbon::parse($user['created_at'])->locale('es')->isoFormat('D [de] MMMM [de] YYYY') : 'N/A' }}
                 </p>
             </div>
         </div>
@@ -278,15 +285,15 @@
                             <div class="flex flex-col min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between py-1.5 sm:py-2 border-b border-gray-200/50 gap-0.5 min-[480px]:gap-4">
                                 <span class="text-gray-500 font-medium text-xs shrink-0">Fecha de registro:</span>
                                 <span class="font-semibold text-gray-800 text-xs sm:text-sm text-left min-[480px]:text-right">
-                                    {{ isset($user['created_at']) ? \Carbon\Carbon::parse($user['created_at'])->format('d/m/Y H:i') : 'N/A' }}
+                                    {{ isset($user['created_at']) ? \Carbon\Carbon::parse($user['created_at'])->locale('es')->isoFormat('DD/MM/YYYY, h:mm a') : 'N/A' }}
                                 </span>
                             </div>
 
                             <div class="flex flex-col min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between py-1.5 sm:py-2 gap-1 min-[480px]:gap-4">
                                 <span class="text-gray-500 font-medium text-xs shrink-0">Estado del sistema:</span>
-                                <span class="inline-flex items-center w-fit px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mr-1.5"></span>
-                                    {{ ucfirst($user['status'] ?? 'activo') }}
+                                <span class="inline-flex items-center w-fit px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $isSuspended ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $isSuspended ? 'bg-rose-600' : 'bg-emerald-600' }} mr-1.5"></span>
+                                    {{ $statusLabel }}
                                 </span>
                             </div>
                         </div>
@@ -386,7 +393,15 @@
                                                 </svg>
                                             </div>
                                             <div>
-                                                <h4 class="font-bold text-gray-900 text-lg">{{ $roleDetail['name'] ?? ucfirst($roleDetail['code'] ?? 'Rol') }}</h4>
+                                                @php
+                                                    $rCode = strtolower($roleDetail['code'] ?? '');
+                                                    $rDisplay = $roleDetail['name'] ?? match($rCode) {
+                                                        'admin', 'administrator', 'administrador', 'global_admin', 'globaladmin', 'superadmin', 'admin_global' => 'Administrador',
+                                                        'propietario', 'owner' => 'Propietario',
+                                                        default => ucfirst(str_replace('_', ' ', $rCode ?: 'Rol'))
+                                                    };
+                                                @endphp
+                                                <h4 class="font-bold text-gray-900 text-lg">{{ $rDisplay }}</h4>
                                                 <p class="text-sm text-gray-500 font-medium mt-0.5">Rol de sistema asignado</p>
                                             </div>
                                         </div>

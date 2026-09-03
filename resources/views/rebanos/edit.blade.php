@@ -66,9 +66,9 @@
         @csrf
         @method('PUT')
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
             <!-- Columna Izquierda: 2 Cajas Independientes (2 Tercios) -->
-            <div class="lg:col-span-2 flex flex-col gap-6">
+            <div class="lg:col-span-2 flex flex-col gap-6 justify-between h-full">
                 <!-- Caja 1: Datos principales -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
@@ -112,28 +112,88 @@
                         </span>
                     </div>
 
-                    <div class="flex-1 flex flex-col justify-center">
+                    <div class="flex-1 flex flex-col justify-between gap-4">
                         @if($animalesCount > 0)
-                            <div class="p-5 bg-emerald-50/70 border border-emerald-100 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div class="p-4 bg-emerald-50/70 border border-emerald-100 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                 <div>
                                     <p class="text-sm font-bold text-emerald-900">
-                                        {{ $animalesCount === 1 ? 'Este rebaño tiene 1 animal asignado activamente.' : "Este rebaño tiene {$animalesCount} animales asignados activamente." }}
+                                        {{ $animalesCount === 1 ? '1 animal activo asignado a este lote' : "{$animalesCount} animales activos asignados a este lote" }}
                                     </p>
-                                    <p class="text-xs text-emerald-700 mt-0.5">Puedes consultar la lista detallada, aplicar movimientos o filtrar por etapas.</p>
+                                    <p class="text-xs text-emerald-700 mt-0.5">El rebaño cuenta con animales activos. Puedes consultar el listado o realizar traslados.</p>
                                 </div>
                                 <div class="shrink-0">
                                     <a href="{{ route('animales.index', ['rebano_id' => $rebanoId]) }}"
-                                       class="px-5 py-2.5 bg-white hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-semibold rounded-xl text-sm inline-flex items-center gap-2 transition-all shadow-xs">
-                                        <span>Ver animales asignados</span>
+                                       class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-xs inline-flex items-center gap-2 transition-all shadow-xs">
+                                        <span>Ver animales</span>
                                         <span>➔</span>
                                     </a>
                                 </div>
                             </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div class="p-3.5 bg-gray-50/80 border border-gray-100 rounded-xl space-y-1">
+                                    <span class="font-bold text-gray-800 flex items-center gap-1.5">
+                                        <span>➕</span> Registro de ganado
+                                    </span>
+                                    <p class="text-gray-500 leading-relaxed text-[11px]">
+                                        Incorpora nuevos animales directamente a tu inventario.
+                                    </p>
+                                    <a href="{{ route('animales.create') }}"
+                                       class="text-ganaderasoft-verde-oscuro font-bold hover:underline inline-flex items-center gap-1 pt-1 text-[11px]">
+                                        <span>+ Registrar animal</span>
+                                    </a>
+                                </div>
+
+                                <div class="p-3.5 bg-gray-50/80 border border-gray-100 rounded-xl space-y-1">
+                                    <span class="font-bold text-gray-800 flex items-center gap-1.5">
+                                        <span>🔄</span> Movimiento de lote
+                                    </span>
+                                    <p class="text-gray-500 leading-relaxed text-[11px]">
+                                        Transfiere animales de este grupo hacia otro rebaño.
+                                    </p>
+                                    <a href="{{ route('movimiento-rebano.create') }}"
+                                       class="text-blue-600 font-bold hover:underline inline-flex items-center gap-1 pt-1 text-[11px]">
+                                        <span>Trasladar animales ➔</span>
+                                    </a>
+                                </div>
+                            </div>
                         @else
-                            <div class="p-5 bg-gray-50 border border-gray-200 rounded-2xl flex items-center justify-between">
+                            <div class="p-4 bg-gray-50 border border-gray-200/80 rounded-2xl flex items-center justify-between">
                                 <div>
-                                    <p class="text-sm font-semibold text-gray-700">No hay animales asignados a este rebaño todavía.</p>
-                                    <p class="text-xs text-gray-400 mt-0.5">Los animales se asignan al registrarlos o mediante movimientos de lote.</p>
+                                    <p class="text-sm font-bold text-gray-800">No hay animales asignados a este rebaño todavía</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Puedes incorporar animales al rebaño mediante registro directo o traslados de lote.</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div class="p-4 bg-emerald-50/60 border border-emerald-100 rounded-xl space-y-2 flex flex-col justify-between">
+                                    <div>
+                                        <span class="font-bold text-emerald-900 flex items-center gap-1.5">
+                                            <span>➕</span> Registro de ganado
+                                        </span>
+                                        <p class="text-emerald-800/80 leading-relaxed text-[11px] mt-1">
+                                            Registra nuevos animales para incorporarlos a tu finca.
+                                        </p>
+                                    </div>
+                                    <a href="{{ route('animales.create') }}"
+                                       class="w-fit px-3 py-1.5 bg-white hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold rounded-lg text-xs inline-flex items-center gap-1 transition-all shadow-2xs">
+                                        <span>+ Nuevo animal</span>
+                                    </a>
+                                </div>
+
+                                <div class="p-4 bg-blue-50/60 border border-blue-100 rounded-xl space-y-2 flex flex-col justify-between">
+                                    <div>
+                                        <span class="font-bold text-blue-900 flex items-center gap-1.5">
+                                            <span>🔄</span> Traslado de lote
+                                        </span>
+                                        <p class="text-blue-800/80 leading-relaxed text-[11px] mt-1">
+                                            Mueve animales existentes desde otros rebaños hacia este grupo.
+                                        </p>
+                                    </div>
+                                    <a href="{{ route('movimiento-rebano.create') }}"
+                                       class="w-fit px-3 py-1.5 bg-white hover:bg-blue-100 border border-blue-300 text-blue-900 font-bold rounded-lg text-xs inline-flex items-center gap-1 transition-all shadow-2xs">
+                                        <span>Mover animales ➔</span>
+                                    </a>
                                 </div>
                             </div>
                         @endif
@@ -142,8 +202,8 @@
             </div>
 
             <!-- Columna Derecha: Resumen de Ficha en Vivo y Zona de Peligro (1 Tercio) -->
-            <div class="space-y-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between">
+            <div class="lg:col-span-1 h-full">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between h-full">
                     <div>
                         <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                             <h3 class="text-lg font-bold flex items-center gap-2">

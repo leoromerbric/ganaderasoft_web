@@ -56,9 +56,9 @@
     <form method="POST" action="{{ route('rebanos.store') }}" id="formCreateRebano" class="space-y-6">
         @csrf
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
             <!-- Columna Izquierda: 2 Cajas Independientes (2 Tercios) -->
-            <div class="lg:col-span-2 flex flex-col gap-6">
+            <div class="lg:col-span-2 flex flex-col gap-6 justify-between h-full">
                 
                 <!-- Card 1: Información Principal del Rebaño -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
@@ -138,7 +138,8 @@
             </div>
 
             <!-- Columna Derecha: Resumen de Ficha en Vivo (1 Tercio) -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between">
+            <div class="lg:col-span-1 h-full">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between h-full">
                 <div>
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                         <h3 class="text-lg font-bold flex items-center gap-2">
