@@ -97,8 +97,8 @@ class VacunacionController extends Controller
         }
 
         $vacunas = $this->extractData($this->vacunaService->getAll());
-        $rebanos = $this->extractData($this->rebanoService->getRebanos());
-        $fincas  = $this->extractData($this->fincaService->getFincas());
+        $rebanos = $this->extractData($this->rebanoService->getRebanos(['incluir_archivados' => true]));
+        $fincas  = $this->extractData($this->fincaService->getFincas(['incluir_archivados' => true]));
 
         return view('vacunacion.index', compact('vacunaciones', 'vacunas', 'rebanos', 'fincas', 'filters'));
     }

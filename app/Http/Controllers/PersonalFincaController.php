@@ -33,7 +33,7 @@ class PersonalFincaController extends Controller
         }
 
         // Get fincas for filter dropdown
-        $fincasResponse = $this->fincasService->getFincas();
+        $fincasResponse = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
         // Get tipos de trabajador from backend API

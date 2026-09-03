@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\AnimalesServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
 use App\Services\Contracts\PesoCorporalServiceInterface;
+use App\Services\Contracts\RebanosServiceInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -18,7 +20,9 @@ class PesoCorporalController extends Controller
 {
     public function __construct(
         protected PesoCorporalServiceInterface $pesoCorporalService,
-        protected AnimalesServiceInterface $animalesService
+        protected AnimalesServiceInterface $animalesService,
+        protected FincasServiceInterface $fincasService,
+        protected RebanosServiceInterface $rebanosService
     ) {}
 
     /**
@@ -62,7 +66,7 @@ class PesoCorporalController extends Controller
             return redirect()->route('dashboard')->with('error', $this->apiMessage($response, 'Error al obtener registros de peso corporal.'));
         }
 
-        $animalesResponse = $this->animalesService->getAnimales();
+        $animalesResponse = $this->animalesService->getAnimales(null, ['incluir_archivados' => true]);
         $rawAnimales      = $animalesResponse['data'] ?? [];
         $animales         = is_array($rawAnimales)
             ? (isset($rawAnimales['data']) && is_array($rawAnimales['data']) ? $rawAnimales['data'] : array_values(array_filter($rawAnimales, 'is_array')))
@@ -76,9 +80,14 @@ class PesoCorporalController extends Controller
                 $animalIdRegistro = data_get($peso, 'animal.id') ?? data_get($peso, 'etapa_animal.animal_id') ?? null;
                 $animal = $animalesPorId->get($animalIdRegistro, []);
 
+                $rebanoId = data_get($peso, 'animal.rebano_id') ?? ($animal['rebano_id'] ?? data_get($animal, 'rebano.id'));
+                $fincaId  = data_get($peso, 'animal.rebano.finca_id') ?? data_get($animal, 'rebano.finca_id') ?? data_get($animal, 'rebano.finca.id');
+
                 $peso['animal_id']             = $animalIdRegistro;
                 $peso['animal_nombre']         = data_get($peso, 'animal.nombre') ?? ($animal['nombre'] ?? null);
                 $peso['animal_identificacion'] = data_get($peso, 'animal.codigo_animal') ?? ($animal['codigo_animal'] ?? null);
+                $peso['rebano_id']             = $rebanoId;
+                $peso['finca_id']              = $fincaId;
 
                 return $peso;
             })->all();
@@ -95,7 +104,13 @@ class PesoCorporalController extends Controller
             'peso_minimo'   => $pesos->isNotEmpty() ? number_format($pesos->min(), 2, ',', '.') : '0,00',
         ];
 
-        return view('peso-corporal.index', compact('pesosCorporales', 'animales', 'animalId', 'fechaInicio', 'fechaFin', 'estadisticas'));
+        $fincasRes = $this->fincasService->getFincas(['incluir_archivados' => true]);
+        $fincas = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
+        $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        return view('peso-corporal.index', compact('pesosCorporales', 'animales', 'fincas', 'rebanos', 'animalId', 'fechaInicio', 'fechaFin', 'estadisticas'));
     }
 
     /**

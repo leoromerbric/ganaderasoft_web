@@ -77,11 +77,12 @@ class ApiReproduccionAnimalService extends BaseApiService implements Reproduccio
     /**
      * Obtiene el listado de animales para selectores.
      *
+     * @param array $filters
      * @return array
      */
-    public function getAnimales(): array
+    public function getAnimales(array $filters = []): array
     {
-        $response = $this->get('/animales' . $this->buildQuery([], true));
+        $response = $this->get('/animales' . $this->buildQuery($filters, true));
         return $this->extractCollection($response);
     }
 }

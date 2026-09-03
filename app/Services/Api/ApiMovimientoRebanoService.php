@@ -81,33 +81,36 @@ class ApiMovimientoRebanoService extends BaseApiService implements MovimientoReb
     /**
      * Obtiene la lista completa de fincas para selectores.
      *
+     * @param array $filters
      * @return array
      */
-    public function getFincas(): array
+    public function getFincas(array $filters = []): array
     {
-        $response = $this->get('/fincas' . $this->buildQuery([], true));
+        $response = $this->get('/fincas' . $this->buildQuery($filters, true));
         return $this->extractCollection($response);
     }
 
     /**
      * Obtiene la lista completa de rebaños para selectores.
      *
+     * @param array $filters
      * @return array
      */
-    public function getRebanos(): array
+    public function getRebanos(array $filters = []): array
     {
-        $response = $this->get('/rebanos' . $this->buildQuery([], true));
+        $response = $this->get('/rebanos' . $this->buildQuery($filters, true));
         return $this->extractCollection($response);
     }
 
     /**
      * Obtiene la lista completa de animales para selectores.
      *
+     * @param array $filters
      * @return array
      */
-    public function getAnimales(): array
+    public function getAnimales(array $filters = []): array
     {
-        $response = $this->get('/animales' . $this->buildQuery([], true));
+        $response = $this->get('/animales' . $this->buildQuery($filters, true));
         return $this->extractCollection($response);
     }
 }

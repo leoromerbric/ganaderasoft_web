@@ -23,7 +23,7 @@ class PersonalController extends Controller
     public function index(Request $request)
     {
         // Get list of fincas for dropdown
-        $fincasResponse = $this->fincasService->getFincas();
+        $fincasResponse = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
         // Check if there's a selected finca in session

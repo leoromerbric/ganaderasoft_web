@@ -3,46 +3,6 @@
 @section('title', 'Diagnósticos veterinarios')
 
 @section('content')
-@php
-    $fincasDisponibles = [];
-    $rebanosDisponibles = [];
-
-    foreach($animales as $an) {
-        $fId = $an['rebano']['finca']['id_Finca'] ?? ($an['rebano']['finca']['id'] ?? ($an['rebano']['id_Finca'] ?? ($an['finca_id'] ?? null)));
-        $fNom = $an['rebano']['finca']['Nombre'] ?? ($an['rebano']['finca']['nombre'] ?? ($fId ? 'Finca #'.$fId : null));
-        if ($fId && $fNom && !isset($fincasDisponibles[$fId])) {
-            $fincasDisponibles[$fId] = $fNom;
-        }
-
-        $rId = $an['rebano']['id_Rebano'] ?? ($an['rebano']['id'] ?? ($an['id_Rebano'] ?? null));
-        $rNom = $an['rebano']['Nombre'] ?? ($an['rebano']['nombre'] ?? ($rId ? 'Rebaño #'.$rId : null));
-        if ($rId && $rNom && !isset($rebanosDisponibles[$rId])) {
-            $rebanosDisponibles[$rId] = [
-                'nombre' => $rNom,
-                'finca_id' => $fId ? (string)$fId : ''
-            ];
-        }
-    }
-
-    foreach($diagnosticos as $dg) {
-        $fId = data_get($dg, 'animal.rebano.finca.id_Finca') ?? data_get($dg, 'animal.rebano.finca.id') ?? data_get($dg, 'animal.rebano.id_Finca') ?? data_get($dg, 'animal.finca_id');
-        $fNom = data_get($dg, 'animal.rebano.finca.Nombre') ?? data_get($dg, 'animal.rebano.finca.nombre') ?? ($fId ? 'Finca #'.$fId : null);
-        if ($fId && $fNom && !isset($fincasDisponibles[$fId])) {
-            $fincasDisponibles[$fId] = $fNom;
-        }
-
-        $rId = data_get($dg, 'animal.rebano.id_Rebano') ?? data_get($dg, 'animal.rebano.id') ?? data_get($dg, 'animal.id_Rebano');
-        $rNom = data_get($dg, 'animal.rebano.Nombre') ?? data_get($dg, 'animal.rebano.nombre') ?? ($rId ? 'Rebaño #'.$rId : null);
-        if ($rId && $rNom && !isset($rebanosDisponibles[$rId])) {
-            $rebanosDisponibles[$rId] = [
-                'nombre' => $rNom,
-                'finca_id' => $fId ? (string)$fId : ''
-            ];
-        }
-    }
-    asort($fincasDisponibles);
-@endphp
-
 <div class="space-y-8">
     <!-- Header section -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -93,10 +53,16 @@
             <div>
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
                 <select id="filtroFinca"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
                     <option value="">Todas las fincas</option>
-                    @foreach($fincasDisponibles as $fId => $fNom)
-                        <option value="{{ $fId }}">{{ $fNom }}</option>
+                    @foreach($fincas as $finca)
+                        @php
+                            $fId = $finca['id'] ?? $finca['id_Finca'] ?? '';
+                            $fNom = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
+                        @endphp
+                        @if($fId)
+                            <option value="{{ $fId }}">{{ $fNom }}</option>
+                        @endif
                     @endforeach
                 </select>
             </div>
@@ -105,10 +71,17 @@
             <div>
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño</label>
                 <select id="filtroRebano"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
                     <option value="">Todos los rebaños</option>
-                    @foreach($rebanosDisponibles as $rId => $rData)
-                        <option value="{{ $rId }}" data-finca-id="{{ $rData['finca_id'] }}">{{ $rData['nombre'] }}</option>
+                    @foreach($rebanos as $rebano)
+                        @php
+                            $rId = $rebano['id'] ?? $rebano['id_Rebano'] ?? '';
+                            $rNom = $rebano['nombre'] ?? $rebano['Nombre'] ?? ('Rebaño #'.$rId);
+                            $rFinca = $rebano['finca_id'] ?? data_get($rebano, 'finca.id') ?? '';
+                        @endphp
+                        @if($rId)
+                            <option value="{{ $rId }}" data-finca-id="{{ $rFinca }}">{{ $rNom }}</option>
+                        @endif
                     @endforeach
                 </select>
             </div>

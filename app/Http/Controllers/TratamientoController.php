@@ -26,9 +26,9 @@ class TratamientoController extends Controller
         $tratamientos = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
         $diagnosticos = $this->service->getDiagnosticos();
 
-        $fincasRes  = $this->fincasService->getFincas();
+        $fincasRes  = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas     = $fincasRes['data'] ?? [];
-        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos    = $rebanosRes['data'] ?? [];
 
         return view('tratamiento.index', compact('tratamientos', 'diagnosticos', 'fincas', 'rebanos', 'diagnosticoId', 'fechaInicio', 'fechaFin'));

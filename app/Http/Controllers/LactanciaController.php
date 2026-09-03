@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\AnimalesServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
 use App\Services\Contracts\LactanciaServiceInterface;
+use App\Services\Contracts\RebanosServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +22,9 @@ class LactanciaController extends Controller
 {
     public function __construct(
         protected LactanciaServiceInterface $lactanciaService,
-        protected AnimalesServiceInterface $animalesService
+        protected AnimalesServiceInterface $animalesService,
+        protected FincasServiceInterface $fincasService,
+        protected RebanosServiceInterface $rebanosService
     ) {}
 
     /**
@@ -61,11 +65,12 @@ class LactanciaController extends Controller
     /**
      * Extrae la lista de animales del catálogo de forma segura.
      *
+     * @param array<string, mixed> $filters
      * @return array<int, array<string, mixed>>
      */
-    private function getAnimalesCatalogo(): array
+    private function getAnimalesCatalogo(array $filters = []): array
     {
-        $animalesResponse = $this->animalesService->getAnimales();
+        $animalesResponse = $this->animalesService->getAnimales(null, $filters);
         $raw = $animalesResponse['data'] ?? [];
 
         return is_array($raw)
@@ -91,24 +96,40 @@ class LactanciaController extends Controller
                 return redirect()->route('dashboard')->with('error', $this->apiMessage($response, 'Error al consultar lactancias.'));
             }
 
-            $animales  = $this->getAnimalesCatalogo();
-            $animalMap = collect($animales)
+            $animales      = $this->getAnimalesCatalogo(['incluir_archivados' => true]);
+            $animalesPorId = collect($animales)
                 ->filter(fn ($a) => isset($a['id']))
-                ->mapWithKeys(fn ($a) => [(int) $a['id'] => ($a['nombre'] ?? ('Animal #' . $a['id']))])
-                ->all();
+                ->keyBy(fn ($a) => (int) $a['id']);
 
             $rawLactancias = $response['data'] ?? [];
             $lactancias = collect(is_array($rawLactancias) ? array_values(array_filter($rawLactancias, 'is_array')) : [])
-                ->map(function ($lactancia) use ($animalMap) {
+                ->map(function ($lactancia) use ($animalesPorId) {
                     $animalIdRegistro = data_get($lactancia, 'animal.id') ?? data_get($lactancia, 'etapa_animal.animal_id') ?? $lactancia['animal_id'] ?? null;
+                    $animal = $animalIdRegistro ? $animalesPorId->get((int) $animalIdRegistro, []) : [];
+
+                    $rebanoId = data_get($lactancia, 'animal.rebano_id') ?? ($animal['rebano_id'] ?? data_get($animal, 'rebano.id'));
+                    $fincaId  = data_get($lactancia, 'animal.rebano.finca_id') ?? data_get($animal, 'rebano.finca_id') ?? data_get($animal, 'rebano.finca.id');
+
                     $animalNombre = data_get($lactancia, 'animal.nombre')
-                        ?? ($animalIdRegistro !== null ? ($animalMap[(int) $animalIdRegistro] ?? ('Animal #' . $animalIdRegistro)) : 'Animal no disponible');
+                        ?? ($animal['nombre'] ?? ($animalIdRegistro !== null ? ('Animal #' . $animalIdRegistro) : 'Animal no disponible'));
+                    $animalCodigo = data_get($lactancia, 'animal.codigo_animal')
+                        ?? ($animal['codigo_animal'] ?? '');
+
                     $lactancia['animal_nombre'] = $animalNombre;
+                    $lactancia['animal_codigo'] = $animalCodigo;
                     $lactancia['animal_id']     = $animalIdRegistro;
+                    $lactancia['rebano_id']     = $rebanoId;
+                    $lactancia['finca_id']      = $fincaId;
                     return $lactancia;
                 })->all();
 
-            return view('lactancia.index', compact('lactancias', 'animales', 'animalId'));
+            $fincasRes = $this->fincasService->getFincas(['incluir_archivados' => true]);
+            $fincas = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+            $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
+            $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+            return view('lactancia.index', compact('lactancias', 'animales', 'fincas', 'rebanos', 'animalId'));
         } catch (\Exception $e) {
             Log::error('Error en LactanciaController@index: ' . $e->getMessage());
             return redirect()->route('dashboard')->with('error', 'Error al cargar los períodos de lactancia.');

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\AnimalesServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
 use App\Services\Contracts\MedidasCorporalesServiceInterface;
+use App\Services\Contracts\RebanosServiceInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +21,9 @@ class MedidasCorporalesController extends Controller
 {
     public function __construct(
         protected MedidasCorporalesServiceInterface $medidasCorporalesService,
-        protected AnimalesServiceInterface $animalesService
+        protected AnimalesServiceInterface $animalesService,
+        protected FincasServiceInterface $fincasService,
+        protected RebanosServiceInterface $rebanosService
     ) {}
 
     /**
@@ -62,8 +66,8 @@ class MedidasCorporalesController extends Controller
                 return redirect()->route('dashboard')->with('error', $this->apiMessage($response, 'Error al consultar medidas corporales.'));
             }
 
-            // Cargar animales para los selectores de filtro
-            $animalesResponse = $this->animalesService->getAnimales();
+            // Cargar animales para los selectores de filtro y mapeo histórico
+            $animalesResponse = $this->animalesService->getAnimales(null, ['incluir_archivados' => true]);
             $rawAnimales      = $animalesResponse['data'] ?? [];
             $animales         = is_array($rawAnimales)
                 ? (isset($rawAnimales['data']) && is_array($rawAnimales['data']) ? $rawAnimales['data'] : array_values(array_filter($rawAnimales, 'is_array')))
@@ -79,11 +83,16 @@ class MedidasCorporalesController extends Controller
                     $anId = $medida['animal_id'] ?? data_get($medida, 'etapa_animal.animal_id') ?? data_get($medida, 'animal.id') ?? null;
                     $animal = $anId ? $animalesPorId->get((int) $anId, []) : [];
 
+                    $rebanoId = data_get($medida, 'animal.rebano_id') ?? ($animal['rebano_id'] ?? data_get($animal, 'rebano.id'));
+                    $fincaId  = data_get($medida, 'animal.rebano.finca_id') ?? data_get($animal, 'rebano.finca_id') ?? data_get($animal, 'rebano.finca.id');
+
                     $medida['animal_nombre'] = data_get($medida, 'animal.nombre')
                         ?? ($animal['nombre'] ?? ($anId ? ('Animal #' . $anId) : 'Animal no disponible'));
                     $medida['animal_identificacion'] = data_get($medida, 'animal.codigo_animal')
                         ?? ($animal['codigo_animal'] ?? '');
                     $medida['animal_id_ref'] = $anId;
+                    $medida['rebano_id'] = $rebanoId;
+                    $medida['finca_id'] = $fincaId;
 
                     return $medida;
                 })->all();
@@ -98,7 +107,13 @@ class MedidasCorporalesController extends Controller
                 'circunferencia_promedio' => $perimetros->isNotEmpty() ? number_format($perimetros->avg(), 1, '.', '') : '0.0',
             ];
 
-            return view('medidas-corporales.index', compact('medidasCorporales', 'animales', 'animalId', 'estadisticas'));
+            $fincasRes = $this->fincasService->getFincas(['incluir_archivados' => true]);
+            $fincas = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+            $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
+            $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+            return view('medidas-corporales.index', compact('medidasCorporales', 'animales', 'fincas', 'rebanos', 'animalId', 'estadisticas'));
         } catch (\Exception $e) {
             Log::error('Error en MedidasCorporalesController@index: ' . $e->getMessage());
             return redirect()->route('dashboard')->with('error', 'Error al cargar los registros de medidas corporales.');

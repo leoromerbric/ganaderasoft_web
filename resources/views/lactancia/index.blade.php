@@ -44,14 +44,33 @@
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
-                <select id="filtroFinca" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                <select id="filtroFinca" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
                     <option value="">Todas las fincas</option>
+                    @foreach($fincas as $finca)
+                        @php
+                            $fId = $finca['id'] ?? $finca['id_Finca'] ?? '';
+                            $fNom = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
+                        @endphp
+                        @if($fId)
+                            <option value="{{ $fId }}">{{ $fNom }}</option>
+                        @endif
+                    @endforeach
                 </select>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño</label>
-                <select id="filtroRebano" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                <select id="filtroRebano" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
                     <option value="">Todos los rebaños</option>
+                    @foreach($rebanos as $rebano)
+                        @php
+                            $rId = $rebano['id'] ?? $rebano['id_Rebano'] ?? '';
+                            $rNom = $rebano['nombre'] ?? $rebano['Nombre'] ?? ('Rebaño #'.$rId);
+                            $rFinca = $rebano['finca_id'] ?? data_get($rebano, 'finca.id') ?? '';
+                        @endphp
+                        @if($rId)
+                            <option value="{{ $rId }}" data-finca="{{ $rFinca }}">{{ $rNom }}</option>
+                        @endif
+                    @endforeach
                 </select>
             </div>
             <div>
@@ -77,12 +96,12 @@
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200" id="tablaContenedor">
                     <thead class="bg-gray-50">
-                        <tr class="flex justify-between items-center w-full">
-                            <th class="w-1/5 px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Ejemplar</th>
-                            <th class="w-1/5 px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha inicio</th>
-                            <th class="w-1/5 px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha fin / secado</th>
-                            <th class="w-1/5 px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
-                            <th class="w-1/5 px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                        <tr>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Ejemplar</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha inicio</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha fin / secado</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
+                            <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-100 text-sm" id="tablaLactancias">
@@ -90,22 +109,26 @@
                         @php
                             $lactanciaId = $lactancia['id'] ?? null;
                             $animalIdReg = $lactancia['animal_id'] ?? data_get($lactancia, 'animal.id') ?? '';
+                            $rebanoId    = $lactancia['rebano_id'] ?? '';
+                            $fincaId     = $lactancia['finca_id'] ?? '';
                             $animalNombre = $lactancia['animal_nombre'] ?? data_get($lactancia, 'animal.nombre') ?? 'Hembra no disponible';
-                            $animalCodigo = data_get($lactancia, 'animal.codigo_animal') ?? '';
+                            $animalCodigo = $lactancia['animal_codigo'] ?? data_get($lactancia, 'animal.codigo_animal') ?? '';
                             $fechaInicio = $lactancia['fecha_inicio'] ?? null;
                             $fechaFin = $lactancia['fecha_fin'] ?? null;
                             $secado = $lactancia['secado'] ?? null;
 
                             $isActiva = empty($fechaFin) || (strtotime($fechaFin) && strtotime($fechaFin) > time());
                         @endphp
-                        <tr class="hover:bg-gray-50/80 transition-colors fila-lactancia flex justify-between items-center w-full"
+                        <tr class="hover:bg-gray-50/80 transition-colors fila-lactancia"
                             data-animal-id="{{ $animalIdReg }}"
+                            data-rebano-id="{{ $rebanoId }}"
+                            data-finca-id="{{ $fincaId }}"
                             data-nombre="{{ strtolower($animalNombre) }}"
                             data-codigo="{{ strtolower($animalCodigo) }}"
                             data-activa="{{ $isActiva ? '1' : '0' }}">
-                            <td class="w-1/5 px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis">
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 shrink-0 rounded-xl bg-pink-50 border border-pink-100 text-pink-600 font-bold flex items-center justify-center text-lg">
+                                    <div class="w-10 h-10 shrink-0 rounded-xl bg-pink-50 border border-pink-100 text-pink-600 font-bold flex items-center justify-center text-lg shadow-2xs">
                                         🐄
                                     </div>
                                     <div class="overflow-hidden">
@@ -116,10 +139,10 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="w-1/5 px-6 py-4 whitespace-nowrap text-gray-700 font-medium">
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-medium">
                                 {{ $fechaInicio ? \Carbon\Carbon::parse($fechaInicio)->format('d/m/Y') : '--/--/----' }}
                             </td>
-                            <td class="w-1/5 px-6 py-4 whitespace-nowrap text-gray-600 font-medium">
+                            <td class="px-6 py-4 whitespace-nowrap text-gray-600 font-medium">
                                 @if($fechaFin)
                                     <span>{{ \Carbon\Carbon::parse($fechaFin)->format('d/m/Y') }}</span>
                                 @else
@@ -129,7 +152,7 @@
                                     <p class="text-xs text-gray-400 mt-0.5">Secado: {{ \Carbon\Carbon::parse($secado)->format('d/m/Y') }}</p>
                                 @endif
                             </td>
-                            <td class="w-1/5 px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 @if($isActiva)
                                     <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                                         🟢 Activa
@@ -240,42 +263,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabla = document.getElementById('tablaContenedor');
     const sinResultados = document.getElementById('sinResultadosFiltro');
 
-    const animalesData = @json($animales ?? []);
-    const fM = {}, rM = {};
-
-    animalesData.forEach(an => {
-        const fi = an.rebano?.finca?.id || an.rebano?.finca_id;
-        const fn = an.rebano?.finca?.nombre;
-        const ri = an.rebano?.id || an.rebano_id;
-        const rn = an.rebano?.nombre;
-        if (fi && !fM[fi]) fM[fi] = fn || 'Finca #' + fi;
-        if (ri && !rM[ri]) rM[ri] = { n: rn || 'Rebaño #' + ri, f: fi };
-    });
-
-    Object.keys(fM).sort((x, y) => fM[x].localeCompare(fM[y])).forEach(id => {
-        const opt = document.createElement('option');
-        opt.value = id;
-        opt.textContent = fM[id];
-        f.appendChild(opt);
-    });
-
-    function poblarRebanos(preserveId = null) {
-        const sf = f.value;
-        const prv = preserveId !== null ? preserveId : r.value;
-        r.innerHTML = '<option value="">Todos los rebaños</option>';
-
-        Object.keys(rM).forEach(id => {
-            if (!sf || String(rM[id].f) === String(sf)) {
-                const opt = document.createElement('option');
-                opt.value = id;
-                opt.textContent = rM[id].n;
-                r.appendChild(opt);
-            }
+    function filterSelectRebanos(fincaId) {
+        if (!r) return;
+        Array.from(r.options).forEach((opt, idx) => {
+            if (idx === 0) return;
+            const matches = !fincaId || opt.dataset.finca === fincaId;
+            opt.style.display = matches ? '' : 'none';
         });
-
-        if (prv && Array.from(r.options).some(o => String(o.value) === String(prv))) {
-            r.value = String(prv);
-        } else {
+        if (r.value && r.options[r.selectedIndex]?.style.display === 'none') {
             r.value = '';
         }
     }
@@ -286,33 +281,30 @@ document.addEventListener('DOMContentLoaded', function () {
         const sr = r ? r.value : '';
         const valEst = est ? est.value : '';
 
-        const idsValidos = new Set();
-        animalesData.forEach(an => {
-            const fi = an.rebano?.finca?.id || an.rebano?.finca_id;
-            const ri = an.rebano?.id || an.rebano_id;
-            if ((!sf || String(fi) === String(sf)) && (!sr || String(ri) === String(sr))) {
-                idsValidos.add(String(an.id));
-            }
-        });
-
         let totalVisibles = 0;
 
         filas.forEach(fila => {
-            const rowAnId   = fila.dataset.animalId || '';
-            const rowNombre = fila.dataset.nombre || '';
-            const rowCodigo = fila.dataset.codigo || '';
+            const rowAnId   = String(fila.dataset.animalId || '');
+            const rowRebano = String(fila.dataset.rebanoId || '');
+            const rowFinca  = String(fila.dataset.fincaId || '');
+            const rowNombre = (fila.dataset.nombre || '').toLowerCase();
+            const rowCodigo = (fila.dataset.codigo || '').toLowerCase();
             const rowActiva = fila.dataset.activa || '';
 
             let visible = true;
 
             if (query !== '') {
-                if (!rowNombre.includes(query) && !rowCodigo.includes(query)) {
+                if (!rowNombre.includes(query) && !rowCodigo.includes(query) && !rowAnId.includes(query)) {
                     visible = false;
                 }
             }
 
-            if (visible && (sf !== '' || sr !== '')) {
-                if (!idsValidos.has(String(rowAnId))) visible = false;
+            if (visible && sf !== '') {
+                if (rowFinca !== String(sf)) visible = false;
+            }
+
+            if (visible && sr !== '') {
+                if (rowRebano !== String(sr)) visible = false;
             }
 
             if (visible && valEst !== '') {
@@ -337,21 +329,18 @@ document.addEventListener('DOMContentLoaded', function () {
     if (txtBuscar) txtBuscar.addEventListener('input', aplicarFiltros);
     
     if (f) {
-        f.addEventListener('change', () => {
-            poblarRebanos();
+        f.addEventListener('change', function () {
+            filterSelectRebanos(this.value);
             aplicarFiltros();
         });
     }
 
     if (r) {
-        r.addEventListener('change', () => {
-            const selRebano = r.value;
-            if (selRebano && rM[selRebano] && rM[selRebano].f) {
-                const fincaAsociada = String(rM[selRebano].f);
-                if (f.value !== fincaAsociada) {
-                    f.value = fincaAsociada;
-                    poblarRebanos(selRebano);
-                }
+        r.addEventListener('change', function () {
+            const selectedOpt = this.options[this.selectedIndex];
+            if (selectedOpt && selectedOpt.dataset.finca && f && !f.value) {
+                f.value = selectedOpt.dataset.finca;
+                filterSelectRebanos(selectedOpt.dataset.finca);
             }
             aplicarFiltros();
         });
@@ -359,15 +348,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (est) est.addEventListener('change', aplicarFiltros);
 
-    poblarRebanos();
-
     window.limpiarFiltros = function(e) {
         if (e) e.preventDefault();
         if (txtBuscar) txtBuscar.value = '';
         if (f) f.value = '';
         if (r) r.value = '';
         if (est) est.value = '';
-        poblarRebanos();
+        filterSelectRebanos('');
         aplicarFiltros();
     };
 });

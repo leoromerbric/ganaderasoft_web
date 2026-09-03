@@ -73,12 +73,12 @@ class SemenToroController extends Controller
         );
         $data       = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $semenToros = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
-        $toros      = $this->filterMaleAnimals($this->service->getToros());
+        $toros      = $this->filterMaleAnimals($this->service->getToros(['incluir_archivados' => true]));
 
-        $fincasRes  = $this->fincasService->getFincas();
+        $fincasRes  = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas     = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
 
-        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
 
         return view('semen-toro.index', compact(

@@ -75,11 +75,13 @@ class ApiSemenToroService extends BaseApiService implements SemenToroServiceInte
     /**
      * Obtiene el catálogo de toros (machos) para selectores.
      *
+     * @param array $filters
      * @return array
      */
-    public function getToros(): array
+    public function getToros(array $filters = []): array
     {
-        $response = $this->get('/animales' . $this->buildQuery(['sexo' => 'M'], true));
+        $params = array_merge(['sexo' => 'M'], $filters);
+        $response = $this->get('/animales' . $this->buildQuery($params, true));
         return $this->extractCollection($response);
     }
 }

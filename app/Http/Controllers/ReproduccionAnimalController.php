@@ -52,12 +52,12 @@ class ReproduccionAnimalController extends Controller
         );
         $data           = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $reproducciones = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
-        $animales       = $this->filterFemaleAnimals($this->service->getAnimales());
+        $animales       = $this->filterFemaleAnimals($this->service->getAnimales(['incluir_archivados' => true]));
 
-        $fincasRes  = $this->fincasService->getFincas();
+        $fincasRes  = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas     = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
 
-        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
 
         $etapasRes  = $this->etapaService->getAll();

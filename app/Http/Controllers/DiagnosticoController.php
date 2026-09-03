@@ -3,11 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\DiagnosticoServiceInterface;
+use App\Services\Contracts\FincasServiceInterface;
+use App\Services\Contracts\RebanosServiceInterface;
 use Illuminate\Http\Request;
 
 class DiagnosticoController extends Controller
 {
-    public function __construct(protected DiagnosticoServiceInterface $service) {}
+    public function __construct(
+        protected DiagnosticoServiceInterface $service,
+        protected FincasServiceInterface $fincasService,
+        protected RebanosServiceInterface $rebanosService
+    ) {}
 
     public function index(Request $request)
     {
@@ -19,9 +25,15 @@ class DiagnosticoController extends Controller
         $response     = $this->service->getList($animalId, $tipo, $fechaInicio, $fechaFin);
         $data         = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $diagnosticos = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
-        $animales     = $this->service->getAnimales();
+        $animales     = $this->service->getAnimales(['incluir_archivados' => true]);
 
-        return view('diagnostico.index', compact('diagnosticos', 'animales', 'animalId', 'tipo', 'fechaInicio', 'fechaFin'));
+        $fincasRes = $this->fincasService->getFincas(['incluir_archivados' => true]);
+        $fincas = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
+        $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+        return view('diagnostico.index', compact('diagnosticos', 'animales', 'fincas', 'rebanos', 'animalId', 'tipo', 'fechaInicio', 'fechaFin'));
     }
 
     public function create()

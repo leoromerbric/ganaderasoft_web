@@ -9,7 +9,7 @@ interface MovimientoRebanoServiceInterface
     public function create(array $data): array;
     public function update(int $id, array $data): array;
     public function eliminar(int $id): array;
-    public function getFincas(): array;
-    public function getRebanos(): array;
-    public function getAnimales(): array;
+    public function getFincas(array $filters = []): array;
+    public function getRebanos(array $filters = []): array;
+    public function getAnimales(array $filters = []): array;
 }

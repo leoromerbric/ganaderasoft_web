@@ -42,11 +42,12 @@ class RegistroCeloController extends Controller
         $response  = $this->service->getList($animalId, $fechaInicio, $fechaFin);
         $data      = ($response['success'] ?? false) ? ($response['data'] ?? []) : [];
         $registros = (isset($data['data']) && is_array($data['data']) && !isset($data['id'])) ? $data['data'] : $data;
-        $animales  = $this->filterFemaleAnimals($this->service->getAnimales());
+        $animales  = $this->filterFemaleAnimals($this->service->getAnimales(['incluir_archivados' => true]));
 
-        $fincasRes  = $this->fincasService->getFincas();
-        $fincas     = $fincasRes['data'] ?? [];
-        $rebanosRes = $this->rebanosService->getRebanos();
+        $fincasRes = $this->fincasService->getFincas(['incluir_archivados' => true]);
+        $fincas = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+        $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos    = $rebanosRes['data'] ?? [];
         $etapasRes  = $this->etapaService->getAll();
         $etapas     = $etapasRes['data']['data'] ?? $etapasRes['data'] ?? [];

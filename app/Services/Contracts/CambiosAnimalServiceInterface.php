@@ -33,16 +33,9 @@ interface CambiosAnimalServiceInterface
      * 
      * @return array Lista de animales
      */
-    public function getAnimales(): array;
-
-    /**
-     * Obtiene la lista de fincas para los filtros
-     * 
-     * @return array Lista de fincas
-     */
-    public function getFincas(): array;
-
-    public function getRebanos(): array;
+    public function getAnimales(array $filters = []): array;
+    public function getFincas(array $filters = []): array;
+    public function getRebanos(array $filters = []): array;
 
     /**
      * Obtiene estadísticas de cambios

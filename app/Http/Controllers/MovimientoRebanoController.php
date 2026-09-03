@@ -64,8 +64,8 @@ class MovimientoRebanoController extends Controller
             ? $rawMovs['data'] 
             : (is_array($rawMovs) ? array_values(array_filter($rawMovs, 'is_array')) : []);
 
-        $fincas      = array_values(array_filter($this->service->getFincas(), 'is_array'));
-        $rebanos     = array_values(array_filter($this->service->getRebanos(), 'is_array'));
+        $fincas      = array_values(array_filter($this->service->getFincas(['incluir_archivados' => true]), 'is_array'));
+        $rebanos     = array_values(array_filter($this->service->getRebanos(['incluir_archivados' => true]), 'is_array'));
 
         $mapaFincas  = collect($fincas)->keyBy('id')->map(fn($f) => is_array($f) ? ($f['nombre'] ?? '') : '')->all();
         $mapaRebanos = collect($rebanos)->keyBy('id')->map(fn($r) => is_array($r) ? ($r['nombre'] ?? '') : '')->all();

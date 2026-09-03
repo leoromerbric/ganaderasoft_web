@@ -81,14 +81,33 @@
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Finca</label>
-                <select id="filtroFinca" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                <select id="filtroFinca" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
                     <option value="">Todas las fincas</option>
+                    @foreach($fincas as $finca)
+                        @php
+                            $fId = $finca['id'] ?? $finca['id_Finca'] ?? '';
+                            $fNom = $finca['nombre'] ?? $finca['Nombre'] ?? ('Finca #'.$fId);
+                        @endphp
+                        @if($fId)
+                            <option value="{{ $fId }}">{{ $fNom }}</option>
+                        @endif
+                    @endforeach
                 </select>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rebaño</label>
-                <select id="filtroRebano" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                <select id="filtroRebano" class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
                     <option value="">Todos los rebaños</option>
+                    @foreach($rebanos as $rebano)
+                        @php
+                            $rId = $rebano['id'] ?? $rebano['id_Rebano'] ?? '';
+                            $rNom = $rebano['nombre'] ?? $rebano['Nombre'] ?? ('Rebaño #'.$rId);
+                            $rFinca = $rebano['finca_id'] ?? data_get($rebano, 'finca.id') ?? '';
+                        @endphp
+                        @if($rId)
+                            <option value="{{ $rId }}" data-finca="{{ $rFinca }}">{{ $rNom }}</option>
+                        @endif
+                    @endforeach
                 </select>
             </div>
             <div>
@@ -124,13 +143,17 @@
                         @php
                             $lecheId = $registro['id'] ?? null;
                             $lactanciaIdReg = $registro['lactancia_id'] ?? null;
+                            $fincaIdReg = $registro['finca_id'] ?? '';
+                            $rebanoIdReg = $registro['rebano_id'] ?? '';
                             $animalNombre = $registro['animal_nombre'] ?? data_get($registro, 'animal.nombre') ?? 'Animal no disponible';
-                            $animalCodigo = data_get($registro, 'animal.codigo_animal') ?? data_get($registro, 'lactancia.animal.codigo_animal') ?? '';
+                            $animalCodigo = $registro['animal_codigo'] ?? data_get($registro, 'animal.codigo_animal') ?? data_get($registro, 'lactancia.animal.codigo_animal') ?? '';
                             $fechaPesaje = $registro['fecha_pesaje'] ?? null;
                             $pesajeTotal = (float)($registro['pesaje_total'] ?? 0);
                         @endphp
                         <tr class="hover:bg-gray-50/80 transition-colors fila-leche"
                             data-lactancia-id="{{ $lactanciaIdReg }}"
+                            data-finca-id="{{ $fincaIdReg }}"
+                            data-rebano-id="{{ $rebanoIdReg }}"
                             data-nombre="{{ strtolower($animalNombre) }}"
                             data-codigo="{{ strtolower($animalCodigo) }}"
                             data-fecha="{{ $fechaPesaje ? substr($fechaPesaje, 0, 10) : '' }}"
@@ -264,47 +287,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabla = document.getElementById('tablaContenedor');
     const sinResultados = document.getElementById('sinResultadosFiltro');
 
-    const lactanciasData = @json($lactancias ?? []);
-    const fM = {}, rM = {};
-    const lactanciaMeta = {};
-
-    lactanciasData.forEach(lact => {
-        const lid = String(lact.id);
-        const fi = data_get(lact, 'animal.rebano.finca.id') || data_get(lact, 'animal.rebano.finca_id');
-        const fn = data_get(lact, 'animal.rebano.finca.nombre');
-        const ri = data_get(lact, 'animal.rebano.id') || data_get(lact, 'animal.rebano_id');
-        const rn = data_get(lact, 'animal.rebano.nombre');
-
-        lactanciaMeta[lid] = { fincaId: fi, rebanoId: ri };
-
-        if (fi && !fM[fi]) fM[fi] = fn || 'Finca #' + fi;
-        if (ri && !rM[ri]) rM[ri] = { n: rn || 'Rebaño #' + ri, f: fi };
-    });
-
-    Object.keys(fM).sort((x, y) => fM[x].localeCompare(fM[y])).forEach(id => {
-        const opt = document.createElement('option');
-        opt.value = id;
-        opt.textContent = fM[id];
-        f.appendChild(opt);
-    });
-
-    function poblarRebanos(preserveId = null) {
-        const sf = f.value;
-        const prv = preserveId !== null ? preserveId : r.value;
-        r.innerHTML = '<option value="">Todos los rebaños</option>';
-
-        Object.keys(rM).forEach(id => {
-            if (!sf || String(rM[id].f) === String(sf)) {
-                const opt = document.createElement('option');
-                opt.value = id;
-                opt.textContent = rM[id].n;
-                r.appendChild(opt);
-            }
+    function filterSelectRebanos(fincaId) {
+        if (!r) return;
+        Array.from(r.options).forEach((opt, idx) => {
+            if (idx === 0) return;
+            const matches = !fincaId || opt.dataset.finca === fincaId;
+            opt.style.display = matches ? '' : 'none';
         });
-
-        if (prv && Array.from(r.options).some(o => String(o.value) === String(prv))) {
-            r.value = String(prv);
-        } else {
+        if (r.value && r.options[r.selectedIndex]?.style.display === 'none') {
             r.value = '';
         }
     }
@@ -338,14 +328,11 @@ document.addEventListener('DOMContentLoaded', function () {
         let totalVisibles = 0;
 
         filas.forEach(fila => {
-            const rowLactId = String(fila.dataset.lactanciaId || '');
-            const rowNombre = fila.dataset.nombre || '';
-            const rowCodigo = fila.dataset.codigo || '';
+            const rowNombre = (fila.dataset.nombre || '').toLowerCase();
+            const rowCodigo = (fila.dataset.codigo || '').toLowerCase();
             const rowFecha  = fila.dataset.fecha || '';
-
-            const meta = lactanciaMeta[rowLactId];
-            const fi = meta ? String(meta.fincaId || '') : '';
-            const ri = meta ? String(meta.rebanoId || '') : '';
+            const fi        = fila.dataset.fincaId || '';
+            const ri        = fila.dataset.rebanoId || '';
 
             let visible = true;
 
@@ -371,6 +358,8 @@ document.addEventListener('DOMContentLoaded', function () {
             fila.style.display = visible ? '' : 'none';
         });
 
+        recalcularEstadisticas();
+
         if (sinResultados) {
             if (totalVisibles === 0 && filas.length > 0) {
                 sinResultados.classList.remove('hidden');
@@ -380,39 +369,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (tabla) tabla.classList.remove('hidden');
             }
         }
-
-        recalcularEstadisticas();
-    }
-
-    function data_get(obj, path) {
-        if (!obj || !path) return null;
-        const keys = path.split('.');
-        let current = obj;
-        for (const key of keys) {
-            if (current === null || current === undefined) return null;
-            current = current[key];
-        }
-        return current;
     }
 
     if (txtBuscar) txtBuscar.addEventListener('input', aplicarFiltros);
 
     if (f) {
-        f.addEventListener('change', () => {
-            poblarRebanos();
+        f.addEventListener('change', function () {
+            filterSelectRebanos(this.value);
             aplicarFiltros();
         });
     }
 
     if (r) {
-        r.addEventListener('change', () => {
-            const selRebano = r.value;
-            if (selRebano && rM[selRebano] && rM[selRebano].f) {
-                const fincaAsociada = String(rM[selRebano].f);
-                if (f.value !== fincaAsociada) {
-                    f.value = fincaAsociada;
-                    poblarRebanos(selRebano);
-                }
+        r.addEventListener('change', function () {
+            const selectedOpt = this.options[this.selectedIndex];
+            if (selectedOpt && selectedOpt.dataset.finca && f && !f.value) {
+                f.value = selectedOpt.dataset.finca;
+                filterSelectRebanos(selectedOpt.dataset.finca);
             }
             aplicarFiltros();
         });
@@ -420,15 +393,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (fechaInput) fechaInput.addEventListener('change', aplicarFiltros);
 
-    poblarRebanos();
-
     window.limpiarFiltros = function (e) {
         if (e && e.preventDefault) e.preventDefault();
         if (txtBuscar) txtBuscar.value = '';
         if (f) f.value = '';
         if (r) r.value = '';
         if (fechaInput) fechaInput.value = '';
-        poblarRebanos();
+        filterSelectRebanos('');
         if (window.history && window.history.pushState) {
             window.history.pushState({}, '', '{{ route('leche.index') }}');
         }

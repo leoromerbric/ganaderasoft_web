@@ -34,7 +34,7 @@ class AnimalesController extends Controller
         $archivado = $request->query('archivado', 'activos');
 
         // Cargar todos los animales (activos y archivados) para permitir filtrado reactivo e instantáneo en la vista
-        $apiFilters = ['archivado' => 'todos'];
+        $apiFilters = ['incluir_archivados' => true];
         if ($idFinca) {
             $apiFilters['finca_id'] = $idFinca;
         }
@@ -44,10 +44,10 @@ class AnimalesController extends Controller
         $animales = ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
 
         // Cargar catálogos auxiliares (rebaños y fincas completos)
-        $rebanosResponse = $this->rebanosService->getRebanos(['archivado' => 'todos']);
+        $rebanosResponse = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos = ($rebanosResponse['success'] ?? false) ? ($rebanosResponse['data']['data'] ?? $rebanosResponse['data'] ?? []) : [];
 
-        $fincasResponse = $this->fincasService->getFincas(['archivado' => 'todos']);
+        $fincasResponse = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
         // Construir mapas para validaciones, visualización y filtros en Javascript (UI)

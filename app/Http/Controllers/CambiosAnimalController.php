@@ -41,9 +41,9 @@ class CambiosAnimalController extends Controller
             $idRebano = $request->query('rebano_id') ? (int) $request->query('rebano_id') : null;
 
             // Cargar catálogos completos para filtros y selects
-            $animalesTodos = $this->cambiosAnimalService->getAnimales();
-            $fincas        = $this->cambiosAnimalService->getFincas();
-            $rebanos       = $this->cambiosAnimalService->getRebanos();
+            $animalesTodos = $this->cambiosAnimalService->getAnimales(['incluir_archivados' => true]);
+            $fincas        = $this->cambiosAnimalService->getFincas(['incluir_archivados' => true]);
+            $rebanos       = $this->cambiosAnimalService->getRebanos(['incluir_archivados' => true]);
 
             // Mapeos rápidos para enriquecer los registros de cambio
             $mapaAnimalesPorId = [];

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Contracts\FincasServiceInterface;
 use App\Services\Contracts\LactanciaServiceInterface;
 use App\Services\Contracts\LecheServiceInterface;
+use App\Services\Contracts\RebanosServiceInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +21,9 @@ class LecheController extends Controller
 {
     public function __construct(
         protected LecheServiceInterface $lecheService,
-        protected LactanciaServiceInterface $lactanciaService
+        protected LactanciaServiceInterface $lactanciaService,
+        protected FincasServiceInterface $fincasService,
+        protected RebanosServiceInterface $rebanosService
     ) {}
 
     /**
@@ -76,9 +80,15 @@ class LecheController extends Controller
                 ->mapWithKeys(function ($lact) {
                     $animalId     = data_get($lact, 'animal.id') ?? data_get($lact, 'etapa_animal.animal_id') ?? $lact['animal_id'] ?? null;
                     $animalNombre = data_get($lact, 'animal.nombre') ?? ($animalId ? ('Animal #' . $animalId) : 'Animal no disponible');
+                    $animalCodigo = data_get($lact, 'animal.codigo_animal') ?? '';
+                    $rebanoId     = data_get($lact, 'animal.rebano_id') ?? data_get($lact, 'animal.rebano.id');
+                    $fincaId      = data_get($lact, 'animal.rebano.finca_id') ?? data_get($lact, 'animal.rebano.finca.id');
                     return [(int) $lact['id'] => [
                         'animal_nombre' => $animalNombre,
+                        'animal_codigo' => $animalCodigo,
                         'animal_id'     => $animalId,
+                        'rebano_id'     => $rebanoId,
+                        'finca_id'      => $fincaId,
                     ]];
                 })
                 ->all();
@@ -91,10 +101,25 @@ class LecheController extends Controller
                     $registro['animal_nombre'] = data_get($registro, 'animal.nombre')
                         ?? data_get($registro, 'lactancia.animal.nombre')
                         ?? ($meta['animal_nombre'] ?? 'Animal no disponible');
+                    $registro['animal_codigo'] = data_get($registro, 'animal.codigo_animal')
+                        ?? data_get($registro, 'lactancia.animal.codigo_animal')
+                        ?? ($meta['animal_codigo'] ?? '');
+                    $registro['finca_id'] = data_get($registro, 'finca_id')
+                        ?? data_get($registro, 'animal.rebano.finca_id')
+                        ?? ($meta['finca_id'] ?? null);
+                    $registro['rebano_id'] = data_get($registro, 'rebano_id')
+                        ?? data_get($registro, 'animal.rebano_id')
+                        ?? ($meta['rebano_id'] ?? null);
                     return $registro;
                 })->all();
 
-            return view('leche.index', compact('registrosLeche', 'lactancias', 'lactanciaId'));
+            $fincasRes = $this->fincasService->getFincas(['incluir_archivados' => true]);
+            $fincas = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
+
+            $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
+            $rebanos = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
+
+            return view('leche.index', compact('registrosLeche', 'lactancias', 'fincas', 'rebanos', 'lactanciaId'));
         } catch (\Exception $e) {
             Log::error('Error en LecheController@index: ' . $e->getMessage());
             return redirect()->route('dashboard')->with('error', 'Error al cargar los registros de producción de leche.');
