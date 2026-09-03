@@ -99,24 +99,31 @@ class RebanosController extends Controller
      */
     public function edit($id)
     {
-        $response = $this->rebanosService->getRebanos();
+        // 1. Intentar obtener el rebaño directamente por su ID
+        $response = $this->rebanosService->getRebano((int)$id);
 
-        if (isset($response['success']) && $response['success']) {
-            $allRebanos = $response['data']['data'] ?? $response['data'] ?? [];
+        if (isset($response['success']) && $response['success'] && !empty($response['data'])) {
+            $rebano = $response['data'];
+            return view('rebanos.edit', compact('rebano'));
+        }
+
+        // 2. Fallback: buscar en la lista completa incluyendo archivados
+        $listResponse = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
+
+        if (isset($listResponse['success']) && $listResponse['success']) {
+            $allRebanos = $listResponse['data']['data'] ?? $listResponse['data'] ?? [];
             
-            // Find the rebano by ID (V2 id)
+            // Find the rebano by ID (V2 id or legacy)
             $rebano = collect($allRebanos)->first(function ($r) use ($id) {
-                return ($r['id'] ?? null) == $id;
+                return ($r['id'] ?? null) == $id || ($r['id_Rebano'] ?? null) == $id || ($r['Rebano_ID'] ?? null) == $id;
             });
 
             if ($rebano) {
                 return view('rebanos.edit', compact('rebano'));
             }
-
-            return redirect()->route('rebanos.index')->with('error', 'Rebaño no encontrado');
         }
 
-        return redirect()->route('rebanos.index')->with('error', $response['message'] ?? 'Error al obtener el rebaño');
+        return redirect()->route('rebanos.index')->with('error', $response['message'] ?? 'Rebaño no encontrado');
     }
 
     /**

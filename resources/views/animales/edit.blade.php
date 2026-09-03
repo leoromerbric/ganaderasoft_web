@@ -137,10 +137,14 @@
                                 @foreach($rebanos as $rebano)
                                     @php
                                         $currentRebanoId = data_get($animal, 'rebano.id', $animal['rebano_id'] ?? null);
+                                        $rNom = $rebano['nombre'] ?? ('Rebaño #' . $rebano['id']);
+                                        $fNom = data_get($rebano, 'finca.nombre') ?? data_get($rebano, 'finca.Nombre') ?? '';
                                     @endphp
                                     <option value="{{ $rebano['id'] }}" 
+                                        data-nombre="{{ $rNom }}"
+                                        data-finca="{{ $fNom }}"
                                         {{ (old('rebano_id', $currentRebanoId) == $rebano['id']) ? 'selected' : '' }}>
-                                        {{ $rebano['nombre'] }} {{ data_get($rebano, 'finca.nombre') ? '— '.data_get($rebano, 'finca.nombre') : '' }}
+                                        {{ $rNom }} {{ $fNom ? '— ' . $fNom : '' }}
                                     </option>
                                 @endforeach
                             </select>
@@ -229,6 +233,12 @@
                                 </span>
                             </div>
                             <div class="flex justify-between items-center">
+                                <span class="text-gray-500">Finca:</span>
+                                <span id="previewFinca" class="font-bold text-gray-900 truncate max-w-[140px] text-right">
+                                    {{ data_get($animal, 'rebano.finca.nombre', 'No asignada') }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center">
                                 <span class="text-gray-500">Raza:</span>
                                 <span id="previewRaza" class="font-bold text-gray-900 truncate max-w-[140px] text-right">
                                     {{ data_get($animal, 'composicion_raza.nombre', 'No seleccionada') }}
@@ -248,6 +258,39 @@
                                     class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
                                 💾 Actualizar ejemplar
                             </button>
+
+                            @if(!empty($animal['archivado']))
+                                <button type="button"
+                                    onclick="openGenericConfirmModal({
+                                        formId: 'formUnarchiveAnimal',
+                                        intent: 'success',
+                                        title: 'Desarchivar animal',
+                                        message: '¿Estás seguro de que deseas reactivar este animal? Volverá a estar visible en el inventario activo y todas las operaciones del rebaño.',
+                                        confirmText: 'Sí, desarchivar'
+                                    })"
+                                    class="w-full py-3 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 hover:border-emerald-600 font-bold rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    </svg>
+                                    <span>Desarchivar animal</span>
+                                </button>
+                            @else
+                                <button type="button"
+                                    onclick="openGenericConfirmModal({
+                                        formId: 'formArchiveAnimal',
+                                        intent: 'danger',
+                                        title: 'Archivar animal',
+                                        message: '¿Estás seguro de que deseas archivar este animal? Se ocultará del inventario activo pero se conservarán todos sus datos históricos de peso, lactancia y salud.',
+                                        confirmText: 'Sí, archivar'
+                                    })"
+                                    class="w-full py-3 bg-amber-50 hover:bg-amber-600 text-amber-700 hover:text-white border border-amber-200 hover:border-amber-600 font-bold rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                    </svg>
+                                    <span>Archivar animal</span>
+                                </button>
+                            @endif
+
                             <a href="{{ route('animales.index') }}"
                                class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
                                 Cancelar
@@ -289,6 +332,17 @@
         </div>
     </div>
 
+    <!-- Formulario oculto para Archivar / Desarchivar -->
+    @if(!empty($animal['archivado']))
+        <form id="formUnarchiveAnimal" action="{{ route('animales.desarchivar', $animal['id']) }}" method="POST" class="hidden">
+            @csrf
+        </form>
+    @else
+        <form id="formArchiveAnimal" action="{{ route('animales.archivar', $animal['id']) }}" method="POST" class="hidden">
+            @csrf
+        </form>
+    @endif
+
     <!-- Formulario oculto para Eliminación Definitiva -->
     <form id="formDeleteAnimal" action="{{ route('animales.destroy', $animal['id']) }}" method="POST" class="hidden">
         @csrf
@@ -312,6 +366,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const previewCodigo      = document.getElementById('previewCodigo');
     const previewSexo        = document.getElementById('previewSexo');
     const previewRebano      = document.getElementById('previewRebano');
+    const previewFinca       = document.getElementById('previewFinca');
     const previewRaza        = document.getElementById('previewRaza');
     const previewProcedencia = document.getElementById('previewProcedencia');
     const previewIcono       = document.getElementById('previewIcono');
@@ -333,7 +388,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const rOpt = rebanoSelect.options[rebanoSelect.selectedIndex];
-        previewRebano.textContent = (rebanoSelect.value && rOpt) ? rOpt.textContent.trim() : 'No seleccionado';
+        if (rebanoSelect.value && rOpt) {
+            previewRebano.textContent = rOpt.dataset.nombre || (rOpt.textContent.includes('—') ? rOpt.textContent.split('—')[0].trim() : rOpt.textContent.trim()) || 'No seleccionado';
+            previewFinca.textContent = rOpt.dataset.finca || (rOpt.textContent.includes('—') ? rOpt.textContent.split('—')[1].trim() : 'No asignada');
+        } else {
+            previewRebano.textContent = 'No seleccionado';
+            previewFinca.textContent = 'No asignada';
+        }
 
         const rzOpt = razaSelect.options[razaSelect.selectedIndex];
         previewRaza.textContent = (razaSelect.value && rzOpt) ? rzOpt.textContent.trim() : 'No seleccionada';

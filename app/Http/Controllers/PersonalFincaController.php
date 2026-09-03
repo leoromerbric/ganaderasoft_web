@@ -150,7 +150,7 @@ class PersonalFincaController extends Controller
         $personalFinca = $response['data'] ?? [];
         $personal = $personalFinca;
 
-        $fincasResponse = $this->fincasService->getFincas();
+        $fincasResponse = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
         $tiposResponse = $this->personalFincaService->getTiposTrabajador();

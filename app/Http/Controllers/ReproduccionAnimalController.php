@@ -140,10 +140,10 @@ class ReproduccionAnimalController extends Controller
         $reproduccion = $response['data'];
         $animales     = $this->filterFemaleAnimals($this->service->getAnimales());
 
-        $fincasRes  = $this->fincasService->getFincas();
+        $fincasRes  = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas     = ($fincasRes['success'] ?? false) ? ($fincasRes['data']['data'] ?? $fincasRes['data'] ?? []) : [];
 
-        $rebanosRes = $this->rebanosService->getRebanos();
+        $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos    = ($rebanosRes['success'] ?? false) ? ($rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? []) : [];
 
         $etapasRes  = $this->etapaService->getAll();

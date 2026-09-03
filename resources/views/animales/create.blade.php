@@ -129,8 +129,15 @@
                                     class="w-full px-4 py-3 border @error('rebano_id') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                                 <option value="">Seleccione un rebaño...</option>
                                 @foreach($rebanos as $rebano)
-                                    <option value="{{ $rebano['id'] }}" {{ old('rebano_id') == $rebano['id'] ? 'selected' : '' }}>
-                                        {{ $rebano['nombre'] }} {{ data_get($rebano, 'finca.nombre') ? '— '.data_get($rebano, 'finca.nombre') : '' }}
+                                    @php
+                                        $rNom = $rebano['nombre'] ?? ('Rebaño #' . $rebano['id']);
+                                        $fNom = data_get($rebano, 'finca.nombre') ?? data_get($rebano, 'finca.Nombre') ?? '';
+                                    @endphp
+                                    <option value="{{ $rebano['id'] }}"
+                                        data-nombre="{{ $rNom }}"
+                                        data-finca="{{ $fNom }}"
+                                        {{ old('rebano_id') == $rebano['id'] ? 'selected' : '' }}>
+                                        {{ $rNom }} {{ $fNom ? '— ' . $fNom : '' }}
                                     </option>
                                 @endforeach
                             </select>
@@ -224,6 +231,10 @@
                                 <span id="previewRebano" class="font-bold text-gray-900 truncate max-w-[140px] text-right">No seleccionado</span>
                             </div>
                             <div class="flex justify-between items-center">
+                                <span class="text-gray-500">Finca:</span>
+                                <span id="previewFinca" class="font-bold text-gray-900 truncate max-w-[140px] text-right">No asignada</span>
+                            </div>
+                            <div class="flex justify-between items-center">
                                 <span class="text-gray-500">Raza:</span>
                                 <span id="previewRaza" class="font-bold text-gray-900 truncate max-w-[140px] text-right">No seleccionada</span>
                             </div>
@@ -264,6 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const previewCodigo      = document.getElementById('previewCodigo');
     const previewSexo        = document.getElementById('previewSexo');
     const previewRebano      = document.getElementById('previewRebano');
+    const previewFinca       = document.getElementById('previewFinca');
     const previewRaza        = document.getElementById('previewRaza');
     const previewProcedencia = document.getElementById('previewProcedencia');
     const previewIcono       = document.getElementById('previewIcono');
@@ -285,7 +297,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const rOpt = rebanoSelect.options[rebanoSelect.selectedIndex];
-        previewRebano.textContent = (rebanoSelect.value && rOpt) ? rOpt.textContent.trim() : 'No seleccionado';
+        if (rebanoSelect.value && rOpt) {
+            previewRebano.textContent = rOpt.dataset.nombre || (rOpt.textContent.includes('—') ? rOpt.textContent.split('—')[0].trim() : rOpt.textContent.trim()) || 'No seleccionado';
+            previewFinca.textContent = rOpt.dataset.finca || (rOpt.textContent.includes('—') ? rOpt.textContent.split('—')[1].trim() : 'No asignada');
+        } else {
+            previewRebano.textContent = 'No seleccionado';
+            previewFinca.textContent = 'No asignada';
+        }
 
         const rzOpt = razaSelect.options[razaSelect.selectedIndex];
         previewRaza.textContent = (razaSelect.value && rzOpt) ? rzOpt.textContent.trim() : 'No seleccionada';

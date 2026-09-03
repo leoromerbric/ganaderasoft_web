@@ -244,7 +244,7 @@
                         <!-- Action Buttons en el Sidebar -->
                         <div class="space-y-3 pt-2">
                             <button type="submit"
-                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
+                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
                                 💾 Guardar personal
                             </button>
                             <a href="{{ route('personal-finca.index') }}"
@@ -253,16 +253,6 @@
                             </a>
                         </div>
                     </div>
-                </div>
-
-                <!-- Card 2: Guía de Responsabilidad -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-3 text-xs">
-                    <h4 class="font-bold text-gray-900 flex items-center gap-1.5">
-                        <span>🛡️</span> Roles y trazabilidad
-                    </h4>
-                    <p class="text-gray-600 leading-relaxed">
-                        El personal registrado podrá ser seleccionado como técnico o responsable en registros clínicos, palpaciones, inseminaciones y pesajes de leche.
-                    </p>
                 </div>
             </div>
         </div>

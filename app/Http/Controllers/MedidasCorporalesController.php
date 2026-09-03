@@ -237,7 +237,7 @@ class MedidasCorporalesController extends Controller
 
             $medidaCorporal = $response['data'];
 
-            $animalesResponse = $this->animalesService->getAnimales();
+            $animalesResponse = $this->animalesService->getAnimales(null, ['incluir_archivados' => true]);
             $rawAnimales      = $animalesResponse['data'] ?? [];
             $animales         = is_array($rawAnimales)
                 ? (isset($rawAnimales['data']) && is_array($rawAnimales['data']) ? $rawAnimales['data'] : array_values(array_filter($rawAnimales, 'is_array')))

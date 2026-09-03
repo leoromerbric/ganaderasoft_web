@@ -56,9 +56,10 @@
     <form method="POST" action="{{ route('fincas.store') }}" id="formCreateFinca" class="space-y-6">
         @csrf
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-            <!-- Columna Izquierda: Formulario (2 Tercios) -->
-            <div class="lg:col-span-2 space-y-6">
+        <!-- Fila Superior: Datos Generales/Terreno (Izquierda) y Ficha Resumen (Derecha) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+            <!-- Columna Izquierda Superior (2 Tercios): Card 1 y Card 2 -->
+            <div class="lg:col-span-2 space-y-6 flex flex-col justify-between">
                 
                 <!-- Card 1: Información General -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
@@ -170,7 +171,7 @@
                                         $code = is_array($ph) ? ($ph['codigo'] ?? $ph['valor'] ?? $ph['nombre'] ?? '') : $ph;
                                         $label = is_array($ph) ? ($ph['nombre'] ?? $code) : $ph;
                                     @endphp
-                                    <option value="{{ $code }}" {{ old('ph_Suelo') == $code ? 'selected' : '' }}>
+                                    <option value="{{ $code }}" {{ old('ph_Suelo', '6.5') == $code ? 'selected' : '' }}>
                                         🧪 {{ $label }}
                                     </option>
                                 @endforeach
@@ -183,7 +184,7 @@
                                 Precipitación anual (mm) <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="Precipitacion" id="precipitacionInput" step="0.01" min="0" required
-                                   value="{{ old('Precipitacion', 1200) }}" placeholder="Ej: 1200"
+                                   value="{{ old('Precipitacion') }}" placeholder="Ej: 1200"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium">
                         </div>
 
@@ -193,14 +194,76 @@
                                 Velocidad viento (km/h) <span class="text-red-500">*</span>
                             </label>
                             <input type="number" name="Velocidad_Viento" id="vientoInput" step="0.01" min="0" required
-                                   value="{{ old('Velocidad_Viento', 15) }}" placeholder="Ej: 15"
+                                   value="{{ old('Velocidad_Viento') }}" placeholder="Ej: 15"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium">
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Card 3: Recursos Hídricos y Clima -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+            <!-- Columna Derecha Superior (1 Tercio): Ficha de la Finca con Botones -->
+            <div class="lg:col-span-1 h-full">
+                <!-- Card 1: Ficha Previa de la Finca -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full flex flex-col justify-between">
+                    <div>
+                        <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <span>🏡</span> Ficha de la nueva finca
+                            </h3>
+                        </div>
+
+                        <div class="p-6 space-y-5">
+                            <div class="p-4 bg-teal-50/70 border border-teal-100 rounded-2xl flex items-center space-x-3.5">
+                                <div class="w-12 h-12 rounded-xl bg-white border border-teal-200 text-teal-700 font-bold flex items-center justify-center text-2xl shadow-xs shrink-0" id="previewInicial">
+                                    🏡
+                                </div>
+                                <div class="overflow-hidden">
+                                    <p class="text-base font-bold text-gray-900 truncate" id="previewNombre">Nueva finca</p>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-100 mt-1" id="previewTipo">
+                                        General
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3.5 text-sm pt-1">
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Superficie</span>
+                                    <span class="font-bold text-gray-900" id="previewSuperficie">0 ha</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Relieve</span>
+                                    <span class="font-medium text-gray-900" id="previewRelieve">No especificado</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Fuente de agua</span>
+                                    <span class="font-medium text-gray-900" id="previewAgua">No especificada</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons en el Sidebar -->
+                    <div class="p-6 pt-0 space-y-3">
+                        <button type="submit"
+                                class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
+                            💾 Guardar finca
+                        </button>
+                        <a href="{{ route('fincas.index') }}"
+                           class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                            Cancelar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila Inferior: Recursos Hídricos/Clima (Izquierda) y Buenas Prácticas (Derecha) - MISMO HEIGHT EXACTO -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+            <!-- Columna Izquierda Inferior (2 Tercios): Card 3 Recursos Hídricos y Clima -->
+            <div class="lg:col-span-2 h-full">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6 h-full flex flex-col justify-between">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
                         <span>💧</span> Recursos hídricos y clima
                     </h3>
@@ -289,80 +352,28 @@
                 </div>
             </div>
 
-            <!-- Columna Derecha: Sidebar Interactivo en Vivo (1 Tercio) -->
-            <div class="space-y-6">
-                <!-- Card 1: Ficha Previa de la Finca -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
-                        <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span>🏡</span> Ficha de la nueva finca
-                        </h3>
+            <!-- Columna Derecha Inferior (1 Tercio): Card 2 Buenas Prácticas de Registro -->
+            <div class="lg:col-span-1 h-full">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-3 h-full flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
+                            <span>📌</span> Buenas prácticas de registro
+                        </h4>
+                        <ul class="text-xs text-gray-600 space-y-2.5 leading-relaxed pt-2">
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 font-bold">✓</span>
+                                <span><strong>Superficie exacta:</strong> Permite calcular la carga animal óptima (UA/ha).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 font-bold">✓</span>
+                                <span><strong>Textura y pH:</strong> Ayuda a planificar rotación de potreros y fertilizaciones.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 font-bold">✓</span>
+                                <span><strong>Rebaños:</strong> Podrás crear y asignar rebaños inmediatamente después de guardarla.</span>
+                            </li>
+                        </ul>
                     </div>
-
-                    <div class="p-6 space-y-5">
-                        <div class="p-4 bg-teal-50/70 border border-teal-100 rounded-2xl flex items-center space-x-3.5">
-                            <div class="w-12 h-12 rounded-xl bg-white border border-teal-200 text-teal-700 font-bold flex items-center justify-center text-2xl shadow-xs shrink-0" id="previewInicial">
-                                🏡
-                            </div>
-                            <div class="overflow-hidden">
-                                <p class="text-base font-bold text-gray-900 truncate" id="previewNombre">Nueva finca</p>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-100 mt-1" id="previewTipo">
-                                    General
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="space-y-3.5 text-sm pt-1">
-                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Superficie</span>
-                                <span class="font-bold text-gray-900" id="previewSuperficie">0 ha</span>
-                            </div>
-
-                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Relieve</span>
-                                <span class="font-medium text-gray-900" id="previewRelieve">No especificado</span>
-                            </div>
-
-                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Fuente de agua</span>
-                                <span class="font-medium text-gray-900" id="previewAgua">No especificada</span>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons en el Sidebar -->
-                        <div class="space-y-3 pt-2">
-                            <button type="submit"
-                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                                💾 Guardar finca
-                            </button>
-                            <a href="{{ route('fincas.index') }}"
-                               class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                                Cancelar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2: Consejos de Gestión -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-3">
-                    <h4 class="font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
-                        <span>📌</span> Buenas prácticas de registro
-                    </h4>
-                    <ul class="text-xs text-gray-600 space-y-2.5 leading-relaxed">
-                        <li class="flex items-start gap-2">
-                            <span class="text-emerald-500 font-bold">✓</span>
-                            <span><strong>Superficie exacta:</strong> Permite calcular la carga animal óptima (UA/ha).</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-emerald-500 font-bold">✓</span>
-                            <span><strong>Textura y pH:</strong> Ayuda a planificar rotación de potreros y fertilizaciones.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="text-emerald-500 font-bold">✓</span>
-                            <span><strong>Rebaños:</strong> Podrás crear y asignar rebaños inmediatamente después de guardarla.</span>
-                        </li>
-                    </ul>
-                </div>
             </div>
         </div>
     </form>

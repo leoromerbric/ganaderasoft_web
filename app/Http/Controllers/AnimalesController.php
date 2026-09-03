@@ -181,7 +181,7 @@ class AnimalesController extends Controller
 
         $animal = $response['data'] ?? null;
 
-        $rebanosResponse = $this->rebanosService->getRebanos();
+        $rebanosResponse = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
         $rebanos = ($rebanosResponse['success'] ?? false) ? ($rebanosResponse['data']['data'] ?? $rebanosResponse['data'] ?? []) : [];
 
         $razasResponse = $this->animalesService->getRazas();

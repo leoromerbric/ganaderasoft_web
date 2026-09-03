@@ -228,7 +228,7 @@ class LactanciaController extends Controller
             }
 
             $lactancia = $response['data'];
-            $animales  = array_values(array_filter($this->getAnimalesCatalogo(), fn ($animal) => $this->isFemale($animal)));
+            $animales  = array_values(array_filter($this->getAnimalesCatalogo(['incluir_archivados' => true]), fn ($animal) => $this->isFemale($animal)));
 
             return view('lactancia.edit', compact('lactancia', 'animales'));
         } catch (\Exception $e) {

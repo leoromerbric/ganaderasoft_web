@@ -124,7 +124,7 @@ class AdminComposicionRazaController extends Controller
         $item = $result['data'];
         
         $tiposAnimal = $this->tipoAnimalService->getAll();
-        $fincasResponse = $this->fincasService->getFincas();
+        $fincasResponse = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
         return view("admin.parametros.{$this->slug}.edit", compact('catalog', 'item', 'tiposAnimal', 'fincas'));
     }

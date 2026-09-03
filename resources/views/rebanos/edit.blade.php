@@ -66,7 +66,7 @@
         @csrf
         @method('PUT')
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             <!-- Columna Izquierda: 2 Cajas Independientes (2 Tercios) -->
             <div class="lg:col-span-2 flex flex-col gap-6">
                 <!-- Caja 1: Datos principales -->
@@ -187,6 +187,39 @@
                                 class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
                             💾 Actualizar rebaño
                         </button>
+
+                        @if(!empty($rebano['archivado']))
+                            <button type="button"
+                                onclick="openGenericConfirmModal({
+                                    formId: 'formUnarchiveRebano',
+                                    intent: 'success',
+                                    title: 'Desarchivar rebaño',
+                                    message: '¿Estás seguro de que deseas reactivar este rebaño? Volverá a estar visible en todas las operaciones activas del sistema.',
+                                    confirmText: 'Sí, desarchivar'
+                                })"
+                                class="w-full py-3 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 hover:border-emerald-600 font-bold rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                <span>Desarchivar rebaño</span>
+                            </button>
+                        @else
+                            <button type="button"
+                                onclick="openGenericConfirmModal({
+                                    formId: 'formArchiveRebano',
+                                    intent: 'danger',
+                                    title: 'Archivar rebaño',
+                                    message: '¿Estás seguro de que deseas archivar este rebaño? Se ocultará de las operaciones activas pero conservará todos sus registros históricos.',
+                                    confirmText: 'Sí, archivar'
+                                })"
+                                class="w-full py-3 bg-amber-50 hover:bg-amber-600 text-amber-700 hover:text-white border border-amber-200 hover:border-amber-600 font-bold rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                </svg>
+                                <span>Archivar rebaño</span>
+                            </button>
+                        @endif
+
                         <a href="{{ route('rebanos.index') }}"
                            class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
                             Cancelar
@@ -226,6 +259,17 @@
             </div>
         </div>
     </div>
+
+    <!-- Formulario oculto para Archivar / Desarchivar -->
+    @if(!empty($rebano['archivado']))
+        <form id="formUnarchiveRebano" action="{{ route('rebanos.desarchivar', $rebanoId) }}" method="POST" class="hidden">
+            @csrf
+        </form>
+    @else
+        <form id="formArchiveRebano" action="{{ route('rebanos.archivar', $rebanoId) }}" method="POST" class="hidden">
+            @csrf
+        </form>
+    @endif
 
     <!-- Formulario oculto para Eliminación Definitiva -->
     <form id="formDeleteRebano" action="{{ route('rebanos.destroy', $rebanoId) }}" method="POST" class="hidden">

@@ -110,10 +110,10 @@ class RegistroCeloController extends Controller
         $registro = $response['data'];
         $animales = $this->filterFemaleAnimals($this->service->getAnimales());
 
-        $fincasRes  = $this->fincasService->getFincas();
-        $fincas     = $fincasRes['data'] ?? [];
-        $rebanosRes = $this->rebanosService->getRebanos();
-        $rebanos    = $rebanosRes['data'] ?? [];
+        $fincasRes  = $this->fincasService->getFincas(['incluir_archivados' => true]);
+        $fincas     = $fincasRes['data']['data'] ?? $fincasRes['data'] ?? [];
+        $rebanosRes = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
+        $rebanos    = $rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? [];
         $etapasRes  = $this->etapaService->getAll();
         $etapas     = $etapasRes['data']['data'] ?? $etapasRes['data'] ?? [];
 

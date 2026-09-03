@@ -281,14 +281,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Card 2: Enlace a la Ficha -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-3">
-                    <a href="{{ route('personal-finca.show', $pId) }}"
-                       class="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 transition-all">
-                        <span>🔍</span> Ver ficha detallada
-                    </a>
-                </div>
             </div>
         </div>
     </form>

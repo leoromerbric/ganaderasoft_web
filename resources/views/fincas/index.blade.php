@@ -263,27 +263,6 @@
                                             </svg>
                                         </a>
 
-                                        <!-- Ver Rebaños -->
-                                        <a href="{{ route('rebanos.index', ['finca_id' => $fincaId]) }}"
-                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-verde/15 text-ganaderasoft-verde-oscuro hover:bg-ganaderasoft-verde-oscuro hover:text-white transition-colors shadow-2xs"
-                                           title="Ver rebaños de esta finca">
-                                            <span class="text-xs">🐄</span>
-                                        </a>
-
-                                        <!-- Ver Personal -->
-                                        <a href="{{ route('personal-finca.index', ['finca_id' => $fincaId]) }}"
-                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white transition-colors shadow-2xs"
-                                           title="Ver personal de esta finca">
-                                            <span class="text-xs">👥</span>
-                                        </a>
-
-                                        <!-- Ver Animales -->
-                                        <a href="{{ route('animales.index', ['finca_id' => $fincaId]) }}"
-                                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-celeste/15 text-ganaderasoft-azul hover:bg-ganaderasoft-celeste hover:text-white transition-colors shadow-2xs"
-                                           title="Ver animales de esta finca">
-                                            <span class="text-xs">🏷️</span>
-                                        </a>
-
                                         <!-- Editar Finca -->
                                         <a href="{{ route('fincas.edit', $fincaId) }}"
                                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ganaderasoft-azul/10 text-ganaderasoft-azul hover:bg-ganaderasoft-azul hover:text-white transition-colors shadow-2xs"

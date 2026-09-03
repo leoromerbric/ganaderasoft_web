@@ -129,7 +129,7 @@ class ComposicionRazaController extends Controller
             return redirect()->route("{$this->slug}.index")->with('error', 'No tienes permiso para editar registros públicos.');
         }
         $tiposAnimal = $this->tipoAnimalService->getAll();
-        $fincasResponse = $this->fincasService->getFincas();
+        $fincasResponse = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
         return view("{$this->slug}.edit", compact('catalog', 'item', 'tiposAnimal', 'fincas'));

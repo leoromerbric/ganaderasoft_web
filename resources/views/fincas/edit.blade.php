@@ -83,9 +83,10 @@
         @csrf
         @method('PUT')
 
+        <!-- Fila Superior: Datos Generales/Terreno (Izquierda) y Ficha Resumen (Derecha) -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-            <!-- Columna Izquierda: Formulario (2 Tercios) -->
-            <div class="lg:col-span-2 space-y-6">
+            <!-- Columna Izquierda Superior (2 Tercios): Card 1 y Card 2 -->
+            <div class="lg:col-span-2 space-y-6 flex flex-col justify-between">
                 
                 <!-- Card 1: Información General -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
@@ -224,9 +225,104 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Card 3: Recursos Hídricos y Clima -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
+            <!-- Columna Derecha Superior (1 Tercio): Ficha de la Finca con Botones -->
+            <div class="lg:col-span-1 h-full">
+                <!-- Card 1: Ficha Previa de la Finca -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full flex flex-col justify-between">
+                    <div>
+                        <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <span>🏡</span> Ficha de la finca
+                            </h3>
+                        </div>
+
+                        <div class="p-6 space-y-5">
+                            <div class="p-4 bg-teal-50/70 border border-teal-100 rounded-2xl flex items-center space-x-3.5">
+                                <div class="w-12 h-12 rounded-xl bg-white border border-teal-200 text-teal-700 font-bold flex items-center justify-center text-2xl shadow-xs shrink-0" id="previewInicial">
+                                    {{ $inicial ?: '🏡' }}
+                                </div>
+                                <div class="overflow-hidden">
+                                    <p class="text-base font-bold text-gray-900 truncate" id="previewNombre">{{ $nombreFinca }}</p>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-100 mt-1" id="previewTipo">
+                                        {{ $tipoExpFinca ?: 'General' }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3.5 text-sm pt-1">
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Superficie</span>
+                                    <span class="font-bold text-gray-900" id="previewSuperficie">{{ $superficie ? number_format((float)$superficie, 1, ',', '.') . ' ha' : '0 ha' }}</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Relieve</span>
+                                    <span class="font-medium text-gray-900" id="previewRelieve">{{ $relieveVal ?: 'No especificado' }}</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Fuente de agua</span>
+                                    <span class="font-medium text-gray-900" id="previewAgua">{{ $fuenteAguaVal ?: 'No especificada' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons en el Sidebar -->
+                    <div class="p-6 pt-0 space-y-3">
+                        <button type="submit"
+                                class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
+                            💾 Guardar cambios
+                        </button>
+
+                        @if(!empty($finca['archivado']))
+                            <button type="button"
+                                onclick="openGenericConfirmModal({
+                                    formId: 'formUnarchiveFinca',
+                                    intent: 'success',
+                                    title: 'Desarchivar finca',
+                                    message: '¿Estás seguro de que deseas reactivar esta finca? Volverá a estar visible en todas las operaciones activas del sistema.',
+                                    confirmText: 'Sí, desarchivar'
+                                })"
+                                class="w-full py-3 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white border border-emerald-200 hover:border-emerald-600 font-bold rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                <span>Desarchivar finca</span>
+                            </button>
+                        @else
+                            <button type="button"
+                                onclick="openGenericConfirmModal({
+                                    formId: 'formArchiveFinca',
+                                    intent: 'danger',
+                                    title: 'Archivar finca',
+                                    message: '¿Estás seguro de que deseas archivar esta finca? Se ocultará de las operaciones activas pero conservará todos sus registros históricos.',
+                                    confirmText: 'Sí, archivar'
+                                })"
+                                class="w-full py-3 bg-amber-50 hover:bg-amber-600 text-amber-700 hover:text-white border border-amber-200 hover:border-amber-600 font-bold rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                </svg>
+                                <span>Archivar finca</span>
+                            </button>
+                        @endif
+
+                        <a href="{{ route('fincas.index') }}"
+                           class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                            Cancelar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fila Inferior: Recursos Hídricos/Clima (Izquierda) y Registro del Sistema (Derecha) - MISMO HEIGHT EXACTO -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+            <!-- Columna Izquierda Inferior (2 Tercios): Card 3 Recursos Hídricos y Clima -->
+            <div class="lg:col-span-2 h-full">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6 h-full flex flex-col justify-between">
                     <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
                         <span>💧</span> Recursos hídricos y clima
                     </h3>
@@ -315,90 +411,39 @@
                 </div>
             </div>
 
-            <!-- Columna Derecha: Sidebar Interactivo en Vivo (1 Tercio) -->
-            <div class="space-y-6 flex flex-col justify-between h-full">
-                <!-- Card 1: Ficha Previa de la Finca -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
-                        <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span>🏡</span> Ficha de la finca
-                        </h3>
-                    </div>
-
-                    <div class="p-6 space-y-5">
-                        <div class="p-4 bg-teal-50/70 border border-teal-100 rounded-2xl flex items-center space-x-3.5">
-                            <div class="w-12 h-12 rounded-xl bg-white border border-teal-200 text-teal-700 font-bold flex items-center justify-center text-2xl shadow-xs shrink-0" id="previewInicial">
-                                {{ $inicial ?: '🏡' }}
-                            </div>
-                            <div class="overflow-hidden">
-                                <p class="text-base font-bold text-gray-900 truncate" id="previewNombre">{{ $nombreFinca }}</p>
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-100 mt-1" id="previewTipo">
-                                    {{ $tipoExpFinca ?: 'General' }}
-                                </span>
-                            </div>
+            <!-- Columna Derecha Inferior (1 Tercio): Card 2 Registro del Sistema -->
+            <div class="lg:col-span-1 h-full">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full flex flex-col justify-between">
+                    <div>
+                        <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <span>⚙️</span> Registro del sistema
+                            </h3>
                         </div>
-
-                        <div class="space-y-3.5 text-sm pt-1">
-                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Superficie</span>
-                                <span class="font-bold text-gray-900" id="previewSuperficie">{{ $superficie ? number_format((float)$superficie, 1, ',', '.') . ' ha' : '0 ha' }}</span>
-                            </div>
-
-                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Relieve</span>
-                                <span class="font-medium text-gray-900" id="previewRelieve">{{ $relieveVal ?: 'No especificado' }}</span>
-                            </div>
-
-                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Fuente de agua</span>
-                                <span class="font-medium text-gray-900" id="previewAgua">{{ $fuenteAguaVal ?: 'No especificada' }}</span>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons en el Sidebar -->
-                        <div class="space-y-3 pt-2">
-                            <button type="submit"
-                                    class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2">
-                                💾 Guardar cambios
-                            </button>
-                            <a href="{{ route('fincas.index') }}"
-                               class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                                Cancelar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2: Registro del Sistema -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex-1 flex flex-col">
-                    <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
-                        <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span>⚙️</span> Registro del sistema
-                        </h3>
-                    </div>
-                    <div class="p-6 space-y-4 flex-1 flex flex-col justify-around">
-                        <div>
-                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Identificador único</span>
-                            <p class="text-sm font-bold text-gray-900 font-mono">
-                                ID #{{ $fincaId ?? 'N/A' }}
-                            </p>
-                        </div>
-                        @if($createdAt)
+                        <div class="p-6 space-y-4">
                             <div>
-                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Fecha de registro</span>
-                                <p class="text-sm font-bold text-gray-900">
-                                    {{ date('d/m/Y H:i', strtotime($createdAt)) }}
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Identificador único</span>
+                                <p class="text-sm font-bold text-gray-900 font-mono">
+                                    ID #{{ $fincaId ?? 'N/A' }}
                                 </p>
                             </div>
-                        @endif
-                        @if($updatedAt)
-                            <div>
-                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Última actualización</span>
-                                <p class="text-sm font-bold text-gray-900">
-                                    {{ date('d/m/Y H:i', strtotime($updatedAt)) }}
-                                </p>
-                            </div>
-                        @endif
+                            @if($createdAt)
+                                <div>
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Fecha de registro</span>
+                                    <p class="text-sm font-bold text-gray-900">
+                                        {{ date('d/m/Y H:i', strtotime($createdAt)) }}
+                                    </p>
+                                </div>
+                            @endif
+                            @if($updatedAt)
+                                <div>
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Última actualización</span>
+                                    <p class="text-sm font-bold text-gray-900">
+                                        {{ date('d/m/Y H:i', strtotime($updatedAt)) }}
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -434,6 +479,17 @@
             </div>
         </div>
     </div>
+
+    <!-- Formulario oculto para Archivar / Desarchivar -->
+    @if(!empty($finca['archivado']))
+        <form id="formUnarchiveFinca" action="{{ route('fincas.desarchivar', $fincaId) }}" method="POST" class="hidden">
+            @csrf
+        </form>
+    @else
+        <form id="formArchiveFinca" action="{{ route('fincas.archivar', $fincaId) }}" method="POST" class="hidden">
+            @csrf
+        </form>
+    @endif
 
     <!-- Formulario oculto para Eliminación Definitiva -->
     <form id="formDeleteFinca" action="{{ route('fincas.destroy', $fincaId) }}" method="POST" class="hidden">

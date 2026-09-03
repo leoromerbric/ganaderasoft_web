@@ -88,11 +88,10 @@ class TratamientoController extends Controller
             return redirect()->route('tratamiento.index')->with('error', 'Tratamiento no encontrado.');
         }
         $tratamiento  = $response['data'];
-        $diagnosticos = $this->service->getDiagnosticos();
-        $fincasRes    = $this->fincasService->getFincas();
-        $fincas       = $fincasRes['data'] ?? [];
-        $rebanosRes   = $this->rebanosService->getRebanos();
-        $rebanos      = $rebanosRes['data'] ?? [];
+        $fincasRes    = $this->fincasService->getFincas(['incluir_archivados' => true]);
+        $fincas       = $fincasRes['data']['data'] ?? $fincasRes['data'] ?? [];
+        $rebanosRes   = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
+        $rebanos      = $rebanosRes['data']['data'] ?? $rebanosRes['data'] ?? [];
 
         return view('tratamiento.edit', compact('tratamiento', 'diagnosticos', 'fincas', 'rebanos'));
     }
