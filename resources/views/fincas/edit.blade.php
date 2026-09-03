@@ -83,7 +83,7 @@
         @csrf
         @method('PUT')
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
             <!-- Columna Izquierda: Formulario (2 Tercios) -->
             <div class="lg:col-span-2 space-y-6">
                 
@@ -316,7 +316,7 @@
             </div>
 
             <!-- Columna Derecha: Sidebar Interactivo en Vivo (1 Tercio) -->
-            <div class="space-y-6">
+            <div class="space-y-6 flex flex-col justify-between h-full">
                 <!-- Card 1: Ficha Previa de la Finca -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
@@ -370,13 +370,13 @@
                 </div>
 
                 <!-- Card 2: Registro del Sistema -->
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex-1 flex flex-col">
                     <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
                         <h3 class="text-lg font-bold flex items-center gap-2">
                             <span>⚙️</span> Registro del sistema
                         </h3>
                     </div>
-                    <div class="p-6 space-y-4">
+                    <div class="p-6 space-y-4 flex-1 flex flex-col justify-around">
                         <div>
                             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Identificador único</span>
                             <p class="text-sm font-bold text-gray-900 font-mono">
@@ -404,7 +404,46 @@
             </div>
         </div>
     </form>
+
+    <!-- Zona de Peligro (Pie de página horizontal) -->
+    <div class="mt-10 pt-8 border-t border-gray-200">
+        <div class="bg-white rounded-2xl border border-red-200 shadow-xs p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="space-y-1 max-w-2xl">
+                <h4 class="text-base font-bold text-red-900 flex items-center gap-2">
+                    <span>⚠️</span> Zona de peligro
+                </h4>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                    Al eliminar esta finca se borrarán permanentemente <span class="font-semibold text-red-600">todos sus rebaños asociados</span>, <span class="font-semibold text-red-600">todos los animales registrados en ellos</span>, pesajes de leche, lactancias, pesajes corporales, eventos sanitarios/vacunas, árboles genealógicos y asignaciones de personal.
+                </p>
+            </div>
+            <div class="shrink-0">
+                <button type="button"
+                    onclick="openGenericConfirmModal({
+                        formId: 'formDeleteFinca',
+                        intent: 'danger',
+                        title: 'Eliminar finca definitivamente',
+                        message: '¿Estás seguro de que deseas eliminar esta finca permanentemente? Se eliminarán de forma irreversible TODOS sus rebaños, animales, producciones lecheras, lactancias, historiales de peso y registros sanitarios vinculados a ella.',
+                        confirmText: 'Sí, eliminar definitivamente'
+                    })"
+                    class="py-3 px-5 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 hover:border-red-600 font-bold rounded-xl transition-all duration-200 text-xs flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span>Eliminar finca definitivamente</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario oculto para Eliminación Definitiva -->
+    <form id="formDeleteFinca" action="{{ route('fincas.destroy', $fincaId) }}" method="POST" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
 </div>
+
+<x-ui.confirm-modal />
+
 
 <script>
     // Live Preview Binding

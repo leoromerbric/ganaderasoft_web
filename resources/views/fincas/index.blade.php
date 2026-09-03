@@ -112,7 +112,7 @@
 
     <!-- Filters Bar -->
     <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div>
                 <label for="filtroNombre" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar por nombre</label>
                 <input type="text" id="filtroNombre" value="{{ $nombre }}" placeholder="Ej: Finca San José..."
@@ -129,6 +129,16 @@
                             {{ $tipo }}
                         </option>
                     @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label for="filtroArchivado" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
+                <select id="filtroArchivado"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
+                    <option value="activos" {{ ($archivado ?? 'activos') === 'activos' ? 'selected' : '' }}>🟢 Solo activas</option>
+                    <option value="archivados" {{ ($archivado ?? '') === 'archivados' ? 'selected' : '' }}>⚪ Solo archivadas</option>
+                    <option value="todos" {{ ($archivado ?? '') === 'todos' ? 'selected' : '' }}>📋 Todas las fincas</option>
                 </select>
             </div>
 
@@ -152,6 +162,7 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tipo explotación</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Propietario / Contacto</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Superficie</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
                             <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
@@ -162,6 +173,7 @@
                                 $nombreFinca = $finca['nombre'] ?? 'Sin Nombre';
                                 $tipoExp = $finca['explotacion_tipo'] ?? 'General';
                                 $superficie = (float) ($finca['terreno']['superficie'] ?? 0);
+                                $isArchivado = !empty($finca['archivado']);
 
                                 // Formateo de propietario V2
                                 $propObj = $finca['propietario'] ?? null;
@@ -171,9 +183,10 @@
                                 $correoProp = $persona['correo'] ?? null;
                                 $inicial = strtoupper(substr($nombreFinca, 0, 1));
                             @endphp
-                            <tr class="hover:bg-gray-50/80 transition-colors fila-finca"
+                            <tr class="hover:bg-gray-50/80 transition-colors fila-finca {{ $isArchivado ? 'bg-gray-50/40' : '' }}"
                                 data-nombre="{{ strtolower($nombreFinca) }}" 
                                 data-tipo="{{ $tipoExp }}"
+                                data-archivado="{{ $isArchivado ? 'archivados' : 'activos' }}"
                                 data-superficie="{{ $superficie }}">
                                 <!-- Finca -->
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -224,6 +237,19 @@
                                     @endif
                                 </td>
 
+                                <!-- Estado -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if($isArchivado)
+                                        <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-600 border border-gray-200">
+                                            ⚪ Archivada
+                                        </span>
+                                    @else
+                                        <span class="px-3 py-1 text-xs font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            🟢 Activa
+                                        </span>
+                                    @endif
+                                </td>
+
                                 <!-- Acciones -->
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
                                     <div class="flex justify-center items-center space-x-2">
@@ -266,6 +292,45 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </a>
+
+                                        <!-- Botón Toggle Archivar / Desarchivar -->
+                                        @if($isArchivado)
+                                            <form action="{{ route('fincas.desarchivar', $fincaId) }}" method="POST" class="inline-block" id="form-unarchive-finca-{{ $fincaId }}">
+                                                @csrf
+                                                <button type="button"
+                                                    onclick="openGenericConfirmModal({
+                                                        formId: 'form-unarchive-finca-{{ $fincaId }}',
+                                                        intent: 'success',
+                                                        title: 'Desarchivar finca',
+                                                        message: '¿Estás seguro de que deseas reactivar esta finca? Volverá a estar visible en todas las operaciones activas del sistema.',
+                                                        confirmText: 'Sí, desarchivar'
+                                                    })"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-2xs cursor-pointer"
+                                                    title="Desarchivar finca">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <form action="{{ route('fincas.archivar', $fincaId) }}" method="POST" class="inline-block" id="form-archive-finca-{{ $fincaId }}">
+                                                @csrf
+                                                <button type="button"
+                                                    onclick="openGenericConfirmModal({
+                                                        formId: 'form-archive-finca-{{ $fincaId }}',
+                                                        intent: 'danger',
+                                                        title: 'Archivar finca',
+                                                        message: '¿Estás seguro de que deseas archivar esta finca? Se ocultará de las operaciones activas pero conservará todos sus registros históricos.',
+                                                        confirmText: 'Sí, archivar'
+                                                    })"
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white transition-all shadow-2xs cursor-pointer"
+                                                    title="Archivar finca">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -273,7 +338,7 @@
 
                         <!-- Fila vacía para filtro de cliente -->
                         <tr id="filasVacias" class="hidden">
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">
                                 <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl border border-gray-100">
                                     🔍
                                 </div>
@@ -303,13 +368,17 @@
     </div>
 </div>
 
+<x-ui.confirm-modal />
+
 <script>
     document.getElementById('filtroNombre').addEventListener('input', aplicarFiltros);
     document.getElementById('filtroTipo').addEventListener('change', aplicarFiltros);
+    document.getElementById('filtroArchivado').addEventListener('change', aplicarFiltros);
 
     function aplicarFiltros() {
         const nombre = document.getElementById('filtroNombre').value.trim().toLowerCase();
         const tipo = document.getElementById('filtroTipo').value;
+        const archivado = document.getElementById('filtroArchivado').value;
 
         let total = 0;
         let superficie = 0;
@@ -320,10 +389,14 @@
         rows.forEach(function (row) {
             const rowNombre = row.dataset.nombre || '';
             const rowTipo = row.dataset.tipo || '';
+            const rowArchivado = row.dataset.archivado || 'activos';
             const rowSuperficie = parseFloat(row.dataset.superficie) || 0;
 
-            const ok = (!nombre || rowNombre.includes(nombre))
-                    && (!tipo || rowTipo === tipo);
+            const matchNombre = (!nombre || rowNombre.includes(nombre));
+            const matchTipo = (!tipo || rowTipo === tipo);
+            const matchArchivado = (archivado === 'todos' || rowArchivado === archivado);
+
+            const ok = matchNombre && matchTipo && matchArchivado;
 
             row.style.display = ok ? '' : 'none';
 
@@ -361,7 +434,12 @@
     function limpiarFiltros() {
         document.getElementById('filtroNombre').value = '';
         document.getElementById('filtroTipo').value = '';
+        document.getElementById('filtroArchivado').value = 'activos';
         aplicarFiltros();
     }
+
+    // Aplicar filtros iniciales
+    document.addEventListener('DOMContentLoaded', aplicarFiltros);
+    aplicarFiltros();
 </script>
 @endsection

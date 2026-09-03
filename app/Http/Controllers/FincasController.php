@@ -26,8 +26,10 @@ class FincasController extends Controller
     {
         $nombre     = $request->query('nombre', '');
         $tipoFiltro = $request->query('tipo', '');
+        $archivado  = $request->query('archivado', 'activos');
 
-        $response = $this->fincasService->getFincas();
+        // Cargar todas las fincas (activas y archivadas) para permitir filtrado reactivo e instantáneo en la vista
+        $response = $this->fincasService->getFincas(['archivado' => 'todos']);
         
         $fincas = [];
         if (isset($response['success']) && $response['success']) {
@@ -39,7 +41,7 @@ class FincasController extends Controller
         $tipos = array_values(array_unique(array_filter($tiposList)));
         sort($tipos);
 
-        return view('fincas.index', compact('fincas', 'tipos', 'nombre', 'tipoFiltro'));
+        return view('fincas.index', compact('fincas', 'tipos', 'nombre', 'tipoFiltro', 'archivado'));
     }
 
     /**
@@ -309,4 +311,47 @@ class FincasController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    /**
+     * Archiva una finca activa.
+     */
+    public function archive($id)
+    {
+        $response = $this->fincasService->archiveFinca((int)$id);
+
+        if ($response['success'] ?? false) {
+            return redirect()->back()->with('success', $response['message'] ?? 'Finca archivada exitosamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al archivar la finca.');
+    }
+
+    /**
+     * Desarchiva una finca archivada.
+     */
+    public function unarchive($id)
+    {
+        $response = $this->fincasService->unarchiveFinca((int)$id);
+
+        if ($response['success'] ?? false) {
+            return redirect()->back()->with('success', $response['message'] ?? 'Finca desarchivada exitosamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al desarchivar la finca.');
+    }
+
+    /**
+     * Elimina definitivamente una finca y sus dependencias en cascada.
+     */
+    public function destroy($id)
+    {
+        $response = $this->fincasService->deleteFinca((int)$id);
+
+        if ($response['success'] ?? false) {
+            return redirect()->route('fincas.index')->with('success', $response['message'] ?? 'Finca eliminada definitivamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al eliminar la finca.');
+    }
 }
+

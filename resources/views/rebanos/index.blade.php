@@ -99,9 +99,9 @@
         </div>
     </div>
 
-    <!-- Filter Bar (4 Columnas) -->
+    <!-- Filter Bar (5 Columnas) -->
     <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
             <!-- Buscar -->
             <div>
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar rebaño</label>
@@ -119,9 +119,12 @@
                         @php
                             $fId = $finca['id'] ?? null;
                             $fNombre = $finca['nombre'] ?? ('Finca #' . $fId);
+                            $fArchivada = !empty($finca['archivado']);
                         @endphp
-                        <option value="{{ $fId }}" {{ (string) $fincaId === (string) $fId ? 'selected' : '' }}>
-                            {{ $fNombre }}
+                        <option value="{{ $fId }}" 
+                                data-archivado="{{ $fArchivada ? '1' : '0' }}"
+                                {{ (string) $fincaId === (string) $fId ? 'selected' : '' }}>
+                            {{ $fNombre }}{{ $fArchivada ? ' (Archivada)' : '' }}
                         </option>
                     @endforeach
                 </select>
@@ -135,6 +138,17 @@
                     <option value="">Todos los rebaños</option>
                     <option value="con_animales">Con animales asociados</option>
                     <option value="sin_animales">Rebaños vacíos</option>
+                </select>
+            </div>
+
+            <!-- Estado -->
+            <div>
+                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
+                <select id="filtroArchivado"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                    <option value="activos" {{ ($archivado ?? 'activos') === 'activos' ? 'selected' : '' }}>🟢 Solo activos</option>
+                    <option value="archivados" {{ ($archivado ?? '') === 'archivados' ? 'selected' : '' }}>⚪ Solo archivados</option>
+                    <option value="todos" {{ ($archivado ?? '') === 'todos' ? 'selected' : '' }}>📋 Todos los rebaños</option>
                 </select>
             </div>
 
@@ -161,6 +175,7 @@
                         $fincaNombre = data_get($rebano, 'finca.nombre') ?? ($fincaObj['nombre'] ?? ('Finca #' . ($fincaIdAttr ?: 'N/A')));
                         $fincaTipo = data_get($rebano, 'finca.explotacion_tipo') ?? ($fincaObj['explotacion_tipo'] ?? 'General');
                         $animalesCount = (int)($rebano['total_animales'] ?? count($rebano['animales'] ?? []));
+                        $isArchivado = !empty($rebano['archivado']);
                         
                         $searchableText = strtolower(implode(' ', array_filter([
                             $rebanoNombre,
@@ -170,9 +185,10 @@
                             $fincaTipo
                         ])));
                     @endphp
-                    <div class="bg-white border border-gray-100 hover:border-ganaderasoft-celeste/60 rounded-2xl p-6 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between fila-rebano group"
+                    <div class="bg-white border border-gray-100 hover:border-ganaderasoft-celeste/60 rounded-2xl p-6 shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between fila-rebano group {{ $isArchivado ? 'bg-gray-50/40' : '' }}"
                         data-finca="{{ $fincaIdAttr }}" 
                         data-nombre="{{ $searchableText }}"
+                        data-archivado="{{ $isArchivado ? 'archivados' : 'activos' }}"
                         data-animales="{{ $animalesCount }}">
                         <div>
                             <!-- Header with icon -->
@@ -199,6 +215,18 @@
                                     <span class="font-bold text-gray-900 font-mono">#{{ $rebanoId }}</span>
                                 </div>
                                 <div class="flex items-center justify-between">
+                                    <span class="text-gray-500">Estado:</span>
+                                    @if($isArchivado)
+                                        <span class="px-2 py-0.5 rounded-md bg-gray-100 text-gray-600 font-semibold border border-gray-200 text-xs">
+                                            ⚪ Archivado
+                                        </span>
+                                    @else
+                                        <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200 text-xs">
+                                            🟢 Activo
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="flex items-center justify-between">
                                     <span class="text-gray-500">Explotación finca:</span>
                                     <span class="px-2.5 py-0.5 rounded-md bg-blue-50 text-blue-700 font-semibold border border-blue-100">
                                         {{ $fincaTipo }}
@@ -220,9 +248,9 @@
                         </div>
 
                         <!-- Actions -->
-                        <div class="flex items-center gap-2.5 mt-5 pt-3 border-t border-gray-100">
+                        <div class="flex items-center gap-2 mt-5 pt-3 border-t border-gray-100">
                             <a href="{{ route('animales.index', ['rebano_id' => $rebanoId]) }}"
-                                class="flex-1 px-4 py-2.5 bg-ganaderasoft-celeste/15 hover:bg-ganaderasoft-azul text-ganaderasoft-azul hover:text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 shadow-2xs">
+                                class="flex-1 px-3 py-2.5 bg-ganaderasoft-celeste/15 hover:bg-ganaderasoft-azul text-ganaderasoft-azul hover:text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 shadow-2xs">
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -236,6 +264,45 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                 </svg>
                             </a>
+
+                            <!-- Botón Toggle Archivar / Desarchivar -->
+                            @if($isArchivado)
+                                <form action="{{ route('rebanos.desarchivar', $rebanoId) }}" method="POST" class="inline-block" id="form-unarchive-rebano-{{ $rebanoId }}">
+                                    @csrf
+                                    <button type="button"
+                                        onclick="openGenericConfirmModal({
+                                            formId: 'form-unarchive-rebano-{{ $rebanoId }}',
+                                            intent: 'success',
+                                            title: 'Desarchivar rebaño',
+                                            message: '¿Estás seguro de que deseas reactivar este rebaño? Volverá a estar disponible para asignaciones y operaciones del hato.',
+                                            confirmText: 'Sí, desarchivar'
+                                        })"
+                                        class="p-2.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border border-emerald-200 hover:border-emerald-600 rounded-xl transition-all shadow-2xs flex items-center justify-center cursor-pointer"
+                                        title="Desarchivar rebaño">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            @else
+                                <form action="{{ route('rebanos.archivar', $rebanoId) }}" method="POST" class="inline-block" id="form-archive-rebano-{{ $rebanoId }}">
+                                    @csrf
+                                    <button type="button"
+                                        onclick="openGenericConfirmModal({
+                                            formId: 'form-archive-rebano-{{ $rebanoId }}',
+                                            intent: 'danger',
+                                            title: 'Archivar rebaño',
+                                            message: '¿Estás seguro de que deseas archivar este rebaño? Se ocultará de las operaciones activas pero conservará todos sus registros.',
+                                            confirmText: 'Sí, archivar'
+                                        })"
+                                        class="p-2.5 bg-amber-50 text-amber-600 hover:bg-amber-500 hover:text-white border border-amber-200 hover:border-amber-500 rounded-xl transition-all shadow-2xs flex items-center justify-center cursor-pointer"
+                                        title="Archivar rebaño">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            @endif
                         </div>
                     </div>
                 @endforeach
@@ -277,13 +344,43 @@
     </div>
 </div>
 
+<x-ui.confirm-modal />
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const filtroFinca = document.getElementById('filtroFinca');
     const filtroNombre = document.getElementById('filtroNombre');
     const filtroOcupacion = document.getElementById('filtroOcupacion');
+    const filtroArchivado = document.getElementById('filtroArchivado');
     const cardsContainer = document.getElementById('cardsContainer');
     const emptyFiltered = document.getElementById('emptyFilteredState');
+    const todasLasFincas = @json($fincas);
+
+    function actualizarDesplegableFincas() {
+        if (!filtroFinca) return;
+        const archivado = (filtroArchivado ? filtroArchivado.value : 'activos').trim();
+        const currentVal = filtroFinca.value;
+
+        filtroFinca.innerHTML = '<option value="">Todas las fincas</option>';
+        todasLasFincas.forEach(function (finca) {
+            const isArchivada = Boolean(finca.archivado);
+            // Si el estado es "activos", mostrar solo activas
+            if (archivado === 'activos' && isArchivada) {
+                return;
+            }
+            // Si el estado es "archivados", mostrar solo archivadas
+            if (archivado === 'archivados' && !isArchivada) {
+                return;
+            }
+            const opt = document.createElement('option');
+            opt.value = finca.id;
+            opt.textContent = (finca.nombre || ('Finca #' + finca.id)) + (archivado === 'todos' && isArchivada ? ' (Archivada)' : '');
+            if (String(currentVal) === String(finca.id)) {
+                opt.selected = true;
+            }
+            filtroFinca.appendChild(opt);
+        });
+    }
 
     function recalcularKpis(visibles) {
         const statTotal = document.getElementById('statTotal');
@@ -317,6 +414,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const finca = (filtroFinca ? filtroFinca.value : '').trim();
         const nombre = (filtroNombre ? filtroNombre.value : '').toLowerCase().trim();
         const ocupacion = (filtroOcupacion ? filtroOcupacion.value : '').trim();
+        const archivado = (filtroArchivado ? filtroArchivado.value : 'activos').trim();
 
         let visibleCount = 0;
         const visibleRows = [];
@@ -324,10 +422,12 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.fila-rebano').forEach(function (row) {
             const rowFinca = (row.getAttribute('data-finca') || '').trim();
             const rowNombre = (row.getAttribute('data-nombre') || '').toLowerCase().trim();
+            const rowArchivado = (row.getAttribute('data-archivado') || 'activos').trim();
             const rowAnimales = parseInt(row.getAttribute('data-animales')) || 0;
 
             const matchFinca = !finca || rowFinca === finca;
             const matchNombre = !nombre || rowNombre.includes(nombre);
+            const matchArchivado = (archivado === 'todos' || rowArchivado === archivado);
             
             let matchOcupacion = true;
             if (ocupacion === 'con_animales') {
@@ -336,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 matchOcupacion = rowAnimales === 0;
             }
 
-            const isVisible = matchFinca && matchNombre && matchOcupacion;
+            const isVisible = matchFinca && matchNombre && matchOcupacion && matchArchivado;
 
             row.style.display = isVisible ? '' : 'none';
             if (isVisible) {
@@ -362,15 +462,21 @@ document.addEventListener('DOMContentLoaded', function () {
     filtroFinca?.addEventListener('change', aplicarFiltros);
     filtroNombre?.addEventListener('input', aplicarFiltros);
     filtroOcupacion?.addEventListener('change', aplicarFiltros);
+    filtroArchivado?.addEventListener('change', function () {
+        actualizarDesplegableFincas();
+        aplicarFiltros();
+    });
 
     window.limpiarFiltros = function () {
         if (filtroFinca) filtroFinca.value = '';
         if (filtroNombre) filtroNombre.value = '';
         if (filtroOcupacion) filtroOcupacion.value = '';
+        if (filtroArchivado) filtroArchivado.value = 'activos';
+        actualizarDesplegableFincas();
         aplicarFiltros();
     };
 
-    // Aplicar filtros iniciales (si vienen predefinidos en la URL)
+    actualizarDesplegableFincas();
     aplicarFiltros();
 });
 </script>

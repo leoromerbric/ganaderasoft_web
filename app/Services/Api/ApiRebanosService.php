@@ -18,6 +18,17 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
     }
 
     /**
+     * Obtiene los datos de un rebaño específico por su ID.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getRebano(int $id): array
+    {
+        return $this->get("/rebanos/{$id}");
+    }
+
+    /**
      * Crea un nuevo registro de rebaño.
      *
      * @param array $data
@@ -39,4 +50,38 @@ class ApiRebanosService extends BaseApiService implements RebanosServiceInterfac
     {
         return $this->put("/rebanos/{$id}", $data);
     }
+
+    /**
+     * Archiva un rebaño activo.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function archiveRebano(int $id): array
+    {
+        return $this->post("/rebanos/{$id}/archivar");
+    }
+
+    /**
+     * Desarchiva un rebaño archivado.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function unarchiveRebano(int $id): array
+    {
+        return $this->post("/rebanos/{$id}/desarchivar");
+    }
+
+    /**
+     * Elimina definitivamente un rebaño y sus animales en cascada.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function deleteRebano(int $id): array
+    {
+        return $this->delete("/rebanos/{$id}");
+    }
 }
+

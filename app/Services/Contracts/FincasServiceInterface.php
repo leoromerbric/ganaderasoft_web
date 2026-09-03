@@ -30,7 +30,23 @@ interface FincasServiceInterface
     public function importarFincas(\Illuminate\Http\UploadedFile $file, ?int $propietarioId = null): array;
 
     /**
+     * Archivar una finca.
+     */
+    public function archiveFinca(int $id): array;
+
+    /**
+     * Desarchivar una finca previamente archivada.
+     */
+    public function unarchiveFinca(int $id): array;
+
+    /**
+     * Eliminar definitivamente una finca y sus dependencias en cascada.
+     */
+    public function deleteFinca(int $id): array;
+
+    /**
      * Descargar plantilla de ejemplo para importación masiva de fincas.
      */
     public function descargarPlantilla(): \Symfony\Component\HttpFoundation\Response;
 }
+

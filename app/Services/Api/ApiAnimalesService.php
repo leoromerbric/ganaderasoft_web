@@ -59,14 +59,36 @@ class ApiAnimalesService extends BaseApiService implements AnimalesServiceInterf
     }
 
     /**
-     * Restaura un animal archivado.
+     * Archiva un animal activo.
      *
-     * @param int $id Identificador del animal a restaurar.
+     * @param int $id
      * @return array
      */
-    public function restoreAnimal(int $id): array
+    public function archiveAnimal(int $id): array
     {
-        return $this->post("/animales/{$id}/restaurar");
+        return $this->post("/animales/{$id}/archivar");
+    }
+
+    /**
+     * Desarchiva un animal archivado.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function unarchiveAnimal(int $id): array
+    {
+        return $this->post("/animales/{$id}/desarchivar");
+    }
+
+    /**
+     * Elimina definitivamente un animal del sistema.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function deleteAnimal(int $id): array
+    {
+        return $this->delete("/animales/{$id}");
     }
 
     /**

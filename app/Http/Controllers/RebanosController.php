@@ -18,10 +18,17 @@ class RebanosController extends Controller
      */
     public function index(Request $request)
     {
-        $fincaId = $request->query('finca_id') ?? $request->query('id_finca');
-        $nombre  = $request->query('nombre', '');
+        $fincaId   = $request->query('finca_id') ?? $request->query('id_finca');
+        $nombre    = $request->query('nombre', '');
+        $archivado = $request->query('archivado', 'activos');
 
-        $response = $this->rebanosService->getRebanos();
+        // Cargar todos los rebaños (activos y archivados) para permitir filtrado reactivo e instantáneo en la vista
+        $apiFilters = ['archivado' => 'todos'];
+        if ($fincaId) {
+            $apiFilters['finca_id'] = $fincaId;
+        }
+
+        $response = $this->rebanosService->getRebanos($apiFilters);
         
         $allRebanos = [];
         if (isset($response['success']) && $response['success']) {
@@ -29,7 +36,7 @@ class RebanosController extends Controller
         }
 
         // Cargar fincas para el filtro
-        $fincasResponse = $this->fincasService->getFincas();
+        $fincasResponse = $this->fincasService->getFincas(['archivado' => 'todos']);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
         // Pasar todos los rebaños a la vista para permitir filtrado reactivo en vivo sin recargas
@@ -43,7 +50,7 @@ class RebanosController extends Controller
         ];
 
         $idFinca = $fincaId;
-        return view('rebanos.index', compact('rebanos', 'fincas', 'fincaId', 'idFinca', 'nombre', 'estadisticas'));
+        return view('rebanos.index', compact('rebanos', 'fincas', 'fincaId', 'idFinca', 'nombre', 'archivado', 'estadisticas'));
     }
 
     /**
@@ -152,4 +159,47 @@ class RebanosController extends Controller
             'message' => $response['message'] ?? 'Error al obtener los rebaños'
         ], 500);
     }
+
+    /**
+     * Archiva un rebaño activo.
+     */
+    public function archive($id)
+    {
+        $response = $this->rebanosService->archiveRebano((int)$id);
+
+        if ($response['success'] ?? false) {
+            return redirect()->back()->with('success', $response['message'] ?? 'Rebaño archivado exitosamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al archivar el rebaño.');
+    }
+
+    /**
+     * Desarchiva un rebaño archivado.
+     */
+    public function unarchive($id)
+    {
+        $response = $this->rebanosService->unarchiveRebano((int)$id);
+
+        if ($response['success'] ?? false) {
+            return redirect()->back()->with('success', $response['message'] ?? 'Rebaño desarchivado exitosamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al desarchivar el rebaño.');
+    }
+
+    /**
+     * Elimina definitivamente un rebaño y sus dependencias en cascada.
+     */
+    public function destroy($id)
+    {
+        $response = $this->rebanosService->deleteRebano((int)$id);
+
+        if ($response['success'] ?? false) {
+            return redirect()->route('rebanos.index')->with('success', $response['message'] ?? 'Rebaño eliminado definitivamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al eliminar el rebaño.');
+    }
 }
+

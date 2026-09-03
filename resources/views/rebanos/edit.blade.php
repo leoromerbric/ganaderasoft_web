@@ -141,60 +141,100 @@
                 </div>
             </div>
 
-            <!-- Columna Derecha: Resumen de Ficha en Vivo (1 Tercio) -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between">
-                <div>
-                    <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
-                        <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span>📋</span> Resumen del rebaño
-                        </h3>
-                    </div>
-
-                    <div class="p-6 space-y-5">
-                        <!-- Preview Avatar e Identificación -->
-                        <div class="p-4 bg-teal-50/70 border border-teal-100 rounded-2xl flex items-center space-x-3">
-                            <div class="w-12 h-12 rounded-xl bg-white border border-teal-200 text-teal-700 font-bold flex items-center justify-center text-2xl shadow-xs shrink-0">
-                                🐄
-                            </div>
-                            <div class="overflow-hidden">
-                                <p id="previewNombre" class="text-base font-bold text-gray-900 truncate">{{ $rebanoNombre }}</p>
-                                <p class="text-xs text-gray-500 font-mono">ID Rebaño: #{{ $rebanoId }}</p>
-                            </div>
+            <!-- Columna Derecha: Resumen de Ficha en Vivo y Zona de Peligro (1 Tercio) -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between">
+                    <div>
+                        <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <span>📋</span> Resumen del rebaño
+                            </h3>
                         </div>
 
-                        <!-- Mini Stats Preview -->
-                        <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
-                            <div class="flex justify-between items-center gap-2">
-                                <span class="text-gray-500">Ubicación:</span>
-                                <span class="font-bold text-gray-900 text-right truncate">🏡 {{ $fincaNombre }}</span>
+                        <div class="p-6 space-y-5">
+                            <!-- Preview Avatar e Identificación -->
+                            <div class="p-4 bg-teal-50/70 border border-teal-100 rounded-2xl flex items-center space-x-3">
+                                <div class="w-12 h-12 rounded-xl bg-white border border-teal-200 text-teal-700 font-bold flex items-center justify-center text-2xl shadow-xs shrink-0">
+                                    🐄
+                                </div>
+                                <div class="overflow-hidden">
+                                    <p id="previewNombre" class="text-base font-bold text-gray-900 truncate">{{ $rebanoNombre }}</p>
+                                    <p class="text-xs text-gray-500 font-mono">ID Rebaño: #{{ $rebanoId }}</p>
+                                </div>
                             </div>
-                            <div class="flex justify-between items-center gap-2">
-                                <span class="text-gray-500">Tipo explotación:</span>
-                                <span class="font-bold text-blue-700 text-right">{{ $fincaTipo }}</span>
-                            </div>
-                            <div class="flex justify-between items-center gap-2">
-                                <span class="text-gray-500">Animales actuales:</span>
-                                <span class="font-bold text-emerald-700 text-right">{{ $animalesCount }} {{ $animalesCount === 1 ? 'animal' : 'animales' }}</span>
+
+                            <!-- Mini Stats Preview -->
+                            <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
+                                <div class="flex justify-between items-center gap-2">
+                                    <span class="text-gray-500">Ubicación:</span>
+                                    <span class="font-bold text-gray-900 text-right truncate">🏡 {{ $fincaNombre }}</span>
+                                </div>
+                                <div class="flex justify-between items-center gap-2">
+                                    <span class="text-gray-500">Tipo explotación:</span>
+                                    <span class="font-bold text-blue-700 text-right">{{ $fincaTipo }}</span>
+                                </div>
+                                <div class="flex justify-between items-center gap-2">
+                                    <span class="text-gray-500">Animales actuales:</span>
+                                    <span class="font-bold text-emerald-700 text-right">{{ $animalesCount }} {{ $animalesCount === 1 ? 'animal' : 'animales' }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Action Buttons en el fondo de la columna derecha -->
-                <div class="p-6 pt-0 space-y-3">
-                    <button type="submit"
-                            class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
-                        💾 Actualizar rebaño
-                    </button>
-                    <a href="{{ route('rebanos.index') }}"
-                       class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
-                        Cancelar
-                    </a>
+                    <!-- Action Buttons en el fondo de la columna derecha -->
+                    <div class="p-6 pt-0 space-y-3">
+                        <button type="submit"
+                                class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
+                            💾 Actualizar rebaño
+                        </button>
+                        <a href="{{ route('rebanos.index') }}"
+                           class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
+                            Cancelar
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </form>
+
+    <!-- Zona de Peligro (Pie de página horizontal) -->
+    <div class="mt-10 pt-8 border-t border-gray-200">
+        <div class="bg-white rounded-2xl border border-red-200 shadow-xs p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="space-y-1 max-w-2xl">
+                <h4 class="text-base font-bold text-red-900 flex items-center gap-2">
+                    <span>⚠️</span> Zona de peligro
+                </h4>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                    Al eliminar este rebaño se borrarán permanentemente <span class="font-semibold text-red-600">todos los animales asignados a él</span>, incluyendo su historial productivo, pesajes, lactancias, eventos reproductivos y registros médicos de salud.
+                </p>
+            </div>
+            <div class="shrink-0">
+                <button type="button"
+                    onclick="openGenericConfirmModal({
+                        formId: 'formDeleteRebano',
+                        intent: 'danger',
+                        title: 'Eliminar rebaño definitivamente',
+                        message: '¿Estás seguro de que deseas eliminar este rebaño permanentemente? Se eliminarán de forma irreversible TODOS los animales pertenecientes a él, sus pesajes, lactancias, genealogías y registros veterinarios asociados.',
+                        confirmText: 'Sí, eliminar definitivamente'
+                    })"
+                    class="py-3 px-5 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 hover:border-red-600 font-bold rounded-xl transition-all duration-200 text-xs flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span>Eliminar rebaño definitivamente</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario oculto para Eliminación Definitiva -->
+    <form id="formDeleteRebano" action="{{ route('rebanos.destroy', $rebanoId) }}" method="POST" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
 </div>
+
+<x-ui.confirm-modal />
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

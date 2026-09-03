@@ -258,7 +258,46 @@
             </div>
         </div>
     </form>
+
+    <!-- Zona de Peligro (Pie de página horizontal) -->
+    <div class="mt-10 pt-8 border-t border-gray-200">
+        <div class="bg-white rounded-2xl border border-red-200 shadow-xs p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="space-y-1 max-w-2xl">
+                <h4 class="text-base font-bold text-red-900 flex items-center gap-2">
+                    <span>⚠️</span> Zona de peligro
+                </h4>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                    Al eliminar este animal se borrará de forma permanente su registro del inventario, árbol genealógico, historial de peso corporal, registros de producción lechera, lactancias, servicios reproductivos y tratamientos de salud.
+                </p>
+            </div>
+            <div class="shrink-0">
+                <button type="button"
+                    onclick="openGenericConfirmModal({
+                        formId: 'formDeleteAnimal',
+                        intent: 'danger',
+                        title: 'Eliminar animal definitivamente',
+                        message: '¿Estás seguro de que deseas eliminar este animal permanentemente? Se eliminarán de forma irreversible todos sus historiales de producción, peso, genealogía, lactancias y tratamientos médicos.',
+                        confirmText: 'Sí, eliminar definitivamente'
+                    })"
+                    class="py-3 px-5 bg-red-50 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 hover:border-red-600 font-bold rounded-xl transition-all duration-200 text-xs flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span>Eliminar animal definitivamente</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario oculto para Eliminación Definitiva -->
+    <form id="formDeleteAnimal" action="{{ route('animales.destroy', $animal['id']) }}" method="POST" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
 </div>
+
+<x-ui.confirm-modal />
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

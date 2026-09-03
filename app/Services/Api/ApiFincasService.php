@@ -54,6 +54,39 @@ class ApiFincasService extends BaseApiService implements FincasServiceInterface
     }
 
     /**
+     * Archiva una finca activa.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function archiveFinca(int $id): array
+    {
+        return $this->post("/fincas/{$id}/archivar");
+    }
+
+    /**
+     * Desarchiva una finca archivada.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function unarchiveFinca(int $id): array
+    {
+        return $this->post("/fincas/{$id}/desarchivar");
+    }
+
+    /**
+     * Elimina definitivamente una finca y sus registros dependientes en cascada.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function deleteFinca(int $id): array
+    {
+        return $this->delete("/fincas/{$id}");
+    }
+
+    /**
      * Importa masivamente fincas desde un archivo CSV o TXT.
      *
      * @param UploadedFile $file

@@ -33,26 +33,21 @@ class AnimalesController extends Controller
         $nombre    = $request->query('nombre', '');
         $archivado = $request->query('archivado', 'activos');
 
-        // Mapear filtro de archivado y finca para el servicio API
-        $apiFilters = [];
+        // Cargar todos los animales (activos y archivados) para permitir filtrado reactivo e instantáneo en la vista
+        $apiFilters = ['archivado' => 'todos'];
         if ($idFinca) {
             $apiFilters['finca_id'] = $idFinca;
         }
-        if ($archivado === 'archivados') {
-            $apiFilters['archivado'] = 'true';
-        } elseif ($archivado === 'todos') {
-            $apiFilters['archivado'] = 'todos';
-        }
 
-        // Obtener los animales aplicando rebaño, finca y filtro de archivado
+        // Obtener los animales aplicando rebaño y finca
         $response = $this->animalesService->getAnimales($idRebano, $apiFilters);
         $animales = ($response['success'] ?? false) ? ($response['data']['data'] ?? $response['data'] ?? []) : [];
 
-        // Cargar catálogos auxiliares (rebaños y fincas)
-        $rebanosResponse = $this->rebanosService->getRebanos();
+        // Cargar catálogos auxiliares (rebaños y fincas completos)
+        $rebanosResponse = $this->rebanosService->getRebanos(['archivado' => 'todos']);
         $rebanos = ($rebanosResponse['success'] ?? false) ? ($rebanosResponse['data']['data'] ?? $rebanosResponse['data'] ?? []) : [];
 
-        $fincasResponse = $this->fincasService->getFincas();
+        $fincasResponse = $this->fincasService->getFincas(['archivado' => 'todos']);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
         // Construir mapas para validaciones, visualización y filtros en Javascript (UI)
@@ -327,7 +322,43 @@ class AnimalesController extends Controller
     }
 
     /**
-     * Restaura un animal archivado a estado activo.
+     * Archiva un animal activo.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function archive(Request $request, $id)
+    {
+        $response = $this->animalesService->archiveAnimal((int) $id);
+
+        if ($response['success'] ?? false) {
+            return redirect()->back()->with('success', $response['message'] ?? 'Animal archivado exitosamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al archivar el animal.');
+    }
+
+    /**
+     * Desarchiva un animal archivado a estado activo.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function unarchive(Request $request, $id)
+    {
+        $response = $this->animalesService->unarchiveAnimal((int) $id);
+
+        if ($response['success'] ?? false) {
+            return redirect()->back()->with('success', $response['message'] ?? 'Animal desarchivado exitosamente.');
+        }
+
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al desarchivar el animal.');
+    }
+
+    /**
+     * Restaura un animal archivado (alias de desarchivar).
      *
      * @param Request $request
      * @param int $id
@@ -335,12 +366,25 @@ class AnimalesController extends Controller
      */
     public function restore(Request $request, $id)
     {
-        $response = $this->animalesService->restoreAnimal((int) $id);
+        return $this->unarchive($request, $id);
+    }
+
+    /**
+     * Elimina definitivamente un animal del sistema.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(Request $request, $id)
+    {
+        $response = $this->animalesService->deleteAnimal((int) $id);
 
         if ($response['success'] ?? false) {
-            return redirect()->back()->with('success', $response['message'] ?? 'Animal restaurado exitosamente.');
+            return redirect()->route('animales.index')->with('success', $response['message'] ?? 'Animal eliminado definitivamente.');
         }
 
-        return redirect()->back()->with('error', $response['message'] ?? 'Error al restaurar el animal.');
+        return redirect()->back()->with('error', $response['message'] ?? 'Error al eliminar el animal.');
     }
 }
+

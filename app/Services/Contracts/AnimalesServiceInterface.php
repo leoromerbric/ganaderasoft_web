@@ -25,9 +25,20 @@ interface AnimalesServiceInterface
     public function updateAnimal(int $id, array $data): array;
 
     /**
-     * Restore an archived animal
+     * Archive an active animal
      */
-    public function restoreAnimal(int $id): array;
+    public function archiveAnimal(int $id): array;
+
+    /**
+     * Unarchive an archived animal
+     */
+    public function unarchiveAnimal(int $id): array;
+
+    /**
+     * Permanently delete an animal
+     */
+    public function deleteAnimal(int $id): array;
+
 
     /**
      * Get list of available breeds (composicion_raza)

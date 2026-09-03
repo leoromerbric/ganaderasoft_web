@@ -74,6 +74,9 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/fincas/{id}', [FincasController::class, 'show'])->name('fincas.show');
     Route::get('/fincas/{id}/edit', [FincasController::class, 'edit'])->name('fincas.edit');
     Route::put('/fincas/{id}', [FincasController::class, 'update'])->name('fincas.update');
+    Route::match(['POST', 'PATCH'], '/fincas/{id}/archivar', [FincasController::class, 'archive'])->name('fincas.archivar');
+    Route::match(['POST', 'PATCH'], '/fincas/{id}/desarchivar', [FincasController::class, 'unarchive'])->name('fincas.desarchivar');
+    Route::delete('/fincas/{id}', [FincasController::class, 'destroy'])->name('fincas.destroy');
     
     // Rebaños routes
     Route::get('/rebanos', [RebanosController::class, 'index'])->name('rebanos.index');
@@ -81,6 +84,9 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::post('/rebanos', [RebanosController::class, 'store'])->name('rebanos.store');
     Route::get('/rebanos/{id}/edit', [RebanosController::class, 'edit'])->name('rebanos.edit');
     Route::put('/rebanos/{id}', [RebanosController::class, 'update'])->name('rebanos.update');
+    Route::match(['POST', 'PATCH'], '/rebanos/{id}/archivar', [RebanosController::class, 'archive'])->name('rebanos.archivar');
+    Route::match(['POST', 'PATCH'], '/rebanos/{id}/desarchivar', [RebanosController::class, 'unarchive'])->name('rebanos.desarchivar');
+    Route::delete('/rebanos/{id}', [RebanosController::class, 'destroy'])->name('rebanos.destroy');
     
     // Personal routes
     Route::get('/personal', [PersonalController::class, 'index'])->name('personal.index');
@@ -105,7 +111,9 @@ Route::middleware(['mock.auth'])->group(function () {
     Route::get('/animales/{id}', [AnimalesController::class, 'show'])->name('animales.show');
     Route::get('/animales/{id}/edit', [AnimalesController::class, 'edit'])->name('animales.edit');
     Route::put('/animales/{id}', [AnimalesController::class, 'update'])->name('animales.update');
-    Route::post('/animales/{id}/restaurar', [AnimalesController::class, 'restore'])->name('animales.restore');
+    Route::match(['POST', 'PATCH'], '/animales/{id}/archivar', [AnimalesController::class, 'archive'])->name('animales.archivar');
+    Route::match(['POST', 'PATCH'], '/animales/{id}/desarchivar', [AnimalesController::class, 'unarchive'])->name('animales.desarchivar');
+    Route::delete('/animales/{id}', [AnimalesController::class, 'destroy'])->name('animales.destroy');
     
     // Lactancia routes - Gestión de períodos de lactancia
     Route::get('/lactancia', [LactanciaController::class, 'index'])->name('lactancia.index');
