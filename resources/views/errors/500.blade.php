@@ -1,8 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.public')
 
 @section('title', '500 - Error del servidor | GanaderaSoft')
 
-@section('content')
 @php
     $isAuthenticated = (bool) session('authenticated', false);
     $roles = session('user.roles', []);
@@ -10,9 +9,7 @@
     $dashboardUrl = $isAdmin ? route('admin.dashboard') : route('dashboard');
 @endphp
 
-<!-- Contenedor Principal a Pantalla Completa -->
-<div class="min-h-screen bg-slate-50 text-gray-800 flex flex-col justify-between selection:bg-ganaderasoft-celeste selection:text-white relative overflow-hidden">
-
+@section('main-content')
     <!-- Cuadrícula SVG decorativa de fondo continuo -->
     <div class="absolute inset-0 pointer-events-none opacity-25 z-0">
         <svg class="w-full h-full" width="100%" height="100%" fill="none">
@@ -30,19 +27,8 @@
     <div class="absolute top-1/2 -right-32 w-96 h-96 sm:w-[32rem] sm:h-[32rem] bg-ganaderasoft-azul/20 rounded-full blur-3xl pointer-events-none z-0"></div>
     <div class="absolute -bottom-32 left-1/3 w-96 h-96 sm:w-[32rem] sm:h-[32rem] bg-amber-500/15 rounded-full blur-3xl pointer-events-none z-0"></div>
 
-    <!-- BARRA SUPERIOR / NAVBAR CONTEXTUAL -->
-    @if($isAuthenticated)
-        {{-- Navbar oficial del sistema para usuarios autenticados --}}
-        <div class="relative z-30">
-            <x-layouts.navbar />
-        </div>
-    @else
-        {{-- Header público para visitantes / invitados --}}
-        <x-layouts.public-header :showHomeLink="true" />
-    @endif
-
     <!-- CONTENIDO CENTRAL 500 (A Pantalla Completa y Centrado) -->
-    <main class="flex-grow flex items-center justify-center relative z-10 py-10 sm:py-16 px-4 sm:px-6 lg:px-8">
+    <div class="flex-grow flex items-center justify-center relative z-10 py-10 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl w-full mx-auto text-center space-y-5 sm:space-y-7">
             
             <!-- Badge 500 -->
@@ -100,10 +86,5 @@
             </div>
 
         </div>
-    </main>
-
-    <!-- FOOTER MODULAR -->
-    <x-layouts.public-footer />
-
-</div>
+    </div>
 @endsection

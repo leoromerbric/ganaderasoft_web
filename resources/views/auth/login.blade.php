@@ -18,7 +18,7 @@
                 <h2 class="text-2xl sm:text-4xl font-black text-ganaderasoft-negro tracking-tight mb-1">
                     Ganadera<span class="text-ganaderasoft-azul">Soft</span>
                 </h2>
-                <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-ganaderasoft-azul mb-2 sm:mb-3">Facultad de agronomía</p>
+                <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-ganaderasoft-azul mb-2 sm:mb-3">Facultad de Ciencias / Facultad de Agronomía</p>
                 <p class="text-xs sm:text-sm text-gray-600 leading-relaxed max-w-sm">
                     Sistema para el control y gestión de la producción bovina, registros de leche, genealogía y rebaños.
                 </p>

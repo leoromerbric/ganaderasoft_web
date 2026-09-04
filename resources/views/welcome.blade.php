@@ -1,20 +1,18 @@
-@extends('layouts.app')
+@extends('layouts.public')
 
-@section('title', 'Bienvenido a GanaderaSoft - facultad de agronomía')
+@section('title', 'GanaderaSoft - Control integral de la producción bovina y rebaños')
 
-@section('content')
-<div class="min-h-screen bg-slate-50 text-gray-800 flex flex-col justify-between selection:bg-ganaderasoft-celeste selection:text-white">
+@section('header-links')
+    <a href="#caracteristicas" class="whitespace-nowrap hover:text-ganaderasoft-azul transition-colors">Características</a>
+    <a href="#modulos" class="whitespace-nowrap hover:text-ganaderasoft-azul transition-colors">Módulos</a>
+    <a href="#app-movil" class="whitespace-nowrap hover:text-ganaderasoft-azul transition-colors">App móvil</a>
+    <a href="#creditos" class="whitespace-nowrap hover:text-ganaderasoft-azul transition-colors">Créditos</a>
+    <a href="#organizacion" class="whitespace-nowrap hover:text-ganaderasoft-azul transition-colors">Instituciones</a>
+@endsection
 
-    <!-- Header / Navbar Modular -->
-    <x-layouts.public-header>
-        <a href="#caracteristicas" class="hover:text-ganaderasoft-azul transition-colors">Características</a>
-        <a href="#modulos" class="hover:text-ganaderasoft-azul transition-colors">Módulos</a>
-        <a href="#app-movil" class="hover:text-ganaderasoft-azul transition-colors">App móvil</a>
-        <a href="#organizacion" class="hover:text-ganaderasoft-azul transition-colors">Instituciones</a>
-    </x-layouts.public-header>
-
+@section('main-content')
     <!-- Hero Section -->
-    <section id="caracteristicas" class="scroll-mt-28 relative overflow-hidden pt-4 pb-8 sm:pt-12 sm:pb-20 lg:pt-20 lg:pb-28 bg-gradient-to-b from-white via-slate-50 to-gray-50">
+    <section id="caracteristicas" class="scroll-mt-4 relative overflow-hidden pt-4 pb-8 sm:pt-12 sm:pb-20 lg:pt-20 lg:pb-28 bg-gradient-to-b from-white via-slate-50 to-gray-50">
         <!-- Abstract Background Grid -->
         <div class="absolute inset-0 pointer-events-none opacity-20">
             <svg class="w-full h-full" width="100%" height="100%" fill="none">
@@ -38,15 +36,15 @@
                     
                     <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 sm:px-4 sm:py-2 rounded-full bg-ganaderasoft-celeste/10 border border-ganaderasoft-celeste/30 text-ganaderasoft-azul text-[10px] sm:text-sm font-bold shadow-sm">
                         <span class="flex h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-ganaderasoft-azul"></span>
-                        <span>Sistema de la facultad de agronomía</span>
+                        <span>Proyecto de investigación UCV - FONACIT</span>
                     </div>
 
                     <h1 class="text-xl sm:text-5xl lg:text-6xl font-extrabold text-ganaderasoft-negro tracking-tight leading-tight">
-                        Control integral de la <span class="bg-clip-text text-transparent bg-gradient-to-r from-ganaderasoft-azul to-ganaderasoft-celeste">Producción bovina</span> Y rebaños.
+                        Control integral de la <span class="bg-clip-text text-transparent bg-gradient-to-r from-ganaderasoft-azul to-ganaderasoft-celeste">producción bovina</span> y rebaños.
                     </h1>
 
                     <p class="text-xs sm:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
-                        Plataforma académica y técnica para la gestión centralizada de rebaños, registros de producción lechera, seguimiento genealógico y jornadas sanitarias.
+                        Plataforma académica y técnica para la gestión centralizada de rebaños, registros de producción lechera, seguimiento genealógico y jornadas sanitarias, desarrollada por la Facultad de Ciencias en conjunto con la Facultad de Agronomía (UCV).
                     </p>
 
                     <!-- Hero Action Buttons -->
@@ -156,7 +154,7 @@
     </section>
 
     <!-- Main Modules Section -->
-    <section id="modulos" class="scroll-mt-28 py-8 sm:py-20 bg-white border-t border-gray-100">
+    <section id="modulos" class="scroll-mt-6 py-8 sm:py-20 bg-white border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div class="text-center max-w-3xl mx-auto space-y-2.5 sm:space-y-4 mb-8 sm:mb-16">
@@ -255,7 +253,7 @@
     </section>
 
     <!-- Mobile App Banner -->
-    <section id="app-movil" class="scroll-mt-28 py-8 sm:py-16 bg-gradient-to-r from-ganaderasoft-azul via-[#006f85] to-ganaderasoft-celeste text-white relative overflow-hidden">
+    <section id="app-movil" class="scroll-mt-6 py-8 sm:py-16 bg-gradient-to-r from-ganaderasoft-azul via-[#006f85] to-ganaderasoft-celeste text-white relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-8">
                 
@@ -281,8 +279,191 @@
         </div>
     </section>
 
-    <!-- Participating Organizations / Allies Section -->
-    <section id="organizacion" class="scroll-mt-28 py-8 sm:py-16 bg-white border-t border-gray-100">
+    <!-- Credits & Research Team Section -->
+    <section id="creditos" class="scroll-mt-6 py-10 sm:py-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-t border-gray-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-16">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-ganaderasoft-azul/10 border border-ganaderasoft-azul/20 text-ganaderasoft-azul text-xs font-bold uppercase tracking-wider">
+                    <span>🎓</span>
+                    <span>Proyecto de investigación</span>
+                </div>
+                <h3 class="text-2xl sm:text-4xl font-extrabold text-ganaderasoft-negro tracking-tight">
+                    Créditos y equipo de investigación
+                </h3>
+                <p class="text-gray-600 text-xs sm:text-base leading-relaxed">
+                    El sistema web para la gestión de los datos productivos en la ganadería vacuna, <strong class="text-ganaderasoft-azul font-bold">GanaderaSoft</strong>, es un proyecto de investigación desarrollado en la <strong>Universidad Central de Venezuela (UCV)</strong> por las Facultades de Ciencias y Agronomía para sistematizar y automatizar los procesos de producción bovina. Cuenta con el financiamiento del <strong>FONACIT (MINCYT)</strong>.
+                </p>
+            </div>
+
+            <!-- Two Column Cards: Researchers & Developers -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-10">
+                
+                <!-- Card 1: Investigadores Principales -->
+                <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-gray-200/80 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center space-x-3 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-100">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-xl sm:text-2xl shrink-0">
+                            🔬
+                        </div>
+                        <div>
+                            <h4 class="text-base sm:text-xl font-bold text-gray-900">Investigadores principales</h4>
+                            <p class="text-xs text-gray-500">Dirección y coordinación científica</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex flex-col min-[500px]:flex-row min-[500px]:items-center justify-between gap-2 min-[500px]:gap-3 p-3 sm:p-3.5 rounded-xl bg-slate-50 border border-gray-100 hover:bg-slate-100/70 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center shrink-0">
+                                    YH
+                                </div>
+                                <div>
+                                    <p class="text-xs sm:text-sm font-bold text-gray-900 leading-snug">Profa. Yosly Hernández Bieliukas</p>
+                                    <p class="text-[10px] sm:text-xs text-gray-500 leading-snug">Investigadora principal</p>
+                                </div>
+                            </div>
+                            <div class="pl-11 min-[500px]:pl-0 shrink-0">
+                                <span class="inline-block text-[10px] sm:text-xs font-semibold px-2.5 py-0.5 sm:py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 whitespace-nowrap">
+                                    Ciencias UCV
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col min-[500px]:flex-row min-[500px]:items-center justify-between gap-2 min-[500px]:gap-3 p-3 sm:p-3.5 rounded-xl bg-slate-50 border border-gray-100 hover:bg-slate-100/70 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center shrink-0">
+                                    MF
+                                </div>
+                                <div>
+                                    <p class="text-xs sm:text-sm font-bold text-gray-900 leading-snug">Profa. Marina Fuentes</p>
+                                    <p class="text-[10px] sm:text-xs text-gray-500 leading-snug">Investigadora principal</p>
+                                </div>
+                            </div>
+                            <div class="pl-11 min-[500px]:pl-0 shrink-0">
+                                <span class="inline-block text-[10px] sm:text-xs font-semibold px-2.5 py-0.5 sm:py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                                    Agronomía UCV
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col min-[500px]:flex-row min-[500px]:items-center justify-between gap-2 min-[500px]:gap-3 p-3 sm:p-3.5 rounded-xl bg-slate-50 border border-gray-100 hover:bg-slate-100/70 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center shrink-0">
+                                    DV
+                                </div>
+                                <div>
+                                    <p class="text-xs sm:text-sm font-bold text-gray-900 leading-snug">Prof. Daniel Vargas</p>
+                                    <p class="text-[10px] sm:text-xs text-gray-500 leading-snug">Investigador principal</p>
+                                </div>
+                            </div>
+                            <div class="pl-11 min-[500px]:pl-0 shrink-0">
+                                <span class="inline-block text-[10px] sm:text-xs font-semibold px-2.5 py-0.5 sm:py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                                    Agronomía UCV
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col min-[500px]:flex-row min-[500px]:items-center justify-between gap-2 min-[500px]:gap-3 p-3 sm:p-3.5 rounded-xl bg-slate-50 border border-gray-100 hover:bg-slate-100/70 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-center shrink-0">
+                                    CL
+                                </div>
+                                <div>
+                                    <p class="text-xs sm:text-sm font-bold text-gray-900 leading-snug">Prof. Carlos Leal</p>
+                                    <p class="text-[10px] sm:text-xs text-gray-500 leading-snug">Investigador principal</p>
+                                </div>
+                            </div>
+                            <div class="pl-11 min-[500px]:pl-0 shrink-0">
+                                <span class="inline-block text-[10px] sm:text-xs font-semibold px-2.5 py-0.5 sm:py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 whitespace-nowrap">
+                                    Ciencias UCV
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Equipo de Desarrollo -->
+                <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-gray-200/80 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center space-x-3 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-100">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-ganaderasoft-azul/10 text-ganaderasoft-azul flex items-center justify-center font-bold text-xl sm:text-2xl shrink-0">
+                            💻
+                        </div>
+                        <div>
+                            <h4 class="text-base sm:text-xl font-bold text-gray-900">Equipo de desarrollo</h4>
+                            <p class="text-xs text-gray-500">Diseño, arquitectura e implementación</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex flex-col min-[500px]:flex-row min-[500px]:items-center justify-between gap-2 min-[500px]:gap-3 p-3 sm:p-3.5 rounded-xl bg-slate-50 border border-gray-100 hover:bg-slate-100/70 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 font-bold text-xs flex items-center justify-center shrink-0">
+                                    EG
+                                </div>
+                                <div>
+                                    <p class="text-xs sm:text-sm font-bold text-gray-900 leading-snug">Edwyn Guzmán</p>
+                                    <p class="text-[10px] sm:text-xs text-gray-500 leading-snug">Desarrollador de software</p>
+                                </div>
+                            </div>
+                            <div class="pl-11 min-[500px]:pl-0 shrink-0">
+                                <span class="inline-block text-[10px] sm:text-xs font-semibold px-2.5 py-0.5 sm:py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 whitespace-nowrap">
+                                    Computación, Ciencias UCV
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col min-[500px]:flex-row min-[500px]:items-center justify-between gap-2 min-[500px]:gap-3 p-3.5 rounded-xl bg-slate-50 border border-gray-100 hover:bg-slate-100/70 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 font-bold text-xs flex items-center justify-center shrink-0">
+                                    MC
+                                </div>
+                                <div>
+                                    <p class="text-xs sm:text-sm font-bold text-gray-900 leading-snug">Miguel Ciavato</p>
+                                    <p class="text-[10px] sm:text-xs text-gray-500 leading-snug">Desarrollador de software</p>
+                                </div>
+                            </div>
+                            <div class="pl-11 min-[500px]:pl-0 shrink-0">
+                                <span class="inline-block text-[10px] sm:text-xs font-semibold px-2.5 py-0.5 sm:py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 whitespace-nowrap">
+                                    Computación, Ciencias UCV
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col min-[500px]:flex-row min-[500px]:items-center justify-between gap-2 min-[500px]:gap-3 p-3.5 rounded-xl bg-slate-50 border border-gray-100 hover:bg-slate-100/70 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 font-bold text-xs flex items-center justify-center shrink-0">
+                                    DP
+                                </div>
+                                <div>
+                                    <p class="text-xs sm:text-sm font-bold text-gray-900 leading-snug">Diego Perdomo</p>
+                                    <p class="text-[10px] sm:text-xs text-gray-500 leading-snug">Desarrollador de software</p>
+                                </div>
+                            </div>
+                            <div class="pl-11 min-[500px]:pl-0 shrink-0">
+                                <span class="inline-block text-[10px] sm:text-xs font-semibold px-2.5 py-0.5 sm:py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 whitespace-nowrap">
+                                    Computación, Ciencias UCV
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Funding Banner -->
+            <div class="bg-gradient-to-r from-ganaderasoft-azul/10 via-ganaderasoft-celeste/10 to-ganaderasoft-azul/10 rounded-2xl p-4 sm:p-6 border border-ganaderasoft-celeste/20 text-center max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+                <span class="text-2xl">🏛️</span>
+                <p class="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed">
+                    Proyecto financiado por el <strong class="text-ganaderasoft-azul font-bold">Fondo Nacional de Ciencia, Tecnología e Innovación (FONACIT)</strong> adscrito al <strong>MINCYT</strong>, en convenio interfacultades con la <strong>Universidad Central de Venezuela</strong>.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Participating Organizations / Allies Section (Directamente arriba del footer) -->
+    <section id="organizacion" class="scroll-mt-6 py-8 sm:py-16 bg-white border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h4 class="text-[9px] sm:text-xs font-bold uppercase tracking-wider text-gray-400 mb-5 sm:mb-8">Instituciones y facultades participantes</h4>
             <div class="flex justify-center items-center">
@@ -290,9 +471,4 @@
             </div>
         </div>
     </section>
-
-    <!-- Footer Modular -->
-    <x-layouts.public-footer />
-
-</div>
 @endsection

@@ -67,7 +67,7 @@
             <div class="space-y-0.5 sm:space-y-1">
                 <h3 class="text-sm sm:text-base font-bold text-rose-900">Cuenta suspendida</h3>
                 <p class="text-xs text-rose-700 leading-relaxed">
-                    Tu cuenta de usuario se encuentra suspendida temporalmente. No tienes acceso a los módulos operativos de la plataforma (rebaños, fincas, producción, reportes). Contacta a la administración de la facultad de agronomía para reactivar tus accesos.
+                    Tu cuenta de usuario se encuentra suspendida temporalmente. No tienes acceso a los módulos operativos de la plataforma (rebaños, fincas, producción, reportes). Contacta a la administración del sistema para reactivar tus accesos.
                 </p>
             </div>
         </div>
