@@ -142,9 +142,9 @@
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
                 <select id="filtroEstado"
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                    <option value="activo" {{ ($statusFilter ?? 'activo') === 'activo' ? 'selected' : '' }}>🟢 Solo activos</option>
-                    <option value="inactivo" {{ ($statusFilter ?? '') === 'inactivo' ? 'selected' : '' }}>⚪ Solo inactivos</option>
-                    <option value="" {{ ($statusFilter ?? '') === '' ? 'selected' : '' }}>📋 Todos los estados</option>
+                    <option value="activo" {{ ($statusFilter ?? 'activo') === 'activo' ? 'selected' : '' }}>Solo activos</option>
+                    <option value="inactivo" {{ ($statusFilter ?? '') === 'inactivo' ? 'selected' : '' }}>Solo inactivos</option>
+                    <option value="" {{ ($statusFilter ?? '') === '' ? 'selected' : '' }}>Todos los estados</option>
                 </select>
             </div>
 
