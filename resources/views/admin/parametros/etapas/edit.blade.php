@@ -77,14 +77,14 @@
                         </div>
 
                         <div>
-                            <label for="edad_ini" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Edad inicio (meses)</label>
+                            <label for="edad_ini" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Edad inicio (días)</label>
                             <input type="number" id="edad_ini" name="edad_ini" value="{{ old('edad_ini', $item['edad_ini'] ?? '') }}" min="0"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('edad_ini')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
-                            <label for="edad_fin" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Edad fin (meses)</label>
+                            <label for="edad_fin" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Edad fin (días)</label>
                             <input type="number" id="edad_fin" name="edad_fin" value="{{ old('edad_fin', $item['edad_fin'] ?? '') }}" min="0"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             <p class="text-xs text-gray-500 mt-1.5 flex items-center gap-1">

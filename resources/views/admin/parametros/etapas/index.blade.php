@@ -80,11 +80,11 @@
                                     }
                                     $edad = '';
                                     if(isset($item['edad_ini']) && isset($item['edad_fin'])) {
-                                        $edad = $item['edad_ini'] . ' a ' . $item['edad_fin'] . ' meses';
+                                        $edad = $item['edad_ini'] . ' a ' . $item['edad_fin'] . ' días';
                                     } elseif(isset($item['edad_ini'])) {
-                                        $edad = 'Desde ' . $item['edad_ini'] . ' meses';
+                                        $edad = 'Desde ' . $item['edad_ini'] . ' días';
                                     } elseif(isset($item['edad_fin'])) {
-                                        $edad = 'Hasta ' . $item['edad_fin'] . ' meses';
+                                        $edad = 'Hasta ' . $item['edad_fin'] . ' días';
                                     } else {
                                         $edad = 'Todas las edades';
                                     }
