@@ -134,10 +134,14 @@
 
             <div>
                 <label for="filtroArchivado" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
+                @php
+                    $estadoFiltro = !empty($incluirArchivados) ? 'todos' : (!empty($archivado) ? 'true' : 'false');
+                @endphp
                 <select id="filtroArchivado"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
-                    <option value="false" {{ ($archivado ?? 'false') === 'false' ? 'selected' : '' }}>🟢 Solo activas</option>
-                    <option value="true" {{ ($archivado ?? '') === 'true' ? 'selected' : '' }}>⚪ Solo archivadas</option>
+                    <option value="false" {{ $estadoFiltro === 'false' ? 'selected' : '' }}>Solo activas</option>
+                    <option value="true" {{ $estadoFiltro === 'true' ? 'selected' : '' }}>Solo archivadas</option>
+                    <option value="todos" {{ $estadoFiltro === 'todos' ? 'selected' : '' }}>Todas las fincas</option>
                 </select>
             </div>
 
@@ -372,7 +376,7 @@
 
             const matchNombre = (!nombre || rowNombre.includes(nombre));
             const matchTipo = (!tipo || rowTipo === tipo);
-            const matchArchivado = (rowArchivado === archivado);
+            const matchArchivado = (archivado === 'todos') || (rowArchivado === archivado);
 
             const ok = matchNombre && matchTipo && matchArchivado;
 

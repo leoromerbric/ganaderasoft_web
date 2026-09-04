@@ -32,13 +32,9 @@ class AnimalesController extends Controller
         $sexo      = $request->query('sexo', '');
         $nombre    = $request->query('nombre', '');
         
-        $rawArchivado = $request->query('archivado');
-        if ($rawArchivado !== null) {
-            $norm = strtolower(trim((string)$rawArchivado));
-            $archivado = in_array($norm, ['true', '1', 'archivados'], true) ? 'true' : 'false';
-        } else {
-            $archivado = null;
-        }
+        $incluirArchivados = $request->boolean('incluir_archivados');
+        $hasArchivado      = $request->has('archivado');
+        $archivado         = $hasArchivado ? $request->boolean('archivado') : null;
 
         // Cargar todos los animales (activos y archivados) para permitir filtrado reactivo e instantáneo en la vista
         $response = $this->animalesService->getAnimales(null, ['incluir_archivados' => true]);
@@ -63,20 +59,12 @@ class AnimalesController extends Controller
         if ($archivado === null) {
             if ($idRebano) {
                 $rebanoObj = collect($rebanos)->firstWhere('id', $idRebano);
-                if ($rebanoObj && !empty($rebanoObj['archivado'])) {
-                    $archivado = 'true';
-                } else {
-                    $archivado = 'false';
-                }
+                $archivado = (!empty($rebanoObj['archivado'])) ? true : false;
             } elseif ($idFinca) {
                 $fincaObj = collect($fincas)->firstWhere('id', $idFinca);
-                if ($fincaObj && !empty($fincaObj['archivado'])) {
-                    $archivado = 'true';
-                } else {
-                    $archivado = 'false';
-                }
+                $archivado = (!empty($fincaObj['archivado'])) ? true : false;
             } else {
-                $archivado = 'false';
+                $archivado = false;
             }
         }
 
@@ -99,7 +87,7 @@ class AnimalesController extends Controller
 
         return view('animales.index', compact(
             'animales', 'rebanos', 'fincas',
-            'idFinca', 'idRebano', 'sexo', 'nombre', 'archivado',
+            'idFinca', 'idRebano', 'sexo', 'nombre', 'archivado', 'incluirArchivados',
             'mapaRebanoFinca', 'mapaFincaNombres', 'mapaRebanoNombres', 'estadisticas'
         ));
     }

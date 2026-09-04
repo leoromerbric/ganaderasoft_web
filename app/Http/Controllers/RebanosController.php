@@ -21,13 +21,9 @@ class RebanosController extends Controller
         $fincaId   = $request->query('finca_id') ?? $request->query('id_finca');
         $nombre    = $request->query('nombre', '');
         
-        $rawArchivado = $request->query('archivado');
-        if ($rawArchivado !== null) {
-            $norm = strtolower(trim((string)$rawArchivado));
-            $archivado = in_array($norm, ['true', '1', 'archivados'], true) ? 'true' : 'false';
-        } else {
-            $archivado = 'false';
-        }
+        $incluirArchivados = $request->boolean('incluir_archivados');
+        $hasArchivado      = $request->has('archivado');
+        $archivado         = $hasArchivado ? $request->boolean('archivado') : null;
 
         // Cargar todos los rebaños (activos y archivados) para permitir filtrado reactivo e instantáneo en la vista
         $response = $this->rebanosService->getRebanos(['incluir_archivados' => true]);
@@ -41,6 +37,16 @@ class RebanosController extends Controller
         $fincasResponse = $this->fincasService->getFincas(['incluir_archivados' => true]);
         $fincas = ($fincasResponse['success'] ?? false) ? ($fincasResponse['data']['data'] ?? $fincasResponse['data'] ?? []) : [];
 
+        // Si no se pasó explícitamente el parámetro 'archivado', inferirlo según la finca consultada
+        if (!$incluirArchivados && $archivado === null) {
+            if ($fincaId) {
+                $fincaObj = collect($fincas)->firstWhere('id', (int)$fincaId);
+                $archivado = (!empty($fincaObj['archivado'])) ? true : false;
+            } else {
+                $archivado = false;
+            }
+        }
+
         // Pasar todos los rebaños a la vista para permitir filtrado reactivo en vivo sin recargas
         $rebanos = $allRebanos;
 
@@ -52,7 +58,7 @@ class RebanosController extends Controller
         ];
 
         $idFinca = $fincaId;
-        return view('rebanos.index', compact('rebanos', 'fincas', 'fincaId', 'idFinca', 'nombre', 'archivado', 'estadisticas'));
+        return view('rebanos.index', compact('rebanos', 'fincas', 'fincaId', 'idFinca', 'nombre', 'archivado', 'incluirArchivados', 'estadisticas'));
     }
 
     /**

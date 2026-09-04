@@ -27,13 +27,8 @@ class FincasController extends Controller
         $nombre     = $request->query('nombre', '');
         $tipoFiltro = $request->query('tipo', '');
         
-        $rawArchivado = $request->query('archivado');
-        if ($rawArchivado !== null) {
-            $norm = strtolower(trim((string)$rawArchivado));
-            $archivado = in_array($norm, ['true', '1', 'archivados'], true) ? 'true' : 'false';
-        } else {
-            $archivado = 'false';
-        }
+        $incluirArchivados = $request->boolean('incluir_archivados');
+        $archivado         = $request->boolean('archivado');
 
         // Cargar todas las fincas (activas y archivadas) para permitir filtrado reactivo e instantáneo en la vista
         $response = $this->fincasService->getFincas(['incluir_archivados' => true]);
@@ -48,7 +43,7 @@ class FincasController extends Controller
         $tipos = array_values(array_unique(array_filter($tiposList)));
         sort($tipos);
 
-        return view('fincas.index', compact('fincas', 'tipos', 'nombre', 'tipoFiltro', 'archivado'));
+        return view('fincas.index', compact('fincas', 'tipos', 'nombre', 'tipoFiltro', 'archivado', 'incluirArchivados'));
     }
 
     /**

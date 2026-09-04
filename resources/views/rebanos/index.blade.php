@@ -144,10 +144,14 @@
             <!-- Estado -->
             <div>
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
+                @php
+                    $estadoFiltro = !empty($incluirArchivados) ? 'todos' : (!empty($archivado) ? 'true' : 'false');
+                @endphp
                 <select id="filtroArchivado"
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                    <option value="false" {{ ($archivado ?? 'false') === 'false' ? 'selected' : '' }}>🟢 Solo activos</option>
-                    <option value="true" {{ ($archivado ?? '') === 'true' ? 'selected' : '' }}>⚪ Solo archivados</option>
+                    <option value="false" {{ $estadoFiltro === 'false' ? 'selected' : '' }}>Solo activos</option>
+                    <option value="true" {{ $estadoFiltro === 'true' ? 'selected' : '' }}>Solo archivados</option>
+                    <option value="todos" {{ $estadoFiltro === 'todos' ? 'selected' : '' }}>Todos los rebaños</option>
                 </select>
             </div>
 
@@ -426,7 +430,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const matchFinca = !finca || rowFinca === finca;
             const matchNombre = !nombre || rowNombre.includes(nombre);
-            const matchArchivado = (rowArchivado === archivado);
+            const matchArchivado = (archivado === 'todos') || (rowArchivado === archivado);
             
             let matchOcupacion = true;
             if (ocupacion === 'con_animales') {
