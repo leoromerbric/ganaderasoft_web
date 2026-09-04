@@ -55,24 +55,35 @@ class ApiUserService extends BaseApiService implements UserServiceInterface
     }
 
     /**
-     * Alterna el estado de la cuenta (activar o suspender).
+     * Activa (habilita) una cuenta de usuario.
      *
      * @param int $id
      * @return array
      */
-    public function toggleUserStatus(int $id): array
+    public function enableUser(int $id): array
     {
-        $userResult = $this->getUserById($id);
-        if (!($userResult['success'] ?? true)) {
-            return $userResult;
-        }
+        return $this->patch("{$this->endpoint}/{$id}/enable");
+    }
 
-        $user = $userResult['data'] ?? [];
-        $currentStatus = strtolower($user['status'] ?? 'active');
-        $isSuspended = in_array($currentStatus, ['suspended', 'inactive', 'suspendido', 'inactivo'], true);
+    /**
+     * Suspende (deshabilita) una cuenta de usuario.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function disableUser(int $id): array
+    {
+        return $this->patch("{$this->endpoint}/{$id}/disable");
+    }
 
-        $action = $isSuspended ? 'enable' : 'disable';
-
-        return $this->patch("{$this->endpoint}/{$id}/{$action}");
+    /**
+     * Elimina un usuario del sistema.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function deleteUser(int $id): array
+    {
+        return $this->delete("{$this->endpoint}/{$id}");
     }
 }

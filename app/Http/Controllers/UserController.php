@@ -143,7 +143,6 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8',
             'roles' => 'required|array|min:1',
             'roles.*' => 'string|in:propietario,global_admin,admin',
-            'status' => 'required|string|in:active,suspended',
         ], [
             'cedula.required' => 'La cédula o documento de identidad es obligatorio.',
             'cedula.regex' => 'La cédula debe comenzar con la letra del documento (V, E, J o G) seguido de números (ej: V12345678).',
@@ -153,7 +152,6 @@ class UserController extends Controller
             'correo.email' => 'El correo electrónico no es válido.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'roles.required' => 'Debe seleccionar al menos un rol.',
-            'status.required' => 'El estado de cuenta es obligatorio.',
         ]);
 
         $payload = [
@@ -163,7 +161,6 @@ class UserController extends Controller
             'cedula' => $validated['cedula'],
             'telefono' => $validated['telefono'] ?? '',
             'roles' => array_values(array_unique($validated['roles'])),
-            'status' => $validated['status'],
         ];
 
         if (!empty($validated['password'])) {
@@ -186,16 +183,44 @@ class UserController extends Controller
     }
 
     /**
-     * Alterna el estado (Activo / Suspendido) de un usuario.
+     * Activa (habilita) una cuenta de usuario.
      */
-    public function toggleStatus($id)
+    public function enable($id)
     {
-        $result = $this->userService->toggleUserStatus((int)$id);
+        $result = $this->userService->enableUser((int)$id);
 
         if ($result['success']) {
-            return back()->with('success', $result['message']);
+            return back()->with('success', $result['message'] ?? 'Usuario activado exitosamente.');
         }
 
-        return back()->with('error', $result['message']);
+        return back()->with('error', $result['message'] ?? 'Error al activar el usuario.');
+    }
+
+    /**
+     * Suspende (deshabilita) una cuenta de usuario.
+     */
+    public function disable($id)
+    {
+        $result = $this->userService->disableUser((int)$id);
+
+        if ($result['success']) {
+            return back()->with('success', $result['message'] ?? 'Usuario suspendido exitosamente.');
+        }
+
+        return back()->with('error', $result['message'] ?? 'Error al suspender el usuario.');
+    }
+
+    /**
+     * Elimina un usuario del sistema.
+     */
+    public function destroy($id)
+    {
+        $result = $this->userService->deleteUser((int)$id);
+
+        if ($result['success']) {
+            return redirect()->route('admin.users.index')->with('success', $result['message'] ?? 'Usuario eliminado exitosamente.');
+        }
+
+        return back()->with('error', $result['message'] ?? 'Error al eliminar el usuario.');
     }
 }

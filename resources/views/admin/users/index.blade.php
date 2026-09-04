@@ -166,29 +166,42 @@
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                             </a>
 
-                                            <!-- Botón de Toggle Activar / Suspender con Modal Oficial -->
-                                            <form action="{{ route('admin.users.toggle-status', $user['id']) }}" method="POST" class="inline-block" id="form-toggle-{{ $user['id'] }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="button" 
-                                                    onclick="openGenericConfirmModal({
-                                                        formId: 'form-toggle-{{ $user['id'] }}',
-                                                        intent: '{{ $isSuspended ? 'success' : 'danger' }}',
-                                                        title: '{{ $isSuspended ? 'Activar usuario' : 'Suspender usuario' }}',
-                                                        message: '{{ $isSuspended ? '¿Estás seguro de que deseas reactivar a este usuario? Recuperará el acceso completo al sistema inmediatamente.' : '¿Estás seguro de que deseas suspender a este usuario? No podrá acceder al sistema hasta que sea reactivado.' }}',
-                                                        confirmText: '{{ $isSuspended ? 'Sí, activar' : 'Sí, suspender' }}'
-                                                    })"
-                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors {{ $isSuspended ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white' : 'bg-red-50 text-red-500 hover:bg-red-500 hover:text-white' }}"
-                                                    title="{{ $isSuspended ? 'Activar usuario' : 'Suspender usuario' }}">
-                                                    @if($isSuspended)
-                                                        <!-- Icono Check para Activar -->
+                                            <!-- Botón de Activar / Suspender con Modal Oficial -->
+                                            @if($isSuspended)
+                                                <form action="{{ route('admin.users.enable', $user['id']) }}" method="POST" class="inline-block" id="form-enable-{{ $user['id'] }}">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="button" 
+                                                        onclick="openGenericConfirmModal({
+                                                            formId: 'form-enable-{{ $user['id'] }}',
+                                                            intent: 'success',
+                                                            title: 'Activar usuario',
+                                                            message: '¿Estás seguro de que deseas reactivar a este usuario? Recuperará el acceso completo al sistema inmediatamente.',
+                                                            confirmText: 'Sí, activar'
+                                                        })"
+                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-colors"
+                                                        title="Activar usuario">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                                    @else
-                                                        <!-- Icono Bloqueo/Ban para Suspender -->
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('admin.users.disable', $user['id']) }}" method="POST" class="inline-block" id="form-disable-{{ $user['id'] }}">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="button" 
+                                                        onclick="openGenericConfirmModal({
+                                                            formId: 'form-disable-{{ $user['id'] }}',
+                                                            intent: 'danger',
+                                                            title: 'Suspender usuario',
+                                                            message: '¿Estás seguro de que deseas suspender a este usuario? No podrá acceder al sistema hasta que sea reactivado.',
+                                                            confirmText: 'Sí, suspender'
+                                                        })"
+                                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                                                        title="Suspender usuario">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
-                                                    @endif
-                                                </button>
-                                            </form>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
