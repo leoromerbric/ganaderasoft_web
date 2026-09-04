@@ -38,33 +38,33 @@
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar</label>
-                    <input type="text" id="filtroNombre" placeholder="Nombre o correo..."
+                    <label for="filtroNombre" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar</label>
+                    <input type="text" id="filtroNombre" placeholder="Nombre o correo..." value="{{ $search ?? '' }}"
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rol</label>
+                    <label for="filtroRole" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Rol</label>
                     <select id="filtroRole"
-                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
                         <option value="">Todos los roles</option>
-                        <option value="propietario">Propietario</option>
-                        <option value="global_admin">Administrador</option>
+                        <option value="propietario" {{ ($roleFilter ?? '') === 'propietario' ? 'selected' : '' }}>Propietario</option>
+                        <option value="global_admin" {{ ($roleFilter ?? '') === 'global_admin' ? 'selected' : '' }}>Administrador</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
+                    <label for="filtroStatus" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
                     <select id="filtroStatus"
-                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
-                        <option value="">Todos los estados</option>
-                        <option value="active">Activos</option>
-                        <option value="suspended">Suspendidos</option>
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
+                        <option value="active" {{ ($statusFilter ?? 'active') === 'active' ? 'selected' : '' }}>Activos</option>
+                        <option value="suspended" {{ ($statusFilter ?? '') === 'suspended' ? 'selected' : '' }}>Suspendidos</option>
+                        <option value="" {{ ($statusFilter ?? '') === '' ? 'selected' : '' }}>Todos los estados</option>
                     </select>
                 </div>
                 <div>
-                    <a href="{{ route('admin.users.index') }}" onclick="limpiarFiltros(event)"
-                       class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[42px]">
+                    <button type="button" onclick="limpiarFiltros(event)"
+                       class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[42px] cursor-pointer shadow-2xs">
                         Limpiar filtros
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
@@ -230,14 +230,14 @@
     <x-ui.confirm-modal />
     
     <script>
-        document.getElementById('filtroNombre').addEventListener('input', aplicarFiltros);
-        document.getElementById('filtroRole').addEventListener('change', aplicarFiltros);
-        document.getElementById('filtroStatus').addEventListener('change', aplicarFiltros);
+        document.getElementById('filtroNombre')?.addEventListener('input', aplicarFiltros);
+        document.getElementById('filtroRole')?.addEventListener('change', aplicarFiltros);
+        document.getElementById('filtroStatus')?.addEventListener('change', aplicarFiltros);
 
         function aplicarFiltros() {
-            const nombre = document.getElementById('filtroNombre').value.toLowerCase().trim();
-            const role = document.getElementById('filtroRole').value;
-            const status = document.getElementById('filtroStatus').value;
+            const nombre = document.getElementById('filtroNombre')?.value.toLowerCase().trim() || '';
+            const role = document.getElementById('filtroRole')?.value || '';
+            const status = document.getElementById('filtroStatus')?.value || '';
             const tabla = document.getElementById('tablaUsuarios');
             const sinResultados = document.getElementById('sinResultadosFiltro');
             const filas = document.querySelectorAll('.fila-usuario');
@@ -245,7 +245,7 @@
             let totalVisibles = 0;
 
             filas.forEach(function(row) {
-                const rowNombre = row.getAttribute('data-nombre') || '';
+                const rowNombre = (row.getAttribute('data-nombre') || '').toLowerCase();
                 const rowRole = row.getAttribute('data-role') || '';
                 const rowStatus = row.getAttribute('data-status') || '';
 
@@ -271,13 +271,17 @@
 
         window.limpiarFiltros = function(e) {
             if (e) e.preventDefault();
-            document.getElementById('filtroNombre').value = '';
-            document.getElementById('filtroRole').value = '';
-            document.getElementById('filtroStatus').value = '';
+            if (document.getElementById('filtroNombre')) document.getElementById('filtroNombre').value = '';
+            if (document.getElementById('filtroRole')) document.getElementById('filtroRole').value = '';
+            if (document.getElementById('filtroStatus')) document.getElementById('filtroStatus').value = '';
             if (window.history && window.history.replaceState) {
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
             aplicarFiltros();
         };
+
+        // Ejecutar filtro inicial
+        document.addEventListener('DOMContentLoaded', aplicarFiltros);
+        aplicarFiltros();
     </script>
 @endsection

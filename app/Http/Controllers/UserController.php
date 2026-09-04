@@ -26,12 +26,10 @@ class UserController extends Controller
     {
         $search = strtolower(trim($request->get('search', '')));
         $roleFilter = $request->get('role', '');
-        $statusFilter = $request->get('status', '');
+        $statusFilter = $request->get('status', 'active');
 
         $users = $this->userService->getUsers([
-            'search' => $search,
-            'role' => $roleFilter,
-            'status' => $statusFilter,
+            'nopaginate' => true,
         ]);
 
         return view('admin.users.index', compact('users', 'search', 'roleFilter', 'statusFilter'));
