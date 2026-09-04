@@ -36,16 +36,25 @@
 
         <!-- Filters Bar -->
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar</label>
-                    <input type="text" id="filtroBuscador" placeholder="Buscar por laboratorio..."
+                    <label for="filtroBuscador" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar</label>
+                    <input type="text" id="filtroBuscador" placeholder="Buscar por laboratorio o marca..."
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="document.getElementById('filtroBuscador').value=''; aplicarFiltros();"
-                       class="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[46px]">
-                        Limpiar filtro
+                <div>
+                    <label for="filtroEstado" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Estado</label>
+                    <select id="filtroEstado"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
+                        <option value="">Todos los estados</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="button" onclick="limpiarFiltros()"
+                       class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[42px] cursor-pointer shadow-2xs">
+                        Limpiar filtros
                     </button>
                 </div>
             </div>
@@ -69,12 +78,16 @@
                             @foreach($items as $item)
                                 @php
                                     $mainVal = $item['laboratorio'] ?? 'N/A';
-                                    $searchable = strtolower($mainVal);
+                                    $marca = $item['marca_comercial'] ?? '';
+                                    $isActiva = !isset($item['activa']) || $item['activa'] === true || $item['activa'] === 1 || $item['activa'] === '1' || $item['activa'] === 't' || $item['activa'] === 'true';
+                                    $estadoVal = $isActiva ? 'activo' : 'inactivo';
+                                    $searchable = strtolower($mainVal . ' ' . $marca . ' ' . $estadoVal);
                                     $inicial = strtoupper(substr((string)$mainVal, 0, 1));
                                     if(empty($inicial)) $inicial = '#';
                                 @endphp
                                 <tr class="hover:bg-gray-50/80 transition-colors fila-registro"
-                                    data-search="{{ $searchable }}">
+                                    data-search="{{ $searchable }}"
+                                    data-estado="{{ $estadoVal }}">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg border border-blue-100">
@@ -136,9 +149,9 @@
                         </div>
                         <h4 class="text-base font-bold text-ganaderasoft-negro mb-1">No se encontraron registros</h4>
                         <p class="text-gray-500 text-xs mb-4">No hay elementos que coincidan con la búsqueda aplicada.</p>
-                        <button type="button" onclick="document.getElementById('filtroBuscador').value=''; aplicarFiltros();"
+                        <button type="button" onclick="limpiarFiltros()"
                                 class="px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-xs inline-flex items-center gap-1.5 cursor-pointer">
-                            Limpiar filtro
+                            Limpiar filtros
                         </button>
                     </div>
                 </div>
@@ -164,9 +177,11 @@
     
     <script>
         document.getElementById('filtroBuscador')?.addEventListener('input', aplicarFiltros);
+        document.getElementById('filtroEstado')?.addEventListener('change', aplicarFiltros);
 
         function aplicarFiltros() {
             const buscador = document.getElementById('filtroBuscador')?.value.toLowerCase().trim() || '';
+            const estado = document.getElementById('filtroEstado')?.value || '';
             const tabla = document.getElementById('tablaContenedor') || document.querySelector('table');
             const sinResultados = document.getElementById('sinResultadosFiltro');
             const filas = document.querySelectorAll('.fila-registro');
@@ -174,10 +189,15 @@
             let totalVisibles = 0;
 
             filas.forEach(function(row) {
-                const searchData = row.getAttribute('data-search') || '';
+                const searchData = (row.getAttribute('data-search') || '').toLowerCase();
+                const rowEstado = row.getAttribute('data-estado') || '';
+
                 const matchesSearch = !buscador || searchData.includes(buscador);
-                if (matchesSearch) totalVisibles++;
-                row.style.display = matchesSearch ? '' : 'none';
+                const matchesEstado = !estado || (rowEstado === estado);
+
+                const visible = matchesSearch && matchesEstado;
+                if (visible) totalVisibles++;
+                row.style.display = visible ? '' : 'none';
             });
 
             if (sinResultados) {
@@ -190,5 +210,11 @@
                 }
             }
         }
+
+        window.limpiarFiltros = function() {
+            if (document.getElementById('filtroBuscador')) document.getElementById('filtroBuscador').value = '';
+            if (document.getElementById('filtroEstado')) document.getElementById('filtroEstado').value = '';
+            aplicarFiltros();
+        };
     </script>
 @endsection
