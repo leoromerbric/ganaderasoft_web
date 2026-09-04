@@ -36,16 +36,25 @@
 
         <!-- Filters Bar -->
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar</label>
+                    <label for="filtroBuscador" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar</label>
                     <input type="text" id="filtroBuscador" placeholder="Buscar por nombre..."
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                 </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="document.getElementById('filtroBuscador').value=''; aplicarFiltros();"
-                       class="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[46px]">
-                        Limpiar filtro
+                <div>
+                    <label for="filtroSexo" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Sexo</label>
+                    <select id="filtroSexo"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white">
+                        <option value="">Todos los sexos</option>
+                        <option value="M">Macho</option>
+                        <option value="H">Hembra</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="button" onclick="limpiarFiltros()"
+                       class="w-full px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center h-[42px] cursor-pointer shadow-2xs">
+                        Limpiar filtros
                     </button>
                 </div>
             </div>
@@ -88,7 +97,8 @@
                                     } else {
                                         $edad = 'Todas las edades';
                                     }
-                                    $sexo = !empty($item['sexo']) ? $item['sexo'] : 'Cualquiera';
+                                    $rawSexo = $item['sexo'] ?? '';
+                                    $sexo = !empty($rawSexo) ? $rawSexo : 'Cualquiera';
                                     if($sexo == 'M') $sexo = 'Macho';
                                     if($sexo == 'H') $sexo = 'Hembra';
 
@@ -97,7 +107,8 @@
                                     if(empty($inicial)) $inicial = '#';
                                 @endphp
                                 <tr class="hover:bg-gray-50/80 transition-colors fila-registro"
-                                    data-search="{{ $searchable }}">
+                                    data-search="{{ $searchable }}"
+                                    data-sexo="{{ $rawSexo }}">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg border border-blue-100">
@@ -205,9 +216,11 @@
     
     <script>
         document.getElementById('filtroBuscador')?.addEventListener('input', aplicarFiltros);
+        document.getElementById('filtroSexo')?.addEventListener('change', aplicarFiltros);
 
         function aplicarFiltros() {
             const buscador = document.getElementById('filtroBuscador')?.value.toLowerCase().trim() || '';
+            const sexo = document.getElementById('filtroSexo')?.value || '';
             const tabla = document.getElementById('tablaContenedor') || document.querySelector('table');
             const sinResultados = document.getElementById('sinResultadosFiltro');
             const filas = document.querySelectorAll('.fila-registro');
@@ -215,10 +228,15 @@
             let totalVisibles = 0;
 
             filas.forEach(function(row) {
-                const searchData = row.getAttribute('data-search') || '';
+                const searchData = (row.getAttribute('data-search') || '').toLowerCase();
+                const rowSexo = row.getAttribute('data-sexo') || '';
+
                 const matchesSearch = !buscador || searchData.includes(buscador);
-                if (matchesSearch) totalVisibles++;
-                row.style.display = matchesSearch ? '' : 'none';
+                const matchesSexo = !sexo || (rowSexo === sexo);
+
+                const visible = matchesSearch && matchesSexo;
+                if (visible) totalVisibles++;
+                row.style.display = visible ? '' : 'none';
             });
 
             if (sinResultados) {
@@ -231,5 +249,11 @@
                 }
             }
         }
+
+        window.limpiarFiltros = function() {
+            if (document.getElementById('filtroBuscador')) document.getElementById('filtroBuscador').value = '';
+            if (document.getElementById('filtroSexo')) document.getElementById('filtroSexo').value = '';
+            aplicarFiltros();
+        };
     </script>
 @endsection
