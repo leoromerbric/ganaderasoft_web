@@ -12,7 +12,7 @@
 
 @section('main-content')
     <!-- Hero Section -->
-    <section id="caracteristicas" class="scroll-mt-4 relative overflow-hidden pt-4 pb-8 sm:pt-12 sm:pb-20 lg:pt-20 lg:pb-28 bg-gradient-to-b from-white via-slate-50 to-gray-50">
+    <section id="caracteristicas" class="scroll-mt-16 sm:scroll-mt-20 relative overflow-hidden pt-4 pb-8 sm:pt-12 sm:pb-20 lg:pt-20 lg:pb-28 bg-gradient-to-b from-white via-slate-50 to-gray-50">
         <!-- Abstract Background Grid -->
         <div class="absolute inset-0 pointer-events-none opacity-20">
             <svg class="w-full h-full" width="100%" height="100%" fill="none">
@@ -154,7 +154,7 @@
     </section>
 
     <!-- Main Modules Section -->
-    <section id="modulos" class="scroll-mt-6 py-8 sm:py-20 bg-white border-t border-gray-100">
+    <section id="modulos" class="scroll-mt-16 sm:scroll-mt-20 py-8 sm:py-20 bg-white border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div class="text-center max-w-3xl mx-auto space-y-2.5 sm:space-y-4 mb-8 sm:mb-16">
@@ -253,7 +253,7 @@
     </section>
 
     <!-- Mobile App Banner -->
-    <section id="app-movil" class="scroll-mt-6 py-8 sm:py-16 bg-gradient-to-r from-ganaderasoft-azul via-[#006f85] to-ganaderasoft-celeste text-white relative overflow-hidden">
+    <section id="app-movil" class="scroll-mt-16 sm:scroll-mt-20 py-8 sm:py-16 bg-gradient-to-r from-ganaderasoft-azul via-[#006f85] to-ganaderasoft-celeste text-white relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-8">
                 
@@ -280,7 +280,7 @@
     </section>
 
     <!-- Credits & Research Team Section -->
-    <section id="creditos" class="scroll-mt-6 py-10 sm:py-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-t border-gray-200/80">
+    <section id="creditos" class="scroll-mt-16 sm:scroll-mt-20 py-10 sm:py-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-t border-gray-200/80">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <!-- Section Header -->
@@ -463,7 +463,7 @@
     </section>
 
     <!-- Participating Organizations / Allies Section (Directamente arriba del footer) -->
-    <section id="organizacion" class="scroll-mt-6 py-8 sm:py-16 bg-white border-t border-gray-100">
+    <section id="organizacion" class="scroll-mt-16 sm:scroll-mt-20 py-8 sm:py-16 bg-white border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-5 sm:mb-8">Instituciones y facultades participantes</h4>
             <div class="flex justify-center items-center">

@@ -1,4 +1,4 @@
-<header class="relative z-50 bg-white border-b border-gray-100 shadow-xs">
+<header class="fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs">
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16 sm:h-20">
             <!-- Logotipo y nombre del sistema -->
@@ -70,6 +70,9 @@
         </div>
     @endif
 </header>
+
+<!-- Espaciador estructural que compensa la altura del header fixed -->
+<div class="h-16 sm:h-20 shrink-0" aria-hidden="true"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
