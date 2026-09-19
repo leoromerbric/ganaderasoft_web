@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Reproducción animal')
+@section('title', 'Reproducciones')
 
 @section('content')
 @php
@@ -38,7 +38,7 @@
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Reproducción animal
+                    Reproducciones
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Gestión de eventos reproductivos, inseminaciones, montas y seguimiento ginecológico</p>
             </div>

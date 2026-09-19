@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Control de celo')
+@section('title', 'Registros de celo')
 
 @section('content')
 @php
@@ -27,7 +27,7 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2.5">
-                <span>🌡️</span> Control de celo
+                <span>🌡️</span> Registros de celo
             </h1>
             <p class="text-gray-500 text-sm mt-1">Seguimiento de ciclos estrales y preparación para servicios o inseminación</p>
         </div>

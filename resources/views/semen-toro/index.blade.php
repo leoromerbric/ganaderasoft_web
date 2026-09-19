@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Semen de toro')
+@section('title', 'Semen de toros')
 
 @section('content')
 @php
@@ -23,7 +23,7 @@
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Semen de toro
+                    Semen de toros
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Inventario de pajuelas, toros donantes y banco genético de la finca</p>
             </div>

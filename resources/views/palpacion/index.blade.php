@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Palpación animal')
+@section('title', 'Palpaciones')
 
 @section('content')
 @php
@@ -38,7 +38,7 @@
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Palpación animal
+                    Palpaciones
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Diagnósticos de gestación, tacto rectal y evaluaciones ginecológicas</p>
             </div>
