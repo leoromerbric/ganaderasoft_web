@@ -24,16 +24,16 @@
 
 <div class="space-y-8">
     <!-- Header Section -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
+    <div class="flex flex-col min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between gap-4">
+        <div class="min-w-0">
             <h1 class="text-2xl sm:text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2.5 tracking-tight">
                 <span>🌡️</span> Registros de celo
             </h1>
             <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Seguimiento de ciclos estrales y preparación para servicios o inseminación</p>
         </div>
-        <div class="w-full sm:w-auto shrink-0">
+        <div class="w-full min-[900px]:w-auto shrink-0">
             <a href="{{ route('registro-celo.create') }}"
-               class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium text-sm sm:text-base text-center whitespace-nowrap shrink-0">
+               class="w-full min-[900px]:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center font-medium text-sm sm:text-base text-center whitespace-nowrap shrink-0">
                 + Registrar celo
             </a>
         </div>

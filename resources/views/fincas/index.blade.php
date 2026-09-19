@@ -14,28 +14,28 @@
 
 <div class="space-y-6">
     <!-- Header Section -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div class="flex items-center space-x-3.5 sm:space-x-4">
+    <div class="flex flex-col min-[900px]:flex-row min-[900px]:items-center min-[900px]:justify-between gap-4">
+        <div class="flex items-center space-x-3.5 sm:space-x-4 min-w-0">
             <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xl sm:text-2xl shadow-xs border border-teal-100 shrink-0">
                 🏡
             </div>
-            <div>
+            <div class="min-w-0">
                 <h1 class="text-2xl sm:text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2 tracking-tight">
                     Lista de fincas
                 </h1>
                 <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Administración de fincas, unidades de producción ganadera y configuración territorial</p>
             </div>
         </div>
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full lg:w-auto shrink-0">
+        <div class="flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 w-full min-[900px]:w-auto shrink-0">
             <a href="{{ route('fincas.importar') }}"
-               class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-2xs font-medium text-sm sm:text-base inline-flex items-center justify-center gap-2 min-w-0 sm:min-w-[175px] text-center whitespace-nowrap shrink-0">
+               class="flex-1 w-full min-[900px]:flex-initial min-[900px]:w-auto px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-2xs font-medium text-sm sm:text-base flex items-center justify-center gap-2 text-center whitespace-nowrap shrink-0">
                 <svg class="w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                 </svg>
                 Importar CSV / TXT
             </a>
             <a href="{{ route('fincas.create') }}"
-               class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm sm:text-base inline-flex items-center justify-center gap-2 min-w-0 sm:min-w-[175px] text-center whitespace-nowrap shrink-0">
+               class="flex-1 w-full min-[900px]:flex-initial min-[900px]:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm sm:text-base flex items-center justify-center gap-2 text-center whitespace-nowrap shrink-0">
                 <span>+</span> Registrar finca
             </a>
         </div>
