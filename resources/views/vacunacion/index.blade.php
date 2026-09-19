@@ -1,13 +1,13 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Gestión de vacunación')
+@section('title', 'Vacunaciones')
 
 @section('content')
 <div class="space-y-8">
     <!-- Header section -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Gestión de vacunación</h1>
+            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Vacunaciones</h1>
             <p class="text-gray-500 text-sm mt-1">Registro, control sanitario e historial de dosis aplicadas al rebaño</p>
         </div>
         <a href="{{ route('vacunacion.create') }}"

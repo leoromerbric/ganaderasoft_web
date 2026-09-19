@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Producción de leche')
+@section('title', 'Registros de leche')
 
 @section('content')
 @php
@@ -13,7 +13,7 @@
     <!-- Header section -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Producción de leche</h1>
+            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Registros de leche</h1>
             <p class="text-gray-500 text-sm mt-1">Control diario de pesajes y volumen lechero por hembra y período</p>
         </div>
         <a href="{{ route('leche.create', ['lactancia_id' => $lactanciaId]) }}"
