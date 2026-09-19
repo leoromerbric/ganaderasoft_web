@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\Contracts\DiagnosticoServiceInterface;
 use App\Services\Contracts\FincasServiceInterface;
 use App\Services\Contracts\RebanosServiceInterface;
+use App\Services\Contracts\EtapaServiceInterface;
 use Illuminate\Http\Request;
 
 class DiagnosticoController extends Controller
@@ -12,7 +13,8 @@ class DiagnosticoController extends Controller
     public function __construct(
         protected DiagnosticoServiceInterface $service,
         protected FincasServiceInterface $fincasService,
-        protected RebanosServiceInterface $rebanosService
+        protected RebanosServiceInterface $rebanosService,
+        protected EtapaServiceInterface $etapaService
     ) {}
 
     public function index(Request $request)
@@ -54,7 +56,9 @@ class DiagnosticoController extends Controller
     public function create()
     {
         $animales = $this->service->getAnimales();
-        return view('diagnostico.create', compact('animales'));
+        $etapasRes = $this->etapaService->getAll();
+        $etapas = $etapasRes['data']['data'] ?? $etapasRes['data'] ?? (is_array($etapasRes) ? $etapasRes : []);
+        return view('diagnostico.create', compact('animales', 'etapas'));
     }
 
     public function store(Request $request)

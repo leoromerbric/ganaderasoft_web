@@ -102,21 +102,33 @@
                                     @php
                                         $aId = $animal['id'] ?? $animal['id_Animal'] ?? '';
                                         $aNombre = $animal['Nombre'] ?? $animal['nombre'] ?? ('Animal #'.$aId);
+                                        $aCodigo = $animal['codigo_animal'] ?? $animal['Codigo'] ?? '';
                                         $rebanoId = $animal['rebano']['id_Rebano'] ?? ($animal['rebano']['id'] ?? ($animal['id_Rebano'] ?? ''));
                                         $rebanoNombre = $animal['rebano']['Nombre'] ?? ($animal['rebano']['nombre'] ?? ($rebanoId ? 'Rebaño #'.$rebanoId : ''));
                                         $fincaId = $animal['rebano']['finca']['id_Finca'] ?? ($animal['rebano']['finca']['id'] ?? ($animal['rebano']['id_Finca'] ?? ($animal['finca_id'] ?? '')));
                                         $fincaNombre = $animal['rebano']['finca']['Nombre'] ?? ($animal['rebano']['finca']['nombre'] ?? ($fincaId ? 'Finca #'.$fincaId : ''));
                                         $sexoVal = $animal['sexo'] ?? $animal['Sexo'] ?? 'H';
+
+                                        $etapaId = (string)(data_get($animal, 'etapa_actual.etapa.id') ?? data_get($animal, 'etapa_actual.etapa.id_Etapa') ?? data_get($animal, 'etapa_actual.etapa_id') ?? data_get($animal, 'etapa_actual.id') ?? data_get($animal, 'etapa.id') ?? data_get($animal, 'etapa_id') ?? '');
+                                        $etapaNombre = data_get($animal, 'etapa_actual.etapa.nombre') 
+                                            ?? data_get($animal, 'etapa_actual.etapa.Nombre') 
+                                            ?? data_get($animal, 'etapa_actual.nombre') 
+                                            ?? data_get($animal, 'etapa_actual.etapa_nombre') 
+                                            ?? data_get($animal, 'etapa.nombre') 
+                                            ?? ($etapaId ? 'Etapa #'.$etapaId : '');
                                     @endphp
                                     <option value="{{ $aId }}"
                                             data-nombre="{{ $aNombre }}"
+                                            data-codigo="{{ $aCodigo }}"
                                             data-sexo="{{ $sexoVal }}"
                                             data-rebano-id="{{ $rebanoId }}"
                                             data-rebano-nombre="{{ $rebanoNombre }}"
                                             data-finca-id="{{ $fincaId }}"
                                             data-finca-nombre="{{ $fincaNombre }}"
-                                            {{ old('animal_id') == $aId ? 'selected' : '' }}>
-                                        {{ $aNombre }} (#{{ $aId }}) {{ $rebanoNombre ? '• ' . $rebanoNombre : '' }}
+                                            data-etapa-id="{{ $etapaId }}"
+                                            data-etapa-nombre="{{ $etapaNombre }}"
+                                            {{ (string)old('animal_id', request('animal_id')) === (string)$aId ? 'selected' : '' }}>
+                                        {{ $aNombre }} {{ $aCodigo ? '(#'.$aCodigo.')' : '(#' . $aId . ')' }} {{ $rebanoNombre ? '• ' . $rebanoNombre : '' }}
                                     </option>
                                 @endforeach
                             </select>
@@ -125,23 +137,32 @@
 
                         <!-- Etapa Actual del Animal -->
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            <label for="diagnostico_etapa_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                                 Etapa productiva / clínica <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
-                                <input type="text" id="diagnostico_etapa_texto" readonly
-                                       class="w-full px-4 py-3 border @error('etapa_id') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-200 bg-gray-50/80 @enderror rounded-xl text-sm text-gray-700 font-medium cursor-not-allowed"
-                                       placeholder="Se completará automáticamente...">
-                                <div id="etapaLoading" class="hidden absolute right-3 top-3.5 text-ganaderasoft-celeste animate-spin">
+                                <select name="etapa_id" id="diagnostico_etapa_id" required
+                                        class="w-full px-4 py-3 border @error('etapa_id') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium">
+                                    <option value="">Seleccione o autodetectar al elegir animal...</option>
+                                    @foreach($etapas as $etapa)
+                                        @php
+                                            $eId = $etapa['id'] ?? $etapa['id_Etapa'] ?? '';
+                                            $eNom = $etapa['nombre'] ?? $etapa['Nombre'] ?? ('Etapa #'.$eId);
+                                        @endphp
+                                        <option value="{{ $eId }}" {{ (string)old('etapa_id') === (string)$eId ? 'selected' : '' }}>
+                                            {{ $eNom }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div id="etapaLoading" class="hidden absolute right-8 top-3.5 text-ganaderasoft-celeste animate-spin pointer-events-none">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
                                 </div>
                             </div>
-                            <input type="hidden" name="etapa_id" id="diagnostico_etapa_etid" value="{{ old('etapa_id') }}">
                             @error('etapa_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
-                            <p class="text-[11px] text-gray-400 mt-1">Se obtiene en tiempo real según el historial del animal.</p>
+                            <p class="text-[11px] text-gray-400 mt-1">Se detecta automáticamente al elegir el ejemplar o puede seleccionarse manualmente.</p>
                         </div>
                     </div>
                 </div>
@@ -167,7 +188,7 @@
                             <label for="fecha" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                                 Fecha de evaluación <span class="text-red-500">*</span>
                             </label>
-                            <input type="date" id="fecha" name="fecha" value="{{ old('fecha', date('Y-m-d')) }}" required
+                            <input type="date" id="fecha" name="fecha" value="{{ old('fecha', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required
                                    class="w-full px-4 py-3 border @error('fecha') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all">
                             @error('fecha')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
@@ -257,8 +278,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const helperFinca = document.getElementById('helper_finca');
     const helperRebano = document.getElementById('helper_rebano');
     const animalSelect = document.getElementById('animal_id');
-    const etapaInput = document.getElementById('diagnostico_etapa_etid');
-    const etapaTexto = document.getElementById('diagnostico_etapa_texto');
+    const etapaSelect = document.getElementById('diagnostico_etapa_id');
     const etapaLoading = document.getElementById('etapaLoading');
     const tipoInput = document.getElementById('tipo');
     const fechaInput = document.getElementById('fecha');
@@ -371,14 +391,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function updateStage() {
         if (!animalSelect.value) {
-            etapaInput.value = '';
-            etapaTexto.value = '';
+            etapaSelect.value = '';
             updatePreview();
             return;
         }
 
+        const selectedOpt = animalSelect.options[animalSelect.selectedIndex];
+        const datasetEtapaId = selectedOpt ? selectedOpt.dataset.etapaId : '';
+
+        // 1. Si la etapa viene en el dataset del animal, asignarla directamente
+        if (datasetEtapaId && etapaSelect.querySelector(`option[value="${datasetEtapaId}"]`)) {
+            etapaSelect.value = datasetEtapaId;
+            updatePreview();
+            return;
+        }
+
+        // 2. Fallback por AJAX si no viene en el dataset
         if (etapaLoading) etapaLoading.classList.remove('hidden');
-        etapaTexto.value = 'Consultando etapa actual...';
 
         try {
             const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), {
@@ -389,12 +418,15 @@ document.addEventListener('DOMContentLoaded', function () {
             const etapaActual = payload?.data?.etapa_actual || payload?.data?.etapaActual || animal?.etapa_actual || animal?.etapaActual || null;
             const etapa = etapaActual?.etapa || etapaActual;
             const etapaId = etapa?.id || etapa?.etapa_id || etapaActual?.etan_etapa_id || etapaActual?.etanEtapaId || '';
-            const etapaNombre = etapa?.nombre || etapa?.etapa_nombre || etapa?.Nombre || etapa?.descripcion || etapaActual?.etapa_nombre || etapaActual?.nombre || '';
 
-            etapaInput.value = etapaId;
-            etapaTexto.value = etapaId ? (etapaNombre || ('Etapa #' + etapaId)) : 'Animal sin etapa activa';
+            if (etapaId && etapaSelect.querySelector(`option[value="${etapaId}"]`)) {
+                etapaSelect.value = etapaId;
+                if (selectedOpt) {
+                    selectedOpt.dataset.etapaId = etapaId;
+                }
+            }
         } catch (error) {
-            etapaTexto.value = 'No se pudo obtener la etapa actual';
+            console.warn('No se pudo autodetectar la etapa vía AJAX:', error);
         } finally {
             if (etapaLoading) etapaLoading.classList.add('hidden');
             updatePreview();
@@ -421,7 +453,8 @@ document.addEventListener('DOMContentLoaded', function () {
             previewRebano.textContent = 'No especificado';
         }
 
-        previewEtapa.textContent = etapaTexto.value.trim() || 'Pendiente';
+        const etapaSelectedOpt = etapaSelect.options[etapaSelect.selectedIndex];
+        previewEtapa.textContent = (etapaSelect.value && etapaSelectedOpt) ? etapaSelectedOpt.textContent.trim() : 'Pendiente';
         previewTipo.textContent = tipoInput.value.trim() || 'No especificado';
 
         if (fechaInput.value) {
@@ -466,6 +499,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateStage();
     });
 
+    etapaSelect.addEventListener('change', updatePreview);
     tipoInput.addEventListener('input', updatePreview);
     fechaInput.addEventListener('change', updatePreview);
     descripcionInput.addEventListener('input', updatePreview);
