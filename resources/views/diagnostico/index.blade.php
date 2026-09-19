@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-8">
     <!-- Header section -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div class="flex items-center space-x-3.5 sm:space-x-4">
             <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-xl sm:text-2xl shadow-xs shrink-0">
                 🩺
@@ -15,10 +15,12 @@
                 <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Gestión clínica, historial de diagnósticos y estado sanitario de los animales</p>
             </div>
         </div>
-        <a href="{{ route('diagnostico.create') }}"
-           class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium text-sm sm:text-base gap-2 text-center">
-            + Nuevo diagnóstico
-        </a>
+        <div class="w-full sm:w-auto shrink-0">
+            <a href="{{ route('diagnostico.create') }}"
+               class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-xl hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium text-sm sm:text-base gap-2 text-center whitespace-nowrap shrink-0">
+                + Nuevo diagnóstico
+            </a>
+        </div>
     </div>
 
     <!-- Alert Messages -->

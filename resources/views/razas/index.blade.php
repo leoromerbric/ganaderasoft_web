@@ -5,15 +5,17 @@
 @section('content')
     <div class="space-y-8">
         <!-- Header section -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
                 <h1 class="text-2xl sm:text-3xl font-bold text-ganaderasoft-negro tracking-tight">{{ $catalog['name'] }}</h1>
                 <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">{{ $catalog['description'] }}</p>
             </div>
-            <a href="{{ route($catalog['slug'].'.create') }}"
-               class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium text-sm sm:text-base text-center">
-                + Nuevo registro
-            </a>
+            <div class="w-full sm:w-auto shrink-0">
+                <a href="{{ route($catalog['slug'].'.create') }}"
+                   class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium text-sm sm:text-base text-center whitespace-nowrap shrink-0">
+                    + Nuevo registro
+                </a>
+            </div>
         </div>
 
         <!-- Alert Messages -->

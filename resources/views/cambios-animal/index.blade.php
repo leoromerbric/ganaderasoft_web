@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-8">
     <!-- Header Card -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div class="flex items-center space-x-3.5 sm:space-x-4">
             <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-xl sm:text-2xl shadow-sm border border-ganaderasoft-celeste/20 shrink-0">
                 📝
@@ -17,10 +17,12 @@
                 <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Monitoreo de desarrollo, transiciones de etapa y registros biométricos del rebaño</p>
             </div>
         </div>
-        <a href="{{ route('cambios-animal.create') }}"
-           class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium text-sm sm:text-base text-center">
-            + Nuevo cambio
-        </a>
+        <div class="w-full sm:w-auto shrink-0">
+            <a href="{{ route('cambios-animal.create') }}"
+               class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium text-sm sm:text-base text-center whitespace-nowrap shrink-0">
+                + Nuevo cambio
+            </a>
+        </div>
     </div>
 
     <!-- Alert Messages -->
