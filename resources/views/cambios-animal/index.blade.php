@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Historial de cambios de animal')
+@section('title', 'Cambios de animales')
 
 @section('content')
 <div class="space-y-8">
@@ -12,7 +12,7 @@
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Historial de cambios de animal
+                    Cambios de animales
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Monitoreo de desarrollo, transiciones de etapa y registros biométricos del rebaño</p>
             </div>
