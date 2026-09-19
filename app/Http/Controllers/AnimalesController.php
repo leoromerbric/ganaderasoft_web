@@ -105,6 +105,7 @@ class AnimalesController extends Controller
 
         $razasResponse = $this->animalesService->getRazas();
         $razas = ($razasResponse['success'] ?? false) ? ($razasResponse['data']['data'] ?? $razasResponse['data'] ?? []) : [];
+        $razas = collect($razas)->sortBy('nombre', SORT_NATURAL | SORT_FLAG_CASE)->values()->all();
 
         $estadosResponse = $this->animalesService->getEstadosSalud();
         $estados = ($estadosResponse['success'] ?? false) ? ($estadosResponse['data']['data'] ?? $estadosResponse['data'] ?? []) : [];
@@ -207,6 +208,7 @@ class AnimalesController extends Controller
 
         $razasResponse = $this->animalesService->getRazas();
         $razas = ($razasResponse['success'] ?? false) ? ($razasResponse['data']['data'] ?? $razasResponse['data'] ?? []) : [];
+        $razas = collect($razas)->sortBy('nombre', SORT_NATURAL | SORT_FLAG_CASE)->values()->all();
 
         return view('animales.edit', compact('animal', 'rebanos', 'razas'));
     }
