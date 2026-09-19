@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Gestión de animales')
+@section('title', 'Lista de animales')
 
 @section('content')
 <div class="space-y-6">
@@ -12,7 +12,7 @@
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Gestión de animales
+                    Lista de animales
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Administración del inventario de ganado, genealogía y registro por rebaños y fincas</p>
             </div>
@@ -55,7 +55,7 @@
         <!-- Total Animales -->
         <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total animales</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total de animales</p>
                 <h3 class="text-2xl font-black text-gray-900 mt-1" id="kpiTotal">{{ $estadisticas['total'] ?? count($animales) }}</h3>
                 <p class="text-[11px] text-gray-400 mt-0.5">En el inventario</p>
             </div>
