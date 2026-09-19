@@ -112,7 +112,9 @@
                             <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                                 Fecha de pesaje <span class="text-red-500">*</span>
                             </label>
-                            <input type="date" name="fecha_pesaje" id="fecha_pesaje" required value="{{ $vFechaPesaje }}"
+                            <input type="date" name="fecha_pesaje" id="fecha_pesaje" required 
+                                   max="{{ date('Y-m-d') }}"
+                                   value="{{ $vFechaPesaje }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all @error('fecha_pesaje') border-red-500 @enderror">
                             @error('fecha_pesaje')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>

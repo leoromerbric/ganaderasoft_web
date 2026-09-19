@@ -7,8 +7,10 @@
     <!-- Header Card -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold text-2xl shadow-xs">
-                🩺
+            <div class="w-12 h-12 rounded-2xl bg-ganaderasoft-celeste/15 text-ganaderasoft-azul flex items-center justify-center font-bold shadow-xs">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
@@ -31,8 +33,10 @@
     <!-- Alert Errors -->
     @if(session('error'))
         <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <span class="text-lg">⚠️</span>
+            <div class="flex items-center space-x-3">
+                <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
                 <p class="text-sm font-medium">{{ session('error') }}</p>
             </div>
         </div>
@@ -41,10 +45,12 @@
     @if($errors->any())
         <div class="p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-xl shadow-sm space-y-2">
             <div class="flex items-center space-x-2">
-                <span class="text-lg">⚠️</span>
+                <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
                 <p class="text-sm font-bold">Por favor corrige los siguientes errores:</p>
             </div>
-            <ul class="list-disc list-inside text-xs space-y-1 pl-6">
+            <ul class="list-disc list-inside text-sm space-y-1 pl-6">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -60,17 +66,24 @@
             <div class="lg:col-span-2 space-y-6">
                 <!-- Card 1: Selección de Animal y Etapa -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
-                    <div class="border-b border-gray-100 pb-3">
-                        <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                            <span>📋</span> Selección de animal y etapa clínica
-                        </h3>
-                        <p class="text-xs text-gray-500 mt-0.5">Filtra por finca o rebaño para localizar al animal y cargar su etapa productiva</p>
+                    <div class="border-b border-gray-100 pb-3 flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-ganaderasoft-negro">
+                                Selección de animal y etapa clínica
+                            </h3>
+                            <p class="text-xs text-gray-500 mt-0.5">Filtra por finca o rebaño para localizar al animal y cargar su etapa productiva</p>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Filtro Finca (Helper) -->
                         <div>
-                            <label for="helper_finca" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            <label for="helper_finca" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Filtrar por finca <span class="text-xs font-normal text-gray-400 normal-case">(opcional)</span>
                             </label>
                             <select id="helper_finca"
@@ -81,7 +94,7 @@
 
                         <!-- Filtro Rebaño (Helper) -->
                         <div>
-                            <label for="helper_rebano" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            <label for="helper_rebano" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Filtrar por rebaño <span class="text-xs font-normal text-gray-400 normal-case">(opcional)</span>
                             </label>
                             <select id="helper_rebano"
@@ -92,7 +105,7 @@
 
                         <!-- Selector de Animal Principal -->
                         <div>
-                            <label for="animal_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            <label for="animal_id" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Animal evaluado <span class="text-red-500">*</span>
                             </label>
                             <select name="animal_id" id="animal_id" required
@@ -137,7 +150,7 @@
 
                         <!-- Etapa Actual del Animal -->
                         <div>
-                            <label for="diagnostico_etapa_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            <label for="diagnostico_etapa_id" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Etapa productiva / clínica <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
@@ -162,20 +175,27 @@
                                 </div>
                             </div>
                             @error('etapa_id')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
-                            <p class="text-[11px] text-gray-400 mt-1">Se detecta automáticamente al elegir el ejemplar o puede seleccionarse manualmente.</p>
+                            <p class="text-xs text-gray-400 mt-1">Se detecta automáticamente al elegir el ejemplar o puede seleccionarse manualmente.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Card 2: Información del Diagnóstico -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
-                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>🩺</span> Información médica del diagnóstico
-                    </h3>
+                    <div class="border-b border-gray-100 pb-3 flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-ganaderasoft-negro">
+                            Información médica del diagnóstico
+                        </h3>
+                    </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="tipo" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            <label for="tipo" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Tipo de diagnóstico <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="tipo" name="tipo" value="{{ old('tipo') }}" maxlength="30" required
@@ -185,7 +205,7 @@
                         </div>
 
                         <div>
-                            <label for="fecha" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            <label for="fecha" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Fecha de evaluación <span class="text-red-500">*</span>
                             </label>
                             <input type="date" id="fecha" name="fecha" value="{{ old('fecha', date('Y-m-d')) }}" max="{{ date('Y-m-d') }}" required
@@ -194,7 +214,7 @@
                         </div>
 
                         <div class="md:col-span-2">
-                            <label for="descripcion" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                            <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-2">
                                 Descripción y observaciones clínicas
                             </label>
                             <textarea id="descripcion" name="descripcion" rows="4"
@@ -209,26 +229,31 @@
             <!-- Columna Derecha: Resumen de Ficha en Vivo (1 Tercio) -->
             <div class="space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-24">
-                    <div class="bg-slate-100 border-b border-slate-200 text-slate-800 px-6 py-4">
-                        <h3 class="text-lg font-bold flex items-center gap-2">
-                            <span>📋</span> Resumen del diagnóstico
-                        </h3>
+                    <div class="bg-gray-50/80 border-b border-gray-100 px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            <h3 class="text-lg font-bold text-gray-900">Resumen del diagnóstico</h3>
+                        </div>
                     </div>
 
                     <div class="p-6 space-y-5">
                         <!-- Preview Animal Avatar e Identificación -->
                         <div class="p-4 bg-blue-50/60 border border-blue-100 rounded-2xl flex items-center space-x-3">
-                            <div id="previewIcono" class="w-12 h-12 rounded-xl bg-white border border-blue-200 text-blue-700 font-bold flex items-center justify-center text-2xl shadow-xs">
-                                🐄
+                            <div class="w-12 h-12 rounded-xl bg-white border border-blue-200 text-blue-700 font-bold flex items-center justify-center shadow-xs shrink-0">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                </svg>
                             </div>
                             <div class="overflow-hidden">
                                 <p id="previewAnimalNombre" class="text-base font-bold text-gray-900 truncate">Ningún animal</p>
-                                <p id="previewAnimalId" class="text-xs text-gray-500">ID: #---</p>
+                                <p id="previewAnimalId" class="text-xs text-gray-500 font-mono">ID: #---</p>
                             </div>
                         </div>
 
                         <!-- Mini Stats Preview -->
-                        <div class="space-y-3 text-xs text-gray-600 border-b border-gray-100 pb-4">
+                        <div class="space-y-3 text-sm text-gray-600 border-b border-gray-100 pb-4">
                             <div class="flex justify-between items-center">
                                 <span>Finca:</span>
                                 <span id="previewFinca" class="font-bold text-gray-900 truncate max-w-[150px]">No especificada</span>
@@ -259,7 +284,10 @@
                         <div class="space-y-3 pt-2">
                             <button type="submit"
                                     class="w-full py-3.5 bg-ganaderasoft-verde-oscuro hover:bg-opacity-90 text-white font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer">
-                                💾 Guardar diagnóstico
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                                </svg>
+                                Guardar diagnóstico
                             </button>
                             <a href="{{ route('diagnostico.index') }}"
                                class="w-full py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center justify-center">
@@ -284,7 +312,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const fechaInput = document.getElementById('fecha');
     const descripcionInput = document.getElementById('descripcion');
 
-    const previewIcono = document.getElementById('previewIcono');
     const previewAnimalNombre = document.getElementById('previewAnimalNombre');
     const previewAnimalId = document.getElementById('previewAnimalId');
     const previewFinca = document.getElementById('previewFinca');
@@ -437,18 +464,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedOpt = animalSelect.options[animalSelect.selectedIndex];
         if (animalSelect.value && selectedOpt) {
             const nom = selectedOpt.dataset.nombre || selectedOpt.textContent.trim();
-            const sexo = (selectedOpt.dataset.sexo || 'H').toUpperCase();
-            const isMacho = sexo === 'M' || sexo === 'MACHO' || sexo === 'MASCULINO';
 
             previewAnimalNombre.textContent = nom;
             previewAnimalId.textContent = 'ID: #' + animalSelect.value;
-            previewIcono.textContent = isMacho ? '🐂' : '🐄';
             previewFinca.textContent = selectedOpt.dataset.fincaNombre || 'No especificada';
             previewRebano.textContent = selectedOpt.dataset.rebanoNombre || 'No especificado';
         } else {
             previewAnimalNombre.textContent = 'Ningún animal';
             previewAnimalId.textContent = 'ID: #---';
-            previewIcono.textContent = '🐄';
             previewFinca.textContent = 'No especificada';
             previewRebano.textContent = 'No especificado';
         }
