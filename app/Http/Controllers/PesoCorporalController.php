@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Services\Contracts\AnimalesServiceInterface;
+use App\Services\Contracts\CambiosAnimalServiceInterface;
 use App\Services\Contracts\FincasServiceInterface;
 use App\Services\Contracts\PesoCorporalServiceInterface;
 use App\Services\Contracts\RebanosServiceInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 /**
@@ -22,8 +25,13 @@ class PesoCorporalController extends Controller
         protected PesoCorporalServiceInterface $pesoCorporalService,
         protected AnimalesServiceInterface $animalesService,
         protected FincasServiceInterface $fincasService,
-        protected RebanosServiceInterface $rebanosService
-    ) {}
+        protected RebanosServiceInterface $rebanosService,
+        protected ?CambiosAnimalServiceInterface $cambiosAnimalService = null
+    ) {
+        if (!$this->cambiosAnimalService && app()->bound(CambiosAnimalServiceInterface::class)) {
+            $this->cambiosAnimalService = app(CambiosAnimalServiceInterface::class);
+        }
+    }
 
     /**
      * Extrae mensajes legibles de las respuestas de la API.
@@ -143,6 +151,34 @@ class PesoCorporalController extends Controller
         $animales         = is_array($rawAnimales)
             ? (isset($rawAnimales['data']) && is_array($rawAnimales['data']) ? $rawAnimales['data'] : array_values(array_filter($rawAnimales, 'is_array')))
             : [];
+
+        // Obtener historial de cambios de animales para reflejar la etapa más reciente si hubo transición
+        $cambiosPorAnimal = collect();
+        if ($this->cambiosAnimalService) {
+            try {
+                $cambios = $this->cambiosAnimalService->getList();
+                $cambiosPorAnimal = collect($cambios)
+                    ->filter(fn ($c) => !empty($c['etapa_cambio']))
+                    ->sortByDesc(fn ($c) => ($c['fecha_cambio'] ?? '') . ' ' . ($c['created_at'] ?? ''))
+                    ->groupBy(function ($c) {
+                        return data_get($c, 'animal.id') ?? data_get($c, 'etapa_animal.animal_id') ?? $c['animal_id'] ?? null;
+                    });
+            } catch (\Throwable $e) {
+                Log::warning('No se pudieron obtener los cambios de animal en PesoCorporalController@create: ' . $e->getMessage());
+            }
+        }
+
+        foreach ($animales as &$animal) {
+            $anId = $animal['id'] ?? null;
+            if ($anId && $cambiosPorAnimal->has($anId)) {
+                $ultimoCambio = $cambiosPorAnimal->get($anId)->first();
+                if ($ultimoCambio && !empty($ultimoCambio['etapa_cambio'])) {
+                    $animal['etapa_cambio_reciente'] = $ultimoCambio['etapa_cambio'];
+                    $animal['etapa_cambio_id'] = data_get($ultimoCambio, 'animal_etapa.etapa_id') ?? data_get($ultimoCambio, 'etapa.id') ?? $ultimoCambio['etapa_id'] ?? null;
+                }
+            }
+        }
+        unset($animal);
 
         return view('peso-corporal.create', compact('animales'));
     }
@@ -284,5 +320,77 @@ class PesoCorporalController extends Controller
         }
 
         return redirect()->route('peso-corporal.index')->with('error', $this->apiMessage($response, 'Error al eliminar el registro.'));
+    }
+
+    /**
+     * Endpoint AJAX para consultar la etapa actual o más reciente de un animal.
+     *
+     * @param Request $request
+     * @param int $id ID del animal
+     * @return JsonResponse
+     */
+    public function getAnimalEtapa(Request $request, int $id): JsonResponse
+    {
+        try {
+            $animal = null;
+            if ($this->cambiosAnimalService) {
+                $animal = $this->cambiosAnimalService->getAnimalById($id);
+            }
+
+            if (empty($animal)) {
+                $res = $this->animalesService->getAnimal($id);
+                $animal = $res['data'] ?? null;
+            }
+
+            if (empty($animal)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Animal no encontrado'
+                ], 404);
+            }
+
+            $etapaActual = $animal['etapa_actual'] ?? null;
+
+            // Verificar si existe un cambio de animal posterior
+            if ($this->cambiosAnimalService) {
+                try {
+                    $cambios = $this->cambiosAnimalService->getList($id);
+                    $ultimoCambio = collect($cambios)
+                        ->filter(fn ($c) => !empty($c['etapa_cambio']))
+                        ->sortByDesc(fn ($c) => ($c['fecha_cambio'] ?? '') . ' ' . ($c['created_at'] ?? ''))
+                        ->first();
+
+                    if ($ultimoCambio && !empty($ultimoCambio['etapa_cambio'])) {
+                        $etapaActual = [
+                            'id'           => data_get($ultimoCambio, 'animal_etapa_id') ?? data_get($etapaActual, 'id'),
+                            'etapa_id'     => data_get($ultimoCambio, 'animal_etapa.etapa_id') ?? data_get($ultimoCambio, 'etapa.id') ?? data_get($etapaActual, 'etapa_id'),
+                            'nombre'       => $ultimoCambio['etapa_cambio'],
+                            'fecha_ini'    => $ultimoCambio['fecha_cambio'] ?? data_get($etapaActual, 'fecha_ini'),
+                            'etapa'        => [
+                                'id'     => data_get($ultimoCambio, 'animal_etapa.etapa_id') ?? data_get($ultimoCambio, 'etapa.id') ?? data_get($etapaActual, 'etapa.id'),
+                                'nombre' => $ultimoCambio['etapa_cambio'],
+                            ]
+                        ];
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning("Error consultando cambios en getAnimalEtapa para animal {$id}: " . $e->getMessage());
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'data'    => [
+                    'animal'       => $animal,
+                    'etapa_actual' => $etapaActual
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            Log::error("Error en AJAX getAnimalEtapa para animal ID {$id}: " . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al consultar la etapa actual del animal'
+            ], 500);
+        }
     }
 }

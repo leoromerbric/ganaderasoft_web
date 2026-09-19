@@ -328,7 +328,7 @@
                     <a href="{{ route('peso-corporal.create') }}" 
                        class="w-full py-3 px-4 bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold rounded-xl text-sm flex items-center justify-between border border-gray-200/80 transition-all shadow-2xs group">
                         <span class="flex items-center gap-2.5">
-                            <span>⚖️</span> Control de peso corporal
+                            <span>⚖️</span> Pesos corporales
                         </span>
                         <span class="text-gray-400 group-hover:text-gray-900 group-hover:translate-x-0.5 transition-all">→</span>
                     </a>

@@ -73,8 +73,18 @@
                                 @foreach($animales as $animal)
                                     @php
                                         $animalPk = $animal['id'] ?? null;
-                                        $etapaId = data_get($animal, 'etapa_actual.etapa.id') ?? data_get($animal, 'etapa_actual.etapa_id') ?? data_get($animal, 'etapa_actual.id') ?? '';
-                                        $etapaNombre = data_get($animal, 'etapa_actual.etapa.nombre') ?? data_get($animal, 'etapa_actual.nombre') ?? ($etapaId ? 'Etapa #'.$etapaId : '');
+                                        $etapaNombre = $animal['etapa_cambio_reciente'] 
+                                            ?? data_get($animal, 'etapa_actual.etapa.nombre') 
+                                            ?? data_get($animal, 'etapa_actual.nombre') 
+                                            ?? '';
+                                        $etapaId = $animal['etapa_cambio_id']
+                                            ?? data_get($animal, 'etapa_actual.etapa.id') 
+                                            ?? data_get($animal, 'etapa_actual.etapa_id') 
+                                            ?? data_get($animal, 'etapa_actual.id') 
+                                            ?? '';
+                                        if (!$etapaNombre && $etapaId) {
+                                            $etapaNombre = 'Etapa #'.$etapaId;
+                                        }
                                     @endphp
                                     <option value="{{ $animalPk }}" {{ old('animal_id') == $animalPk ? 'selected' : '' }}
                                             data-nombre="{{ $animal['nombre'] ?? ('Animal #'.$animalPk) }}"
@@ -211,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const previewFecha  = document.getElementById('previewFecha');
     const previewPeso   = document.getElementById('previewPeso');
 
-    const endpointTemplate = '{{ route('lactancia.animal.etapa', ['id' => '__ID__']) }}';
+    const endpointTemplate = '{{ route('api.peso-corporal.animal.etapa', ['id' => '__ID__']) }}';
 
     function renderStage(option, fetchedStage) {
         const etapaId = (fetchedStage && (fetchedStage.etapa_id || (fetchedStage.etapa && fetchedStage.etapa.id) || fetchedStage.id || fetchedStage.etan_etapa_id)) || (option && option.dataset.etapaId) || '';
@@ -236,15 +246,17 @@ document.addEventListener('DOMContentLoaded', function () {
         previewCodigo.textContent = option.dataset.codigo ? '#' + option.dataset.codigo : '-';
 
         renderStage(option, null);
-        if (etapaInput.value) return;
 
         try {
             const response = await fetch(endpointTemplate.replace('__ID__', animalSelect.value), { headers: { Accept: 'application/json' } });
-            const payload = await response.json();
-            renderStage(option, payload && payload.data ? payload.data.etapa_actual : null);
+            if (response.ok) {
+                const payload = await response.json();
+                if (payload && payload.data && payload.data.etapa_actual) {
+                    renderStage(option, payload.data.etapa_actual);
+                }
+            }
         } catch (error) {
-            etapaTexto.value = 'No se pudo obtener la etapa actual';
-            previewEtapa.textContent = etapaTexto.value;
+            // Se preserva la etapa establecida desde el selector
         }
     }
 
