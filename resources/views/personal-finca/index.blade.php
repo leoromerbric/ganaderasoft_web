@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Personal de finca')
+@section('title', 'Personal de fincas')
 
 @section('content')
 @php
@@ -19,7 +19,7 @@
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Personal de finca
+                    Personal de fincas
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Gestión de trabajadores, roles y asignación por unidad de producción</p>
             </div>
@@ -54,7 +54,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total personal</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Personal total</p>
                 <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $totalPersonal }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl border border-blue-100">
