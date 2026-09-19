@@ -1,13 +1,13 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Control de peso corporal')
+@section('title', 'Pesos corporales')
 
 @section('content')
 <div class="space-y-8">
     <!-- Header section -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Control de peso corporal</h1>
+            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Pesos corporales</h1>
             <p class="text-gray-500 text-sm mt-1">Registro, monitoreo y seguimiento del desarrollo ponderal del ganado</p>
         </div>
         <a href="{{ route('peso-corporal.create') }}"
