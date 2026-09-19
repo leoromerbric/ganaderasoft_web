@@ -14,7 +14,7 @@ class ComposicionRazaController extends Controller
     protected FincasServiceInterface $fincasService;
 
     private string $slug = 'razas';
-    private string $name = 'Razas y composiciones';
+    private string $name = 'Composición de raza';
     private string $description = 'Composición de razas genéticas';
 
     public function __construct(
