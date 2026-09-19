@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Gestión de fincas')
+@section('title', 'Lista de fincas')
 
 @section('content')
 @php
@@ -21,7 +21,7 @@
             </div>
             <div>
                 <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
-                    Gestión de fincas
+                    Lista de fincas
                 </h1>
                 <p class="text-gray-500 text-sm mt-1">Administración de fincas, unidades de producción ganadera y configuración territorial</p>
             </div>
