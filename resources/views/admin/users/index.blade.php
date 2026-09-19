@@ -1,6 +1,6 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Gestión de usuarios')
+@section('title', 'Usuarios')
 
 @section('content')
     <div class="space-y-8">
