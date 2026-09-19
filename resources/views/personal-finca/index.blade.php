@@ -13,20 +13,20 @@
 <div class="space-y-6">
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-2xl shadow-xs border border-teal-100 shrink-0">
+        <div class="flex items-center space-x-3.5 sm:space-x-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xl sm:text-2xl shadow-xs border border-teal-100 shrink-0">
                 👥
             </div>
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                <h1 class="text-2xl sm:text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2 tracking-tight">
                     Personal de fincas
                 </h1>
-                <p class="text-gray-500 text-sm mt-1">Gestión de trabajadores, roles y asignación por unidad de producción</p>
+                <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Gestión de trabajadores, roles y asignación por unidad de producción</p>
             </div>
         </div>
-        <div>
+        <div class="w-full sm:w-auto">
             <a href="{{ route('personal-finca.create') }}"
-                class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-base inline-flex items-center gap-2">
+                class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm sm:text-base inline-flex items-center justify-center gap-2 text-center">
                 <span>+</span> Registrar personal
             </a>
         </div>
@@ -51,50 +51,50 @@
     @endif
 
     <!-- Summary KPIs (4 Cards) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100 flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Personal total</p>
-                <p id="statTotal" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $totalPersonal }}</p>
+                <p id="statTotal" class="text-2xl sm:text-3xl font-extrabold text-ganaderasoft-azul">{{ $totalPersonal }}</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl border border-blue-100">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl border border-blue-100 shrink-0">
                 👥
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+        <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100 flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Personal activo</p>
-                <p id="statActivos" class="text-3xl font-extrabold text-emerald-600">{{ $personalActivo }}</p>
+                <p id="statActivos" class="text-2xl sm:text-3xl font-extrabold text-emerald-600">{{ $personalActivo }}</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl border border-emerald-100">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl border border-emerald-100 shrink-0">
                 🟢
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+        <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100 flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Fincas con personal</p>
-                <p id="statFincas" class="text-3xl font-extrabold text-amber-600">{{ $fincasConPersonal }}</p>
+                <p id="statFincas" class="text-2xl sm:text-3xl font-extrabold text-amber-600">{{ $fincasConPersonal }}</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100 shrink-0">
                 🏡
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+        <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100 flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Roles / Cargos</p>
-                <p id="statRoles" class="text-3xl font-extrabold text-purple-600">{{ $totalTipos }}</p>
+                <p id="statRoles" class="text-2xl sm:text-3xl font-extrabold text-purple-600">{{ $totalTipos }}</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl border border-purple-100">
+            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl border border-purple-100 shrink-0">
                 💼
             </div>
         </div>
     </div>
 
     <!-- Filter Bar (4 Columnas) -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+    <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
             <!-- Buscar -->
             <div class="lg:col-span-1">

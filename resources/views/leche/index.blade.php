@@ -13,11 +13,11 @@
     <!-- Header section -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Registros de leche</h1>
-            <p class="text-gray-500 text-sm mt-1">Control diario de pesajes y volumen lechero por hembra y período</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-ganaderasoft-negro tracking-tight">Registros de leche</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Control diario de pesajes y volumen lechero por hembra y período</p>
         </div>
         <a href="{{ route('leche.create', ['lactancia_id' => $lactanciaId]) }}"
-           class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium">
+           class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium text-sm sm:text-base text-center">
             + Nuevo pesaje
         </a>
     </div>
@@ -41,38 +41,38 @@
     @endif
 
     <!-- Summary KPIs -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+        <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100 flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total pesajes</p>
-                <p id="statTotalCount" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $countRegistros }}</p>
+                <p id="statTotalCount" class="text-2xl sm:text-3xl font-extrabold text-ganaderasoft-azul">{{ $countRegistros }}</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl">
+            <div class="w-12 h-12 rounded-xl bg-ganaderasoft-celeste/15 flex items-center justify-center text-2xl shrink-0">
                 🥛
             </div>
         </div>
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+        <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100 flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Producción total</p>
-                <p id="statTotalVol" class="text-3xl font-extrabold text-emerald-600">{{ number_format($totalProduccion, 2, ',', '.') }} L</p>
+                <p id="statTotalVol" class="text-2xl sm:text-3xl font-extrabold text-emerald-600">{{ number_format($totalProduccion, 2, ',', '.') }} L</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl shrink-0">
                 📊
             </div>
         </div>
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+        <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100 flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Promedio por pesaje</p>
-                <p id="statPromedioVol" class="text-3xl font-extrabold text-cyan-600">{{ number_format($promedioPesaje, 2, ',', '.') }} L</p>
+                <p id="statPromedioVol" class="text-2xl sm:text-3xl font-extrabold text-cyan-600">{{ number_format($promedioPesaje, 2, ',', '.') }} L</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center text-2xl">
+            <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center text-2xl shrink-0">
                 ⚖️
             </div>
         </div>
     </div>
 
     <!-- Filters Bar -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+    <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
             <div>
                 <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar hembra</label>

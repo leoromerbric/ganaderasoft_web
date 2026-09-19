@@ -14,28 +14,28 @@
 
 <div class="space-y-6">
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-2xl shadow-xs border border-teal-100 shrink-0">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="flex items-center space-x-3.5 sm:space-x-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xl sm:text-2xl shadow-xs border border-teal-100 shrink-0">
                 🏡
             </div>
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                <h1 class="text-2xl sm:text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2 tracking-tight">
                     Lista de fincas
                 </h1>
-                <p class="text-gray-500 text-sm mt-1">Administración de fincas, unidades de producción ganadera y configuración territorial</p>
+                <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Administración de fincas, unidades de producción ganadera y configuración territorial</p>
             </div>
         </div>
-        <div class="flex flex-wrap items-center gap-3">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full lg:w-auto">
             <a href="{{ route('fincas.importar') }}"
-               class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-2xs font-medium text-base inline-flex items-center justify-center gap-2 min-w-[195px]">
-                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-2xs font-medium text-sm sm:text-base inline-flex items-center justify-center gap-2 min-w-0 sm:min-w-[175px] text-center">
+                <svg class="w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                 </svg>
                 Importar CSV / TXT
             </a>
             <a href="{{ route('fincas.create') }}"
-               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-base inline-flex items-center justify-center gap-2 min-w-[195px]">
+               class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm sm:text-base inline-flex items-center justify-center gap-2 min-w-0 sm:min-w-[175px] text-center">
                 <span>+</span> Registrar finca
             </a>
         </div>
@@ -60,58 +60,58 @@
     @endif
 
     <!-- 4 Global KPI Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <!-- Total Fincas -->
-        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center justify-between">
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total de fincas</p>
-                <h3 class="text-2xl font-black text-gray-900 mt-1" id="statTotal">{{ $totalFincas }}</h3>
+                <h3 class="text-xl sm:text-2xl font-black text-gray-900 mt-1" id="statTotal">{{ $totalFincas }}</h3>
                 <p class="text-[11px] text-gray-400 mt-0.5">Unidades registradas</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl font-bold border border-emerald-100 shadow-2xs">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl font-bold border border-emerald-100 shadow-2xs shrink-0">
                 🏡
             </div>
         </div>
 
         <!-- Superficie Total -->
-        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center justify-between">
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Superficie total</p>
-                <h3 class="text-2xl font-black text-blue-700 mt-1" id="statSuperficie">{{ number_format($totalSuperficie, 1, ',', '.') }} ha</h3>
+                <h3 class="text-xl sm:text-2xl font-black text-blue-700 mt-1" id="statSuperficie">{{ number_format($totalSuperficie, 1, ',', '.') }} ha</h3>
                 <p class="text-[11px] text-gray-400 mt-0.5">Área territorial</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold border border-blue-100 shadow-2xs">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold border border-blue-100 shadow-2xs shrink-0">
                 📐
             </div>
         </div>
 
         <!-- Promedio por Finca -->
-        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center justify-between">
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Superficie promedio</p>
-                <h3 class="text-2xl font-black text-teal-700 mt-1" id="statPromedio">{{ number_format($promedioSuperficie, 1, ',', '.') }} ha</h3>
+                <h3 class="text-xl sm:text-2xl font-black text-teal-700 mt-1" id="statPromedio">{{ number_format($promedioSuperficie, 1, ',', '.') }} ha</h3>
                 <p class="text-[11px] text-gray-400 mt-0.5">Por unidad de producción</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-xl font-bold border border-teal-100 shadow-2xs">
+            <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-xl font-bold border border-teal-100 shadow-2xs shrink-0">
                 📊
             </div>
         </div>
 
         <!-- Tipos de Explotación -->
-        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm flex items-center justify-between">
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm flex items-center justify-between">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Modelos productivos</p>
-                <h3 class="text-2xl font-black text-purple-700 mt-1" id="statTipos">{{ $totalTipos }}</h3>
+                <h3 class="text-xl sm:text-2xl font-black text-purple-700 mt-1" id="statTipos">{{ $totalTipos }}</h3>
                 <p class="text-[11px] text-gray-400 mt-0.5">Tipos de explotación</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl font-bold border border-purple-100 shadow-2xs">
+            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl font-bold border border-purple-100 shadow-2xs shrink-0">
                 💼
             </div>
         </div>
     </div>
 
     <!-- Filters Bar -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+    <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div>
                 <label for="filtroNombre" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Buscar por nombre</label>

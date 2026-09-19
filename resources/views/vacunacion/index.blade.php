@@ -7,11 +7,11 @@
     <!-- Header section -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-ganaderasoft-negro">Vacunaciones</h1>
-            <p class="text-gray-500 text-sm mt-1">Registro, control sanitario e historial de dosis aplicadas al rebaño</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-ganaderasoft-negro tracking-tight">Vacunaciones</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Registro, control sanitario e historial de dosis aplicadas al rebaño</p>
         </div>
         <a href="{{ route('vacunacion.create') }}"
-           class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium">
+           class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg inline-flex items-center justify-center font-medium text-sm sm:text-base text-center">
             + Nueva vacunación
         </a>
     </div>
@@ -35,7 +35,7 @@
     @endif
 
     <!-- Filters Bar -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+    <div class="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-100">
         <div class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <div>

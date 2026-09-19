@@ -23,20 +23,20 @@
 <div class="space-y-6">
     <!-- Header Card -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-2xl shadow-xs border border-blue-100 shrink-0">
+        <div class="flex items-center space-x-3.5 sm:space-x-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-xl sm:text-2xl shadow-xs border border-blue-100 shrink-0">
                 🐂
             </div>
             <div>
-                <h1 class="text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                <h1 class="text-2xl sm:text-3xl font-bold text-ganaderasoft-negro flex items-center gap-2 tracking-tight">
                     Servicios animales
                 </h1>
-                <p class="text-gray-500 text-sm mt-1">Gestión de inseminaciones artificiales, montas naturales y control reproductivo</p>
+                <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Gestión de inseminaciones artificiales, montas naturales y control reproductivo</p>
             </div>
         </div>
-        <div>
+        <div class="w-full sm:w-auto">
             <a href="{{ route('servicio-animal.create') }}"
-               class="px-6 py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-base inline-flex items-center gap-2">
+               class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-ganaderasoft-verde-oscuro text-white rounded-lg hover:bg-opacity-90 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm sm:text-base inline-flex items-center justify-center gap-2 text-center">
                 <span>+</span> Registrar servicio
             </a>
         </div>
