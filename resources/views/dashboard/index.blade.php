@@ -1,13 +1,13 @@
 @extends('layouts.authenticated')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard principal')
 
 @section('content')
 <div class="space-y-6">
     <!-- Encabezado del Dashboard -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Panel general</h1>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Dashboard principal</h1>
             <p class="text-sm text-gray-500 mt-1">Resumen estadístico del inventario ganadero activo, fincas y rebaños operativos</p>
         </div>
     </div>
