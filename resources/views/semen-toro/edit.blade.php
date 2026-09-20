@@ -23,6 +23,7 @@
             $fechaValue = '';
         }
     }
+    $cantidadPajuelas = old('cantidad_pajuelas', $semen['cantidad_pajuelas'] ?? 1);
 @endphp
 
 <div class="space-y-6">
@@ -142,7 +143,7 @@
                         <span>🧬</span> Parámetros del lote de pajuelas
                     </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Estado / Disponibilidad -->
                         <div>
                             <label for="estado" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
@@ -165,6 +166,20 @@
                                    value="{{ $fechaValue }}"
                                    class="w-full px-4 py-3 border @error('fecha') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium">
                             @error('fecha')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <!-- Cantidad de pajuelas -->
+                        <div>
+                            <label for="cantidad_pajuelas" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Cantidad de pajuelas
+                            </label>
+                            <div class="relative">
+                                <input type="number" name="cantidad_pajuelas" id="cantidad_pajuelas" min="0" step="1"
+                                       value="{{ $cantidadPajuelas }}" placeholder="Ej: 50"
+                                       class="w-full px-4 py-3 border @error('cantidad_pajuelas') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium pr-14">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 uppercase">uds</span>
+                            </div>
+                            @error('cantidad_pajuelas')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                     </div>
                 </div>
@@ -214,6 +229,12 @@
                                     {{ $fechaValue ? date('d/m/Y', strtotime($fechaValue)) : 'No especificada' }}
                                 </span>
                             </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-gray-500">Pajuelas en lote:</span>
+                                <span id="previewCantidad" class="font-bold text-cyan-700 text-right">
+                                    {{ $cantidadPajuelas }} {{ (int)$cantidadPajuelas === 1 ? 'pajuela' : 'pajuelas' }}
+                                </span>
+                            </div>
                         </div>
 
                         <!-- Action Buttons en el Sidebar -->
@@ -250,9 +271,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     const estadoSelect = document.getElementById('estado');
     const fechaInput = document.getElementById('fecha');
+    const cantidadInput = document.getElementById('cantidad_pajuelas');
 
     const previewEstado = document.getElementById('previewEstado');
     const previewFecha = document.getElementById('previewFecha');
+    const previewCantidad = document.getElementById('previewCantidad');
 
     function calculateDates() {
         const val = fechaInput.value;
@@ -278,11 +301,23 @@ document.addEventListener('DOMContentLoaded', function () {
             previewEstado.className = 'font-bold text-gray-500 text-right';
         }
 
+        if (previewCantidad && cantidadInput) {
+            const cantVal = parseInt(cantidadInput.value, 10);
+            if (!isNaN(cantVal) && cantVal >= 0) {
+                previewCantidad.textContent = cantVal + (cantVal === 1 ? ' pajuela' : ' pajuelas');
+            } else {
+                previewCantidad.textContent = '0 pajuelas';
+            }
+        }
+
         calculateDates();
     }
 
     estadoSelect.addEventListener('change', updatePreview);
     fechaInput.addEventListener('input', calculateDates);
+    if (cantidadInput) {
+        cantidadInput.addEventListener('input', updatePreview);
+    }
 
     updatePreview();
 });

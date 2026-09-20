@@ -5,8 +5,19 @@
 @section('content')
 @php
     $totalRegistros = count($semenToros);
-    $totalActivos = count(array_filter($semenToros, fn($s) => (bool)($s['estado'] ?? false)));
+    $totalPajuelas = array_sum(array_map(fn($s) => (int)($s['cantidad_pajuelas'] ?? 1), $semenToros));
+    
+    $activos = array_filter($semenToros, fn($s) => (bool)($s['estado'] ?? false));
+    $inactivos = array_filter($semenToros, fn($s) => !(bool)($s['estado'] ?? false));
+    
+    $totalActivos = count($activos);
     $totalInactivos = $totalRegistros - $totalActivos;
+    
+    $pajuelasActivas = array_sum(array_map(fn($s) => (int)($s['cantidad_pajuelas'] ?? 1), $activos));
+    $pajuelasInactivas = array_sum(array_map(fn($s) => (int)($s['cantidad_pajuelas'] ?? 1), $inactivos));
+    
+    $torosUnicos = count(array_unique(array_filter(array_map(fn($s) => $s['animal_id'] ?? data_get($s, 'toro.id'), $semenToros))));
+    
     $currentMonth = date('Y-m');
     $esteMes = count(array_filter($semenToros, function($s) use ($currentMonth) {
         $f = $s['fecha'] ?? '';
@@ -59,18 +70,26 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Total pajuelas / lotes</p>
-                <p id="statTotalRegistros" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $totalRegistros }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Inventario de pajuelas</p>
+                <div class="flex items-baseline gap-2">
+                    <p id="statTotalPajuelas" class="text-3xl font-extrabold text-ganaderasoft-azul">{{ $totalPajuelas }}</p>
+                    <span class="text-xs font-semibold text-gray-500">uds</span>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">en <span id="statTotalRegistros" class="font-bold text-gray-700">{{ $totalRegistros }}</span> {{ $totalRegistros === 1 ? 'lote' : 'lotes' }}</p>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-gray-50 text-gray-700 flex items-center justify-center text-2xl border border-gray-100">
-                📊
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-ganaderasoft-azul flex items-center justify-center text-2xl border border-blue-100">
+                🧬
             </div>
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Disponibles / Activas</p>
-                <p id="statTotalActivos" class="text-3xl font-extrabold text-emerald-600">{{ $totalActivos }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Pajuelas disponibles</p>
+                <div class="flex items-baseline gap-2">
+                    <p id="statPajuelasActivas" class="text-3xl font-extrabold text-emerald-600">{{ $pajuelasActivas }}</p>
+                    <span class="text-xs font-semibold text-emerald-700">uds</span>
+                </div>
+                <p class="text-xs text-emerald-700/80 mt-1"><span id="statTotalActivos" class="font-bold">{{ $totalActivos }}</span> {{ $totalActivos === 1 ? 'lote activo' : 'lotes activos' }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl border border-emerald-100">
                 🟢
@@ -79,8 +98,12 @@
 
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Agotadas / Inactivas</p>
-                <p id="statTotalInactivos" class="text-3xl font-extrabold text-amber-600">{{ $totalInactivos }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Pajuelas agotadas</p>
+                <div class="flex items-baseline gap-2">
+                    <p id="statPajuelasInactivas" class="text-3xl font-extrabold text-amber-600">{{ $pajuelasInactivas }}</p>
+                    <span class="text-xs font-semibold text-amber-700">uds</span>
+                </div>
+                <p class="text-xs text-amber-700/80 mt-1"><span id="statTotalInactivos" class="font-bold">{{ $totalInactivos }}</span> {{ $totalInactivos === 1 ? 'lote inactivo' : 'lotes inactivos' }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100">
                 ⚪
@@ -89,11 +112,15 @@
 
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Registradas este mes</p>
-                <p id="statRegistrosMes" class="text-3xl font-extrabold text-purple-600">{{ $esteMes }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Toros donantes</p>
+                <div class="flex items-baseline gap-2">
+                    <p id="statTorosUnicos" class="text-3xl font-extrabold text-purple-600">{{ $torosUnicos }}</p>
+                    <span class="text-xs font-semibold text-purple-700">{{ $torosUnicos === 1 ? 'toro' : 'toros' }}</span>
+                </div>
+                <p class="text-xs text-purple-700/80 mt-1"><span id="statRegistrosMes" class="font-bold">{{ $esteMes }}</span> {{ $esteMes === 1 ? 'lote este mes' : 'lotes este mes' }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl border border-purple-100">
-                📅
+                🐂
             </div>
         </div>
     </div>
@@ -193,7 +220,8 @@
                     <thead class="bg-gray-50/80">
                         <tr>
                             <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Toro donante</th>
-                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Pajuela / Muestra</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Lote / Registro</th>
+                            <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Cantidad</th>
                             <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Disponibilidad</th>
                             <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Servicios aplicados</th>
                             <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha de colecta / ingreso</th>
@@ -217,6 +245,7 @@
                             
                             $estado = (bool)($semen['estado'] ?? false);
                             $fecha = $semen['fecha'] ?? null;
+                            $cantidadPajuelas = (int)($semen['cantidad_pajuelas'] ?? 1);
                             $serviciosCount = count($semen['servicios'] ?? []);
 
                             $isArchivado = (bool)(data_get($semen, 'toro.archivado') ?? data_get($semen, 'toro.is_archivado') ?? false);
@@ -228,7 +257,10 @@
                                 (string)$toroId,
                                 '#'.$toroId,
                                 'pajuela #'.$sId,
+                                'lote #'.$sId,
                                 (string)$sId,
+                                (string)$cantidadPajuelas,
+                                $cantidadPajuelas.' pajuelas',
                                 $toroRaza,
                                 $rebanoNombre,
                                 $fincaNombre
@@ -240,6 +272,8 @@
                             data-finca="{{ $fincaId }}"
                             data-rebano="{{ $rebanoId }}"
                             data-fecha="{{ $fecha ? date('Y-m-d', strtotime($fecha)) : '' }}"
+                            data-pajuelas="{{ $cantidadPajuelas }}"
+                            data-toro-id="{{ $toroId }}"
                             data-archivado="{{ $isArchivado ? 'archivado' : 'activo' }}">
                             
                             <!-- Toro Donante -->
@@ -252,7 +286,7 @@
                                         <p class="font-bold text-gray-900 truncate">{{ $toroNombre }}</p>
                                         <div class="flex items-center gap-1.5 text-xs text-gray-500 font-mono">
                                             @if($toroCodigo)
-                                                <span class="bg-gray-100 text-gray-700 px-1.5 py-0.2 rounded font-semibold">#{{ $toroCodigo }}</span>
+                                                 <span class="bg-gray-100 text-gray-700 px-1.5 py-0.2 rounded font-semibold">#{{ $toroCodigo }}</span>
                                             @else
                                                 <span>ID: #{{ $toroId }}</span>
                                             @endif
@@ -270,7 +304,14 @@
                             <!-- Pajuela / Lote -->
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-cyan-50 text-cyan-800 border border-cyan-200">
-                                    🧬 Pajuela #{{ $sId }}
+                                    🧬 Lote #{{ $sId }}
+                                </span>
+                            </td>
+
+                            <!-- Cantidad de pajuelas -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="font-mono font-bold text-gray-900 bg-gray-100 border border-gray-200/80 px-2.5 py-1 rounded-lg text-xs">
+                                    {{ $cantidadPajuelas }} {{ $cantidadPajuelas === 1 ? 'pajuela' : 'pajuelas' }}
                                 </span>
                             </td>
 
@@ -439,27 +480,43 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function recalcularKpis(visibles) {
-        const statTotal = document.getElementById('statTotalRegistros');
-        const statActivos = document.getElementById('statTotalActivos');
-        const statInactivos = document.getElementById('statTotalInactivos');
+        const statTotalPaj = document.getElementById('statTotalPajuelas');
+        const statTotalReg = document.getElementById('statTotalRegistros');
+        const statPajAct = document.getElementById('statPajuelasActivas');
+        const statTotAct = document.getElementById('statTotalActivos');
+        const statPajInact = document.getElementById('statPajuelasInactivas');
+        const statTotInact = document.getElementById('statTotalInactivos');
+        const statToros = document.getElementById('statTorosUnicos');
         const statMes = document.getElementById('statRegistrosMes');
 
-        if (!statTotal) return;
+        if (!statTotalPaj && !statTotalReg) return;
 
         const currentMonth = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
-        let countTotal = visibles.length;
-        let countActivos = 0;
-        let countInactivos = 0;
+        let countTotalReg = visibles.length;
+        let countTotalPaj = 0;
+        let countPajAct = 0;
+        let countTotAct = 0;
+        let countPajInact = 0;
+        let countTotInact = 0;
         let countMes = 0;
+        const torosSet = new Set();
 
         visibles.forEach(row => {
             const estado = row.getAttribute('data-estado') || '';
             const fecha = row.getAttribute('data-fecha') || '';
+            const toroId = row.getAttribute('data-toro-id') || '';
+            const paj = parseInt(row.getAttribute('data-pajuelas') || '1', 10);
+            const cant = isNaN(paj) ? 1 : paj;
+
+            countTotalPaj += cant;
+            if (toroId) torosSet.add(toroId);
 
             if (estado === '1') {
-                countActivos++;
+                countTotAct++;
+                countPajAct += cant;
             } else {
-                countInactivos++;
+                countTotInact++;
+                countPajInact += cant;
             }
 
             if (fecha && fecha.startsWith(currentMonth)) {
@@ -467,9 +524,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        statTotal.textContent = countTotal;
-        if (statActivos) statActivos.textContent = countActivos;
-        if (statInactivos) statInactivos.textContent = countInactivos;
+        if (statTotalPaj) statTotalPaj.textContent = countTotalPaj;
+        if (statTotalReg) statTotalReg.textContent = countTotalReg;
+        if (statPajAct) statPajAct.textContent = countPajAct;
+        if (statTotAct) statTotAct.textContent = countTotAct;
+        if (statPajInact) statPajInact.textContent = countPajInact;
+        if (statTotInact) statTotInact.textContent = countTotInact;
+        if (statToros) statToros.textContent = torosSet.size;
         if (statMes) statMes.textContent = countMes;
     }
 

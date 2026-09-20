@@ -15,6 +15,7 @@
 
     $estado = (bool)($semen['estado'] ?? false);
     $fecha = $semen['fecha'] ?? null;
+    $cantidadPajuelas = $semen['cantidad_pajuelas'] ?? 1;
     $servicios = $semen['servicios'] ?? [];
     $serviciosCount = count($servicios);
 
@@ -155,11 +156,19 @@
                         </p>
                     </div>
 
+                    <!-- Cantidad de Pajuelas -->
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Cantidad de pajuelas en lote</p>
+                        <p class="text-lg font-bold text-cyan-800">
+                            {{ $cantidadPajuelas }} <span class="text-xs font-medium text-gray-500">{{ (int)$cantidadPajuelas === 1 ? 'unidad' : 'unidades' }}</span>
+                        </p>
+                    </div>
+
                     <!-- Código de Registro / Pajuela -->
                     <div>
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Identificador de pajuela</p>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Identificador de lote / registro</p>
                         <p class="text-sm font-bold font-mono text-cyan-800">
-                            Pajuela #{{ $id }}
+                            Lote #{{ $id }}
                         </p>
                     </div>
                 </div>
@@ -246,6 +255,13 @@
                         <p class="text-[11px] text-teal-700 leading-tight">
                             Apto para protocolos de sincronización a celo detectado y tiempo fijo (IATF).
                         </p>
+                    </div>
+
+                    <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 flex justify-between items-center text-xs">
+                        <span class="text-gray-600 font-medium">Pajuelas en lote:</span>
+                        <span class="font-mono font-bold text-cyan-800 bg-white px-2.5 py-1 rounded border border-gray-200">
+                            {{ $cantidadPajuelas }} uds
+                        </span>
                     </div>
                 </div>
             </div>

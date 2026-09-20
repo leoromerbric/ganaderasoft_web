@@ -111,18 +111,25 @@ class SemenToroController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'animal_id' => 'required|integer',
-            'estado'    => 'nullable',
-            'fecha'     => 'nullable|date',
+            'animal_id'         => 'required|integer',
+            'estado'            => 'nullable',
+            'fecha'             => 'nullable|date',
+            'cantidad_pajuelas' => 'nullable|integer|min:0|max:100000',
         ], [
-            'animal_id.required' => 'El toro donante es requerido.',
+            'animal_id.required'        => 'El toro donante es requerido.',
+            'cantidad_pajuelas.integer' => 'La cantidad de pajuelas debe ser un número entero.',
+            'cantidad_pajuelas.min'     => 'La cantidad de pajuelas no puede ser negativa.',
+            'cantidad_pajuelas.max'     => 'La cantidad de pajuelas no puede exceder 100.000.',
         ]);
 
-        $data = $request->only(['animal_id', 'estado', 'fecha']);
+        $data = $request->only(['animal_id', 'estado', 'fecha', 'cantidad_pajuelas']);
         if (!isset($data['estado']) || $data['estado'] === '') {
             $data['estado'] = true;
         } else {
             $data['estado'] = filter_var($data['estado'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if (isset($data['cantidad_pajuelas']) && $data['cantidad_pajuelas'] !== '') {
+            $data['cantidad_pajuelas'] = (int) $data['cantidad_pajuelas'];
         }
 
         $response = $this->service->create($data);
@@ -164,18 +171,25 @@ class SemenToroController extends Controller
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'animal_id' => 'required|integer',
-            'estado'    => 'nullable',
-            'fecha'     => 'nullable|date',
+            'animal_id'         => 'required|integer',
+            'estado'            => 'nullable',
+            'fecha'             => 'nullable|date',
+            'cantidad_pajuelas' => 'nullable|integer|min:0|max:100000',
         ], [
-            'animal_id.required' => 'El toro donante es requerido.',
+            'animal_id.required'        => 'El toro donante es requerido.',
+            'cantidad_pajuelas.integer' => 'La cantidad de pajuelas debe ser un número entero.',
+            'cantidad_pajuelas.min'     => 'La cantidad de pajuelas no puede ser negativa.',
+            'cantidad_pajuelas.max'     => 'La cantidad de pajuelas no puede exceder 100.000.',
         ]);
 
-        $data = $request->only(['animal_id', 'estado', 'fecha']);
+        $data = $request->only(['animal_id', 'estado', 'fecha', 'cantidad_pajuelas']);
         if (!isset($data['estado']) || $data['estado'] === '') {
             $data['estado'] = false;
         } else {
             $data['estado'] = filter_var($data['estado'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if (isset($data['cantidad_pajuelas']) && $data['cantidad_pajuelas'] !== '') {
+            $data['cantidad_pajuelas'] = (int) $data['cantidad_pajuelas'];
         }
 
         $response = $this->service->update($id, $data);

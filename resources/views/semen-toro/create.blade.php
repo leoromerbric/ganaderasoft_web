@@ -147,7 +147,7 @@
                         <span>🧬</span> Parámetros del lote de pajuelas
                     </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Estado / Disponibilidad -->
                         <div>
                             <label for="estado" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
@@ -155,7 +155,7 @@
                             </label>
                             <select name="estado" id="estado"
                                     class="w-full px-4 py-3 border @error('estado') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium">
-                                <option value="1" {{ old('estado', '1') === '1' ? 'selected' : '' }}>🟢 Disponible / Activo en banco</option>
+                                <option value="1" {{ old('estado', '1') === '1' ? 'selected' : '' }}>🟢 Disponible / Activo</option>
                                 <option value="0" {{ old('estado') === '0' ? 'selected' : '' }}>⚪ Agotado / Inactivo</option>
                             </select>
                             @error('estado')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
@@ -164,12 +164,27 @@
                         <!-- Fecha de Colecta / Ingreso -->
                         <div>
                             <label for="fecha" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Fecha de colecta / ingreso al banco
+                                Fecha de colecta / ingreso
                             </label>
                             <input type="date" name="fecha" id="fecha"
+                                   max="{{ date('Y-m-d') }}"
                                    value="{{ old('fecha', date('Y-m-d')) }}"
                                    class="w-full px-4 py-3 border @error('fecha') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium">
                             @error('fecha')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
+                        </div>
+
+                        <!-- Cantidad de pajuelas -->
+                        <div>
+                            <label for="cantidad_pajuelas" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                                Cantidad de pajuelas
+                            </label>
+                            <div class="relative">
+                                <input type="number" name="cantidad_pajuelas" id="cantidad_pajuelas" min="1" step="1"
+                                       value="{{ old('cantidad_pajuelas', 1) }}" placeholder="Ej: 50"
+                                       class="w-full px-4 py-3 border @error('cantidad_pajuelas') border-red-500 ring-2 ring-red-100 bg-red-50/30 @else border-gray-300 @enderror rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste focus:border-transparent transition-all bg-white font-medium pr-14">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400 uppercase">uds</span>
+                            </div>
+                            @error('cantidad_pajuelas')<p class="text-xs text-red-600 font-medium mt-1">{{ $message }}</p>@enderror
                         </div>
                     </div>
                 </div>
@@ -215,6 +230,10 @@
                                 <span class="text-gray-500">Fecha de colecta:</span>
                                 <span id="previewFecha" class="font-bold text-gray-900 text-right">Hoy</span>
                             </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-gray-500">Pajuelas en lote:</span>
+                                <span id="previewCantidad" class="font-bold text-cyan-700 text-right">1 pajuela</span>
+                            </div>
                         </div>
 
                         <!-- Action Buttons en el Sidebar -->
@@ -255,6 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const rHelper = document.getElementById('helper_rebano');
     const estadoSelect = document.getElementById('estado');
     const fechaInput = document.getElementById('fecha');
+    const cantidadInput = document.getElementById('cantidad_pajuelas');
 
     // Sidebar previews
     const previewNombre = document.getElementById('previewNombre');
@@ -263,6 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const previewRaza = document.getElementById('previewRaza');
     const previewEstado = document.getElementById('previewEstado');
     const previewFecha = document.getElementById('previewFecha');
+    const previewCantidad = document.getElementById('previewCantidad');
 
     function filtrarRebanos() {
         if (!fHelper || !rHelper) return;
@@ -351,6 +372,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
+        // Cantidad de pajuelas
+        if (previewCantidad && cantidadInput) {
+            const cantVal = parseInt(cantidadInput.value, 10);
+            if (!isNaN(cantVal) && cantVal >= 0) {
+                previewCantidad.textContent = cantVal + (cantVal === 1 ? ' pajuela' : ' pajuelas');
+            } else {
+                previewCantidad.textContent = '1 pajuela';
+            }
+        }
+
         calculateDates();
     }
 
@@ -395,6 +426,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (estadoSelect) estadoSelect.addEventListener('change', updateAllPreviews);
     if (fechaInput) fechaInput.addEventListener('input', calculateDates);
+    if (cantidadInput) cantidadInput.addEventListener('input', updateAllPreviews);
 
     // Initial setup
     filtrarRebanos();
