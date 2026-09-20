@@ -6,23 +6,24 @@
 @php
     $totalRegistros = count($semenToros);
     $totalPajuelas = array_sum(array_map(fn($s) => (int)($s['cantidad_pajuelas'] ?? 1), $semenToros));
-    
+
     $activos = array_filter($semenToros, fn($s) => (bool)($s['estado'] ?? false));
-    $inactivos = array_filter($semenToros, fn($s) => !(bool)($s['estado'] ?? false));
-    
     $totalActivos = count($activos);
-    $totalInactivos = $totalRegistros - $totalActivos;
-    
     $pajuelasActivas = array_sum(array_map(fn($s) => (int)($s['cantidad_pajuelas'] ?? 1), $activos));
-    $pajuelasInactivas = array_sum(array_map(fn($s) => (int)($s['cantidad_pajuelas'] ?? 1), $inactivos));
-    
-    $torosUnicos = count(array_unique(array_filter(array_map(fn($s) => $s['animal_id'] ?? data_get($s, 'toro.id'), $semenToros))));
-    
+
+    // Toros únicos con AL MENOS UN lote activo (diversidad genética disponible hoy)
+    $torosConLoteActivo = count(array_unique(array_filter(
+        array_map(fn($s) => $s['animal_id'] ?? data_get($s, 'toro.id'), $activos)
+    )));
+
     $currentMonth = date('Y-m');
     $esteMes = count(array_filter($semenToros, function($s) use ($currentMonth) {
         $f = $s['fecha'] ?? '';
         return str_starts_with((string)$f, $currentMonth);
     }));
+
+    $mesesEs = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    $mesEs = $mesesEs[(int)date('n') - 1] . ' ' . date('Y');
 @endphp
 
 <div class="space-y-6">
@@ -89,38 +90,40 @@
                     <p id="statPajuelasActivas" class="text-3xl font-extrabold text-emerald-600">{{ $pajuelasActivas }}</p>
                     <span class="text-xs font-semibold text-emerald-700">uds</span>
                 </div>
-                <p class="text-xs text-emerald-700/80 mt-1"><span id="statTotalActivos" class="font-bold">{{ $totalActivos }}</span> {{ $totalActivos === 1 ? 'lote activo' : 'lotes activos' }}</p>
+        <p class="text-xs text-emerald-700/80 mt-1"><span id="statTotalActivos" class="font-bold">{{ $totalActivos }}</span> {{ $totalActivos === 1 ? 'lote activo' : 'lotes activos' }}</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl border border-emerald-100">
                 🟢
             </div>
         </div>
 
+        {{-- KPI 3: Toros con al menos un lote activo hoy = diversidad genética real disponible --}}
         <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
             <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Pajuelas agotadas</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Toros con stock activo</p>
                 <div class="flex items-baseline gap-2">
-                    <p id="statPajuelasInactivas" class="text-3xl font-extrabold text-amber-600">{{ $pajuelasInactivas }}</p>
-                    <span class="text-xs font-semibold text-amber-700">uds</span>
+                    <p id="statTorosActivos" class="text-3xl font-extrabold text-purple-600">{{ $torosConLoteActivo }}</p>
+                    <span class="text-xs font-semibold text-purple-700">{{ $torosConLoteActivo === 1 ? 'toro' : 'toros' }}</span>
                 </div>
-                <p class="text-xs text-amber-700/80 mt-1"><span id="statTotalInactivos" class="font-bold">{{ $totalInactivos }}</span> {{ $totalInactivos === 1 ? 'lote inactivo' : 'lotes inactivos' }}</p>
-            </div>
-            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100">
-                ⚪
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
-            <div>
-                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Toros donantes</p>
-                <div class="flex items-baseline gap-2">
-                    <p id="statTorosUnicos" class="text-3xl font-extrabold text-purple-600">{{ $torosUnicos }}</p>
-                    <span class="text-xs font-semibold text-purple-700">{{ $torosUnicos === 1 ? 'toro' : 'toros' }}</span>
-                </div>
-                <p class="text-xs text-purple-700/80 mt-1"><span id="statRegistrosMes" class="font-bold">{{ $esteMes }}</span> {{ $esteMes === 1 ? 'lote este mes' : 'lotes este mes' }}</p>
+                <p class="text-xs text-purple-700/80 mt-1">con semen disponible</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl border border-purple-100">
                 🐂
+            </div>
+        </div>
+
+        {{-- KPI 4: Actividad reciente del mes --}}
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Ingresados este mes</p>
+                <div class="flex items-baseline gap-2">
+                    <p id="statRegistrosMes" class="text-3xl font-extrabold text-amber-600">{{ $esteMes }}</p>
+                    <span class="text-xs font-semibold text-amber-700">{{ $esteMes === 1 ? 'lote' : 'lotes' }}</span>
+                </div>
+                <p class="text-xs text-amber-700/80 mt-1">en {{ $mesEs }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl border border-amber-100">
+                📅
             </div>
         </div>
     </div>
@@ -480,58 +483,46 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function recalcularKpis(visibles) {
-        const statTotalPaj = document.getElementById('statTotalPajuelas');
-        const statTotalReg = document.getElementById('statTotalRegistros');
-        const statPajAct = document.getElementById('statPajuelasActivas');
-        const statTotAct = document.getElementById('statTotalActivos');
-        const statPajInact = document.getElementById('statPajuelasInactivas');
-        const statTotInact = document.getElementById('statTotalInactivos');
-        const statToros = document.getElementById('statTorosUnicos');
-        const statMes = document.getElementById('statRegistrosMes');
+        const statTotalPaj  = document.getElementById('statTotalPajuelas');
+        const statTotalReg  = document.getElementById('statTotalRegistros');
+        const statPajAct    = document.getElementById('statPajuelasActivas');
+        const statTotAct    = document.getElementById('statTotalActivos');
+        const statTorosAct  = document.getElementById('statTorosActivos');
+        const statMes       = document.getElementById('statRegistrosMes');
 
         if (!statTotalPaj && !statTotalReg) return;
 
         const currentMonth = new Date().toISOString().slice(0, 7); // 'YYYY-MM'
-        let countTotalReg = visibles.length;
         let countTotalPaj = 0;
-        let countPajAct = 0;
-        let countTotAct = 0;
-        let countPajInact = 0;
-        let countTotInact = 0;
-        let countMes = 0;
-        const torosSet = new Set();
+        let countPajAct   = 0;
+        let countTotAct   = 0;
+        let countMes      = 0;
+        const torosActivosSet = new Set(); // toros con al menos un lote activo visible
 
         visibles.forEach(row => {
-            const estado = row.getAttribute('data-estado') || '';
-            const fecha = row.getAttribute('data-fecha') || '';
-            const toroId = row.getAttribute('data-toro-id') || '';
-            const paj = parseInt(row.getAttribute('data-pajuelas') || '1', 10);
-            const cant = isNaN(paj) ? 1 : paj;
+            const estado  = row.getAttribute('data-estado') || '';
+            const fecha   = row.getAttribute('data-fecha')  || '';
+            const toroId  = row.getAttribute('data-toro-id') || '';
+            const paj     = parseInt(row.getAttribute('data-pajuelas') || '1', 10);
+            const cant    = isNaN(paj) ? 1 : paj;
 
             countTotalPaj += cant;
-            if (toroId) torosSet.add(toroId);
 
             if (estado === '1') {
                 countTotAct++;
                 countPajAct += cant;
-            } else {
-                countTotInact++;
-                countPajInact += cant;
+                if (toroId) torosActivosSet.add(toroId);
             }
 
-            if (fecha && fecha.startsWith(currentMonth)) {
-                countMes++;
-            }
+            if (fecha && fecha.startsWith(currentMonth)) countMes++;
         });
 
         if (statTotalPaj) statTotalPaj.textContent = countTotalPaj;
-        if (statTotalReg) statTotalReg.textContent = countTotalReg;
-        if (statPajAct) statPajAct.textContent = countPajAct;
-        if (statTotAct) statTotAct.textContent = countTotAct;
-        if (statPajInact) statPajInact.textContent = countPajInact;
-        if (statTotInact) statTotInact.textContent = countTotInact;
-        if (statToros) statToros.textContent = torosSet.size;
-        if (statMes) statMes.textContent = countMes;
+        if (statTotalReg) statTotalReg.textContent  = visibles.length;
+        if (statPajAct)   statPajAct.textContent    = countPajAct;
+        if (statTotAct)   statTotAct.textContent    = countTotAct;
+        if (statTorosAct) statTorosAct.textContent  = torosActivosSet.size;
+        if (statMes)      statMes.textContent       = countMes;
     }
 
     function aplicarFiltros() {

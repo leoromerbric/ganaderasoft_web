@@ -160,7 +160,7 @@
                         <!-- Fecha de Colecta / Ingreso -->
                         <div>
                             <label for="fecha" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                                Fecha de colecta / ingreso al banco
+                                Fecha de colecta
                             </label>
                             <input type="date" name="fecha" id="fecha"
                                    value="{{ $fechaValue }}"
