@@ -177,12 +177,15 @@ class SemenToroController extends Controller
             'cantidad_pajuelas' => 'nullable|integer|min:0|max:100000',
         ], [
             'animal_id.required'        => 'El toro donante es requerido.',
+            'animal_id.integer'         => 'El toro donante debe ser un identificador numérico válido.',
             'cantidad_pajuelas.integer' => 'La cantidad de pajuelas debe ser un número entero.',
             'cantidad_pajuelas.min'     => 'La cantidad de pajuelas no puede ser negativa.',
             'cantidad_pajuelas.max'     => 'La cantidad de pajuelas no puede exceder 100.000.',
         ]);
 
         $data = $request->only(['animal_id', 'estado', 'fecha', 'cantidad_pajuelas']);
+        $data['animal_id'] = (int) $data['animal_id'];
+
         if (!isset($data['estado']) || $data['estado'] === '') {
             $data['estado'] = false;
         } else {

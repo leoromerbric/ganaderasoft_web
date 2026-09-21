@@ -5,7 +5,7 @@
 @section('content')
 @php
     $id = $semen['id'] ?? null;
-    $toroId = $semen['animal_id'] ?? data_get($semen, 'toro.id') ?? '';
+    $toroId = old('animal_id', $semen['animal_id'] ?? data_get($semen, 'toro.id') ?? data_get($semen, 'toro.id_Animal') ?? data_get($semen, 'id_Toro') ?? '');
     $toroNombre = data_get($semen, 'toro.Nombre') ?? data_get($semen, 'toro.nombre') ?? ('Toro #'.$toroId);
     $toroCodigo = data_get($semen, 'toro.codigo_animal') ?? data_get($semen, 'toro.Codigo') ?? '';
     $toroRaza = data_get($semen, 'toro.composicion_raza.nombre') ?? data_get($semen, 'toro.composicionRaza.nombre') ?? data_get($semen, 'toro.raza.Nombre') ?? data_get($semen, 'toro.raza.nombre') ?? '';
@@ -80,15 +80,22 @@
         @csrf
         @method('PUT')
 
+        <input type="hidden" name="animal_id" value="{{ $toroId }}">
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             <!-- Columna Izquierda: Formulario (2 Tercios) -->
             <div class="lg:col-span-2 space-y-6">
                 
                 <!-- Card 1: Toro Donante -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
-                    <h3 class="text-xl font-bold text-ganaderasoft-negro border-b border-gray-100 pb-3 flex items-center gap-2">
-                        <span>🐂</span> Toro donante
-                    </h3>
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                        <h3 class="text-xl font-bold text-ganaderasoft-negro flex items-center gap-2">
+                            <span>🐂</span> Toro donante
+                        </h3>
+                        <span class="text-xs font-semibold px-3 py-1 bg-blue-50 text-blue-700 rounded-full border border-blue-100 flex items-center gap-1">
+                            <span>🔒</span> Toro asignado
+                        </span>
+                    </div>
 
                     <div class="p-5 bg-gray-50/90 border border-gray-200/80 rounded-2xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div class="flex items-center space-x-4">
