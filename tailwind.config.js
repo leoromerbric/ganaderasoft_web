@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'nav': '960px',
+      },
       colors: {
         'ganaderasoft': {
           'celeste': '#6EC1E4',

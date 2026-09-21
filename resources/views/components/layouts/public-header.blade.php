@@ -18,21 +18,21 @@
             </a>
             <!-- Navegación y acciones -->
             @if(isset($slot) && !empty(trim($slot)))
-                <!-- Enlaces de navegación en escritorio (>= xl) -->
-                <nav class="hidden xl:flex items-center space-x-6 2xl:space-x-8 text-sm font-semibold text-gray-600 [&>a]:whitespace-nowrap">
+                <!-- Enlaces de navegación en escritorio (>= 960px / nav) -->
+                <nav class="hidden nav:flex items-center space-x-4 lg:space-x-6 2xl:space-x-8 text-sm font-semibold text-gray-600 [&>a]:whitespace-nowrap">
                     {{ $slot }}
                 </nav>
 
-                <!-- Botón de iniciar sesión en escritorio (>= xl) -->
-                <div class="hidden xl:flex items-center space-x-3 sm:space-x-4 shrink-0">
+                <!-- Botón de iniciar sesión en escritorio (>= 960px / nav) -->
+                <div class="hidden nav:flex items-center space-x-3 sm:space-x-4 shrink-0">
                     <a href="{{ route('login') }}" 
                        class="inline-flex items-center justify-center px-4 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-ganaderasoft-celeste via-[#4aa9d6] to-ganaderasoft-azul rounded-xl shadow-md shadow-ganaderasoft-celeste/30 hover:shadow-lg hover:scale-105 transition-all whitespace-nowrap">
                         Iniciar sesión
                     </a>
                 </div>
 
-                <!-- Botón de menú hamburguesa móvil (< xl) -->
-                <div class="flex items-center xl:hidden">
+                <!-- Botón de menú hamburguesa móvil (< 960px / nav) -->
+                <div class="flex items-center nav:hidden">
                     <button type="button" 
                             id="mobile-menu-btn"
                             class="p-2 rounded-xl text-gray-600 hover:text-ganaderasoft-azul hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-ganaderasoft-celeste/40"
@@ -48,13 +48,21 @@
                         </svg>
                     </button>
                 </div>
+            @else
+                <!-- Botón de iniciar sesión si no hay slot de navegación -->
+                <div class="flex items-center space-x-3 sm:space-x-4 shrink-0">
+                    <a href="{{ route('login') }}" 
+                       class="inline-flex items-center justify-center px-4 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-ganaderasoft-celeste via-[#4aa9d6] to-ganaderasoft-azul rounded-xl shadow-md shadow-ganaderasoft-celeste/30 hover:shadow-lg hover:scale-105 transition-all whitespace-nowrap">
+                        Iniciar sesión
+                    </a>
+                </div>
             @endif
         </div>
     </div>
 
     <!-- Menú desplegable móvil (solo si hay enlaces en el slot) -->
     @if(isset($slot) && !empty(trim($slot)))
-        <div id="mobile-menu" class="hidden xl:hidden border-t border-gray-100 bg-white/95 backdrop-blur-lg px-4 pt-3 pb-5 shadow-lg transition-all duration-300">
+        <div id="mobile-menu" class="hidden nav:hidden border-t border-gray-100 bg-white/95 backdrop-blur-lg px-4 pt-3 pb-5 shadow-lg transition-all duration-300">
             <div class="flex flex-col space-y-2 text-sm font-semibold text-gray-700">
                 <div class="mobile-slot-links flex flex-col space-y-1 [&>a]:block [&>a]:px-3 [&>a]:py-2.5 [&>a]:rounded-lg [&>a]:hover:bg-slate-50 [&>a]:hover:text-ganaderasoft-azul [&>a]:transition-colors">
                     {{ $slot }}
